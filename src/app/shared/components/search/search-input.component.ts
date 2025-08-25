@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {debounceTime, distinctUntilChanged, fromEvent, map, Subject, Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
@@ -17,6 +17,8 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
   imports: [NgClass, MatIcon, SharedModule],
 })
 export class SearchInputComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public placeholderText!: string;
   @Input() public showFilterButton: boolean = true;
   @Input() public alwaysEnableClearButton: boolean = false;
@@ -37,8 +39,6 @@ export class SearchInputComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly searchTerm = new Subject<{term: string; emitChangeEvent: boolean}>();
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.subscriptions.add(

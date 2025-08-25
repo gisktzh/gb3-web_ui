@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -14,12 +14,12 @@ import {ExternalLayerId} from '../../../../../shared/types/external-layer-id.typ
   styleUrl: './map-import-layer-list.component.scss',
 })
 export class MapImportLayerListComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public layerSelections?: ExternalLayerSelection[];
 
   private readonly layerSelections$ = this.store.select(selectLayerSelections);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

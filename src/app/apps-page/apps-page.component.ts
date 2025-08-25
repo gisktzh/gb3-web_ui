@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -15,11 +15,11 @@ import {selectExternalAppsForAccessMode} from '../state/external-apps/selectors/
   styleUrl: './apps-page.component.scss',
 })
 export class AppsPageComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public externalApps: ExternalApp[] = [];
   private readonly externalApps$: Observable<ExternalApp[]> = this.store.select(selectExternalAppsForAccessMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

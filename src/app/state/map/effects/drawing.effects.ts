@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {filter, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
@@ -9,14 +9,18 @@ import {DrawingActions} from '../actions/drawing.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {ToolService} from '../../../map/interfaces/tool.service';
 import {MapService} from '../../../map/interfaces/map.service';
-import {MAP_SERVICE} from '../../../app.module';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
 import {selectSelectedDrawing} from '../reducers/drawing.reducer';
 import {DrawingNotFound} from '../../../shared/errors/drawing.errors';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class DrawingEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly store = inject(Store);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+
   private readonly toolService: ToolService;
 
   public clearSingleDrawingLayer$ = createEffect(() => {
@@ -77,11 +81,7 @@ export class DrawingEffects {
     );
   });
 
-  constructor(
-    private readonly actions$: Actions,
-    private readonly store: Store,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-  ) {
+  constructor() {
     this.toolService = this.mapService.getToolService();
   }
 }

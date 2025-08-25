@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {forkJoin, map, Observable} from 'rxjs';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
@@ -31,10 +31,6 @@ import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
-import {HttpClient} from '@angular/common/http';
-import {ConfigService} from '../../config.service';
-import {TIME_SERVICE} from '../../../../app.module';
-import {TimeService} from '../../../interfaces/time-service.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
@@ -44,19 +40,12 @@ const INACTIVE_NUMBER_FILTER_VALUE = -1;
   providedIn: 'root',
 })
 export class Gb3TopicsService extends Gb3ApiService {
+  private readonly timeSliderService = inject(TimeSliderService);
+
   protected readonly endpoint = 'topics';
   private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   private readonly dataDatasetTabUrl = `/${MainPage.Data}/${DataCataloguePage.Datasets}`;
   private readonly dataMapTabUrl = `/${MainPage.Data}/${DataCataloguePage.Maps}`;
-
-  constructor(
-    httpClient: HttpClient,
-    configService: ConfigService,
-    @Inject(TIME_SERVICE) timeService: TimeService,
-    private readonly timeSliderService: TimeSliderService,
-  ) {
-    super(httpClient, configService, timeService);
-  }
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();

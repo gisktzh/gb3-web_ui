@@ -5,43 +5,44 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <div class="data-download-dialog__content" *ngIf="order">
-    <div>
-      <search-input
-        class="data-download-dialog__content__search"
-        placeholderText="Nach Geodaten filtern"
-        (changeSearchTermEvent)="setFilterTerm($event)"
-        (clearSearchTermEvent)="clearFilterTerm()"
-        (openFilterEvent)="openFilterWindow()"
-        [disabled]="savingState === 'loading'"
-        [isAnyFilterActive]="activeDataDownloadFiltersPerCategory.length > 0"
-      ></search-input>
+  @if (order) {
+    <div class="data-download-dialog__content">
+      <div>
+        <search-input
+          class="data-download-dialog__content__search"
+          placeholderText="Nach Geodaten filtern"
+          (changeSearchTermEvent)="setFilterTerm($event)"
+          (clearSearchTermEvent)="clearFilterTerm()"
+          (openFilterEvent)="openFilterWindow()"
+          [disabled]="savingState === 'loading'"
+          [isAnyFilterActive]="activeDataDownloadFiltersPerCategory.length > 0"
+        ></search-input>
+      </div>
+      <div class="data-download-dialog__content__products">
+        <expandable-list-item
+          header="Geodaten zu den Aktiven Karten"
+          [expanded]="true"
+          [loadingState]="relevantProductsLoadingState"
+          [noPadding]="true"
+        >
+          @for (relevantProduct of relevantProducts; track trackByProductId($index, relevantProduct)) {
+            <product [product]="relevantProduct" [order]="order" [disabled]="savingState === 'loading'"></product>
+            <mat-divider></mat-divider>
+          }
+        </expandable-list-item>
+        <expandable-list-item header="Restliche Geodaten" [expanded]="true" [loadingState]="productsLoadingState" [noPadding]="true">
+          @for (product of filteredProducts; track trackByProductId($index, product)) {
+            <product [product]="product" [order]="order" [disabled]="savingState === 'loading'"></product>
+            <mat-divider></mat-divider>
+          }
+          @if (activeDataDownloadFiltersPerCategory.length > 0 && filteredProducts.length === 0) {
+            <p class="mat-body-2">Keine Resultate zu diesem Filter.</p>
+          }
+        </expandable-list-item>
+      </div>
+      <loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>
     </div>
-
-    <div class="data-download-dialog__content__products">
-      <expandable-list-item
-        header="Geodaten zu den Aktiven Karten"
-        [expanded]="true"
-        [loadingState]="relevantProductsLoadingState"
-        [noPadding]="true"
-      >
-        <ng-container *ngFor="let relevantProduct of relevantProducts; trackBy: trackByProductId">
-          <product [product]="relevantProduct" [order]="order" [disabled]="savingState === 'loading'"></product>
-          <mat-divider></mat-divider>
-        </ng-container>
-      </expandable-list-item>
-      <expandable-list-item header="Restliche Geodaten" [expanded]="true" [loadingState]="productsLoadingState" [noPadding]="true">
-        <ng-container *ngFor="let product of filteredProducts; trackBy: trackByProductId">
-          <product [product]="product" [order]="order" [disabled]="savingState === 'loading'"></product>
-          <mat-divider></mat-divider>
-        </ng-container>
-        <p *ngIf="activeDataDownloadFiltersPerCategory.length > 0 && filteredProducts.length === 0" class="mat-body-2">
-          Keine Resultate zu diesem Filter.
-        </p>
-      </expandable-list-item>
-    </div>
-    <loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>
-  </div>
+  }
   <div class="data-download-dialog__footer">
     <button class="data-download-dialog__footer__button" (click)="cancel()" [disabled]="savingState === 'loading'" mat-button>
       Abbrechen

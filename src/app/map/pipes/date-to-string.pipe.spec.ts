@@ -1,16 +1,17 @@
 import {DateToStringPipe} from './date-to-string.pipe';
 import {TestBed} from '@angular/core/testing';
-import {TIME_SERVICE} from '../../app.module';
-import {TimeService} from '../../shared/interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../app.tokens';
+import {timeServiceFactory} from '../../shared/factories/time-service.factory';
 
 describe('DateToStringPipe', () => {
   let pipe: DateToStringPipe;
-  let timeService: TimeService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    timeService = TestBed.inject(TIME_SERVICE);
-    pipe = new DateToStringPipe(timeService);
+    TestBed.configureTestingModule({
+      providers: [DateToStringPipe, {provide: TIME_SERVICE, useValue: timeServiceFactory()}],
+    });
+
+    pipe = TestBed.inject(DateToStringPipe);
   });
 
   it('creates an instance', () => {

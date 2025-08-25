@@ -1,31 +1,43 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectFilterGroups} from '../../../state/app/reducers/search.reducer';
 import {SearchActions} from '../../../state/app/actions/search.actions';
-import {MatDialogRef} from '@angular/material/dialog';
+import {MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
 import {SearchFilter, SearchFilterGroup} from '../../interfaces/search-filter-group.interface';
 import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {CdkAccordion} from '@angular/cdk/accordion';
+import {AccordionItemComponent} from '../accordion-item/accordion-item.component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'search-filter-dialog',
   templateUrl: './search-filter-dialog.component.html',
   styleUrls: ['./search-filter-dialog.component.scss'],
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    CdkAccordion,
+    AccordionItemComponent,
+    MatCheckbox,
+    MatDialogActions,
+    MatButton,
+  ],
 })
 export class SearchFilterDialogComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialogRef = inject<MatDialogRef<SearchFilterDialogComponent>>(MatDialogRef);
+
   public nonEmptyFilterGroups: SearchFilterGroup[] = [];
   public screenMode: ScreenMode = 'regular';
 
   private readonly filterGroups$ = this.store.select(selectFilterGroups);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialogRef: MatDialogRef<SearchFilterDialogComponent>,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

@@ -13,26 +13,31 @@
       <span>{{ product.ogd ? 'Frei (OGD)' : 'Eingeschränkt (NOGD)' }}</span>
     </p>
   </div>
-  <mat-form-field *ngIf="product.ogd && isProductSelected" class="product__select" subscriptSizing="dynamic">
-    <mat-label>Dateiformate</mat-label>
-    <mat-select
-      #formatsSelect
-      [formControl]="formatsFormControl"
-      placeholder="Bitte auswählen"
-      [multiple]="true"
-      (selectionChange)="updateOrderProducts()"
-    >
-      <mat-option *ngFor="let format of product.formats" [value]="format">
-        {{ format.description }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <external-link-button
-    *ngIf="!product.ogd && product.nonOgdProductUrl"
-    [color]="'accent'"
-    [highlighted]="true"
-    [size]="'small'"
-    [url]="product.nonOgdProductUrl"
-    toolTip="Geodatenshop öffnen"
-  ></external-link-button>
+  @if (product.ogd && isProductSelected) {
+    <mat-form-field class="product__select" subscriptSizing="dynamic">
+      <mat-label>Dateiformate</mat-label>
+      <mat-select
+        #formatsSelect
+        [formControl]="formatsFormControl"
+        placeholder="Bitte auswählen"
+        [multiple]="true"
+        (selectionChange)="updateOrderProducts()"
+      >
+        @for (format of product.formats; track format) {
+          <mat-option [value]="format">
+            {{ format.description }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+  @if (!product.ogd && product.nonOgdProductUrl) {
+    <external-link-button
+      [color]="'accent'"
+      [highlighted]="true"
+      [size]="'small'"
+      [url]="product.nonOgdProductUrl"
+      toolTip="Geodatenshop öffnen"
+    ></external-link-button>
+  }
 </div>

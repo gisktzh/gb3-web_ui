@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {catchError, map, mergeMap} from 'rxjs';
@@ -12,6 +12,11 @@ import {selectStatusJobs} from '../reducers/data-download-order-status-job.reduc
 
 @Injectable()
 export class DataDownloadOrderStatusJobEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly configService = inject(ConfigService);
+  private readonly store = inject(Store);
+  private readonly geoshopApiService = inject(GeoshopApiService);
+
   public periodicallyCheckOrderStatus$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataDownloadOrderStatusJobActions.requestOrderStatus),
@@ -79,11 +84,4 @@ export class DataDownloadOrderStatusJobEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly configService: ConfigService,
-    private readonly store: Store,
-    private readonly geoshopApiService: GeoshopApiService,
-  ) {}
 }

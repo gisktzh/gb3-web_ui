@@ -18,6 +18,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 We strive to use the most recent LTS version. Whenever an update is due, make sure you adjust the following:
 
 - `Dockerfile`
+- `./dev/Dockerfile.dev`
 - `.github/workflows/node*.yml` (**Warning!** There are cases where the pipeline does not yet have the
   newest node version; in that case, leave it as before and ignore the pipeline warnings)
 - `.nvmrc`
@@ -173,6 +174,7 @@ The rules are defined in the `.eslintrc.config.mjs` file.
 > 10. [Adding new NPM packages](#adding-new-npm-packages)
 > 11. [Feature flags](#feature-flags)
 > 12. [Handling of date objects](#handling-of-date-objects)
+> 13. [Injection tokens](#injection-tokens)
 
 ### The `ActiveMapItem` class
 
@@ -493,7 +495,6 @@ These numbers are derived from the UI-Elements and need to be updated whenever a
 The following list explains how each value is derived and on which value it is based:
 
 - For Regular and Tablet View:
-
   - Left (474px):
     - `$map-overlay-width` (450px) & `$map-overlay-width-adjustment`(12px) (`_map-layout-variables.scss`)
     - standard padding (12px, not globally defined)
@@ -610,6 +611,14 @@ Feature flags can be used to toggle features throughout the application. They wo
 Currently, we are using [dayjs](https://day.js.org/) to handle date objects. In order to have a high degree of abstraction and to be able to easily replace the library (i.e. using native Javascript features like `Intl`),
 all date handlings are done via the `TimeService` interface, which is implemented as e.g. the `DayjsService`. Currently, the actual implementation is injected via the `timeServiceFactory`; and as a convenience, this is also
 added in `test.ts` so it does not have to be provided for each and every test.
+
+### Injection tokens
+
+Starting with Angular 20, using `inject()` is preferred over constructor-based injection. This also simplifies the management of abstract classes, since super calls are no longer necessary, because the injection can be fully defined in the parent (abstract) class.
+
+However, moving injection to the parents had the important consequence that tokens can lead to circular dependencies because all tokens were defined in `app.module.ts`. This happens because a concrete implementation inherits from an abstract representation, which loaded the token from `app.module.ts` - because we're now having an early instantation, this led to a circular dependency, because the token itself triggers an app module load which in turn triggers the service instantiation _again_.
+
+The solution was to move all tokens to a dedicated `app.tokens.ts` file, where they are loaded by both the app module as well as the abstract classes, thus removing the circular dependency.
 
 ## Git conventions
 

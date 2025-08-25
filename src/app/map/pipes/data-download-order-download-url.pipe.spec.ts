@@ -12,10 +12,15 @@ describe('DataDownloadOrderDownloadUrlPipe', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        DataDownloadOrderDownloadUrlPipe,
+        provideMockStore(),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     geoshopApiService = TestBed.inject(GeoshopApiService);
-    pipe = new DataDownloadOrderDownloadUrlPipe(geoshopApiService);
+    pipe = TestBed.inject(DataDownloadOrderDownloadUrlPipe);
   });
 
   it('should call the geoshopApiService and return the URL from this service', () => {

@@ -2,28 +2,31 @@
   class="basemap-selection-list"
   [ngClass]="{'basemap-selection-list--mobile': screenMode === 'mobile', 'basemap-selection-list--desktop': screenMode !== 'mobile'}"
 >
-  <button
-    mat-flat-button
-    *ngFor="let availableBasemap of availableBasemaps"
-    (click)="switchBasemap(availableBasemap.id)"
-    class="basemap-selection-list__item"
-    [ngClass]="{'basemap-selection-list__item--active': availableBasemap.id === activeBasemap?.id}"
-  >
-    <ng-container [ngSwitch]="availableBasemap.type">
-      <img
-        *ngSwitchCase="'wms'"
-        [alt]="availableBasemap.title"
-        [ngSrc]="availableBasemap.id | basemapImageLink"
-        class="basemap-selection-list__item__image"
-        height="48"
-        width="96"
-        [attr.aria-label]="availableBasemap.title"
-      />
-      <span *ngSwitchCase="'blank'" class="basemap-selection-list__item__image basemap-selection-list__item__image--blank"></span>
-    </ng-container>
-
-    <span class="basemap-selection-list__item__title" aria-hidden="true">
-      {{ availableBasemap.title }}
-    </span>
-  </button>
+  @for (availableBasemap of availableBasemaps; track availableBasemap) {
+    <button
+      mat-flat-button
+      (click)="switchBasemap(availableBasemap.id)"
+      class="basemap-selection-list__item"
+      [ngClass]="{'basemap-selection-list__item--active': availableBasemap.id === activeBasemap?.id}"
+    >
+      @switch (availableBasemap.type) {
+        @case ('wms') {
+          <img
+            [alt]="availableBasemap.title"
+            [ngSrc]="availableBasemap.id | basemapImageLink"
+            class="basemap-selection-list__item__image"
+            height="48"
+            width="96"
+            [attr.aria-label]="availableBasemap.title"
+          />
+        }
+        @case ('blank') {
+          <span class="basemap-selection-list__item__image basemap-selection-list__item__image--blank"></span>
+        }
+      }
+      <span class="basemap-selection-list__item__title" aria-hidden="true">
+        {{ availableBasemap.title }}
+      </span>
+    </button>
+  }
 </div>

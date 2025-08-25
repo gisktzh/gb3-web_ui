@@ -1,12 +1,10 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import {Pipe, PipeTransform, inject} from '@angular/core';
 import {ConfigService} from '../services/config.service';
 
-@Pipe({
-  name: 'basemapImageLink',
-  standalone: false,
-})
+@Pipe({name: 'basemapImageLink'})
 export class BasemapImageLinkPipe implements PipeTransform {
-  constructor(private readonly configService: ConfigService) {}
+  private readonly configService = inject(ConfigService);
+
   public transform(identifier: string | undefined): string {
     let imagePath = '';
     if (identifier === undefined) {

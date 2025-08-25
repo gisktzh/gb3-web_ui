@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
@@ -9,6 +9,9 @@ import {FavouriteCouldNotBeLoaded, FavouritesCouldNotBeLoaded} from '../../../sh
 
 @Injectable()
 export class FavouriteListEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly favouritesService = inject(FavouritesService);
+
   public requestFavouriteList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FavouriteListActions.loadFavourites),
@@ -46,9 +49,4 @@ export class FavouriteListEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly favouritesService: FavouritesService,
-  ) {}
 }

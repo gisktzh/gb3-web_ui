@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy, inject} from '@angular/core';
 import {ToolService} from '../../../interfaces/tool.service';
 import {EsriMapViewService} from '../esri-map-view.service';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
@@ -74,19 +74,19 @@ export const HANDLE_GROUP_KEY = 'EsriToolService';
   providedIn: 'root',
 })
 export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackHandler {
+  private readonly esriMapViewService = inject(EsriMapViewService);
+  private readonly store = inject(Store);
+  private readonly esriSymbolizationService = inject(EsriSymbolizationService);
+  private readonly configService = inject(ConfigService);
+  private readonly dialogService = inject(MatDialog);
+  private readonly geoshopMunicipalitiesService = inject(Gb3GeoshopMunicipalitiesService);
+
   private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
   private drawingLayers: DrawingActiveMapItem[] = [];
   private readonly drawingLayers$ = this.store.select(selectDrawingLayers);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private readonly esriMapViewService: EsriMapViewService,
-    private readonly store: Store,
-    private readonly esriSymbolizationService: EsriSymbolizationService,
-    private readonly configService: ConfigService,
-    private readonly dialogService: MatDialog,
-    private readonly geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService,
-  ) {
+  constructor() {
     this.initSubscriptions();
   }
 

@@ -38,7 +38,14 @@ import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive
 import {FeatureFlagDirective} from './directives/feature-flag.directive';
 
 @NgModule({
-  declarations: [
+  imports: [
+    MaterialModule,
+    RouterModule,
+    CommonModule,
+    ResizableModule,
+    ClickOnSpaceBarDirective,
+    NgOptimizedImage,
+    FeatureFlagDirective,
     BasemapImageLinkPipe,
     NavbarComponent,
     LoadingAndProcessBarComponent,
@@ -71,7 +78,6 @@ import {FeatureFlagDirective} from './directives/feature-flag.directive';
     Gb2ExitButtonComponent,
     TypedTourAnchorDirective,
   ],
-  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule, ClickOnSpaceBarDirective, NgOptimizedImage, FeatureFlagDirective],
   exports: [
     MaterialModule,
     ResizableModule,

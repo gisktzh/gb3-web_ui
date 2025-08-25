@@ -8,11 +8,16 @@
     position="end"
     [opened]="mapSideDrawerContent !== 'none'"
     (closedStart)="closeSideDrawer()"
-    [ngSwitch]="mapSideDrawerContent"
     (opened)="mapSideDrawerFullyOpened()"
   >
-    <print-dialog *ngSwitchCase="'print'"></print-dialog>
-    <data-download-dialog *ngSwitchCase="'data-download'"></data-download-dialog>
+    @switch (mapSideDrawerContent) {
+      @case ('print') {
+        <print-dialog></print-dialog>
+      }
+      @case ('data-download') {
+        <data-download-dialog></data-download-dialog>
+      }
+    }
   </mat-drawer>
 
   @if (screenMode !== 'mobile') {
@@ -101,12 +106,11 @@
       </button>
     </div>
     @if (rotation !== 0) {
-      <div
-        *ngIf="rotation !== 0"
-        class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--left"
-      >
-        <map-rotation-button [rotation]="rotation"></map-rotation-button>
-      </div>
+      @if (rotation !== 0) {
+        <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--left">
+          <map-rotation-button [rotation]="rotation"></map-rotation-button>
+        </div>
+      }
     }
     <search-bar
       class="map-container__search-window map-container__search-window--mobile"

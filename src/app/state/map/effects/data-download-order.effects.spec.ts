@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {DataDownloadOrderEffects} from './data-download-order.effects';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
@@ -27,6 +26,7 @@ import {selectProducts} from '../reducers/data-download-product.reducer';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
 import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
 import {catchError} from 'rxjs';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('DataDownloadOrderEffects', () => {
   const polygonSelectionMock: DataDownloadSelection = {

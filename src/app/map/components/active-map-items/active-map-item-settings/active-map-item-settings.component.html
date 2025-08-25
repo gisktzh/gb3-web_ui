@@ -14,33 +14,28 @@
   </slider-wrapper>
 
   <!-- Time slider -->
-  <ng-container
-    *ngIf="
-      activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.timeSliderConfiguration && activeMapItem.settings.timeSliderExtent
-    "
-  >
+  @if (
+    activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.timeSliderConfiguration && activeMapItem.settings.timeSliderExtent
+  ) {
     <mat-divider class="active-map-item-settings__divider"></mat-divider>
     <time-slider
       [initialTimeExtent]="activeMapItem.settings.timeSliderExtent"
       [timeSliderConfiguration]="activeMapItem.settings.timeSliderConfiguration"
       (changeTimeExtentEvent)="onTimeSliderExtentChange($event)"
     ></time-slider>
-  </ng-container>
+  }
 
   <!-- Attribute filter -->
-  <ng-container *ngIf="activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.filterConfigurations">
+  @if (activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.filterConfigurations) {
     <mat-divider class="active-map-item-settings__divider"></mat-divider>
     <div class="active-map-item-settings__attribute-filter">
-      <p
-        *ngIf="numberOfChangedFilters > 0"
-        class="active-map-item-settings__attribute-filter__badge"
-        [matBadge]="numberOfChangedFilters"
-        matBadgePosition="before"
-      ></p>
+      @if (numberOfChangedFilters > 0) {
+        <p class="active-map-item-settings__attribute-filter__badge" [matBadge]="numberOfChangedFilters" matBadgePosition="before"></p>
+      }
       <button class="active-map-item-settings__attribute-filter__button" mat-button (click)="showMapAttributeFilters()">
         <mat-icon>east</mat-icon>
         <strong>Attributfilter</strong>
       </button>
     </div>
-  </ng-container>
+  }
 </div>

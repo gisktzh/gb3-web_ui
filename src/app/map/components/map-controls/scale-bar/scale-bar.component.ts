@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {delay, filter, Subscription, tap} from 'rxjs';
 import {NgClass} from '@angular/common';
@@ -12,12 +12,12 @@ import {ScaleBarConfig} from '../../../../shared/interfaces/scale-bar-config.int
   imports: [NgClass],
 })
 export class ScaleBarComponent implements AfterViewInit, OnDestroy {
+  private readonly store = inject(Store);
+
   protected scaleBarLabel: string | undefined;
   @ViewChild('scaleBar', {static: true}) private scaleBar!: ElementRef;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly scaleBarConfig$ = this.store.select(selectScaleBarConfig);
-
-  constructor(private readonly store: Store) {}
 
   public ngAfterViewInit() {
     this.subscriptions.add(

@@ -1,19 +1,21 @@
 <!-- List of sublayers (only if the map item is not a single layer itself) -->
 <div (cdkDropListDropped)="dropSublayer($event)" cdkDropList class="active-map-item-layers">
-  <ng-container *ngIf="activeMapItem.settings.type === 'gb2Wms'">
-    <ng-container *ngFor="let layer of activeMapItem.settings.layers; trackBy: trackByLayerId">
+  @if (activeMapItem.settings.type === 'gb2Wms') {
+    @for (layer of activeMapItem.settings.layers; track trackByLayerId($index, layer)) {
       <!-- Sublayer (only shown if it is not marked as 'hidden') -->
-      <div *ngIf="!layer.isHidden" cdkDrag class="active-map-item-layers__item" dragCursor>
-        <active-map-item-layer [activeMapItem]="activeMapItem" [layer]="layer">
-          <ng-container activeMapItemLayerDragHandle>
-            <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
-                 More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component
-            -->
-            <div cdkDragHandle class="active-map-item-layers__item__drag-handle"></div>
-          </ng-container>
-        </active-map-item-layer>
-        <div *cdkDragPlaceholder class="active-map-item-layers__item--drag-placeholder"></div>
-      </div>
-    </ng-container>
-  </ng-container>
+      @if (!layer.isHidden) {
+        <div cdkDrag class="active-map-item-layers__item" dragCursor>
+          <active-map-item-layer [activeMapItem]="activeMapItem" [layer]="layer">
+            <ng-container activeMapItemLayerDragHandle>
+              <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
+              More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component
+              -->
+              <div cdkDragHandle class="active-map-item-layers__item__drag-handle"></div>
+            </ng-container>
+          </active-map-item-layer>
+          <div *cdkDragPlaceholder class="active-map-item-layers__item--drag-placeholder"></div>
+        </div>
+      }
+    }
+  }
 </div>

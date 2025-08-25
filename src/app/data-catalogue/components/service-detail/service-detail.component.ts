@@ -1,20 +1,37 @@
-import {Component, ErrorHandler, Inject} from '@angular/core';
+import {Component} from '@angular/core';
 import {ServiceMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
-import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../../types/data-display-element.type';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
-import {Store} from '@ngrx/store';
+import {LoadingAndProcessBarComponent} from '../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {DataCatalogueDetailPageComponent} from '../data-catalogue-detail-page/data-catalogue-detail-page.component';
+import {DataCatalogueDetailPageSectionComponent} from '../data-catalogue-detail-page-section/data-catalogue-detail-page-section.component';
+import {DataDisplaySectionComponent} from '../data-display-section/data-display-section.component';
+import {DataDisplayComponent} from '../data-display/data-display.component';
+import {GenericUnorderedListComponent} from '../../../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
+import {DescriptiveHighlightedLinkComponent} from '../../../shared/components/descriptive-highlighted-link/descriptive-highlighted-link.component';
+import {MatIconButton} from '@angular/material/button';
+import {RouterLink} from '@angular/router';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'service-detail',
   templateUrl: './service-detail.component.html',
   styleUrls: ['./service-detail.component.scss'],
-  standalone: false,
+  imports: [
+    LoadingAndProcessBarComponent,
+    DataCatalogueDetailPageComponent,
+    DataCatalogueDetailPageSectionComponent,
+    DataDisplaySectionComponent,
+    DataDisplayComponent,
+    GenericUnorderedListComponent,
+    DescriptiveHighlightedLinkComponent,
+    MatIconButton,
+    RouterLink,
+    MatIcon,
+  ],
 })
 export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;
@@ -22,17 +39,6 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
   public metadataContactElements: DataDisplayElement[] = [];
   public serviceUrlForCopy?: string | null;
   public linkedDatasets: MetadataLink[] = [];
-
-  constructor(
-    @Inject(ActivatedRoute) route: ActivatedRoute,
-    @Inject(Gb3MetadataService) gb3MetadataService: Gb3MetadataService,
-    @Inject(ConfigService) configService: ConfigService,
-    @Inject(Router) router: Router,
-    @Inject(ErrorHandler) errorHandler: ErrorHandler,
-    @Inject(Store) store: Store,
-  ) {
-    super(route, gb3MetadataService, configService, router, errorHandler, store);
-  }
 
   protected loadMetadata(id: string) {
     return this.gb3MetadataService.loadServiceDetail(id);

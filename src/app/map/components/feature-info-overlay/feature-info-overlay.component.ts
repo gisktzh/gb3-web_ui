@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
@@ -9,14 +9,18 @@ import {selectFeatureInfoQueryLoadingState} from '../../../state/map/selectors/f
 import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature-info-result-display.selector';
 import {selectFeatureInfoPrintState} from '../../../state/map/reducers/overlay-print.reducer';
 import {OverlayPrintActions} from '../../../state/map/actions/overlay-print-actions';
+import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
+import {FeatureInfoComponent} from './feature-info/feature-info.component';
 
 @Component({
   selector: 'feature-info-overlay',
   templateUrl: './feature-info-overlay.component.html',
   styleUrls: ['./feature-info-overlay.component.scss'],
-  standalone: false,
+  imports: [MapOverlayComponent, FeatureInfoComponent],
 })
 export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
 
@@ -30,8 +34,6 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
   private readonly printLoadingState$ = this.store.select(selectFeatureInfoPrintState);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

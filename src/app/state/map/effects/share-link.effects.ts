@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {combineLatestWith, filter, of, switchMap, take, tap} from 'rxjs';
@@ -31,6 +31,10 @@ import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../au
  */
 @Injectable()
 export class ShareLinkEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly shareLinkService = inject(Gb3ShareLinkService);
+  private readonly store = inject(Store);
+
   public loadShareLinkItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.loadItem),
@@ -215,10 +219,4 @@ export class ShareLinkEffects {
       }),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly shareLinkService: Gb3ShareLinkService,
-    private readonly store: Store,
-  ) {}
 }

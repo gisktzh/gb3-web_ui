@@ -1,20 +1,29 @@
-import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {MAP_SERVICE} from '../../../app.module';
 import {selectMapUiState} from '../../../state/map/reducers/map-ui.reducer';
 import {MapUiState} from '../../../state/map/states/map-ui.state';
 import {MapService} from '../../interfaces/map.service';
+import {MAP_SERVICE} from '../../../app.tokens';
+import {BasemapSelectorComponent} from './basemap-selector/basemap-selector.component';
+import {NgClass} from '@angular/common';
+import {ScaleBarComponent} from './scale-bar/scale-bar.component';
+import {CoordinateScaleInputsComponent} from './coordinate-scale-inputs/coordinate-scale-inputs.component';
+import {ZoomControlsComponent} from './zoom-controls/zoom-controls.component';
+import {UiToggleComponent} from './ui-toggle/ui-toggle.component';
 
 @Component({
   selector: 'map-controls',
   templateUrl: './map-controls.component.html',
   styleUrls: ['./map-controls.component.scss'],
-  standalone: false,
+  imports: [BasemapSelectorComponent, NgClass, ScaleBarComponent, CoordinateScaleInputsComponent, ZoomControlsComponent, UiToggleComponent],
 })
 export class MapControlsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+
   @ViewChild('scaleBarContainer', {static: true}) private scaleBarContainerRef!: ElementRef;
 
   public screenMode: ScreenMode = 'regular';
@@ -23,11 +32,6 @@ export class MapControlsComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
-
-  constructor(
-    private readonly store: Store,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

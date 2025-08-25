@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy, inject} from '@angular/core';
 import {selectHighlightedFeature} from '../../state/map/reducers/feature-info.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -8,14 +8,12 @@ import {MapDrawingService} from './map-drawing.service';
 
 @Injectable()
 export class FeatureHighlightingService implements OnDestroy {
+  private readonly store = inject(Store);
+  private readonly mapDrawingService = inject(MapDrawingService);
+
   private readonly highlightedFeature$ = this.store.select(selectHighlightedFeature);
   private readonly mapReadyState$ = this.store.select(selectReady);
   private readonly subscriptions = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly mapDrawingService: MapDrawingService,
-  ) {}
 
   public init() {
     this.initMapReadySubscription();

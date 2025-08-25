@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
@@ -16,14 +16,28 @@ import {selectLoadingState as selectDataCatalogLoadingState} from '../../../../s
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../../state/map/reducers/layer-catalog.reducer';
 import {OverviewSearchResultDisplayItem} from '../../../../shared/interfaces/overview-search-resuilt-display.interface';
 import {SearchResultIdentifierDirective} from '../../../../shared/directives/search-result-identifier.directive';
+import {MatAccordion} from '@angular/material/expansion';
+import {NgClass} from '@angular/common';
+import {SearchResultGroupComponent} from '../search-result-group/search-result-group.component';
+import {SearchResultEntryMapComponent} from '../search-result-entry-map/search-result-entry-map.component';
+import {OverviewSearchResultItemComponent} from '../../../../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 
 @Component({
   selector: 'search-result-groups',
   templateUrl: './search-result-groups.component.html',
   styleUrls: ['./search-result-groups.component.scss'],
-  standalone: false,
+  imports: [
+    MatAccordion,
+    NgClass,
+    SearchResultGroupComponent,
+    SearchResultEntryMapComponent,
+    SearchResultIdentifierDirective,
+    OverviewSearchResultItemComponent,
+  ],
 })
 export class SearchResultGroupsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @ViewChildren(SearchResultIdentifierDirective)
   public readonly overviewSearchResultItemComponents!: QueryList<SearchResultIdentifierDirective>;
 
@@ -46,8 +60,6 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

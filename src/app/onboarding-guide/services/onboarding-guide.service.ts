@@ -1,4 +1,4 @@
-import {Inject, Injectable, InjectionToken} from '@angular/core';
+import {Injectable, InjectionToken, inject} from '@angular/core';
 import {TourService} from 'ngx-ui-tour-md-menu';
 import {tap} from 'rxjs';
 import {LocalStorageService} from '../../shared/services/local-storage.service';
@@ -8,13 +8,13 @@ export const ONBOARDING_STEPS = new InjectionToken<string>('onboardingSteps');
 
 @Injectable()
 export class OnboardingGuideService {
+  private readonly tourService = inject(TourService);
+  private readonly localStorageService = inject(LocalStorageService);
+  private readonly onboardingGuideConfig = inject<OnboardingGuideConfig>(ONBOARDING_STEPS);
+
   private readonly onboardingGuideId: string;
 
-  constructor(
-    private readonly tourService: TourService,
-    private readonly localStorageService: LocalStorageService,
-    @Inject(ONBOARDING_STEPS) private readonly onboardingGuideConfig: OnboardingGuideConfig,
-  ) {
+  constructor() {
     const {id, steps} = this.onboardingGuideConfig;
     this.tourService.initialize(steps, {
       nextBtnTitle: 'Weiter',

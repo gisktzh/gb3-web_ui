@@ -1,8 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {PageSectionComponent} from '../shared/components/page-section/page-section.component';
+import {HeroHeaderComponent} from '../shared/components/hero-header/hero-header.component';
+import {PrivacyContentComponent} from './components/privacy-content/privacy-content.component';
 
 const PRIVACY_SUMMARY =
   'In den Informationen und Richtlinien zum Datenschutz finden Sie die Angaben zur Verarbeitung personenbezogener Daten, den Umfang der Datenverarbeitung, die Verwendung von Cookies und was alles bei der Registrierung gespeichert wird.';
@@ -11,16 +14,16 @@ const PRIVACY_SUMMARY =
   selector: 'privacy-page',
   templateUrl: './privacy-page.component.html',
   styleUrls: ['./privacy-page.component.scss'],
-  standalone: false,
+  imports: [PageSectionComponent, HeroHeaderComponent, PrivacyContentComponent],
 })
 export class PrivacyPageComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public heroText = PRIVACY_SUMMARY;
   public screenMode: ScreenMode = 'regular';
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

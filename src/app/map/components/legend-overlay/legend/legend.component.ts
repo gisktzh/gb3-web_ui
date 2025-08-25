@@ -1,18 +1,22 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {LegendDisplay} from 'src/app/shared/interfaces/legend.interface';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
 import {selectLoadingState} from 'src/app/state/map/reducers/legend.reducer';
 import {selectLegendItemsForDisplay} from 'src/app/state/map/selectors/legend-result-display.selector';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {LegendItemComponent} from '../legend-item/legend-item.component';
 
 @Component({
   selector: 'legend',
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.scss'],
-  standalone: false,
+  imports: [LoadingAndProcessBarComponent, LegendItemComponent],
 })
 export class LegendComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public showInteractiveElements: boolean = true;
 
   public legendItems: LegendDisplay[] = [];
@@ -21,8 +25,6 @@ export class LegendComponent implements OnInit, OnDestroy {
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

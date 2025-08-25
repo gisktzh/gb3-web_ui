@@ -1,9 +1,10 @@
 <!-- small connection line between elements - this is the top element -->
-<span
-  class="active-map-item__connection-line active-map-item__connection-line-top"
-  [ngClass]="{'active-map-item__connection-line--mobile': screenMode === 'mobile'}"
-  *ngIf="!isFirstActiveMapItem && !activeMapItemExpansionPanel.expanded"
-></span>
+@if (!isFirstActiveMapItem && !activeMapItemExpansionPanel.expanded) {
+  <span
+    class="active-map-item__connection-line active-map-item__connection-line-top"
+    [ngClass]="{'active-map-item__connection-line--mobile': screenMode === 'mobile'}"
+  ></span>
+}
 <mat-expansion-panel
   #activeMapItemExpansionPanel
   hideToggle="true"
@@ -51,17 +52,23 @@
       <div
         class="active-map-item__tabs__content"
         [ngClass]="{'active-map-item__tabs__content--inverted': activeMapItemExpansionPanel.expanded}"
-        [ngSwitch]="activeTab"
       >
-        <active-map-item-layers *ngSwitchCase="'layers'" [activeMapItem]="activeMapItem"></active-map-item-layers>
-        <active-map-item-settings *ngSwitchCase="'settings'" [activeMapItem]="activeMapItem"></active-map-item-settings>
+        @switch (activeTab) {
+          @case ('layers') {
+            <active-map-item-layers [activeMapItem]="activeMapItem"></active-map-item-layers>
+          }
+          @case ('settings') {
+            <active-map-item-settings [activeMapItem]="activeMapItem"></active-map-item-settings>
+          }
+        }
       </div>
     </div>
   </ng-template>
 </mat-expansion-panel>
 <!-- small connection line between elements - this is the bottom element -->
-<span
-  class="active-map-item__connection-line active-map-item__connection-line-bottom"
-  *ngIf="!isLastActiveMapItem"
-  [ngClass]="{'active-map-item__connection-line--mobile': screenMode === 'mobile'}"
-></span>
+@if (!isLastActiveMapItem) {
+  <span
+    class="active-map-item__connection-line active-map-item__connection-line-bottom"
+    [ngClass]="{'active-map-item__connection-line--mobile': screenMode === 'mobile'}"
+  ></span>
+}

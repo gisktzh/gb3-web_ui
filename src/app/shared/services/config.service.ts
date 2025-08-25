@@ -1,4 +1,4 @@
-import {Inject, Injectable, DOCUMENT} from '@angular/core';
+import {Injectable, DOCUMENT, inject} from '@angular/core';
 import {defaultBasemap, defaultBasemaps} from '../configs/base-map.config';
 import {dataCatalogueFilterConfig, dataDownloadFilterConfig} from '../configs/filter.config';
 import {mapAnimationConfig} from '../configs/map-animation.config';
@@ -36,6 +36,9 @@ import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enu
   providedIn: 'root',
 })
 export class ConfigService {
+  private readonly document = inject<Document>(DOCUMENT);
+  private readonly store = inject(Store);
+
   public readonly featureFlags: FeatureFlags;
   public readonly basemapConfig = {
     availableBasemaps: defaultBasemaps,
@@ -81,10 +84,7 @@ export class ConfigService {
     defaultOutline: defaultOutline,
   };
 
-  constructor(
-    @Inject(DOCUMENT) private readonly document: Document,
-    private readonly store: Store,
-  ) {
+  constructor() {
     const runtimeConfig = this.findRuntimeConfig();
     if (!runtimeConfig) {
       throw new HostNameResolutionMismatch(); // note: this will actually prevent the app from loading in general

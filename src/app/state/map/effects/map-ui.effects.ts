@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
@@ -38,6 +38,10 @@ const MAP_NOTICES_DIALOG_MAX_WIDTH = 968;
 
 @Injectable()
 export class MapUiEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly store = inject(Store);
+  private readonly dialogService = inject(MatDialog);
+
   public hideUiElementsDependingOnShownSideDrawer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showMapSideDrawerContent),
@@ -318,10 +322,4 @@ export class MapUiEffects {
       map(() => MapUiActions.setAttributeFilterVisibility({isVisible: true})),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly store: Store,
-    private readonly dialogService: MatDialog,
-  ) {}
 }

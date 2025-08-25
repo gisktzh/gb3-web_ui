@@ -1,26 +1,38 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialogRef} from '@angular/material/dialog';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataDownloadFilter, DataDownloadFilterCategory} from '../../../../shared/interfaces/data-download-filter.interface';
 import {selectFilters} from '../../../../state/map/reducers/data-download-product.reducer';
 import {DataDownloadProductActions} from '../../../../state/map/actions/data-download-product.actions';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {CdkAccordion} from '@angular/cdk/accordion';
+import {AccordionItemComponent} from '../../../../shared/components/accordion-item/accordion-item.component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'data-download-filter-dialog',
   templateUrl: './data-download-filter-dialog.component.html',
   styleUrls: ['./data-download-filter-dialog.component.scss'],
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    CdkAccordion,
+    AccordionItemComponent,
+    MatCheckbox,
+    MatDialogActions,
+    MatButton,
+  ],
 })
 export class DataDownloadFilterDialogComponent implements OnInit, OnDestroy {
+  private readonly dialogRef = inject<MatDialogRef<DataDownloadFilterDialogComponent>>(MatDialogRef);
+  private readonly store = inject(Store);
+
   public dataDownloadFilters: DataDownloadFilter[] = [];
   private readonly dataDownloadFilters$: Observable<DataDownloadFilter[]> = this.store.select(selectFilters);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly dialogRef: MatDialogRef<DataDownloadFilterDialogComponent>,
-    private readonly store: Store,
-  ) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

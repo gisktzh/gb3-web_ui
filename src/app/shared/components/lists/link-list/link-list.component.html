@@ -1,4 +1,6 @@
-<div *ngFor="let linksGroup of this.linksGroups" class="link-list">
-  <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">{{ linksGroup.label }}</h3>
-  <link-list-item [links]="linksGroup.links"></link-list-item>
-</div>
+@for (linksGroup of this.linksGroups; track linksGroup) {
+  <div class="link-list">
+    <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">{{ linksGroup.label }}</h3>
+    <link-list-item [links]="linksGroup.links"></link-list-item>
+  </div>
+}

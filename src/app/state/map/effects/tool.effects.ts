@@ -1,13 +1,16 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap} from 'rxjs';
 import {ToolActions} from '../actions/tool.actions';
 import {ToolService} from '../../../map/interfaces/tool.service';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class ToolEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+
   private readonly toolService: ToolService;
 
   public initializeTool$ = createEffect(
@@ -59,10 +62,7 @@ export class ToolEffects {
     {dispatch: false},
   );
 
-  constructor(
-    private readonly actions$: Actions,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-  ) {
+  constructor() {
     this.toolService = this.mapService.getToolService();
   }
 }

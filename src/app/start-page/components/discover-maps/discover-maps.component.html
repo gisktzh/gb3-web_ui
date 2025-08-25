@@ -18,4 +18,6 @@
     </link-grid-list-item>
   }
 </link-grid-list>
-<p *ngIf="discoverMapsItems.length === 0 && loadingState === 'loaded'" class="mat-caption">Aktuell gibt es keine Empfehlungen.</p>
+@if (discoverMapsItems.length === 0 && loadingState === 'loaded') {
+  <p class="mat-caption">Aktuell gibt es keine Empfehlungen.</p>
+}

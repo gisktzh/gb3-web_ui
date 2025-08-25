@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
@@ -7,14 +7,18 @@ import {Gb3ImportService} from '../../../shared/services/apis/gb3/gb3-import.ser
 import {FileImportError, FileValidationError} from '../../../shared/errors/file-upload.errors';
 import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
 import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingActions} from '../actions/drawing.actions';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class ImportEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private readonly importService = inject(Gb3ImportService);
+
   public requestImportDrawing$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ImportActions.requestDrawingsImport),
@@ -89,10 +93,4 @@ export class ImportEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-    private readonly importService: Gb3ImportService,
-  ) {}
 }

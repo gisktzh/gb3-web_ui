@@ -23,8 +23,8 @@ import {BasemapConfigService} from '../../../../map/services/basemap-config.serv
 import {Basemap} from '../../../interfaces/basemap.interface';
 import {PrintData} from '../../../../map/interfaces/print-data.interface';
 import {TimeService} from '../../../interfaces/time-service.interface';
-import {TIME_SERVICE} from '../../../../app.module';
 import {TimeSliderConfiguration} from '../../../interfaces/topic.interface';
+import {TIME_SERVICE} from '../../../../app.tokens';
 
 describe('Gb3PrintService', () => {
   let service: Gb3PrintService;

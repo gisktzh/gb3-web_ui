@@ -1,4 +1,4 @@
-import {Injectable, isDevMode} from '@angular/core';
+import {Injectable, isDevMode, inject} from '@angular/core';
 import {OAuthErrorEvent, OAuthEvent, OAuthService} from 'angular-oauth2-oidc';
 import {distinctUntilChanged, filter, interval, Subscription, tap} from 'rxjs';
 import {environment} from '../../environments/environment';
@@ -13,14 +13,14 @@ import {selectIsAuthenticated} from '../state/auth/reducers/auth-status.reducer'
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly oauthService = inject(OAuthService);
+  private readonly store = inject(Store);
+  private readonly authNotificationService = inject(AuthNotificationService);
+  private readonly router = inject(Router);
+
   private readonly isAuthenticatedCheckInterval$: Subscription = new Subscription();
 
-  constructor(
-    private readonly oauthService: OAuthService,
-    private readonly store: Store,
-    private readonly authNotificationService: AuthNotificationService,
-    private readonly router: Router,
-  ) {
+  constructor() {
     if (!this.getAccessToken()) {
       // no token => the current user is definitely not logged in
       this.store.dispatch(AuthStatusActions.setInitialDataLoaded());

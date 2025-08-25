@@ -1,21 +1,18 @@
 <api-dialog-wrapper title="Kartenhinweise" (closeEvent)="close()">
   <ng-container content>
     <mat-divider></mat-divider>
-    <ng-container *ngFor="let activeMapItemWithNotice of activeMapItemsWithNotices">
+    @for (activeMapItemWithNotice of activeMapItemsWithNotices; track activeMapItemWithNotice) {
       <div class="map-notice">
-        <img
-          *ngIf="!activeMapItemWithNotice.isSingleLayer && activeMapItemWithNotice.mapImageUrl"
-          class="map-notice__image"
-          [alt]="activeMapItemWithNotice.title"
-          [src]="activeMapItemWithNotice.mapImageUrl"
-        />
+        @if (!activeMapItemWithNotice.isSingleLayer && activeMapItemWithNotice.mapImageUrl) {
+          <img class="map-notice__image" [alt]="activeMapItemWithNotice.title" [src]="activeMapItemWithNotice.mapImageUrl" />
+        }
         <section class="map-notice__text-section">
           <p class="map-notice__text-section__title map-notice__text-section__text">{{ activeMapItemWithNotice.title }}</p>
           <p class="mat-body map-notice__text-section__text">{{ activeMapItemWithNotice.settings.notice }}</p>
         </section>
       </div>
       <mat-divider></mat-divider>
-    </ng-container>
+    }
   </ng-container>
   <ng-container actions>
     <button (click)="close()" mat-button>Schliessen</button>

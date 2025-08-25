@@ -2,8 +2,8 @@ import {TestBed} from '@angular/core/testing';
 import {TimeSliderService} from './time-slider.service';
 import {MapLayer, TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
-import {TIME_SERVICE} from '../../app.module';
 import {TimeService} from '../../shared/interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../app.tokens';
 
 describe('TimeSliderService', () => {
   let service: TimeSliderService;

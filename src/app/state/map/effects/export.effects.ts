@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
@@ -11,6 +11,10 @@ import {DrawingCouldNotBeExported} from '../../../shared/errors/export.errors';
 
 @Injectable()
 export class ExportEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly exportService = inject(Gb3ExportService);
+  private readonly store = inject(Store);
+
   public requestExportDrawings$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ExportActions.requestDrawingsExport),
@@ -42,10 +46,4 @@ export class ExportEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly exportService: Gb3ExportService,
-    private readonly store: Store,
-  ) {}
 }

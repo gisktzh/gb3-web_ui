@@ -15,7 +15,6 @@ import {selectActiveMapItemConfigurations} from '../../map/selectors/active-map-
 import {selectMaps} from '../../map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../map/selectors/favourite-base-config.selector';
 import {selectUserDrawingsVectorLayers} from '../../map/selectors/user-drawings-vector-layers.selector';
-import {MAP_SERVICE, TIME_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 import {Gb3ShareLinkService} from '../../../shared/services/apis/gb3/gb3-share-link.service';
@@ -30,6 +29,7 @@ import {selectDrawings} from '../../map/reducers/drawing.reducer';
 import {ToolService} from '../../../map/interfaces/tool.service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
+import {MAP_SERVICE, TIME_SERVICE} from '../../../app.tokens';
 
 const mockOAuthService = jasmine.createSpyObj<AuthService>({
   logout: void 0,

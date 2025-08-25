@@ -2,8 +2,8 @@ import {TestBed} from '@angular/core/testing';
 
 import {FeatureHighlightingService} from './feature-highlighting.service';
 import {provideMockStore} from '@ngrx/store/testing';
-import {MAP_SERVICE} from '../../app.module';
 import {MapServiceStub} from '../../testing/map-testing/map.service.stub';
+import {MAP_SERVICE} from '../../app.tokens';
 
 describe('FeatureHighlightingService', () => {
   let service: FeatureHighlightingService;

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {Subscription, tap} from 'rxjs';
@@ -19,14 +19,33 @@ import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 import {selectFilteredProducts} from '../../../../state/map/selectors/filtered-products.selector';
 import {DataDownloadEmailDialogComponent} from '../data-download-email-dialog/data-download-email-dialog.component';
 import {selectActiveDataDownloadFiltersPerCategory} from '../../../../state/map/selectors/active-data-download-filters-per-category.selector';
+import {MatIconButton, MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {SearchInputComponent} from '../../../../shared/components/search/search-input.component';
+import {ExpandableListItemComponent} from '../../../../shared/components/expandable-list-item/expandable-list-item.component';
+import {ProductComponent} from '../product/product.component';
+import {MatDivider} from '@angular/material/divider';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
 
 @Component({
   selector: 'data-download-dialog',
   templateUrl: './data-download-dialog.component.html',
   styleUrls: ['./data-download-dialog.component.scss'],
-  standalone: false,
+  imports: [
+    MatIconButton,
+    MatIcon,
+    SearchInputComponent,
+    ExpandableListItemComponent,
+    ProductComponent,
+    MatDivider,
+    LoadingAndProcessBarComponent,
+    MatButton,
+  ],
 })
 export class DataDownloadDialogComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialogService = inject(MatDialog);
+
   public order?: Order;
   public savingState: LoadingState;
   public relevantProducts: Product[] = [];
@@ -43,11 +62,6 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
   private readonly productsLoadingState$ = this.store.select(selectProductsLoadingState);
   private readonly activeDataDownloadFiltersPerCategory$ = this.store.select(selectActiveDataDownloadFiltersPerCategory);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialogService: MatDialog,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

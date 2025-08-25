@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -11,6 +10,7 @@ import {
   Renderer2,
   ViewChild,
   ViewChildren,
+  inject,
 } from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
@@ -21,9 +21,13 @@ import {Subscription, tap} from 'rxjs';
 import {MatRadioButton} from '@angular/material/radio';
 import {TableColumnIdentifierDirective} from './table-column-identifier.directive';
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
-import {MAP_SERVICE} from '../../../../app.module';
 import {MapService} from '../../../interfaces/map.service';
 import {StyleExpression} from '../../../../shared/types/style-expression.type';
+import {MAP_SERVICE} from '../../../../app.tokens';
+import {NgStyle, NgOptimizedImage, KeyValuePipe} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
+import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 
 type CellType = 'text' | 'url' | 'image';
 
@@ -95,9 +99,24 @@ const MIN_TABLE_HEADER_WIDTH = 80;
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
-  standalone: false,
+  imports: [
+    NgStyle,
+    TableColumnIdentifierDirective,
+    MatRadioButton,
+    MatTooltip,
+    ShowTooltipIfTruncatedDirective,
+    NgOptimizedImage,
+    ResizeHandlerComponent,
+    KeyValuePipe,
+  ],
 })
 export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterViewInit {
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+  private readonly renderer = inject(Renderer2);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+
   @Input() public layer!: FeatureInfoResultLayer;
   @Input() public topicId!: string;
   public readonly staticFilesBaseUrl: string;
@@ -119,13 +138,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   @ViewChildren(TableColumnIdentifierDirective) private readonly tableColumns!: QueryList<TableColumnIdentifierDirective>;
   @ViewChild('container') private readonly container!: ElementRef;
 
-  constructor(
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-    private readonly renderer: Renderer2,
-    private readonly changeDetectorRef: ChangeDetectorRef,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-  ) {
+  constructor() {
     this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
 

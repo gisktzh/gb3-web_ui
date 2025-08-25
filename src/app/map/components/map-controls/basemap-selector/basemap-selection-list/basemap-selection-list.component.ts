@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -7,14 +7,20 @@ import {Basemap} from '../../../../../shared/interfaces/basemap.interface';
 import {MapConfigActions} from '../../../../../state/map/actions/map-config.actions';
 import {selectActiveBasemapId} from '../../../../../state/map/reducers/map-config.reducer';
 import {BasemapConfigService} from '../../../../services/basemap-config.service';
+import {NgClass, NgOptimizedImage} from '@angular/common';
+import {MatButton} from '@angular/material/button';
+import {BasemapImageLinkPipe} from '../../../../../shared/pipes/background-map-image-link.pipe';
 
 @Component({
   selector: 'basemap-selection-list',
   templateUrl: './basemap-selection-list.component.html',
   styleUrls: ['./basemap-selection-list.component.scss'],
-  standalone: false,
+  imports: [NgClass, MatButton, NgOptimizedImage, BasemapImageLinkPipe],
 })
 export class BasemapSelectionListComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly basemapConfigService = inject(BasemapConfigService);
+
   @Output() public readonly basemapChangedEvent = new EventEmitter();
 
   public activeBasemap?: Basemap;
@@ -25,10 +31,7 @@ export class BasemapSelectionListComponent implements OnInit, OnDestroy {
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly screenMode$ = this.store.select(selectScreenMode);
 
-  constructor(
-    private readonly store: Store,
-    private readonly basemapConfigService: BasemapConfigService,
-  ) {
+  constructor() {
     this.availableBasemaps = this.basemapConfigService.availableBasemaps;
   }
 

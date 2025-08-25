@@ -3,8 +3,12 @@
   <h1 class="ktzh-h1-giant" [ngClass]="{'ktzh-h1-giant--mobile': screenMode === 'mobile'}">
     {{ heroTitle }}
   </h1>
-  <p *ngIf="screenMode !== 'mobile'" class="hero-header__intro-paragraph">
-    {{ heroText }}
-  </p>
-  <p *ngIf="heroSubText" class="hero-header__intro-paragraph hero-header__intro-paragraph--subtext">{{ heroSubText }}</p>
+  @if (screenMode !== 'mobile') {
+    <p class="hero-header__intro-paragraph">
+      {{ heroText }}
+    </p>
+  }
+  @if (heroSubText) {
+    <p class="hero-header__intro-paragraph hero-header__intro-paragraph--subtext">{{ heroSubText }}</p>
+  }
 </div>

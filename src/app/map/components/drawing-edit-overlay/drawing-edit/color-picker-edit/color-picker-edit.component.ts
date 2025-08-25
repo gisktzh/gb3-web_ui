@@ -1,10 +1,11 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'color-picker-edit',
   templateUrl: './color-picker-edit.component.html',
   styleUrl: './color-picker-edit.component.scss',
-  standalone: false,
+  imports: [FormsModule],
 })
 export class ColorPickerEditComponent {
   @Input() public fillColor: string = '';

@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {SearchResultIdentifierDirective} from '../../../directives/search-result-identifier.directive';
 import {selectTerm} from '../../../../state/app/reducers/search.reducer';
-import {Subscription, tap} from 'rxjs';
+import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {SearchBarComponent} from '../search-bar/search-bar.component';
 
@@ -10,20 +10,19 @@ import {SearchBarComponent} from '../search-bar/search-bar.component';
   imports: [],
   template: '',
 })
-export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+export abstract class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+  protected abstract readonly store: Store;
+  protected abstract readonly cdr: ChangeDetectorRef;
+
   public allSearchResults: SearchResultIdentifierDirective[] = [];
   @ViewChild(SearchBarComponent) public readonly searchComponent!: SearchBarComponent;
   private term: string = '';
   private selectedSearchResultIndex: number = -1;
-  protected readonly term$ = this.store.select(selectTerm);
+  protected term$!: Observable<string>;
   protected readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    protected readonly store: Store,
-    protected readonly cdr: ChangeDetectorRef,
-  ) {}
-
   public ngOnInit() {
+    this.term$ = this.store.select(selectTerm);
     this.subscriptions.add(
       this.term$
         .pipe(

@@ -1,16 +1,17 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {MapLayer, TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {InvalidTimeSliderConfiguration} from '../../shared/errors/map.errors';
-import {TIME_SERVICE} from '../../app.module';
 import {TimeService} from '../../shared/interfaces/time-service.interface';
 import {DateUnit} from '../../shared/types/date-unit.type';
+import {TIME_SERVICE} from '../../app.tokens';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimeSliderService {
-  constructor(@Inject(TIME_SERVICE) private readonly timeService: TimeService) {}
+  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+
   /**
    * Creates an initial time extent based on the given time slider configuration.
    */

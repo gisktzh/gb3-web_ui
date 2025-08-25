@@ -1,18 +1,28 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {Basemap} from '../../../../shared/interfaces/basemap.interface';
 import {DocumentService} from '../../../../shared/services/document.service';
 import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
+import {TypedTourAnchorDirective} from '../../../../shared/directives/typed-tour-anchor.directive';
+import {MatButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {NgStyle} from '@angular/common';
+import {BasemapSelectionListComponent} from './basemap-selection-list/basemap-selection-list.component';
+import {BasemapImageLinkPipe} from '../../../../shared/pipes/background-map-image-link.pipe';
 
 @Component({
   selector: 'basemap-selector',
   templateUrl: './basemap-selector.component.html',
   styleUrls: ['./basemap-selector.component.scss'],
-  standalone: false,
+  imports: [TypedTourAnchorDirective, MatButton, MatTooltip, NgStyle, BasemapSelectionListComponent, BasemapImageLinkPipe],
 })
 export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewInit {
+  private readonly store = inject(Store);
+  private readonly basemapConfigService = inject(BasemapConfigService);
+  private readonly documentService = inject(DocumentService);
+
   @ViewChild('basemapSelector', {read: ElementRef, static: false}) private basemapSelectorRef!: ElementRef;
   @ViewChild('basemapSelectorButton', {read: ElementRef}) private basemapSelectorButtonRef!: ElementRef;
 
@@ -22,11 +32,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewIni
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
 
-  constructor(
-    private readonly store: Store,
-    private readonly basemapConfigService: BasemapConfigService,
-    private readonly documentService: DocumentService,
-  ) {
+  constructor() {
     this.availableBasemaps = this.basemapConfigService.availableBasemaps;
   }
 

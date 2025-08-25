@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {filter, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectSelectedDrawing} from '../../../../state/map/reducers/drawing.reducer';
@@ -7,21 +7,25 @@ import {
   Gb3StyleRepresentation,
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
+import {PointEditComponent} from './point-edit/point-edit.component';
+import {LineEditComponent} from './line-edit/line-edit.component';
+import {PolygonEditComponent} from './polygon-edit/polygon-edit.component';
+import {TextEditComponent} from './text-edit/text-edit.component';
 
 @Component({
   selector: 'drawing-edit',
   templateUrl: './drawing-edit.component.html',
   styleUrl: './drawing-edit.component.scss',
-  standalone: false,
+  imports: [PointEditComponent, LineEditComponent, PolygonEditComponent, TextEditComponent],
 })
 export class DrawingEditComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public selectedFeature?: Gb3StyledInternalDrawingRepresentation;
   public style?: Gb3StyleRepresentation;
 
   private readonly selectedFeature$ = this.store.select(selectSelectedDrawing);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

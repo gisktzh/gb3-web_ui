@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {catchError, iif, map, of, switchMap} from 'rxjs';
@@ -17,6 +17,10 @@ import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 @Injectable()
 export class LayerCatalogEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly topicsService = inject(Gb3TopicsService);
+  private readonly store = inject(Store);
+
   public requestLayerCatalog$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(LayerCatalogActions.loadLayerCatalog),
@@ -73,10 +77,4 @@ export class LayerCatalogEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly topicsService: Gb3TopicsService,
-    private readonly store: Store,
-  ) {}
 }

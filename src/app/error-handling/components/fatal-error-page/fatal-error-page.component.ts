@@ -1,19 +1,21 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'fatal-error-page',
   templateUrl: './fatal-error-page.component.html',
   styleUrls: ['./fatal-error-page.component.scss'],
-  standalone: false,
+  imports: [MatIcon, MatButton],
 })
 export class FatalErrorPageComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+
   public errorMessage: string | null = null;
 
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.subscriptions.add(

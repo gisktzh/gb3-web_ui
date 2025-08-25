@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {catchError, map} from 'rxjs';
@@ -16,6 +16,11 @@ import {
 
 @Injectable()
 export class DataDownloadRegionEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly store = inject(Store);
+  private readonly geoshopBoundingBoxService = inject(Gb3GeoshopBoundingBoxService);
+  private readonly geoshopMunicipalitiesService = inject(Gb3GeoshopMunicipalitiesService);
+
   public loadFederation$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataDownloadRegionActions.loadFederation),
@@ -99,11 +104,4 @@ export class DataDownloadRegionEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly store: Store,
-    private readonly geoshopBoundingBoxService: Gb3GeoshopBoundingBoxService,
-    private readonly geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService,
-  ) {}
 }

@@ -7,7 +7,6 @@ import {TestBed} from '@angular/core/testing';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {Gb3VectorLayer} from '../../../shared/interfaces/gb3-vector-layer.interface';
 import {ImportActions} from '../actions/import.actions';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {catchError} from 'rxjs';
 import {FileImportError, FileValidationError} from '../../../shared/errors/file-upload.errors';
@@ -20,6 +19,7 @@ import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolizat
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('ImportEffects', () => {
   let actions$: Observable<Action>;

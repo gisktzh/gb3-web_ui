@@ -1,5 +1,5 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Component, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
+import {FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
 import {BehaviorSubject, combineLatestWith, debounceTime, distinctUntilChanged, filter, Subscription, tap, withLatestFrom} from 'rxjs';
@@ -19,11 +19,20 @@ import {Gb3PrintService} from '../../../../shared/services/apis/gb3/gb3-print.se
 import {PrintData} from '../../../interfaces/print-data.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../../../../shared/interfaces/print-rules.interface';
 import {printConfig} from '../../../../shared/configs/print.config';
-import {MatStepper} from '@angular/material/stepper';
+import {MatStepper, MatStep, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';
 import {FormValueConversionUtils} from '../../../utils/form-value-conversion.utils';
 import {AvailablePrintSettingsUtils} from '../../../utils/available-print-settings.utils';
 import {selectIsMapSideDrawerOpen} from '../../../../state/map/reducers/map-ui.reducer';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
+import {MatIconButton, MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatFormField, MatLabel, MatInput, MatHint, MatError, MatPrefix} from '@angular/material/input';
+import {MatRadioGroup, MatRadioButton} from '@angular/material/radio';
+import {MatSelect} from '@angular/material/select';
+import {MatOption} from '@angular/material/autocomplete';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {PrintDescriptionPipe} from './print-description.pipe';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -42,9 +51,36 @@ interface PrintForm {
   selector: 'print-dialog',
   templateUrl: './print-dialog.component.html',
   styleUrls: ['./print-dialog.component.scss'],
-  standalone: false,
+  imports: [
+    MatIconButton,
+    MatIcon,
+    MatStepper,
+    MatStep,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatButton,
+    MatStepperNext,
+    MatRadioGroup,
+    MatRadioButton,
+    MatStepperPrevious,
+    MatSelect,
+    MatOption,
+    MatHint,
+    MatError,
+    MatPrefix,
+    MatCheckbox,
+    LoadingAndProcessBarComponent,
+    PrintDescriptionPipe,
+  ],
 })
 export class PrintDialogComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+  private readonly printService = inject(Gb3PrintService);
+
   @ViewChild('stepper') private readonly stepper!: MatStepper;
 
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
@@ -76,12 +112,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private drawings: Gb3StyledInternalDrawingRepresentation[] = [];
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-    private readonly printService: Gb3PrintService,
-  ) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

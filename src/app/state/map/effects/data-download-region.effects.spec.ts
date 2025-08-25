@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {
   CantonCouldNotBeLoaded,
@@ -20,6 +19,7 @@ import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geome
 import {selectCanton, selectFederation, selectMunicipalities} from '../reducers/data-download-region.reducer';
 import {catchError} from 'rxjs';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('DataDownloadRegionEffects', () => {
   const errorMock = new Error('oh no! anyway...');

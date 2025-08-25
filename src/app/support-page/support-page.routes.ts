@@ -1,12 +1,11 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {Routes} from '@angular/router';
 import {SupportPageComponent} from './support-page.component';
 import {FaqComponent} from './components/faq/faq.component';
 import {UsefulInformationComponent} from './components/useful-information/useful-information.component';
 import {ContactComponent} from './components/contact/contact.component';
 import {SupportPage} from '../shared/enums/support-page.enum';
 
-const routes: Routes = [
+export const SUPPORT_PAGE_ROUTES: Routes = [
   {
     path: '',
     component: SupportPageComponent,
@@ -31,10 +30,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  declarations: [],
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class SupportPageRoutingModule {}

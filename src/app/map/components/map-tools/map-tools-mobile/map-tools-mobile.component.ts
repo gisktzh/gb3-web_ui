@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {GeolocationActions} from 'src/app/state/map/actions/geolocation.actions';
@@ -6,22 +6,27 @@ import {selectQueryLegends} from 'src/app/state/map/selectors/query-legends.sele
 import {GeolocationState} from 'src/app/state/map/states/geolocation.state';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {initialState as initialGeolocationState, selectGeolocationState} from '../../../../state/map/reducers/geolocation.reducer';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
 
 @Component({
   selector: 'map-tools-mobile',
   templateUrl: './map-tools-mobile.component.html',
   styleUrls: ['./map-tools-mobile.component.scss'],
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, MatIcon, MatDivider, LoadingAndProcessBarComponent],
 })
 export class MapToolsMobileComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public numberOfQueryLegends: number = 0;
   public geolocationState: GeolocationState = initialGeolocationState;
 
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly geolocationState$ = this.store.select(selectGeolocationState);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

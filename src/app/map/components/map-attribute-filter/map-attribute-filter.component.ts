@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -17,14 +17,14 @@ import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-at
   imports: [SharedModule, CommonModule],
 })
 export class MapAttributeFilterComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public mapAttributeFiltersItem: Gb2WmsActiveMapItem | undefined;
   public screenMode: ScreenMode = 'regular';
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly mapAttributeFiltersItem$ = this.store.select(selectMapAttributeFiltersItem);
   private readonly screenMode$ = this.store.select(selectScreenMode);
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();
