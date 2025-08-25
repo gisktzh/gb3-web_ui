@@ -18,6 +18,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 We strive to use the most recent LTS version. Whenever an update is due, make sure you adjust the following:
 
 - `Dockerfile`
+- `./dev/Dockerfile.dev`
 - `.github/workflows/node*.yml` (**Warning!** There are cases where the pipeline does not yet have the
   newest node version; in that case, leave it as before and ignore the pipeline warnings)
 - `.nvmrc`
@@ -494,7 +495,6 @@ These numbers are derived from the UI-Elements and need to be updated whenever a
 The following list explains how each value is derived and on which value it is based:
 
 - For Regular and Tablet View:
-
   - Left (474px):
     - `$map-overlay-width` (450px) & `$map-overlay-width-adjustment`(12px) (`_map-layout-variables.scss`)
     - standard padding (12px, not globally defined)
