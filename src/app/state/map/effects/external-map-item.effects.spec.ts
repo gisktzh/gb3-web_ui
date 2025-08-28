@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {MAP_LOADER_SERVICE} from '../../../app.module';
 import {createExternalKmlMapItemMock, createExternalWmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {ExternalMapItemActions} from '../actions/external-map-item.actions';
 import {MapServiceType} from '../../../map/types/map-service.type';
@@ -17,6 +16,7 @@ import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/ext
 import {ExternalServiceCouldNotBeLoaded} from '../../../shared/errors/map-import.errors';
 import {catchError} from 'rxjs';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {MAP_LOADER_SERVICE} from '../../../app.tokens';
 
 describe('ExternalMapItemEffects', () => {
   let actions$: Observable<Action>;

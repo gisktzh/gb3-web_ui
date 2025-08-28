@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -20,13 +20,13 @@ import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
   providedIn: 'root',
 })
 export class EsriSymbolizationService {
+  private readonly configService = inject(ConfigService);
+  private readonly store = inject(Store);
+
   private layerSymbolizations: LayerSymbolizations = this.configService.layerSymbolizations;
   private drawingStyleSettings?: DrawingStyleState;
 
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly store: Store,
-  ) {
+  constructor() {
     this.store
       .select(selectDrawingStyleState)
       .pipe(tap((drawingStyleState) => (this.drawingStyleSettings = drawingStyleState)))

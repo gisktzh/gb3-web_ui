@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {filter, map, Subscription, tap} from 'rxjs';
 import {isActiveMapItemOfType} from '../../../../shared/type-guards/active-map-item-type.type-guard';
@@ -9,14 +9,24 @@ import {TimeExtent} from '../../../interfaces/time-extent.interface';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../models/implementations/gb2-wms.model';
 import {selectItems} from '../../../../state/map/selectors/active-map-items.selector';
+import {SliderWrapperComponent} from '../../../../shared/components/slider-wrapper/slider-wrapper.component';
+import {MatSlider, MatSliderThumb} from '@angular/material/slider';
+import {FormsModule} from '@angular/forms';
+import {MatDivider} from '@angular/material/divider';
+import {TimeSliderComponent} from '../../time-slider/time-slider.component';
+import {MatBadge} from '@angular/material/badge';
+import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'active-map-item-settings',
   templateUrl: './active-map-item-settings.component.html',
   styleUrls: ['./active-map-item-settings.component.scss'],
-  standalone: false,
+  imports: [SliderWrapperComponent, MatSlider, MatSliderThumb, FormsModule, MatDivider, TimeSliderComponent, MatBadge, MatButton, MatIcon],
 })
 export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public activeMapItem!: ActiveMapItem;
 
   public formattedCurrentOpacity: string = '';
@@ -25,8 +35,6 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeMapItems$ = this.store.select(selectItems);
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.currentOpacity = this.activeMapItem.opacity;

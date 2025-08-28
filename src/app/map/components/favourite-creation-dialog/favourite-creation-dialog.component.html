@@ -3,9 +3,9 @@
     <mat-form-field appearance="fill" class="favourite-dialog__form">
       <mat-label>Name des Favoriten</mat-label>
       <input [formControl]="nameFormControl" id="name" matInput />
-      <mat-error *ngIf="nameFormControl.invalid && (nameFormControl.dirty || nameFormControl.touched)">
-        Geben Sie einen gültigen, nicht leeren Namen ein.
-      </mat-error>
+      @if (nameFormControl.invalid && (nameFormControl.dirty || nameFormControl.touched)) {
+        <mat-error> Geben Sie einen gültigen, nicht leeren Namen ein. </mat-error>
+      }
     </mat-form-field>
   </ng-container>
   <ng-container actions>

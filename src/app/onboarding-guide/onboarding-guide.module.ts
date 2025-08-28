@@ -6,8 +6,7 @@ import {OnboardingGuideComponent} from './components/onboarding-guide/onboarding
 import {MaterialModule} from '../shared/external/material.module';
 
 @NgModule({
-  declarations: [CenterAnchorComponent, OnboardingGuideComponent],
-  imports: [CommonModule, TourMatMenuModule, MaterialModule],
+  imports: [CommonModule, TourMatMenuModule, MaterialModule, CenterAnchorComponent, OnboardingGuideComponent],
   exports: [TourMatMenuModule, CenterAnchorComponent, OnboardingGuideComponent],
 })
 export class OnboardingGuideModule {}

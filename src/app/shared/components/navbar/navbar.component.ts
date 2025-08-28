@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions';
@@ -9,14 +9,38 @@ import {ScreenMode} from '../../types/screen-size.type';
 import {NavbarMobileDialogComponent} from '../navbar-mobile/navbar-mobile-dialog/navbar-mobile-dialog.component';
 import {PanelClass} from '../../enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
+import {MatToolbar} from '@angular/material/toolbar';
+import {NgOptimizedImage, NgStyle} from '@angular/common';
+import {MatButton} from '@angular/material/button';
+import {RouterLinkActive, RouterLink} from '@angular/router';
+import {MatIcon} from '@angular/material/icon';
+import {FeatureFlagDirective} from '../../directives/feature-flag.directive';
+import {MatDivider} from '@angular/material/divider';
+import {MatMenuTrigger, MatMenu, MatMenuItem} from '@angular/material/menu';
 
 @Component({
   selector: 'navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
-  standalone: false,
+  imports: [
+    MatToolbar,
+    NgOptimizedImage,
+    NgStyle,
+    MatButton,
+    RouterLinkActive,
+    RouterLink,
+    MatIcon,
+    FeatureFlagDirective,
+    MatDivider,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem,
+  ],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialog = inject(MatDialog);
+
   @Input() public isSimplifiedPage: boolean = false;
 
   public isAuthenticated: boolean = false;
@@ -31,11 +55,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialog: MatDialog,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

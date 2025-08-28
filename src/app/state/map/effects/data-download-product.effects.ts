@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {catchError, map} from 'rxjs';
@@ -15,6 +15,10 @@ import {MapUiActions} from '../actions/map-ui.actions';
 
 @Injectable()
 export class DataDownloadProductEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly store = inject(Store);
+  private readonly geoshopProductsService = inject(Gb3GeoshopProductsService);
+
   public loadAllProducts$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataDownloadProductActions.loadProductsAndRelevantProducts),
@@ -109,10 +113,4 @@ export class DataDownloadProductEffects {
       }),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly store: Store,
-    private readonly geoshopProductsService: Gb3GeoshopProductsService,
-  ) {}
 }

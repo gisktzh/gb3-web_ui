@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {UrlActions} from '../actions/url.actions';
@@ -23,6 +23,14 @@ import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 
 @Injectable()
 export class UrlEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly router = inject(Router);
+  private readonly configService = inject(ConfigService);
+  private readonly store = inject(Store);
+  private readonly route = inject(ActivatedRoute);
+  private readonly basemapConfigService = inject(BasemapConfigService);
+  private readonly initalMapExtentService = inject(InitialMapExtentService);
+
   public extractMainPageFromUrl$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(routerNavigatedAction, routerCancelAction),
@@ -162,14 +170,4 @@ export class UrlEffects {
       }),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly router: Router,
-    private readonly configService: ConfigService,
-    private readonly store: Store,
-    private readonly route: ActivatedRoute,
-    private readonly basemapConfigService: BasemapConfigService,
-    private readonly initalMapExtentService: InitialMapExtentService,
-  ) {}
 }

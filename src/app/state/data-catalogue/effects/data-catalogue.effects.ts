@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {catchError, filter, map, of, switchMap, tap} from 'rxjs';
@@ -12,6 +12,11 @@ import {ConfigService} from '../../../shared/services/config.service';
 
 @Injectable()
 export class DataCatalogueEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly gb3MetadataService = inject(Gb3MetadataService);
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+
   public requestDataCatalogueItems$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataCatalogueActions.loadCatalogue),
@@ -78,11 +83,4 @@ export class DataCatalogueEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly gb3MetadataService: Gb3MetadataService,
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-  ) {}
 }

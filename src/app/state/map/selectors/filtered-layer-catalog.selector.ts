@@ -10,6 +10,12 @@ export const selectFilteredLayerCatalog = createSelector(selectFilterString, sel
 
   return produce(layerCatalog, (draft) => {
     draft.forEach((item) => {
+      // If the filter term is included in the category title, we want all maps of that category.
+      // We, therefore, skip filtering out non-matching maps entirely, hence, early return.
+      if (item.title.toLowerCase().includes(lowerCasedFilterString)) {
+        return;
+      }
+
       item.maps.forEach((map) => {
         map.layers = map.layers.filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString));
       });

@@ -1,12 +1,9 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import {Pipe, PipeTransform, inject} from '@angular/core';
 import {GeoshopApiService} from '../../shared/services/apis/geoshop/services/geoshop-api.service';
 
-@Pipe({
-  name: 'dataDownloadOrderDownloadUrl',
-  standalone: false,
-})
+@Pipe({name: 'dataDownloadOrderDownloadUrl'})
 export class DataDownloadOrderDownloadUrlPipe implements PipeTransform {
-  constructor(private readonly geoshopApiService: GeoshopApiService) {}
+  private readonly geoshopApiService = inject(GeoshopApiService);
 
   public transform(orderId: string): string {
     return this.geoshopApiService.createOrderDownloadUrl(orderId);

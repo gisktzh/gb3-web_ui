@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -13,14 +13,37 @@ import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {SearchActions} from '../../../../../state/app/actions/search.actions';
 import {SearchResultIdentifierDirective} from '../../../../../shared/directives/search-result-identifier.directive';
+import {ExpandableListItemComponent} from '../../../../../shared/components/expandable-list-item/expandable-list-item.component';
+import {NgClass, NgTemplateOutlet} from '@angular/common';
+import {MatRipple} from '@angular/material/core';
+import {MatDivider} from '@angular/material/divider';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {DelayedMouseEnterDirective} from '../../../../../shared/directives/delayed-mouse-enter.directive';
+import {HighlightSearchQueryPipe} from '../../../../../shared/pipes/highlight-search-query.pipe';
+import {AppendMapConfigurationToUrlPipe} from '../../../../../shared/pipes/append-map-configuration-to-url.pipe';
 
 @Component({
   selector: 'result-group',
   templateUrl: './result-group.component.html',
   styleUrls: ['./result-group.component.scss'],
-  standalone: false,
+  imports: [
+    ExpandableListItemComponent,
+    NgClass,
+    MatRipple,
+    SearchResultIdentifierDirective,
+    MatDivider,
+    MatTooltip,
+    MatIcon,
+    NgTemplateOutlet,
+    DelayedMouseEnterDirective,
+    HighlightSearchQueryPipe,
+    AppendMapConfigurationToUrlPipe,
+  ],
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElements!: QueryList<SearchResultIdentifierDirective>;
   @Input() public searchResults: GeometrySearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
@@ -37,8 +60,6 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

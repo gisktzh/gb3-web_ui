@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
@@ -14,6 +14,11 @@ import {PrintActions} from '../actions/print.actions';
 
 @Injectable()
 export class OverlayPrintEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly printService = inject(Gb3PrintService);
+  private readonly fileDownloadService = inject(FileDownloadService);
+  private readonly store = inject(Store);
+
   public requestLegendPrint$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OverlayPrintActions.sendPrintRequest),
@@ -75,11 +80,4 @@ export class OverlayPrintEffects {
   private extractFileNameFromUrl(url: string): void {
     this.fileDownloadService.downloadFileFromUrl(url, url.split('/').pop());
   }
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly printService: Gb3PrintService,
-    private readonly fileDownloadService: FileDownloadService,
-    private readonly store: Store,
-  ) {}
 }

@@ -10,7 +10,6 @@ import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {
@@ -23,6 +22,7 @@ import {selectSelectedDrawing} from '../reducers/drawing.reducer';
 import {DrawingNotFound} from '../../../shared/errors/drawing.errors';
 import {catchError} from 'rxjs';
 import {MapService} from '../../../map/interfaces/map.service';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('DrawingEffects', () => {
   let actions$: Observable<Action>;

@@ -1,5 +1,5 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren, inject} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
 import {filter, Subscription, take, tap} from 'rxjs';
@@ -21,14 +21,39 @@ import {selectDevMode} from './state/app/reducers/app.reducer';
 import {SkipLink} from './shared/types/skip-link.type';
 import {SkipLinkConstants} from './shared/constants/skip-link.constants';
 import {SkipLinkTemplateVariable} from './shared/enums/skip-link-template-variable.enum';
+import {SkipLinkComponent} from './shared/components/skip-link/skip-link.component';
+import {NavbarMobileComponent} from './shared/components/navbar-mobile/navbar-mobile.component';
+import {NavbarComponent} from './shared/components/navbar/navbar.component';
+import {DevModeBannerComponent} from './shared/components/dev-mode-banner/dev-mode-banner.component';
+import {NgClass} from '@angular/common';
+import {RouterOutlet} from '@angular/router';
+import {MainFooterComponent} from './shared/components/footer/main-footer.component';
+import {ScrollbarWidthCalculationComponent} from './shared/components/scrollbar-width-calculation/scrollbar-width-calculation.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  standalone: false,
+  imports: [
+    SkipLinkComponent,
+    NavbarMobileComponent,
+    NavbarComponent,
+    DevModeBannerComponent,
+    NgClass,
+    RouterOutlet,
+    MainFooterComponent,
+    ScrollbarWidthCalculationComponent,
+  ],
 })
 export class AppComponent implements OnInit, OnDestroy {
+  private readonly documentService = inject(DocumentService);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly pageNotificationService = inject(PageNotificationService);
+  private readonly store = inject(Store);
+  private readonly iconsService = inject(IconsService);
+  private readonly renderer = inject(Renderer2);
+
   @ViewChildren(Object.values(SkipLinkTemplateVariable).join(', '), {read: ElementRef}) private readonly elements!: QueryList<ElementRef>;
 
   protected screenMode: ScreenMode = 'regular';
@@ -48,15 +73,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly devMode$ = this.store.select(selectDevMode);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private readonly documentService: DocumentService,
-    private readonly breakpointObserver: BreakpointObserver,
-    private readonly snackBar: MatSnackBar,
-    private readonly pageNotificationService: PageNotificationService,
-    private readonly store: Store,
-    private readonly iconsService: IconsService,
-    private readonly renderer: Renderer2,
-  ) {
+  constructor() {
     this.iconsService.initIcons();
   }
 

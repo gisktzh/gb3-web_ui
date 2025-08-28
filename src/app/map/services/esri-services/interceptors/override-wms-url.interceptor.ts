@@ -5,8 +5,9 @@ import RequestResponse = __esri.RequestResponse;
 /**
  * WMS URL that is hardcoded in the ZH WMS mapfiles. It can be either prefixed
  * with "web." if it is an intranet environment, or without; so the following * group captures both.
+ * The hardcorded WMS URL can be http or https
  */
-const hardcodedWmsUrl = /http:\/\/(web\.)?wms\.zh\.ch/g;
+const hardcodedWmsUrl = /http(s)?:\/\/(web\.)?wms\.zh\.ch/g;
 
 /**
  * Factory for the interceptor callback:

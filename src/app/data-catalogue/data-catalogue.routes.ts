@@ -1,6 +1,4 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {SharedModule} from '../shared/shared.module';
+import {Routes} from '@angular/router';
 import {DataCataloguePageComponent} from './data-catalogue-page.component';
 import {DataCatalogueOverviewComponent} from './components/data-catalogue-overview/data-catalogue-overview.component';
 import {ServiceDetailComponent} from './components/service-detail/service-detail.component';
@@ -10,7 +8,7 @@ import {ProductDetailComponent} from './components/product-detail/product-detail
 import {DataCataloguePage} from '../shared/enums/data-catalogue-page.enum';
 import {RouteParamConstants} from '../shared/constants/route-param.constants';
 
-const routes: Routes = [
+export const DATA_CATALOGUE_ROUTES: Routes = [
   {
     path: '',
     component: DataCataloguePageComponent,
@@ -38,10 +36,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  declarations: [],
-  imports: [RouterModule.forChild(routes), SharedModule],
-  exports: [RouterModule],
-})
-export class DataCatalogueRoutingModule {}

@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {DataDownloadProductEffects} from './data-download-product.effects';
 import {DataDownloadProductActions} from '../actions/data-download-product.actions';
@@ -19,6 +18,7 @@ import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-i
 import {DataDownloadFilter} from '../../../shared/interfaces/data-download-filter.interface';
 import {catchError} from 'rxjs';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('DataDownloadProductEffects', () => {
   const productsMock: Product[] = [

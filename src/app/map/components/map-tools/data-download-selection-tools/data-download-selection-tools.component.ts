@@ -1,5 +1,10 @@
 import {Component} from '@angular/core';
 import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component';
+import {MatIconButton} from '@angular/material/button';
+import {NgClass} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
 
 const TOOLTIP_TEXT = {
   circleSelecting: 'Kreis-Selektion: Mittelpunkt und Radius wählen.',
@@ -14,7 +19,7 @@ const TOOLTIP_TEXT = {
   selector: 'data-download-selection-tools',
   templateUrl: './data-download-selection-tools.component.html',
   styleUrls: ['./data-download-selection-tools.component.scss'],
-  standalone: false,
+  imports: [MatIconButton, NgClass, MatTooltip, MatIcon, MatDivider],
 })
 export class DataDownloadSelectionToolsComponent extends AbstractToolsComponent {
   public tooltipText = TOOLTIP_TEXT;

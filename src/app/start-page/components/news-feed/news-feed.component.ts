@@ -1,13 +1,16 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {Subscription, tap} from 'rxjs';
-import {NEWS_SERVICE} from '../../../app.module';
 import {catchError} from 'rxjs';
 import {NewsService} from '../../../shared/interfaces/news-service.interface';
 import {News} from '../../../shared/interfaces/news.interface';
 
 import {NewsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
+import {NEWS_SERVICE} from '../../../app.tokens';
+import {ContentLoadingStateComponent} from '../content-loading-state/content-loading-state.component';
+import {LinkGridListComponent} from '../../../shared/components/lists/link-grid-list/link-grid-list.component';
+import {LinkGridListItemComponent} from '../../../shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component';
 
 const NUMBER_OF_NEWS = 3;
 
@@ -15,14 +18,14 @@ const NUMBER_OF_NEWS = 3;
   selector: 'news-feed',
   templateUrl: './news-feed.component.html',
   styleUrls: ['./news-feed.component.scss'],
-  standalone: false,
+  imports: [ContentLoadingStateComponent, LinkGridListComponent, LinkGridListItemComponent],
 })
 export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
+  private readonly newsService = inject<NewsService>(NEWS_SERVICE);
+
   public loadingState: LoadingState = 'loading';
   public news: News[] = [];
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(@Inject(NEWS_SERVICE) private readonly newsService: NewsService) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

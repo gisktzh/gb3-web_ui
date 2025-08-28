@@ -36,7 +36,8 @@ import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../au
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
-import {TIME_SERVICE} from '../../../app.module';
+
+import {TIME_SERVICE} from '../../../app.tokens';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -61,6 +62,7 @@ describe('ShareLinkEffects', () => {
   beforeEach(() => {
     actions$ = new Observable<Action>();
     favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['getActiveMapItemsForFavourite', 'getDrawingsForFavourite']);
+    authServiceMock = jasmine.createSpyObj<AuthService>(['login']);
 
     TestBed.configureTestingModule({
       imports: [],

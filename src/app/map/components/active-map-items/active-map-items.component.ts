@@ -1,5 +1,5 @@
-import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {CdkDrag, CdkDragDrop, CdkDropList, ɵɵCdkScrollable, CdkDragHandle, CdkDragPlaceholder} from '@angular/cdk/drag-drop';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -13,6 +13,18 @@ import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {selectActiveTool} from '../../../state/map/reducers/tool.reducer';
 import {OnboardingGuideService} from '../../../onboarding-guide/services/onboarding-guide.service';
 import {selectItems} from '../../../state/map/selectors/active-map-items.selector';
+import {MatCard, MatCardHeader} from '@angular/material/card';
+import {TypedTourAnchorDirective} from '../../../shared/directives/typed-tour-anchor.directive';
+import {NgClass} from '@angular/common';
+import {MatBadge} from '@angular/material/badge';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
+import {NotificationIndicatorComponent} from '../notification-indicator/notification-indicator.component';
+import {MatAccordion} from '@angular/material/expansion';
+import {ActiveMapItemComponent} from './active-map-item/active-map-item.component';
+import {DragCursorDirective} from '../../../shared/directives/drag-cursor.directive';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Um einen Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
@@ -30,9 +42,31 @@ const TOOLTIP_TEXT = {
   selector: 'active-map-items',
   templateUrl: './active-map-items.component.html',
   styleUrls: ['./active-map-items.component.scss'],
-  standalone: false,
+  imports: [
+    MatCard,
+    TypedTourAnchorDirective,
+    NgClass,
+    MatCardHeader,
+    MatBadge,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    MatDivider,
+    NotificationIndicatorComponent,
+    MatAccordion,
+    CdkDropList,
+    ɵɵCdkScrollable,
+    ActiveMapItemComponent,
+    CdkDrag,
+    DragCursorDirective,
+    CdkDragHandle,
+    CdkDragPlaceholder,
+  ],
 })
 export class ActiveMapItemsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly onboardingGuideService = inject(OnboardingGuideService);
+
   public tooltipText = TOOLTIP_TEXT;
   public isAuthenticated: boolean = false;
   public activeMapItems: ActiveMapItem[] = [];
@@ -49,11 +83,6 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly activeTool$ = this.store.select(selectActiveTool);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly onboardingGuideService: OnboardingGuideService,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

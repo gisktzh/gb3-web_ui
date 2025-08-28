@@ -1,5 +1,5 @@
 /* eslint-disable rxjs-angular-x/prefer-composition -- eslint does not pickup inherited properties*/
-import {AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {filter, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {ConfigService} from '../../../shared/services/config.service';
@@ -10,14 +10,20 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {ResultGroupsComponent} from './result-groups/result-groups.component';
 import {ResultGroupComponent} from './result-groups/result-group/result-group.component';
 import {BaseSearchContainerComponent} from '../../../shared/components/search/base-search-container/base-search-container.component';
+import {SearchBarComponent} from '../../../shared/components/search/search-bar/search-bar.component';
 
 @Component({
   selector: 'search-window',
   templateUrl: './search-window.component.html',
   styleUrls: ['./search-window.component.scss'],
-  standalone: false,
+  imports: [SearchBarComponent, ResultGroupsComponent],
 })
 export class SearchWindowComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+  protected override store = inject(Store);
+  protected override cdr = inject(ChangeDetectorRef);
+
+  private readonly configService = inject(ConfigService);
+
   @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent!: ResultGroupsComponent;
 
   public screenMode: ScreenMode = 'regular';
@@ -25,13 +31,6 @@ export class SearchWindowComponent extends BaseSearchContainerComponent implemen
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
-  constructor(
-    private readonly configService: ConfigService,
-    @Inject(Store) store: Store,
-    @Inject(ChangeDetectorRef) cdr: ChangeDetectorRef,
-  ) {
-    super(store, cdr);
-  }
 
   public override ngOnInit() {
     super.ngOnInit();

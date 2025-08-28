@@ -3,8 +3,8 @@
 import 'zone.js/testing';
 import {getTestBed} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
-import {TIME_SERVICE} from './app/app.module';
 import {timeServiceFactory} from './app/shared/factories/time-service.factory';
+import {TIME_SERVICE} from './app/app.tokens';
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(

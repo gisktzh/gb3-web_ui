@@ -4,102 +4,102 @@
   class="map-data-catalogue"
   [ngClass]="{'map-data-catalogue--hide-shadow': screenMode === 'mobile'}"
 >
-  <mat-card-header
-    *ngIf="screenMode !== 'mobile'"
-    [ngClass]="{'map-data-catalogue__header--minimized': isMinimized}"
-    class="map-data-catalogue__header"
-  >
-    <h2 class="map-data-catalogue__header__title">Kartenkatalog</h2>
-    <button (click)="toggleMinimizeMapDataCatalogue()" mat-icon-button [attr.aria-label]="isMinimized ? 'Aufklappen' : 'Zuklappen'">
-      <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
-    </button>
-  </mat-card-header>
+  @if (screenMode !== 'mobile') {
+    <mat-card-header [ngClass]="{'map-data-catalogue__header--minimized': isMinimized}" class="map-data-catalogue__header">
+      <h2 class="map-data-catalogue__header__title">Kartenkatalog</h2>
+      <button (click)="toggleMinimizeMapDataCatalogue()" mat-icon-button [attr.aria-label]="isMinimized ? 'Aufklappen' : 'Zuklappen'">
+        <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
+      </button>
+    </mat-card-header>
+  }
   <div [ngClass]="{'map-data-catalogue__content--hidden': isMinimized}" class="map-data-catalogue__content">
-    <search-input
-      *ngIf="screenMode !== 'mobile'"
-      class="map-data-catalogue__content__filter"
-      (changeSearchTermEvent)="filterCatalog($event)"
-      (clearSearchTermEvent)="clearInput()"
-      [mode]="'compact'"
-      [showFilterButton]="false"
-      placeholderText="Karten und Layer filtern"
-    ></search-input>
+    @if (screenMode !== 'mobile') {
+      <search-input
+        class="map-data-catalogue__content__filter"
+        (changeSearchTermEvent)="filterCatalog($event)"
+        (clearSearchTermEvent)="clearInput()"
+        [mode]="'compact'"
+        [showFilterButton]="false"
+        placeholderText="Karten und Layer filtern"
+      ></search-input>
+    }
     <loading-and-process-bar [loadingState]="catalogueLoadingState"></loading-and-process-bar>
-    <mat-accordion
-      *ngIf="catalogueLoadingState === 'loaded'"
-      [ngClass]="{
-        'map-data-catalogue__content__items--hidden': filterString && topics.length === 0 && filteredFavourites.length === 0,
-        'map-data-catalogue__content__items--mobile': screenMode === 'mobile',
-      }"
-      class="map-data-catalogue__content__items"
-      displayMode="flat"
-      multi="true"
-    >
-      <!-- Favourites -->
-      <ng-container *ngIf="isAuthenticated">
-        <expandable-list-item
-          *ngIf="!(!!filterString && filteredFavourites.length === 0)"
-          [header]="'Favoriten'"
-          [expanded]="!!filterString"
-          [filterString]="filterString"
-          [loadingState]="favouritesLoadingState"
-          [numberOfItems]="filteredFavourites.length"
-          [disabled]="favouritesLoadingState === 'loading' || favouritesLoadingState === 'error'"
-          [showBadge]="!!filterString && favouritesLoadingState !== 'loading'"
-        >
-          <!-- 'Favourite' content -->
-          <p *ngIf="filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
-          <ng-container *ngFor="let favourite of filteredFavourites">
-            <map-data-item-favourite
-              (addEvent)="addFavouriteToMap(favourite)"
-              (deleteEvent)="deleteFavourite(favourite)"
+    @if (catalogueLoadingState === 'loaded') {
+      <mat-accordion
+        [ngClass]="{
+          'map-data-catalogue__content__items--hidden': filterString && topics.length === 0 && filteredFavourites.length === 0,
+          'map-data-catalogue__content__items--mobile': screenMode === 'mobile',
+        }"
+        class="map-data-catalogue__content__items"
+        displayMode="flat"
+        multi="true"
+      >
+        <!-- Favourites -->
+        @if (isAuthenticated) {
+          @if (!(!!filterString && filteredFavourites.length === 0)) {
+            <expandable-list-item
+              [header]="'Favoriten'"
+              [expanded]="!!filterString"
               [filterString]="filterString"
-              [invalid]="favourite.invalid"
               [loadingState]="favouritesLoadingState"
-              [title]="favourite.title"
-            ></map-data-item-favourite>
-          </ng-container>
-        </expandable-list-item>
-      </ng-container>
+              [numberOfItems]="filteredFavourites.length"
+              [disabled]="favouritesLoadingState === 'loading' || favouritesLoadingState === 'error'"
+              [showBadge]="!!filterString && favouritesLoadingState !== 'loading'"
+            >
+              <!-- 'Favourite' content -->
+              @if (filteredFavourites.length === 0) {
+                <p><em>Noch keine Favoriten hinzugefügt.</em></p>
+              }
+              @for (favourite of filteredFavourites; track favourite) {
+                <map-data-item-favourite
+                  (addEvent)="addFavouriteToMap(favourite)"
+                  (deleteEvent)="deleteFavourite(favourite)"
+                  [filterString]="filterString"
+                  [invalid]="favourite.invalid"
+                  [loadingState]="favouritesLoadingState"
+                  [title]="favourite.title"
+                ></map-data-item-favourite>
+              }
+            </expandable-list-item>
+          }
+        }
+        <!-- Topics -->
+        @for (topic of topics; track trackByTopicTitle($index, topic)) {
+          <expandable-list-item
+            [numberOfItems]="topic.maps.length"
+            [header]="topic.title"
+            [filterString]="filterString"
+            [expanded]="!!filterString"
+            [loadingState]="catalogueLoadingState"
+            [showBadge]="!!filterString"
+          >
+            <!-- 'Topic' content -->
+            <div class="map-data-catalogue__content__items__item__content">
+              @for (map of topic.maps; track trackByMapId($index, map); let isLastMap = $last) {
+                <map-data-item-map
+                  (addEvent)="addActiveMap(map)"
+                  (addLayerEvent)="addActiveLayer(map, $event)"
+                  (hoverStartEvent)="addTemporaryMapItem(map, $event)"
+                  (hoverEndEvent)="removeTemporaryMapItem(map, $event)"
+                  [filterString]="filterString"
+                  [imageUrl]="map.icon"
+                  [layers]="map.layers"
+                  [title]="map.title"
+                  [gb2Url]="map.gb2Url"
+                  class="map-data-catalogue__content__items__item__content__item"
+                ></map-data-item-map>
+                @if (!isLastMap) {
+                  <mat-divider></mat-divider>
+                }
+              }
+            </div>
+          </expandable-list-item>
+        }
+      </mat-accordion>
+    }
 
-      <!-- Topics -->
-      <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
-        <expandable-list-item
-          [numberOfItems]="topic.maps.length"
-          [header]="topic.title"
-          [filterString]="filterString"
-          [expanded]="!!filterString"
-          [loadingState]="catalogueLoadingState"
-          [showBadge]="!!filterString"
-        >
-          <!-- 'Topic' content -->
-
-          <div class="map-data-catalogue__content__items__item__content">
-            <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId; let isLastMap = last">
-              <map-data-item-map
-                (addEvent)="addActiveMap(map)"
-                (addLayerEvent)="addActiveLayer(map, $event)"
-                (hoverStartEvent)="addTemporaryMapItem(map, $event)"
-                (hoverEndEvent)="removeTemporaryMapItem(map, $event)"
-                [filterString]="filterString"
-                [imageUrl]="map.icon"
-                [layers]="map.layers"
-                [title]="map.title"
-                [gb2Url]="map.gb2Url"
-                class="map-data-catalogue__content__items__item__content__item"
-              ></map-data-item-map>
-              <mat-divider *ngIf="!isLastMap"></mat-divider>
-            </ng-container>
-          </div>
-        </expandable-list-item>
-      </ng-container>
-    </mat-accordion>
-
-    <p
-      *ngIf="filterString && topics.length === 0 && filteredFavourites.length === 0"
-      class="map-data-catalogue__content__filter-no-results mat-body-2"
-    >
-      Keine Resultate zu diesem Filter.
-    </p>
+    @if (filterString && topics.length === 0 && filteredFavourites.length === 0) {
+      <p class="map-data-catalogue__content__filter-no-results mat-body-2">Keine Resultate zu diesem Filter.</p>
+    }
   </div>
 </mat-card>

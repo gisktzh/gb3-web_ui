@@ -7,16 +7,14 @@
       ></mat-icon>
     </span>
   </div>
-  <ng-container
-    *ngIf="contactType === 'email'; then emailTemplate; else contactType === 'link' ? linkTemplate : addressTemplate"
-  ></ng-container>
+  @if (contactType === 'email') {
+    <div class="contact-detail__address">
+      <a [title]="email" rel="noopener noreferrer" href="mailto:{{ email }}">{{ email }}</a>
+    </div>
+  } @else {
+    <ng-template [ngTemplateOutlet]="contactType === 'link' ? linkTemplate : addressTemplate"></ng-template>
+  }
 </div>
-
-<ng-template #emailTemplate>
-  <div class="contact-detail__address">
-    <a [title]="email" rel="noopener noreferrer" href="mailto:{{ email }}">{{ email }}</a>
-  </div>
-</ng-template>
 
 <ng-template #linkTemplate>
   <div class="contact-detail__address">

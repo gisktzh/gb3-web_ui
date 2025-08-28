@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, inject} from '@angular/core';
 import {ElevationProfileData, ElevationProfileDataPoint} from '../../../../shared/interfaces/elevation-profile.interface';
 import {ElevationProfileChartJsDataConfiguration} from './types/chartjs.type';
 import {ElevationPlotConfigService} from './services/elevation-plot-config.service';
@@ -16,16 +16,16 @@ const VERTIXAL_AXIS_LABEL = 'MüM';
   imports: [BaseChartDirective],
 })
 export class ElevationProfileChartComponent implements OnInit {
+  private readonly elevationPlotConfigService = inject(ElevationPlotConfigService);
+  private readonly store = inject(Store);
+
   @Input() public elevationProfileData!: ElevationProfileData;
   public readonly lineChartData: ElevationProfileChartJsDataConfiguration = {
     datasets: [],
   };
   public readonly lineChartOptions: ElevationProfileChartJsOptions = this.elevationPlotConfigService.getElevationPlotChartOptions();
 
-  constructor(
-    private readonly elevationPlotConfigService: ElevationPlotConfigService,
-    private readonly store: Store,
-  ) {
+  constructor() {
     this.setupHoverEvent();
   }
 

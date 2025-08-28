@@ -1,4 +1,4 @@
-import {Inject, Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {Observable, Subscription, switchMap, tap, withLatestFrom} from 'rxjs';
@@ -29,12 +29,18 @@ import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/in
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeSliderService} from './time-slider.service';
 import {TimeService} from '../../shared/interfaces/time-service.interface';
-import {TIME_SERVICE} from '../../app.module';
+
+import {TIME_SERVICE} from '../../app.tokens';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FavouritesService implements OnDestroy {
+  private readonly store = inject(Store);
+  private readonly gb3FavouritesService = inject(Gb3FavouritesService);
+  private readonly timeSliderService = inject(TimeSliderService);
+  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+
   private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
   private availableMaps: Map[] = [];
   private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
@@ -43,12 +49,7 @@ export class FavouritesService implements OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly userDrawingsVectorLayers$ = this.store.select(selectUserDrawingsVectorLayers);
 
-  constructor(
-    private readonly store: Store,
-    private readonly gb3FavouritesService: Gb3FavouritesService,
-    private readonly timeSliderService: TimeSliderService,
-    @Inject(TIME_SERVICE) private readonly timeService: TimeService,
-  ) {
+  constructor() {
     this.initSubscriptions();
   }
 
@@ -167,7 +168,7 @@ export class FavouritesService implements OnDestroy {
     ignoreErrors: boolean,
   ): ActiveMapItem | undefined {
     let activeMapItem: ActiveMapItem | undefined = undefined;
-    const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
+    const subLayer = existingMap.layers.find((layer) => layer.layer === configuration.layers[0].layer);
 
     const filterConfigurations: FilterConfiguration[] | undefined = existingMap.filterConfigurations
       ? this.synchronizeFilterConfigurationsAndAttributeFilters(
@@ -206,7 +207,7 @@ export class FavouritesService implements OnDestroy {
   private createMultiLayerMapItem(existingMap: Map, configuration: ActiveMapItemConfiguration, ignoreErrors: boolean): ActiveMapItem {
     const adjustedMap = produce(existingMap, (draft) => {
       draft.layers.forEach((layer) => {
-        const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.id === layer.id);
+        const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.layer === layer.layer);
 
         // hide sublayer if it is a newly added layer to not interfere with favourite composition
         layer.visible = sublayerConfiguration ? sublayerConfiguration.visible : false;

@@ -1,18 +1,13 @@
-import {Directive, ElementRef, HostListener} from '@angular/core';
+import {Directive, ElementRef, HostListener, inject} from '@angular/core';
 import {MatTooltip} from '@angular/material/tooltip';
 
 // Checks if text is truncated
 // Copied from Stack-Overflow and adapted to specific usecase: https://stackoverflow.com/questions/57269431/show-tooltip-only-when-the-ellipsis-is-active
 
-@Directive({
-  selector: '[matTooltip][showTooltipIfTruncated]',
-  standalone: false,
-})
+@Directive({selector: '[matTooltip][showTooltipIfTruncated]'})
 export class ShowTooltipIfTruncatedDirective {
-  constructor(
-    private matTooltip: MatTooltip,
-    private elementRef: ElementRef<HTMLElement>,
-  ) {}
+  private readonly matTooltip = inject(MatTooltip);
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   @HostListener('mouseenter', ['$event'])
   public setTooltipState(): void {

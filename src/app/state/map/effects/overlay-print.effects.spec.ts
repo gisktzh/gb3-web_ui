@@ -8,7 +8,6 @@ import {catchError} from 'rxjs';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {PrintCreationResponse} from '../../../shared/interfaces/print.interface';
 import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {OverlayPrintActions} from '../actions/overlay-print-actions';
 import {OverlayPrintEffects} from './overlay-print.effects';
@@ -17,6 +16,7 @@ import {FeatureInfoPrintConfiguration, PrintableOverlayItem} from '../../../shar
 import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items.selector';
 import {FileDownloadService} from '../../../shared/services/file-download-service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('OverlayPrintEffects', () => {
   const creationResponseMock: PrintCreationResponse = {reportUrl: 'response url'};

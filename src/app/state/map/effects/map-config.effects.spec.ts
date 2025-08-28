@@ -4,7 +4,6 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {Observable, of} from 'rxjs';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {ZoomType} from '../../../shared/types/zoom.type';
@@ -18,6 +17,7 @@ import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 import {SearchActions} from '../../app/actions/search.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('MapConfigEffects', () => {
   let actions$: Observable<Action>;

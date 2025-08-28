@@ -2,10 +2,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 import {OrderStatusJob} from '../../shared/interfaces/geoshop-order-status.interface';
 import {DataDownloadConstants} from '../../shared/constants/data-download.constants';
 
-@Pipe({
-  name: 'dataDownloadOrderStatus',
-  standalone: false,
-})
+@Pipe({name: 'dataDownloadOrderStatus'})
 export class DataDownloadOrderStatusPipe implements PipeTransform {
   public transform(orderStatusJob: OrderStatusJob): string {
     if (orderStatusJob.isAborted) {

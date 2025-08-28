@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import * as projectOperator from '@arcgis/core/geometry/operators/projectOperator.js';
 import {Store} from '@ngrx/store';
 import {selectSrsId} from '../../../state/map/reducers/map-config.reducer';
@@ -10,15 +10,15 @@ import {GeometryUnion} from '@arcgis/core/unionTypes';
   providedIn: 'root',
 })
 export class TransformationService {
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+
   public projectionOperatorLoaded: boolean = false;
   private readonly defaultSrs: __esri.SpatialReference;
   private readonly srs$ = this.store.select(selectSrsId);
   private srs: __esri.SpatialReference | undefined;
 
-  constructor(
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-  ) {
+  constructor() {
     this.defaultSrs = new SpatialReference({wkid: this.configService.mapConfig.defaultMapConfig.srsId});
     this.srs$.subscribe((srsId) => (this.srs = new SpatialReference({wkid: srsId})));
     projectOperator.load().then(() => {

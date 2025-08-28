@@ -1,17 +1,36 @@
-import {Component, OnDestroy} from '@angular/core';
-import {TourService} from 'ngx-ui-tour-md-menu';
+import {Component, OnDestroy, inject} from '@angular/core';
+import {TourService, TourStepTemplateComponent} from 'ngx-ui-tour-md-menu';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from '../../../shared/types/screen-size.type';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
+import {MatCard, MatCardImage, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions, MatCardFooter} from '@angular/material/card';
+import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatProgressBar} from '@angular/material/progress-bar';
 
 @Component({
   selector: 'onboarding-guide',
   templateUrl: './onboarding-guide.component.html',
   styleUrls: ['./onboarding-guide.component.scss'],
-  standalone: false,
+  imports: [
+    TourStepTemplateComponent,
+    MatCard,
+    MatCardImage,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatCardActions,
+    MatButton,
+    MatIcon,
+    MatCardFooter,
+    MatProgressBar,
+  ],
 })
 export class OnboardingGuideComponent implements OnDestroy {
+  protected readonly tourService = inject(TourService);
+  private readonly store = inject(Store);
+
   public screenMode: ScreenMode = 'regular';
   public progress: number = 0;
   public hasNextStep: boolean = false;
@@ -21,10 +40,7 @@ export class OnboardingGuideComponent implements OnDestroy {
   private readonly numberOfSteps: number = this.tourService.steps.length;
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    public readonly tourService: TourService,
-    private readonly store: Store,
-  ) {
+  constructor() {
     this.initSubscriptions();
   }
 

@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {combineLatestWith, distinctUntilChanged, filter, of, switchMap, takeWhile, tap} from 'rxjs';
@@ -18,7 +18,6 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {selectLoadingState as selectDataCatalogueLoadingState} from '../../data-catalogue/reducers/data-catalogue.reducer';
 import {DataCatalogueActions} from '../../data-catalogue/actions/data-catalogue.actions';
 import {SearchIndexType} from '../../../shared/configs/search-index.config';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapUiActions} from '../../map/actions/map-ui.actions';
@@ -28,9 +27,17 @@ import {selectReady} from '../../map/reducers/map-config.reducer';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
 import {isGeometrySearchApiResultMatch} from '../../../shared/type-guards/search-api-result-match.type-guard';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class SearchEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly store = inject(Store);
+  private readonly searchService = inject(SearchService);
+  private readonly configService = inject(ConfigService);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private readonly mapDrawingService = inject(MapDrawingService);
+
   public searchResultsFromSearchApi$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchActions.searchForTerm),
@@ -216,13 +223,4 @@ export class SearchEffects {
       }),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly store: Store,
-    private readonly searchService: SearchService,
-    private readonly configService: ConfigService,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-    private readonly mapDrawingService: MapDrawingService,
-  ) {}
 }

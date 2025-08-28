@@ -15,9 +15,9 @@
       >
         <mat-label>Email</mat-label>
         <input [formControl]="emailFormControl" type="email" matInput />
-        <mat-error *ngIf="emailFormControl.invalid && (emailFormControl.dirty || emailFormControl.touched)">
-          Geben Sie bitte eine gültige Email Adresse ein.
-        </mat-error>
+        @if (emailFormControl.invalid && (emailFormControl.dirty || emailFormControl.touched)) {
+          <mat-error> Geben Sie bitte eine gültige Email Adresse ein. </mat-error>
+        }
       </mat-form-field>
     </div>
   </ng-container>

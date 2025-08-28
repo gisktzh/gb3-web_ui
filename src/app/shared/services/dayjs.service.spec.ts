@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
-import {TIME_SERVICE} from '../../app.module';
 import {DayjsService} from './dayjs.service';
+import {TIME_SERVICE} from '../../app.tokens';
 
 describe('DayjsService', () => {
   let dayjsService: DayjsService;

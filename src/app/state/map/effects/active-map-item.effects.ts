@@ -1,9 +1,8 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
 import {filter, map, tap} from 'rxjs';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
@@ -27,9 +26,17 @@ import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {SearchActions} from '../../app/actions/search.actions';
 import {TimeSliderService} from '../../../map/services/time-slider.service';
 import {produce} from 'immer';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class ActiveMapItemEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private readonly gb3TopicsService = inject(Gb3TopicsService);
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+  private readonly timeSliderService = inject(TimeSliderService);
+
   public addMapItem$ = createEffect(
     () => {
       return this.actions$.pipe(
@@ -384,13 +391,4 @@ export class ActiveMapItemEffects {
       map((modifiedActiveMapItem) => ActiveMapItemActions.replaceActiveMapItem({modifiedActiveMapItem})),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-    private readonly gb3TopicsService: Gb3TopicsService,
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-    private readonly timeSliderService: TimeSliderService,
-  ) {}
 }

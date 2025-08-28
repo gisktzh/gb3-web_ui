@@ -9,13 +9,12 @@
 >
   <ng-container content>
     <mat-slider [min]="minimumDateIndex" [max]="maximumDateIndex" [step]="1" color="primary" class="time-slider__slider">
-      <ng-container *ngIf="this.timeSliderConfiguration.range; else multiSlider">
+      @if (this.timeSliderConfiguration.range) {
         <input matSliderThumb (valueChange)="setValidTimeExtent(true)" [(ngModel)]="firstSliderPosition" />
-      </ng-container>
-      <ng-template #multiSlider>
+      } @else {
         <input matSliderStartThumb (valueChange)="setValidTimeExtent(true)" [(ngModel)]="firstSliderPosition" />
         <input matSliderEndThumb (valueChange)="setValidTimeExtent(false)" [(ngModel)]="secondSliderPosition" />
-      </ng-template>
+      }
     </mat-slider>
   </ng-container>
   <ng-container footer>

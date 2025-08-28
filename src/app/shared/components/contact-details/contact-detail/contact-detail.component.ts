@@ -1,13 +1,17 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, inject} from '@angular/core';
 import {Clipboard} from '@angular/cdk/clipboard';
+import {MatIcon} from '@angular/material/icon';
+import {NgTemplateOutlet} from '@angular/common';
 
 @Component({
   selector: 'contact-detail',
   templateUrl: './contact-detail.component.html',
   styleUrls: ['./contact-detail.component.scss'],
-  standalone: false,
+  imports: [MatIcon, NgTemplateOutlet],
 })
 export class ContactDetailComponent {
+  private readonly clipboard = inject(Clipboard);
+
   @Input() public contactType!: 'address' | 'email' | 'link';
   @Input() public street?: string;
   @Input() public place?: string;
@@ -15,8 +19,6 @@ export class ContactDetailComponent {
   @Input() public coordinates?: string;
   @Input() public url?: string;
   @Input() public title?: string;
-
-  constructor(private readonly clipboard: Clipboard) {}
 
   public copyToClipboard(event: Event) {
     event.preventDefault();

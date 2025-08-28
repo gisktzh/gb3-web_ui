@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectFeatureInfoQueryLoadingState} from 'src/app/state/map/selectors/feature-info-query-loading-state.selector';
@@ -7,14 +7,20 @@ import {GeneralInfoResponse} from '../../../../shared/interfaces/general-info.in
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {selectData} from '../../../../state/map/reducers/general-info.reducer';
 import {selectFeatureInfosForDisplay} from '../../../../state/map/selectors/feature-info-result-display.selector';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {FeatureInfoGeneralInformationComponent} from '../feature-info-general-information/feature-info-general-information.component';
+import {MatDivider} from '@angular/material/divider';
+import {FeatureInfoItemComponent} from '../feature-info-item/feature-info-item.component';
 
 @Component({
   selector: 'feature-info',
   templateUrl: './feature-info.component.html',
   styleUrls: ['./feature-info.component.scss'],
-  standalone: false,
+  imports: [LoadingAndProcessBarComponent, FeatureInfoGeneralInformationComponent, MatDivider, FeatureInfoItemComponent],
 })
 export class FeatureInfoComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public showInteractiveElements: boolean = true;
 
   public loadingState: LoadingState = undefined;
@@ -25,8 +31,6 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
   private readonly generalInfoData$ = this.store.select(selectData);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

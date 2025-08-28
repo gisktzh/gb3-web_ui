@@ -1,5 +1,4 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {Routes} from '@angular/router';
 import {MainPage} from './shared/enums/main-page.enum';
 import {NotFoundErrorPageComponent} from './error-handling/components/not-found-error-page/not-found-error-page.component';
 import {FatalErrorPageComponent} from './error-handling/components/fatal-error-page/fatal-error-page.component';
@@ -15,54 +14,54 @@ const createRouteTitle = (title?: string): string => {
 
   return `[${environment.stagePrefix}] ${routeTitle}${siteOperator}`;
 };
-const routes: Routes = [
+export const APP_ROUTES: Routes = [
   {
     path: '',
     children: [
-      {path: MainPage.Auth, loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule), title: createRouteTitle('Login')},
+      {path: MainPage.Auth, loadChildren: () => import('./auth/auth.routes').then((r) => r.AUTH_ROUTES), title: createRouteTitle('Login')},
       {
         path: MainPage.Maps,
-        loadChildren: () => import('./map/map.module').then((m) => m.MapModule),
+        loadChildren: () => import('./map/map.routes').then((r) => r.MAP_ROUTES),
         title: createRouteTitle('GIS-Browser'),
       },
       {
         path: MainPage.Data,
-        loadChildren: () => import('./data-catalogue/data-catalogue.module').then((m) => m.DataCatalogueModule),
+        loadChildren: () => import('./data-catalogue/data-catalogue.routes').then((r) => r.DATA_CATALOGUE_ROUTES),
         title: createRouteTitle('Geodatenkatalog'),
       },
       {
         path: MainPage.Support,
-        loadChildren: () => import('./support-page/support-page.module').then((m) => m.SupportPageModule),
+        loadChildren: () => import('./support-page/support-page.routes').then((r) => r.SUPPORT_PAGE_ROUTES),
         title: createRouteTitle('Hilfe & Support'),
       },
       {
         path: MainPage.Privacy,
-        loadChildren: () => import('./privacy/privacy.module').then((m) => m.PrivacyModule),
+        loadChildren: () => import('./privacy/privacy.routes').then((r) => r.PRIVACY_ROUTES),
         title: createRouteTitle('Datenschutz'),
       },
       {
         path: MainPage.TermsOfUse,
-        loadChildren: () => import('./terms-of-use/terms-of-use.module').then((m) => m.TermsOfUseModule),
+        loadChildren: () => import('./terms-of-use/terms-of-use.routes').then((r) => r.TERMS_OF_USE_ROUTES),
         title: createRouteTitle('Nutzungshinweise'),
       },
       {
         path: MainPage.Start,
-        loadChildren: () => import('./start-page/start-page.module').then((m) => m.StartPageModule),
+        loadChildren: () => import('./start-page/start-page.routes').then((r) => r.START_PAGE_ROUTES),
         title: createRouteTitle(),
       },
       {
         path: MainPage.ShareLink,
-        loadChildren: () => import('./share-link/share-link.module').then((m) => m.ShareLinkModule),
+        loadChildren: () => import('./share-link/share-link.routes').then((r) => r.SHARE_LINK_ROUTES),
         title: createRouteTitle('Link teilen'),
       },
       {
         path: MainPage.Embedded,
-        loadChildren: () => import('./embedded-page/embedded-map-page.module').then((m) => m.EmbeddedMapPageModule),
+        loadChildren: () => import('./embedded-page/embedded-map-page.routes').then((r) => r.EMBEDDED_MAP_PAGE_ROUTES),
         title: createRouteTitle('GIS-Browser'),
       },
       {
         path: MainPage.Apps,
-        loadChildren: () => import('./apps-page/apps-page.routes').then((m) => m.APPS_ROUTES),
+        loadChildren: () => import('./apps-page/apps-page.routes').then((r) => r.APPS_ROUTES),
         title: createRouteTitle('Apps'),
       },
 
@@ -72,10 +71,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  declarations: [],
-  imports: [RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled'})],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}

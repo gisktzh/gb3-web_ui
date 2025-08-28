@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 import {MatDivider} from '@angular/material/divider';
@@ -18,6 +18,8 @@ import {MatRipple} from '@angular/material/core';
   imports: [RouterModule, MatIcon, MatDivider, MatButtonModule, NgClass, MatTooltip, NgTemplateOutlet, MatRipple],
 })
 export class OverviewSearchResultItemComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @ViewChild('externalLink') public readonly externalLink?: ElementRef;
   @ViewChild('internalLink') public readonly internalLink?: ElementRef;
   @Input() public item!: OverviewSearchResultDisplayItem;
@@ -28,7 +30,6 @@ export class OverviewSearchResultItemComponent implements OnInit, OnDestroy {
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.isMobile = screenMode === 'mobile'))).subscribe());

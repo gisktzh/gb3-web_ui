@@ -13,7 +13,7 @@ import {LayerSymbolizations, PicturePointSymbolization, SimplePointSymbolization
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {provideMockStore} from '@ngrx/store/testing';
-import {Store} from '@ngrx/store';
+import {DOCUMENT} from '@angular/core';
 
 const SRS: SupportedSrs = 2056;
 const mockIconUrl = '/path/to/icon.svg';
@@ -146,12 +146,11 @@ describe('EsriSymbolizationService', () => {
   let service: EsriSymbolizationService;
 
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function -- simple mock by overriding a readonly property and then injecting it
-    let configService = new ConfigService(document, {dispatch: () => {}} as unknown as Store<object>);
-    configService = Object.assign(configService, {layerSymbolizations: mockSymbolizations});
     TestBed.configureTestingModule({
-      providers: [EsriSymbolizationService, {provide: ConfigService, useValue: configService}, provideMockStore()],
+      providers: [EsriSymbolizationService, ConfigService, {provide: DOCUMENT, useValue: document}, provideMockStore()],
     });
+    const configService = TestBed.inject(ConfigService);
+    Object.assign(configService, {layerSymbolizations: mockSymbolizations});
     service = TestBed.inject(EsriSymbolizationService);
   });
 

@@ -1,4 +1,4 @@
-FROM node:22.11-alpine AS build-app
+FROM node:22.18-alpine AS build-app
 
 # Provide overrides for APP_VERSION and APP_RELEASE as build-args and expose them as ENV variables for the update-version.js script
 ARG APP_VERSION
@@ -24,7 +24,7 @@ RUN npm run update-version
 RUN npm ci --ignore-scripts --omit=dev
 RUN npm run build-$TARGET_ENVIRONMENT
 
-FROM nginx:1.28-alpine AS server
+FROM nginx:1.29-alpine AS server
 COPY ./.docker/configfile.conf /etc/nginx/conf.d/configfile.template
 COPY ./.docker/nginx.conf /etc/nginx/nginx.conf
 

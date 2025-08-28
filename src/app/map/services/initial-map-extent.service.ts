@@ -2,7 +2,7 @@ import {ScreenMode} from '../../shared/types/screen-size.type';
 import {selectScreenMode} from '../../state/app/reducers/app-layout.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy, inject} from '@angular/core';
 import {MapConstants} from '../../shared/constants/map.constants';
 import {defaultMapConfig} from '../../shared/configs/map.config';
 import {Coordinate} from '../../shared/interfaces/coordinate.interface';
@@ -12,11 +12,13 @@ import {BoundingBox, InitialMapPadding} from '../../state/map/states/map-config.
   providedIn: 'root',
 })
 export class InitialMapExtentService implements OnDestroy {
+  private readonly store = inject(Store);
+
   public screenMode: ScreenMode = 'regular';
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store) {
+  constructor() {
     this.initSubscriptions();
   }
 

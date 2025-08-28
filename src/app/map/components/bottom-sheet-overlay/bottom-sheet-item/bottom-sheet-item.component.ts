@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {BottomSheetHeight} from 'src/app/shared/types/bottom-sheet-height.type';
@@ -7,14 +7,22 @@ import {StyleExpression} from 'src/app/shared/types/style-expression.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectFilterString} from 'src/app/state/map/reducers/layer-catalog.reducer';
 import {selectMapAttributeFiltersItem} from 'src/app/state/map/selectors/map-attribute-filters-item.selector';
+import {MatCard, MatCardHeader, MatCardContent} from '@angular/material/card';
+import {NgClass} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {ɵɵCdkScrollable} from '@angular/cdk/drag-drop';
+import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 
 @Component({
   selector: 'bottom-sheet-item',
   templateUrl: './bottom-sheet-item.component.html',
   styleUrls: ['./bottom-sheet-item.component.scss'],
-  standalone: false,
+  imports: [MatCard, NgClass, MatCardHeader, MatIconButton, MatIcon, MatCardContent, ɵɵCdkScrollable, ResizeHandlerComponent],
 })
 export class BottomSheetItemComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public overlayTitle?: string = '';
   @Input() public usePrimaryColor: boolean = false;
   @Input() public bottomSheetHeight: BottomSheetHeight = 'small';
@@ -28,8 +36,6 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
 
   protected resizeableStyle: StyleExpression = {};
   protected location: ResizeHandlerLocation = 'top';
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

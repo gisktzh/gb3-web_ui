@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, Subscription, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {ConfigService} from '../../../shared/services/config.service';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
@@ -16,6 +15,7 @@ import {selectStatusJobs} from '../reducers/data-download-order-status-job.reduc
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
 import {catchError} from 'rxjs';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('DataDownloadOrderStatusJobEffects', () => {
   let actions$: Observable<Action>;

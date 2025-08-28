@@ -1,13 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 
 import {ELEVATION_PROFILE_LOCATION_IDENTIFIER, MapDrawingService} from './map-drawing.service';
-import {MAP_SERVICE} from '../../app.module';
 import {provideMockStore} from '@ngrx/store/testing';
 import {MapService} from '../interfaces/map.service';
 import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {MapServiceStub} from '../../testing/map-testing/map.service.stub';
 import {MinimalGeometriesUtils} from '../../testing/map-testing/minimal-geometries.utils';
 import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
+import {MAP_SERVICE} from '../../app.tokens';
 
 describe('MapDrawingService', () => {
   let service: MapDrawingService;

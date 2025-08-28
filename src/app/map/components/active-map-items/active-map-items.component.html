@@ -4,69 +4,69 @@
   [ngClass]="{'active-map-items--hide-shadow': screenMode === 'mobile'}"
   typedTourAnchor="map.active-maps"
 >
-  <mat-card-header
-    *ngIf="screenMode !== 'mobile'"
-    class="active-map-items__header"
-    [ngClass]="{'active-map-items__header--minimized': isMinimized}"
-  >
-    <h2 class="active-map-items__header__title">Aktive Karten</h2>
-    <span
-      class="active-map-items__header__badge"
-      [ngClass]="{'active-map-items__header__badge--hidden': this.activeMapItems.length === 0}"
-      [matBadge]="this.activeMapItems.length"
-    ></span>
-    <div class="active-map-items__header__buttons">
-      <button
-        mat-icon-button
-        (click)="restartOnboardingGuide()"
-        [matTooltip]="tooltipText.onboardingGuide"
-        [attr.aria-label]="tooltipText.onboardingGuide"
-        [matTooltipPosition]="'below'"
-      >
-        <mat-icon>help_outline</mat-icon>
-      </button>
-      <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
-      <button
-        class="active-map-items__header__buttons__action active-map-items__header__buttons__action--notices"
-        (click)="showMapNotices()"
-        [disabled]="numberOfNotices === 0"
-        mat-icon-button
-        [matTooltip]="tooltipText.mapNotices"
-        [attr.aria-label]="tooltipText.mapNotices"
-        [matTooltipPosition]="'below'"
-      >
-        <notification-indicator *ngIf="numberOfUnreadNotices > 0"></notification-indicator>
-        <mat-icon svgIcon="ktzh_notification"></mat-icon>
-      </button>
-      <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
-      <button
-        (click)="removeAllActiveMapItems()"
-        [disabled]="activeMapItems.length === 0"
-        mat-icon-button
-        class="active-map-items__header__buttons__action"
-        [matTooltip]="tooltipText.removeAll"
-        [attr.aria-label]="tooltipText.removeAll"
-        [matTooltipPosition]="'below'"
-      >
-        <mat-icon svgIcon="ktzh_delete"></mat-icon>
-      </button>
-      <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
-      <span [matTooltip]="toolTipsFavourite" [attr.aria-label]="toolTipsFavourite" [matTooltipPosition]="'below'">
+  @if (screenMode !== 'mobile') {
+    <mat-card-header class="active-map-items__header" [ngClass]="{'active-map-items__header--minimized': isMinimized}">
+      <h2 class="active-map-items__header__title">Aktive Karten</h2>
+      <span
+        class="active-map-items__header__badge"
+        [ngClass]="{'active-map-items__header__badge--hidden': this.activeMapItems.length === 0}"
+        [matBadge]="this.activeMapItems.length"
+      ></span>
+      <div class="active-map-items__header__buttons">
         <button
-          (click)="showFavouriteDialog()"
-          [disabled]="activeMapItems.length === 0 || !this.isAuthenticated"
+          mat-icon-button
+          (click)="restartOnboardingGuide()"
+          [matTooltip]="tooltipText.onboardingGuide"
+          [attr.aria-label]="tooltipText.onboardingGuide"
+          [matTooltipPosition]="'below'"
+        >
+          <mat-icon>help_outline</mat-icon>
+        </button>
+        <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
+        <button
+          class="active-map-items__header__buttons__action active-map-items__header__buttons__action--notices"
+          (click)="showMapNotices()"
+          [disabled]="numberOfNotices === 0"
+          mat-icon-button
+          [matTooltip]="tooltipText.mapNotices"
+          [attr.aria-label]="tooltipText.mapNotices"
+          [matTooltipPosition]="'below'"
+        >
+          @if (numberOfUnreadNotices > 0) {
+            <notification-indicator></notification-indicator>
+          }
+          <mat-icon svgIcon="ktzh_notification"></mat-icon>
+        </button>
+        <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
+        <button
+          (click)="removeAllActiveMapItems()"
+          [disabled]="activeMapItems.length === 0"
           mat-icon-button
           class="active-map-items__header__buttons__action"
+          [matTooltip]="tooltipText.removeAll"
+          [attr.aria-label]="tooltipText.removeAll"
+          [matTooltipPosition]="'below'"
         >
-          <mat-icon svgIcon="ktzh_star"></mat-icon>
+          <mat-icon svgIcon="ktzh_delete"></mat-icon>
         </button>
-      </span>
-      <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
-      <button (click)="toggleMinimizeActiveMapItems()" mat-icon-button [attr.aria-label]="isMinimized ? 'Aufklappen' : 'Zuklappen'">
-        <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
-      </button>
-    </div>
-  </mat-card-header>
+        <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
+        <span [matTooltip]="toolTipsFavourite" [attr.aria-label]="toolTipsFavourite" [matTooltipPosition]="'below'">
+          <button
+            (click)="showFavouriteDialog()"
+            [disabled]="activeMapItems.length === 0 || !this.isAuthenticated"
+            mat-icon-button
+            class="active-map-items__header__buttons__action"
+          >
+            <mat-icon svgIcon="ktzh_star"></mat-icon>
+          </button>
+        </span>
+        <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
+        <button (click)="toggleMinimizeActiveMapItems()" mat-icon-button [attr.aria-label]="isMinimized ? 'Aufklappen' : 'Zuklappen'">
+          <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+  }
   <mat-accordion
     (cdkDropListDropped)="dropMapItem($event)"
     cdkDropList
@@ -76,31 +76,32 @@
     multi="true"
     [ngClass]="{'active-map-items__content--hidden': isMinimized || activeMapItems.length === 0}"
   >
-    <active-map-item
-      *ngFor="
-        let activeMapItem of activeMapItems;
-        trackBy: trackByMapItemId;
-        let isFirstActiveMapItem = first;
-        let isLastActiveMapItem = last
-      "
-      [activeMapItem]="activeMapItem"
-      [isFirstActiveMapItem]="isFirstActiveMapItem"
-      [isLastActiveMapItem]="isLastActiveMapItem"
-      [isDragAndDropDisabled]="isActiveMapItemDragAndDropDisabled"
-      cdkDrag
-      dragCursor
-      class="active-map-items__content__item"
-      [ngClass]="{'active-map-items__content__item--mobile': screenMode === 'mobile'}"
-    >
-      <ng-container activeMapItemDragHandle>
-        <div
-          class="active-map-items__content__item__drag-handle"
-          cdkDragHandle
-          [cdkDragHandleDisabled]="isActiveMapItemDragAndDropDisabled"
-          [ngClass]="{'active-map-items__content__item__drag-handle--disabled': isActiveMapItemDragAndDropDisabled}"
-        ></div>
-      </ng-container>
-      <div class="active-map-items__content__item--drag-placeholder" *cdkDragPlaceholder></div>
-    </active-map-item>
+    @for (
+      activeMapItem of activeMapItems;
+      track trackByMapItemId($index, activeMapItem);
+      let isFirstActiveMapItem = $first;
+      let isLastActiveMapItem = $last
+    ) {
+      <active-map-item
+        [activeMapItem]="activeMapItem"
+        [isFirstActiveMapItem]="isFirstActiveMapItem"
+        [isLastActiveMapItem]="isLastActiveMapItem"
+        [isDragAndDropDisabled]="isActiveMapItemDragAndDropDisabled"
+        cdkDrag
+        dragCursor
+        class="active-map-items__content__item"
+        [ngClass]="{'active-map-items__content__item--mobile': screenMode === 'mobile'}"
+      >
+        <ng-container activeMapItemDragHandle>
+          <div
+            class="active-map-items__content__item__drag-handle"
+            cdkDragHandle
+            [cdkDragHandleDisabled]="isActiveMapItemDragAndDropDisabled"
+            [ngClass]="{'active-map-items__content__item__drag-handle--disabled': isActiveMapItemDragAndDropDisabled}"
+          ></div>
+        </ng-container>
+        <div class="active-map-items__content__item--drag-placeholder" *cdkDragPlaceholder></div>
+      </active-map-item>
+    }
   </mat-accordion>
 </mat-card>

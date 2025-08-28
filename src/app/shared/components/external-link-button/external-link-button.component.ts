@@ -1,10 +1,15 @@
 import {Component, Input} from '@angular/core';
+import {MatIconButton} from '@angular/material/button';
+import {ClickOnSpaceBarDirective} from '../../directives/click-on-spacebar.directive';
+import {NgClass} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'external-link-button',
   templateUrl: './external-link-button.component.html',
   styleUrls: ['./external-link-button.component.scss'],
-  standalone: false,
+  imports: [MatIconButton, ClickOnSpaceBarDirective, NgClass, MatTooltip, MatIcon],
 })
 export class ExternalLinkButtonComponent {
   @Input() public url!: string;

@@ -1,11 +1,15 @@
 <div class="legend-content">
-  <i *ngIf="!layer.layerClasses || layer.layerClasses.length === 0">Keine Klassen.</i>
-  <div *ngFor="let layerClass of layer.layerClasses" class="legend-item__class-list-entry">
-    <div class="legend-item__class-list-entry__icon">
-      <img alt="{{ layerClass.label }}" src="{{ this.staticFilesBaseUrl }}/{{ layerClass.image }}" />
+  @if (!layer.layerClasses || layer.layerClasses.length === 0) {
+    <i>Keine Klassen.</i>
+  }
+  @for (layerClass of layer.layerClasses; track layerClass) {
+    <div class="legend-item__class-list-entry">
+      <div class="legend-item__class-list-entry__icon">
+        <img alt="{{ layerClass.label }}" src="{{ this.staticFilesBaseUrl }}/{{ layerClass.image }}" />
+      </div>
+      <div class="legend-item__class-list-entry__text" [title]="layerClass.label">
+        {{ layerClass.label }}
+      </div>
     </div>
-    <div class="legend-item__class-list-entry__text" [title]="layerClass.label">
-      {{ layerClass.label }}
-    </div>
-  </div>
+  }
 </div>

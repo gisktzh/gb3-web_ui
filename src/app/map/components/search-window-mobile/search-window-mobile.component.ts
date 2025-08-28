@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -10,14 +10,19 @@ import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selector
 import {selectSelectedSearchResult, selectTerm} from '../../../state/app/reducers/search.reducer';
 import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
 import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {ResultGroupsComponent} from '../search-window/result-groups/result-groups.component';
 
 @Component({
   selector: 'search-window-mobile',
   templateUrl: './search-window-mobile.component.html',
   styleUrls: ['./search-window-mobile.component.scss'],
-  standalone: false,
+  imports: [SearchInputComponent, ResultGroupsComponent],
 })
 export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterViewInit {
+  private readonly store = inject(Store);
+  private readonly dialogService = inject(MatDialog);
+  private readonly configService = inject(ConfigService);
+
   @Input() public focusOnInit: boolean = true;
   public isAnySearchFilterActive: boolean = false;
   public selectedSearchResult?: GeometrySearchApiResultMatch;
@@ -29,12 +34,6 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterView
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
   private readonly term$ = this.store.select(selectTerm);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialogService: MatDialog,
-    private readonly configService: ConfigService,
-  ) {}
 
   public ngOnInit() {
     this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));

@@ -12,10 +12,10 @@
       >
         <mat-icon>close</mat-icon>
       </button>
-      <ng-container *ngIf="showHeader">
+      @if (showHeader) {
         <h1 class="bottom-sheet-item__header__container__title">{{ overlayTitle }} {{ mapAttributeFiltersItemTitle }}</h1>
         <hr class="bottom-sheet-item__header__container__hr" />
-      </ng-container>
+      }
     </div>
   </mat-card-header>
   <mat-card-content class="bottom-sheet-item__content" cdkScrollable>

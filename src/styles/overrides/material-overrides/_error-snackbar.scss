@@ -7,7 +7,7 @@
   &.mat-mdc-snack-bar-container {
     max-width: 500px;
     background-color: ktzh-variables.$zh-red;
-    --mdc-snackbar-container-color: ktzh-variables.$zh-red;
+    --mat-snackbar-container-color: ktzh-variables.$zh-red;
 
     .mdc-snackbar__surface {
       width: 100%;

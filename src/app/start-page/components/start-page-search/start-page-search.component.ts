@@ -1,5 +1,5 @@
 /* eslint-disable rxjs-angular-x/prefer-composition -- eslint does not pickup inherited properties*/
-import {AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, QueryList, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {combineLatestWith, filter, switchMap, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -17,14 +17,22 @@ import {
   selectFilteredUsefulLinks,
 } from '../../../state/app/selectors/search-results.selector';
 import {BaseSearchContainerComponent} from '../../../shared/components/search/base-search-container/base-search-container.component';
+import {SearchBarComponent} from '../../../shared/components/search/search-bar/search-bar.component';
+import {NgClass} from '@angular/common';
+import {MatChipRow, MatChipRemove} from '@angular/material/chips';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'start-page-search',
   templateUrl: './start-page-search.component.html',
   styleUrls: ['./start-page-search.component.scss'],
-  standalone: false,
+  imports: [SearchBarComponent, NgClass, MatChipRow, MatChipRemove, MatIcon, SearchResultGroupsComponent],
 })
 export class StartPageSearchComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+  protected override store = inject(Store);
+  protected override cdr = inject(ChangeDetectorRef);
+  private readonly configService = inject(ConfigService);
+
   @ViewChild(SearchResultGroupsComponent) private readonly searchResultGroupsComponent?: SearchResultGroupsComponent;
 
   public searchTerms: string[] = [];
@@ -35,14 +43,6 @@ export class StartPageSearchComponent extends BaseSearchContainerComponent imple
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly activeSearchFilterValues$ = this.store.select(selectActiveSearchFilterValues);
-
-  constructor(
-    private readonly configService: ConfigService,
-    @Inject(Store) store: Store,
-    @Inject(ChangeDetectorRef) cdr: ChangeDetectorRef,
-  ) {
-    super(store, cdr);
-  }
 
   public override ngOnInit() {
     super.ngOnInit();

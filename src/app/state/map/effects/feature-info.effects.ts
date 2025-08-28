@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {iif, of, switchMap, tap} from 'rxjs';
@@ -17,6 +17,12 @@ import {MapUiActions} from '../actions/map-ui.actions';
 
 @Injectable()
 export class FeatureInfoEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly topicsService = inject(Gb3TopicsService);
+  private readonly mapDrawingService = inject(MapDrawingService);
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+
   public clearData$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.clearFeatureInfoContent),
@@ -88,12 +94,4 @@ export class FeatureInfoEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly topicsService: Gb3TopicsService,
-    private readonly mapDrawingService: MapDrawingService,
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-  ) {}
 }

@@ -4,7 +4,6 @@ import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {ActiveMapItemEffects} from './active-map-item.effects';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
@@ -37,6 +36,7 @@ import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {SearchActions} from '../../app/actions/search.actions';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;

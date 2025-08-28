@@ -1,4 +1,5 @@
-<map-tools-desktop *ngIf="screenMode !== 'mobile'; else mobile"></map-tools-desktop>
-<ng-template #mobile>
+@if (screenMode !== 'mobile') {
+  <map-tools-desktop></map-tools-desktop>
+} @else {
   <map-tools-mobile></map-tools-mobile>
-</ng-template>
+}

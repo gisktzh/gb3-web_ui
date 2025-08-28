@@ -13,7 +13,9 @@
     </div>
     <div class="main-footer__content__links">
       <small>Version: {{ appVersion }} </small>
-      <small *ngIf="appRelease">Release: {{ appRelease }} </small>
+      @if (appRelease) {
+        <small>Release: {{ appRelease }} </small>
+      }
     </div>
   </div>
 </footer>

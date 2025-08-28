@@ -8,8 +8,7 @@
     matTooltip="Hintergrundkarte ändern"
     aria-label="Hintergrundkarte ändern"
   ></button>
-  <basemap-selection-list
-    *ngIf="isSelectionOpen"
-    (basemapChangedEvent)="toggleSelectionAndFocusBasemapSelectorButton()"
-  ></basemap-selection-list>
+  @if (isSelectionOpen) {
+    <basemap-selection-list (basemapChangedEvent)="toggleSelectionAndFocusBasemapSelectorButton()"></basemap-selection-list>
+  }
 </div>

@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ResizeEvent} from 'angular-resizable-element';
+import {ResizeEvent, ResizableModule} from 'angular-resizable-element';
 import {ResizeHandlerLocation} from '../../types/resize-handler-location.type';
 import {StyleExpression} from '../../types/style-expression.type';
+import {NgClass} from '@angular/common';
 
 /**
  * The minimum width and height of the overlay window; cannot be resized below that.
@@ -18,7 +19,7 @@ const MAX_DIMENSION_PERCENTAGE = 0.85;
   selector: 'resize-handler',
   templateUrl: './resize-handler.component.html',
   styleUrls: ['./resize-handler.component.scss'],
-  standalone: false,
+  imports: [ResizableModule, NgClass],
 })
 export class ResizeHandlerComponent {
   @Input() public minWidth = MIN_DIMENSIONS_WIDTH__PX;

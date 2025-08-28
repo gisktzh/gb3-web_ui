@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -11,14 +11,18 @@ import {OverlayPrintActions} from '../../../state/map/actions/overlay-print-acti
 import {selectLegendPrintState} from '../../../state/map/reducers/overlay-print.reducer';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
+import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
+import {LegendComponent} from './legend/legend.component';
 
 @Component({
   selector: 'legend-overlay',
   templateUrl: './legend-overlay.component.html',
   styleUrls: ['./legend-overlay.component.scss'],
-  standalone: false,
+  imports: [MapOverlayComponent, LegendComponent],
 })
 export class LegendOverlayComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
 
@@ -34,8 +38,6 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   private readonly printLoadingState$ = this.store.select(selectLegendPrintState);
   private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

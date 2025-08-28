@@ -1,19 +1,41 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {Product, ProductFormat} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {Order} from '../../../../shared/interfaces/geoshop-order.interface';
 import {MatSelect} from '@angular/material/select';
 import {BehaviorSubject, Subscription, tap} from 'rxjs';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {NgClass, AsyncPipe} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
+import {MatFormField, MatLabel} from '@angular/material/input';
+import {MatOption} from '@angular/material/autocomplete';
+import {ExternalLinkButtonComponent} from '../../../../shared/components/external-link-button/external-link-button.component';
 
 @Component({
   selector: 'product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
-  standalone: false,
+  imports: [
+    MatCheckbox,
+    NgClass,
+    FormsModule,
+    MatTooltip,
+    ShowTooltipIfTruncatedDirective,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    ReactiveFormsModule,
+    MatOption,
+    ExternalLinkButtonComponent,
+    AsyncPipe,
+  ],
 })
 export class ProductComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public product!: Product;
   @Input() public order!: Order;
   public isProductSelected: boolean = false;
@@ -22,8 +44,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   protected readonly disabled$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   @ViewChild('formatsSelect') private matSelectRef?: MatSelect;
   private readonly subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   @Input()
   public set disabled(value: boolean) {
