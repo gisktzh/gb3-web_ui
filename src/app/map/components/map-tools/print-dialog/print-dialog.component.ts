@@ -19,7 +19,6 @@ import {Gb3PrintService} from '../../../../shared/services/apis/gb3/gb3-print.se
 import {PrintData} from '../../../interfaces/print-data.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../../../../shared/interfaces/print-rules.interface';
 import {printConfig} from '../../../../shared/configs/print.config';
-import {MatStepper, MatStep, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';
 import {FormValueConversionUtils} from '../../../utils/form-value-conversion.utils';
 import {AvailablePrintSettingsUtils} from '../../../utils/available-print-settings.utils';
 import {selectIsMapSideDrawerOpen} from '../../../../state/map/reducers/map-ui.reducer';
@@ -32,7 +31,6 @@ import {MatSelect} from '@angular/material/select';
 import {MatOption} from '@angular/material/autocomplete';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
-import {PrintDescriptionPipe} from './print-description.pipe';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -54,18 +52,14 @@ interface PrintForm {
   imports: [
     MatIconButton,
     MatIcon,
-    MatStepper,
-    MatStep,
     FormsModule,
     ReactiveFormsModule,
     MatFormField,
     MatLabel,
     MatInput,
     MatButton,
-    MatStepperNext,
     MatRadioGroup,
     MatRadioButton,
-    MatStepperPrevious,
     MatSelect,
     MatOption,
     MatHint,
@@ -73,15 +67,12 @@ interface PrintForm {
     MatPrefix,
     MatCheckbox,
     LoadingAndProcessBarComponent,
-    PrintDescriptionPipe,
   ],
 })
 export class PrintDialogComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
   private readonly printService = inject(Gb3PrintService);
-
-  @ViewChild('stepper') private readonly stepper!: MatStepper;
 
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
     title: new FormControl(),
@@ -135,7 +126,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }
 
-  public completeWithDefaultValues() {
+  public setDefaults() {
     this.formGroup.setValue({
       title: this.formGroup.controls.title.value,
       comment: this.formGroup.controls.comment.value,
@@ -148,14 +139,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       fileFormat: FileFormat[printConfig.defaultPrintValues.fileFormat],
       showLegend: printConfig.defaultPrintValues.legend,
     });
-
-    // Move the stepper to the last step and mark all steps as completed
-    this.linear = false;
-    this.stepper._steps.toArray().forEach((step) => {
-      step.completed = true;
-    });
-    this.stepper.selectedIndex = this.stepper._steps.length - 1;
-    this.linear = true;
   }
 
   private initSubscriptions() {

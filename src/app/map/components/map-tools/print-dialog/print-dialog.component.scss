@@ -2,21 +2,30 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/material.mixin' as mat-mixins;
 
-:host ::ng-deep .print-dialog__stepper__content__form__element {
+:host ::ng-deep .print-dialog__form__field {
   @include mat-mixins.mat-text-field-override-background;
   padding-top: 6px;
 
   .mat-mdc-form-field-subscript-wrapper {
+    height: auto;
+  }
+
+  .mat-mdc-form-field-bottom-align::before {
     height: 0;
+    display: none;
+  }
+
+  .mat-mdc-form-field-error-wrapper {
+    position: static;
   }
 }
 
 .print-dialog {
   width: 50vw;
   height: 100%;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  padding: 40px;
   box-sizing: border-box;
 
   .print-dialog__header {
@@ -31,64 +40,98 @@
     }
   }
 
-  .print-dialog__stepper {
-    flex: 1;
+  .print-dialog__form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
     overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 40px;
     margin-bottom: 16px;
 
-    .print-dialog__stepper__content {
-      flex-grow: 1;
+    &:after {
+      content: '';
+      position: sticky;
+      bottom: 0;
+      padding-top: 48px;
+      width: 100%;
+      background: linear-gradient(0deg, rgba(255, 255, 255, 100) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .print-dialog__form__fieldset {
+      padding: 16px 0;
+      margin: 0;
+      margin-bottom: 16px;
+      border: 0;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
-      padding-right: 12px;
-      margin: 16px 0;
+      align-items: flex-start;
+
+      &:not(:last-of-type) {
+        border-bottom: 1px solid var(--mat-sidenav-container-divider-color, transparent);
+      }
+
+      .print-dialog__form__fieldset__legend {
+        /* Copy/Paste from stepper label, but since this isn't technically a stepper label, we reproduced it. */
+        font-family: var(--mat-stepper-header-label-text-font, var(--mat-sys-title-small-font));
+        color: var(--mat-stepper-header-selected-state-label-text-color, var(--mat-sys-on-surface-variant));
+        font-size: var(--mat-stepper-header-selected-state-label-text-size, var(--mat-sys-title-small-size));
+        font-weight: var(--mat-stepper-header-selected-state-label-text-weight, var(--mat-sys-title-small-weight));
+        white-space: nowrap;
+      }
+    }
+
+    .print-dialog__form__field {
+      display: inline-block;
+
+      &.print-dialog__form__field--full-width {
+        width: 100%;
+      }
+
+      &.print-dialog__form__field--with-prefix {
+        .print-dialog__form__field__prefix {
+          box-sizing: border-box;
+          padding-left: 12px;
+          display: block;
+        }
+      }
+    }
+
+    .print-dialog__form__field-group {
+      display: grid;
+      grid-auto-columns: auto;
       gap: 16px;
 
-      .print-dialog__stepper__content__form {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
+      .print-dialog__form__field {
+        grid-row: 1;
+      }
+    }
+
+    .print-dialog__form__hint {
+      display: flex;
+      align-items: center;
+      padding-top: 6px;
+
+      .print-dialog__form__hint__icon {
+        overflow: unset;
       }
 
-      .print-dialog__stepper__content__form__row {
-        display: flex;
-        gap: 16px;
-
-        .print-dialog__stepper__content__form__row__element {
-          flex: 1;
-
-          .print-dialog__stepper__content__form__row__element__label-prefix {
-            padding-left: 12px;
-          }
-        }
+      .print-dialog__form__hint__text {
+        padding-left: 6px;
       }
+    }
 
-      .print-dialog__stepper__content__hint {
-        display: flex;
-        align-items: center;
-        padding-top: 6px;
+    .print-dialog__form__button {
+      height: 48px;
 
-        .print-dialog__stepper__content__hint__icon {
-          overflow: unset;
-        }
+      &.mdc-button {
+        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+        color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
 
-        .print-dialog__stepper__content__hint__text {
-          padding-left: 6px;
-        }
-      }
-
-      .print-dialog__stepper__content__button {
-        height: 48px;
-
-        &.mdc-button {
-          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
-          color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
-
-          &:last-of-type {
-            background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
-            color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
-          }
+        &:last-of-type {
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
+          color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
         }
       }
     }
