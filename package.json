@@ -40,7 +40,7 @@
     "@angular/platform-browser": "^20.0.5",
     "@angular/platform-browser-dynamic": "^20.0.5",
     "@angular/router": "^20.0.5",
-    "@arcgis/core": "~4.33.0",
+    "@arcgis/core": "4.33.10",
     "@ngrx/effects": "^20.0.0",
     "@ngrx/entity": "^20.0.0",
     "@ngrx/operators": "^20.0.0",
