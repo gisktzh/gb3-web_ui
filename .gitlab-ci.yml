@@ -1,0 +1,47 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  CA_CERTIFICATE: "$CA_CERTIFICATE"
+  WORK_DIR: gb3-web_ui
+  STAGE: staging
+
+build:
+  image: docker:28.3.3
+  stage: build
+  tags: [docker]
+  services:
+    - name: docker:28.3.3-dind
+      command:
+        - /bin/sh
+        - -c
+        - echo "$CA_CERTIFICATE" > /usr/local/share/ca-certificates/proxywg.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
+  before_script:
+    - docker info
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker compose -f docker-compose.ktzh.yml build --pull
+    - docker compose -f docker-compose.ktzh.yml push
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+deploy:
+  image: ubuntu:22.04
+  stage: deploy
+  tags: [docker]
+  before_script:
+    - apt-get -yq update
+    - apt-get -yqq install openssh-client
+    - install -m 600 -D /dev/null ~/.ssh/id_rsa
+    - echo "$SSH_KEY_STAGING_FRONTEND" | base64 -d > ~/.ssh/id_rsa
+    - ssh-keyscan -H $SSH_HOST_STAGING_FRONTEND > ~/.ssh/known_hosts
+    - ssh $SSH_USER@$SSH_HOST_STAGING_FRONTEND "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+  script:
+    - scp docker-compose.ktzh.yml $SSH_USER@$SSH_HOST_STAGING_FRONTEND:~/$WORK_DIR/
+    - ssh $SSH_USER@$SSH_HOST_STAGING_FRONTEND "cd $WORK_DIR && docker compose -f docker-compose.ktzh.yml up -d --pull always && exit"
+  after_script:
+    - rm -rf ~/.ssh
+  when: manual
