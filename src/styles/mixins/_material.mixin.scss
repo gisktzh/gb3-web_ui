@@ -121,6 +121,7 @@
   .mat-icon {
     width: $icon-size;
     height: $icon-size;
+    min-height: auto;
 
     svg {
       width: $icon-size;
