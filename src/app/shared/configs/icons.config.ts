@@ -239,6 +239,18 @@ const searchSymbolIconsConfig = [
     path: 'assets/icons/search/service.svg',
   },
 ];
+
+const printIconsConfig = [
+  {
+    id: 'ktzh_print_portrait',
+    path: 'assets/icons/print/portrait.svg',
+  },
+  {
+    id: 'ktzh_print_landscape',
+    path: 'assets/icons/print/landscape.svg',
+  },
+];
+
 export const iconsConfig = [
   ...toolIconsConfig,
   ...controlIconsConfig,
@@ -247,4 +259,5 @@ export const iconsConfig = [
   ...drawingSymbolIconsConfig,
   ...selectingSymbolIconsConfig,
   ...searchSymbolIconsConfig,
+  ...printIconsConfig,
 ];

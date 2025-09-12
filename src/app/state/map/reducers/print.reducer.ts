@@ -8,6 +8,8 @@ export const initialState: PrintState = {
   creation: undefined,
   creationLoadingState: undefined,
   creationResponse: undefined,
+  capabilitiesValidCombinations: undefined,
+  capabilitiesValidCombinationsLoadingState: undefined,
 };
 
 export const printFeature = createFeature({
@@ -31,7 +33,27 @@ export const printFeature = createFeature({
         creationLoadingState: undefined,
       };
     }),
+    on(PrintActions.fetchCapabilitiesValidCombinations, (state): PrintState => {
+      return {
+        ...state,
+        capabilitiesValidCombinationsLoadingState: 'loading',
+      };
+    }),
+    on(PrintActions.capabilitiesValidCombinationsLoaded, (state, {printCapabilitiesCombinations}): PrintState => {
+      return {
+        ...state,
+        capabilitiesValidCombinations: printCapabilitiesCombinations,
+        capabilitiesValidCombinationsLoadingState: 'loaded',
+      };
+    }),
   ),
 });
 
-export const {name, reducer, selectCreationLoadingState, selectCreationResponse} = printFeature;
+export const {
+  name,
+  reducer,
+  selectCreationLoadingState,
+  selectCreationResponse,
+  selectCapabilitiesValidCombinations,
+  selectCapabilitiesValidCombinationsLoadingState,
+} = printFeature;

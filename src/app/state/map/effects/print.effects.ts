@@ -1,6 +1,6 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {of, switchMap, tap} from 'rxjs';
+import {filter, of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
@@ -9,9 +9,13 @@ import {PrintUtils} from '../../../shared/utils/print.utils';
 import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {FileDownloadService} from '../../../shared/services/file-download-service';
+import {Store} from '@ngrx/store';
+import {selectCapabilitiesValidCombinations} from '../reducers/print.reducer';
+import {concatLatestFrom} from '@ngrx/operators';
 
 @Injectable()
 export class PrintEffects {
+  private readonly store = inject(Store);
   private readonly actions$ = inject(Actions);
   private readonly printService = inject(Gb3PrintService);
   private readonly mapDrawingService = inject(MapDrawingService);
@@ -83,6 +87,23 @@ export class PrintEffects {
       ofType(MapUiActions.hideMapSideDrawerContent),
       map(() => {
         return PrintActions.removePrintPreview();
+      }),
+    );
+  });
+
+  public fetchPrintCapabilitiesCombinations$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PrintActions.fetchCapabilitiesValidCombinations),
+      concatLatestFrom(() => this.store.select(selectCapabilitiesValidCombinations)),
+      filter(([_, capabilitiesValidCombinations]) => capabilitiesValidCombinations === undefined),
+      switchMap(() => {
+        return this.printService.fetchPrintCapabilities().pipe(
+          map((data) =>
+            PrintActions.capabilitiesValidCombinationsLoaded({
+              printCapabilitiesCombinations: data.print?.valid_combinations_machine_readable,
+            }),
+          ),
+        );
       }),
     );
   });

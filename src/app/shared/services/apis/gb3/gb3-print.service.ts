@@ -10,6 +10,7 @@ import {
   ReportOrientation,
 } from '../../../interfaces/print.interface';
 import {
+  PrintCapabilities,
   PrintCreateData,
   PrintFeatureInfoCreateData,
   PrintFeatureInfoNew,
@@ -66,6 +67,10 @@ export class Gb3PrintService extends Gb3ApiService {
     );
   }
 
+  public fetchPrintCapabilities(): Observable<PrintCapabilities> {
+    return this.get(this.printCapabilitiesUrl());
+  }
+
   /**
    * Creates a PrintCreation object from the given parameters used to create a print job on the print API
    */
@@ -102,6 +107,10 @@ export class Gb3PrintService extends Gb3ApiService {
 
   private createFeatureInfoPrintUrl(): string {
     return `${this.getFullEndpointUrl()}/feature_info`;
+  }
+
+  private printCapabilitiesUrl(): string {
+    return `${this.getFullEndpointUrl()}/capabilities`;
   }
 
   private createCreateUrl(): string {

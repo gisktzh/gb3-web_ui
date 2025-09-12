@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
-import {BehaviorSubject, combineLatestWith, debounceTime, distinctUntilChanged, filter, Subscription, tap, withLatestFrom} from 'rxjs';
-import {selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
-import {ReportOrientation, ReportType} from '../../../../shared/interfaces/print.interface';
+import {BehaviorSubject, combineLatestWith, debounceTime, distinctUntilChanged, filter, Subscription, tap} from 'rxjs';
+import {selectCapabilitiesValidCombinations, selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
+import {ReportOrientation} from '../../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../../state/map/actions/print.actions';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
@@ -19,9 +19,7 @@ import {Gb3PrintService} from '../../../../shared/services/apis/gb3/gb3-print.se
 import {PrintData} from '../../../interfaces/print-data.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../../../../shared/interfaces/print-rules.interface';
 import {printConfig} from '../../../../shared/configs/print.config';
-import {MatStepper, MatStep, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';
 import {FormValueConversionUtils} from '../../../utils/form-value-conversion.utils';
-import {AvailablePrintSettingsUtils} from '../../../utils/available-print-settings.utils';
 import {selectIsMapSideDrawerOpen} from '../../../../state/map/reducers/map-ui.reducer';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
 import {MatIconButton, MatButton} from '@angular/material/button';
@@ -32,20 +30,8 @@ import {MatSelect} from '@angular/material/select';
 import {MatOption} from '@angular/material/autocomplete';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
-import {PrintDescriptionPipe} from './print-description.pipe';
-
-interface PrintForm {
-  title: FormControl<string | null>;
-  comment: FormControl<string | null>;
-  reportType: FormControl<ReportType | null>;
-  reportLayout: FormControl<string | null>;
-  reportOrientation: FormControl<ReportOrientation | null>;
-  dpi: FormControl<number | null>;
-  rotation: FormControl<number | null>;
-  scale: FormControl<string | null>;
-  fileFormat: FormControl<string | null>;
-  showLegend: FormControl<boolean | null>;
-}
+import {PrintSettingsOptionsProviderService} from 'src/app/map/services/print-settings-options-provider.service';
+import {PrintForm} from 'src/app/shared/interfaces/print-form.interface';
 
 @Component({
   selector: 'print-dialog',
@@ -54,18 +40,14 @@ interface PrintForm {
   imports: [
     MatIconButton,
     MatIcon,
-    MatStepper,
-    MatStep,
     FormsModule,
     ReactiveFormsModule,
     MatFormField,
     MatLabel,
     MatInput,
     MatButton,
-    MatStepperNext,
     MatRadioGroup,
     MatRadioButton,
-    MatStepperPrevious,
     MatSelect,
     MatOption,
     MatHint,
@@ -73,26 +55,24 @@ interface PrintForm {
     MatPrefix,
     MatCheckbox,
     LoadingAndProcessBarComponent,
-    PrintDescriptionPipe,
   ],
 })
 export class PrintDialogComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
   private readonly printService = inject(Gb3PrintService);
+  private readonly printSettingsOptionsProvider = inject(PrintSettingsOptionsProviderService);
 
-  @ViewChild('stepper') private readonly stepper!: MatStepper;
-
-  public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
+  public readonly formGroup = new FormGroup<PrintForm>({
     title: new FormControl(),
     comment: new FormControl(),
     reportType: new FormControl(),
-    reportLayout: new FormControl('', [Validators.required]),
+    layout: new FormControl(DocumentFormat.A4, [Validators.required]),
     reportOrientation: new FormControl(),
-    dpi: new FormControl(0, [Validators.required]),
+    dpi: new FormControl(null, [Validators.required]),
     rotation: new FormControl(0, [Validators.min(-90), Validators.max(90)]),
     scale: new FormControl('', [Validators.required]),
-    fileFormat: new FormControl('', [Validators.required]),
+    fileFormat: new FormControl(FileFormat.pdf, [Validators.required]),
     showLegend: new FormControl(false, [Validators.required]),
   });
 
@@ -103,9 +83,15 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
   public readonly minScale = this.configService.mapConfig.mapScaleConfig.minScale;
 
-  public availableReportLayouts: string[] = Object.values(DocumentFormat).filter((value) => typeof value === 'string') as string[];
-  public availableDpiSettings: number[] = Object.values(DpiSetting).filter((value) => typeof value === 'number') as number[];
-  public availableFileFormats: string[] = Object.values(FileFormat).filter((value) => typeof value === 'string') as string[];
+  public allFileFormats: FileFormat[] = [];
+  public allDpiSettings: DpiSetting[] = [];
+  public allLayouts: DocumentFormat[] = [];
+  public allOrientations: ReportOrientation[] = [];
+
+  public availableFileFormats: FileFormat[] = [];
+  public availableDpiSettings: DpiSetting[] = [];
+  public availableLayouts: DocumentFormat[] = [];
+  public availableOrientations: ReportOrientation[] = [];
 
   public linear = true;
 
@@ -119,6 +105,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.initSubscriptions();
+
+    this.store.dispatch(PrintActions.fetchCapabilitiesValidCombinations());
+
+    this.setDefaults();
   }
 
   public print() {
@@ -135,12 +125,12 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }
 
-  public completeWithDefaultValues() {
+  public setDefaults() {
     this.formGroup.setValue({
       title: this.formGroup.controls.title.value,
       comment: this.formGroup.controls.comment.value,
       reportType: printConfig.defaultPrintValues.reportType,
-      reportLayout: DocumentFormat[printConfig.defaultPrintValues.documentFormat],
+      layout: DocumentFormat[printConfig.defaultPrintValues.documentFormat],
       reportOrientation: printConfig.defaultPrintValues.orientation,
       dpi: printConfig.defaultPrintValues.dpiSetting,
       rotation: printConfig.defaultPrintValues.rotation,
@@ -148,14 +138,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       fileFormat: FileFormat[printConfig.defaultPrintValues.fileFormat],
       showLegend: printConfig.defaultPrintValues.legend,
     });
-
-    // Move the stepper to the last step and mark all steps as completed
-    this.linear = false;
-    this.stepper._steps.toArray().forEach((step) => {
-      step.completed = true;
-    });
-    this.stepper.selectedIndex = this.stepper._steps.length - 1;
-    this.linear = true;
   }
 
   private initSubscriptions() {
@@ -168,7 +150,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           // for the print preview we only use some properties and only if they've changed.
           // The disabled properties are not showing in the 'value' object, thus we need to get them from the formGroup
           map(([value, _]) => ({
-            reportLayout: value.reportLayout ?? this.formGroup.controls.reportLayout.value,
+            layout: value.layout ?? this.formGroup.controls.layout.value,
             reportOrientation: value.reportOrientation ?? this.formGroup.controls.reportOrientation.value,
             scale: value.scale ?? this.formGroup.controls.scale.value,
             rotation: value.rotation ?? this.formGroup.controls.rotation.value,
@@ -177,12 +159,19 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           distinctUntilChanged(
             // We do not check for scale here, because the scale is dealt with separately
             (previous, current) =>
-              previous.reportLayout === current.reportLayout &&
+              previous.layout === current.layout &&
               previous.reportOrientation === current.reportOrientation &&
               previous.rotation === current.rotation &&
               previous.fileFormat === current.fileFormat,
           ),
-          tap((value) => this.updatePrintPreview(value.reportLayout, value.reportOrientation, parseInt(value.scale!), value.rotation)),
+          tap((value) =>
+            this.updatePrintPreview(
+              value.layout,
+              value.reportOrientation,
+              value.scale !== null ? parseInt(value.scale) : 0,
+              value.rotation,
+            ),
+          ),
         )
         .subscribe(),
     );
@@ -212,81 +201,12 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           debounceTime(300),
           tap((scale) =>
             this.updatePrintPreview(
-              this.formGroup.controls.reportLayout.value,
+              this.formGroup.controls.layout.value,
               this.formGroup.controls.reportOrientation.value,
               scale,
               this.formGroup.controls.rotation.value,
             ),
           ),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.formGroup.controls.reportType.valueChanges
-        .pipe(
-          filter((value): value is ReportType => value !== null),
-          distinctUntilChanged(),
-          withLatestFrom(this.formGroup.controls.showLegend.valueChanges),
-          tap(([reportType, isLegendSelected]) => {
-            this.availableReportLayouts = AvailablePrintSettingsUtils.updateUniqueReportLayouts(reportType);
-            this.availableFileFormats = AvailablePrintSettingsUtils.updateUniqueFileTypes(reportType, isLegendSelected ?? true);
-            this.updateFileTypeValueOnValueChange();
-
-            if (reportType === 'mapset') {
-              this.formGroup.setValue({
-                title: this.formGroup.controls.title.value,
-                comment: this.formGroup.controls.comment.value,
-                reportType: reportType,
-                reportLayout: DocumentFormat[printConfig.defaultMapSetPrintValues.documentFormat],
-                reportOrientation: printConfig.defaultMapSetPrintValues.orientation,
-                dpi: printConfig.defaultMapSetPrintValues.dpiSetting,
-                // We are persistng the rotation and scale from the form
-                rotation: this.formGroup.controls.rotation.value,
-                scale: this.formGroup.controls.scale.value,
-                fileFormat: FileFormat[printConfig.defaultMapSetPrintValues.fileFormat],
-                showLegend: printConfig.defaultMapSetPrintValues.legend,
-              });
-
-              this.formGroup.controls.fileFormat.disable({emitEvent: false});
-              this.formGroup.controls.reportOrientation.disable({emitEvent: false});
-              this.formGroup.controls.reportLayout.disable({emitEvent: false});
-            } else {
-              this.formGroup.controls.reportLayout.enable();
-              this.formGroup.controls.reportOrientation.enable();
-              if (!this.formGroup.controls.showLegend.value) {
-                this.formGroup.controls.fileFormat.enable();
-              }
-            }
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.formGroup.controls.reportLayout.valueChanges
-        .pipe(
-          filter((value): value is string => !!value),
-          distinctUntilChanged(),
-          tap((reportLayout) => {
-            this.availableDpiSettings = AvailablePrintSettingsUtils.updateUniqueDpiSettings(reportLayout);
-            this.updateDpiValueOnValueChange();
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.formGroup.controls.showLegend.valueChanges
-        .pipe(
-          withLatestFrom(this.formGroup.controls.reportType.valueChanges),
-          tap(([isLegendSelected, reportType]) => {
-            this.availableFileFormats = AvailablePrintSettingsUtils.updateUniqueFileTypes(
-              reportType ?? printConfig.defaultPrintValues.reportType,
-              isLegendSelected ?? printConfig.defaultPrintValues.legend,
-            );
-            this.updateFileTypeValueOnValueChange();
-          }),
         )
         .subscribe(),
     );
@@ -325,10 +245,77 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .pipe(tap((drawings) => (this.drawings = drawings)))
         .subscribe(),
     );
+
+    this.subscriptions.add(
+      this.store
+        .select(selectCapabilitiesValidCombinations)
+        .pipe(
+          tap((capabilitiesValidCombinations) => {
+            if (!capabilitiesValidCombinations) {
+              return;
+            }
+
+            this.allDpiSettings = this.printSettingsOptionsProvider.getUnqiueOptions<'dpi'>(capabilitiesValidCombinations, 'dpi');
+            this.allLayouts = this.printSettingsOptionsProvider.getUnqiueOptions<'layout'>(capabilitiesValidCombinations, 'layout');
+            this.allOrientations = this.printSettingsOptionsProvider.getUnqiueOptions<'reportOrientation'>(
+              capabilitiesValidCombinations,
+              'reportOrientation',
+            );
+            this.allFileFormats = this.printSettingsOptionsProvider.getUnqiueOptions<'fileFormat'>(
+              capabilitiesValidCombinations,
+              'fileFormat',
+            );
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.formGroup.valueChanges
+        .pipe(
+          combineLatestWith(this.store.select(selectCapabilitiesValidCombinations)),
+          tap(([formValue, allCombinations]) => {
+            if (!allCombinations) {
+              return;
+            }
+
+            const available = this.printSettingsOptionsProvider.filterOptions(formValue, allCombinations, [
+              'reportType',
+              'layout',
+              'reportOrientation',
+              'dpi',
+              'showLegend',
+              'fileFormat',
+            ]);
+
+            this.availableDpiSettings = available.dpi;
+            this.availableFileFormats = available.fileFormat;
+            this.availableLayouts = available.layout;
+            this.availableOrientations = available.reportOrientation;
+
+            if (formValue.dpi && !this.availableDpiSettings.includes(formValue.dpi)) {
+              this.formGroup.controls.dpi.setValue(this.availableDpiSettings[0]);
+            }
+
+            if (formValue.fileFormat && !this.availableFileFormats.includes(formValue.fileFormat)) {
+              this.formGroup.controls.fileFormat.setValue(this.availableFileFormats[0]);
+            }
+
+            if (formValue.layout && !this.availableLayouts.includes(formValue.layout)) {
+              this.formGroup.controls.layout.setValue(this.availableLayouts[0]);
+            }
+
+            if (formValue.reportOrientation && !this.availableOrientations.includes(formValue.reportOrientation)) {
+              this.formGroup.controls.reportOrientation.setValue(this.availableOrientations[0]);
+            }
+          }),
+        )
+        .subscribe(),
+    );
   }
 
   private updatePrintPreview(
-    reportLayout: string | null | undefined,
+    layout: string | null | undefined,
     reportOrientation: ReportOrientation | null | undefined,
     scale: number | null | undefined,
     rotation: number | null | undefined,
@@ -336,8 +323,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     const defaultDocumentFormat = DocumentFormat[printConfig.defaultPrintValues.documentFormat] as keyof typeof DocumentFormat;
     let currentReportSizing = printConfig.pixelSizes[defaultDocumentFormat].landscape;
 
-    if (reportLayout) {
-      const documentFormat = printConfig.pixelSizes[reportLayout as keyof typeof DocumentFormat];
+    if (layout) {
+      const documentFormat = printConfig.pixelSizes[layout as keyof typeof DocumentFormat];
       if (reportOrientation === 'landscape') {
         currentReportSizing = documentFormat.landscape;
       } else {
@@ -372,7 +359,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       title: null,
       comment: null,
       reportType: printConfig.defaultPrintValues.reportType,
-      reportLayout: DocumentFormat[defaultReport.documentFormat],
+      layout: DocumentFormat[defaultReport.documentFormat],
       reportOrientation: defaultReport.orientation,
       dpi: defaultReport.dpiSetting,
       rotation: defaultReport.rotation,
@@ -388,7 +375,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private getPrintData(): PrintData {
     return {
       format: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.fileFormat.value),
-      reportLayout: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.reportLayout.value),
+      reportLayout: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.layout.value),
       reportType: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.reportType.value),
       reportOrientation: this.formGroup.controls.reportOrientation.value ?? undefined,
       title: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.title.value),
@@ -405,33 +392,5 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       activeMapItems: FormValueConversionUtils.getArrayOrDefaultValue(this.activeMapItems),
       drawings: FormValueConversionUtils.getArrayOrDefaultValue(this.drawings),
     };
-  }
-
-  private updateDpiValueOnValueChange() {
-    if (this.availableDpiSettings.length === 1) {
-      this.formGroup.controls.dpi.disable({emitEvent: false});
-    } else {
-      this.formGroup.controls.dpi.enable();
-    }
-    const isSelectedDpiSettingAllowed = this.availableDpiSettings.some(
-      (availableDpiSetting) => availableDpiSetting === this.formGroup.controls.dpi.value,
-    );
-    if (!isSelectedDpiSettingAllowed) {
-      this.formGroup.controls.dpi.setValue(this.availableDpiSettings[0]);
-    }
-  }
-
-  private updateFileTypeValueOnValueChange() {
-    if (this.availableFileFormats.length === 1) {
-      this.formGroup.controls.fileFormat.disable({emitEvent: false});
-    } else {
-      this.formGroup.controls.fileFormat.enable();
-    }
-    const isSelectedFileFormatAllowed = this.availableFileFormats.some(
-      (availableFileFormat) => availableFileFormat === this.formGroup.controls.fileFormat.value,
-    );
-    if (!isSelectedFileFormatAllowed) {
-      this.formGroup.controls.fileFormat.setValue(this.availableFileFormats[0]);
-    }
   }
 }
