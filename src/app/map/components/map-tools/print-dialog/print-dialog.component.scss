@@ -20,6 +20,21 @@
   }
 }
 
+:host ::ng-deep .mat-mdc-progress-bar {
+  margin-bottom: 6px;
+}
+
+:host ::ng-deep .print-dialog__form__field-group .mat-mdc-notch-piece {
+  max-width: unset;
+}
+
+:host ::ng-deep .mat-mdc-radio-button label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .print-dialog {
   width: 50vw;
   height: 100%;
@@ -47,17 +62,7 @@
     box-sizing: border-box;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-right: 40px;
     margin-bottom: 16px;
-
-    &:after {
-      content: '';
-      position: sticky;
-      bottom: 0;
-      padding-top: 48px;
-      width: 100%;
-      background: linear-gradient(0deg, rgba(255, 255, 255, 100) 0%, rgba(255, 255, 255, 0) 100%);
-    }
 
     .print-dialog__form__fieldset {
       padding: 16px 0;
@@ -99,12 +104,19 @@
     }
 
     .print-dialog__form__field-group {
+      width: 100%;
       display: grid;
-      grid-auto-columns: auto;
+      grid-auto-columns: 1fr;
       gap: 16px;
+      padding-bottom: 6px;
 
       .print-dialog__form__field {
         grid-row: 1;
+      }
+
+      .mdc-floating-label {
+        overflow: visible;
+        max-width: unset;
       }
     }
 
@@ -121,17 +133,22 @@
         padding-left: 6px;
       }
     }
+  }
 
-    .print-dialog__form__button {
-      height: 48px;
+  .print-dialog__form__button {
+    height: 48px;
 
-      &.mdc-button {
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
-        color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+    &.mdc-button {
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
 
-        &:last-of-type {
-          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
-          color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+      &.print-dialog__form__button--primary {
+        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
+        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+
+        &:hover,
+        &:focus {
+          opacity: 0.8;
         }
       }
     }

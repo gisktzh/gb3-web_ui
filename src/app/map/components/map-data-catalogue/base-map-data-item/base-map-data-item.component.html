@@ -23,6 +23,8 @@
         [matBadgeHidden]="!this.filterString || this.loadingState === 'loading'"
         [matBadge]="layers.length"
         matBadgeOverlap
+        aria-hidden="false"
+        [attr.aria-label]="itemExpansionPanel.expanded ? 'Pfeil nach unten' : 'Pfeil nach rechts'"
       ></mat-icon>
     </button>
     <div

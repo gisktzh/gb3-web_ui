@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ToolMenuVisibility} from '../../../../shared/types/tool-menu-visibility.type';
@@ -65,7 +65,12 @@ export class MapToolsDesktopComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.toggleToolMenu({tool: tool}));
   }
 
-  public showPrintDialog() {
+  @HostListener('window:keydown.control.p', ['$event'])
+  public showPrintDialog(event?: KeyboardEvent) {
+    if (event) {
+      event.preventDefault();
+    }
+
     this.store.dispatch(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'print'}));
   }
 

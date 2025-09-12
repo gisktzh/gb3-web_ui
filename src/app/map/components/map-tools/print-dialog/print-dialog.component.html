@@ -6,7 +6,15 @@
     </button>
   </div>
 
-  <form [formGroup]="formGroup" class="print-dialog__form">
+  <form [formGroup]="formGroup" class="print-dialog__form" id="print-dialog-form">
+    <fieldset class="print-dialog__form__fieldset">
+      <legend class="print-dialog__form__fieldset__legend">Druckvorlage</legend>
+      <mat-radio-group formControlName="reportType">
+        <mat-radio-button class="print-dialog__form__radio-button" value="standard">Karten überlagernd drucken</mat-radio-button>
+        <mat-radio-button class="print-dialog__form__radio-button" value="mapset">Karten separat drucken (Kartenset)</mat-radio-button>
+      </mat-radio-group>
+    </fieldset>
+
     <fieldset class="print-dialog__form__fieldset">
       <legend class="print-dialog__form__fieldset__legend">Beschriftung</legend>
       <mat-form-field appearance="outline" class="print-dialog__form__field print-dialog__form__field--full-width">
@@ -20,53 +28,7 @@
     </fieldset>
 
     <fieldset class="print-dialog__form__fieldset">
-      <legend class="print-dialog__form__fieldset__legend">Art</legend>
-      <mat-radio-group formControlName="reportType">
-        <mat-radio-button value="standard">Karten überlagernd drucken</mat-radio-button>
-        <mat-radio-button value="mapset">Karten separat drucken (Kartenset)</mat-radio-button>
-      </mat-radio-group>
-    </fieldset>
-
-    <fieldset class="print-dialog__form__fieldset">
-      <legend class="print-dialog__form__fieldset__legend">Format</legend>
-      <mat-form-field appearance="outline" class="print-dialog__form__field" hideRequiredMarker>
-        <mat-label>Layout</mat-label>
-        <mat-select formControlName="reportLayout">
-          @for (reportLayout of availableReportLayouts; track reportLayout) {
-            <mat-option [value]="reportLayout">
-              {{ reportLayout }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      @if (formGroup.controls.reportLayout.disabled) {
-        <mat-hint>
-          <div class="print-dialog__form__hint">
-            <mat-icon class="print-dialog__form__hint__icon">info</mat-icon>
-            <span class="print-dialog__form__hint__text">Kartensets können nur in A4 gedruckt werden</span>
-          </div>
-        </mat-hint>
-      }
-    </fieldset>
-
-    <fieldset class="print-dialog__form__fieldset">
-      <legend class="print-dialog__form__fieldset__legend">Orientierung</legend>
-      <mat-radio-group formControlName="reportOrientation">
-        <mat-radio-button value="portrait">Hochformat</mat-radio-button>
-        <mat-radio-button value="landscape">Querformat</mat-radio-button>
-      </mat-radio-group>
-      @if (formGroup.controls.reportOrientation.disabled) {
-        <mat-hint>
-          <div class="print-dialog__form__hint">
-            <mat-icon class="print-dialog__form__hint__icon">info</mat-icon>
-            <span class="print-dialog__form__hint__text">Kartensets können nur im Hochformat gedruckt werden</span>
-          </div>
-        </mat-hint>
-      }
-    </fieldset>
-
-    <fieldset class="print-dialog__form__fieldset">
-      <legend class="print-dialog__form__fieldset__legend">Rotation/Massstab</legend>
+      <legend class="print-dialog__form__fieldset__legend">Kartenausschnitt</legend>
       <div class="print-dialog__form__field-group">
         <mat-form-field appearance="outline" class="print-dialog__form__field">
           <mat-label>Rotation [°]</mat-label>
@@ -80,50 +42,62 @@
           <mat-error>Minimum: 1:{{ maxScale }} Maximum: 1:{{ minScale }}</mat-error>
         </mat-form-field>
       </div>
+
+      <mat-checkbox formControlName="showLegend" class="print-dialog__form__field">Legende mitdrucken</mat-checkbox>
     </fieldset>
 
     <fieldset class="print-dialog__form__fieldset">
-      <legend class="print-dialog__form__fieldset__legend">Auflösung</legend>
-      <mat-form-field appearance="outline" class="print-dialog__form__field" hideRequiredMarker>
-        <mat-label>Auflösung [dpi]</mat-label>
-        <mat-select formControlName="dpi">
-          @for (dpi of availableDpiSettings; track dpi) {
-            <mat-option [value]="dpi">
-              {{ dpi }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      @if (formGroup.controls.dpi.disabled) {
-        <mat-hint>
-          <div class="print-dialog__form__hint">
-            <mat-icon class="print-dialog__form__hint__icon">info</mat-icon>
-            <span class="print-dialog__form__hint__text"
-              >{{ formGroup.controls.reportLayout.value }} kann nur mit 150 dpi gedruckt werden</span
-            >
-          </div>
-        </mat-hint>
-      }
-    </fieldset>
+      <legend class="print-dialog__form__fieldset__legend">Seiteneinstellungen</legend>
+      <div class="print-dialog__form__field-group">
+        <mat-form-field appearance="outline" class="print-dialog__form__field" hideRequiredMarker>
+          <mat-label>Papiergrösse</mat-label>
+          <mat-select formControlName="layout">
+            @for (layout of allLayouts; track layout) {
+              <mat-option [value]="layout" [disabled]="!availableLayouts.includes(layout)">
+                {{ layout }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        @if (formGroup.controls.layout.disabled) {
+          <mat-hint>
+            <div class="print-dialog__form__hint">
+              <mat-icon class="print-dialog__form__hint__icon">info</mat-icon>
+              <span class="print-dialog__form__hint__text">Kartensets können nur in A4 gedruckt werden</span>
+            </div>
+          </mat-hint>
+        }
+        <mat-form-field appearance="outline" class="print-dialog__form__field" hideRequiredMarker>
+          <mat-label>Auflösung [dpi]</mat-label>
+          <mat-select formControlName="dpi">
+            @for (dpi of allDpiSettings; track dpi) {
+              <mat-option [value]="dpi" [disabled]="!availableDpiSettings.includes(dpi)">{{ dpi }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="print-dialog__form__field" hideRequiredMarker>
+          <mat-label>Dateiformat</mat-label>
+          <mat-select formControlName="fileFormat">
+            @for (format of allFileFormats; track format) {
+              <mat-option [value]="format" [disabled]="!availableFileFormats.includes(format)">
+                {{ format }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="print-dialog__form__field-group">
+        <mat-radio-group formControlName="reportOrientation">
+          <mat-radio-button value="portrait" [disabled]="!availableOrientations.includes('portrait')"
+            ><mat-icon svgIcon="ktzh_print_portrait" /> Hochformat</mat-radio-button
+          >
+          <mat-radio-button value="landscape" [disabled]="!availableOrientations.includes('landscape')"
+            ><mat-icon svgIcon="ktzh_print_landscape" /> Querformat</mat-radio-button
+          >
+        </mat-radio-group>
+      </div>
 
-    <fieldset class="print-dialog__form__fieldset">
-      <legend class="print-dialog__form__fieldset__legend">Legende</legend>
-      <mat-checkbox formControlName="showLegend" class="print-dialog__form__field">Legende</mat-checkbox>
-    </fieldset>
-
-    <fieldset class="print-dialog__form__fieldset">
-      <legend class="print-dialog__form__fieldset__legend">Dateformat</legend>
-      <mat-form-field appearance="outline" class="print-dialog__form__field" hideRequiredMarker>
-        <mat-label>Dateiformat</mat-label>
-        <mat-select formControlName="fileFormat">
-          @for (format of availableFileFormats; track format) {
-            <mat-option [value]="format">
-              {{ format }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      @if (formGroup.controls.fileFormat.disabled) {
+      @if (allFileFormats.length > availableFileFormats.length) {
         <mat-hint>
           <div class="print-dialog__form__hint">
             <mat-icon class="print-dialog__form__hint__icon">info</mat-icon>
@@ -133,28 +107,42 @@
           </div>
         </mat-hint>
       }
+      @if (availableOrientations.length === 1) {
+        <mat-hint>
+          <div class="print-dialog__form__hint">
+            <mat-icon class="print-dialog__form__hint__icon">info</mat-icon>
+            <span class="print-dialog__form__hint__text">Kartensets können nur im Hochformat gedruckt werden</span>
+          </div>
+        </mat-hint>
+      }
+      @if (allDpiSettings.length > availableDpiSettings.length) {
+        <mat-hint>
+          <div class="print-dialog__form__hint">
+            <mat-icon class="print-dialog__form__hint__icon">info</mat-icon>
+            <span class="print-dialog__form__hint__text">{{ formGroup.controls.layout.value }} kann nur mit 150 dpi gedruckt werden</span>
+          </div>
+        </mat-hint>
+      }
     </fieldset>
-
-    <div>
-      <button
-        class="print-dialog__form__button"
-        (click)="print()"
-        color="accent"
-        type="submit"
-        form="printForm"
-        [disabled]="!formGroup || formGroup.status !== 'VALID' || printCreationLoadingState === 'loading'"
-        mat-button
-      >
-        Drucken
-      </button>
-    </div>
-
-    <loading-and-process-bar [loadingState]="printCreationLoadingState"></loading-and-process-bar>
   </form>
+
+  <loading-and-process-bar [loadingState]="printCreationLoadingState"></loading-and-process-bar>
 
   <div class="print-dialog__footer">
     <button class="print-dialog__footer__button" (click)="close()" [disabled]="printCreationLoadingState === 'loading'" mat-button>
       Abbrechen
+    </button>
+    <button
+      class="print-dialog__form__button print-dialog__form__button--primary"
+      (click)="print()"
+      color="accent"
+      type="submit"
+      form="printForm"
+      [disabled]="!formGroup || formGroup.status !== 'VALID' || printCreationLoadingState === 'loading'"
+      mat-button
+      form="print-dialog-form"
+    >
+      Drucken
     </button>
   </div>
 </div>

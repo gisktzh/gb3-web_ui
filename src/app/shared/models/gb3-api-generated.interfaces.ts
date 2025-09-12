@@ -10,6 +10,8 @@
  */
 
 import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
+import {ReportOrientation, ReportType} from '../interfaces/print.interface';
+import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
 
 export interface BboxGeoshop {
   /** GeoJSON geometry object */
@@ -331,6 +333,60 @@ export interface PersonalFavoriteNew {
   content: FavoriteContent;
   drawings: FavoriteDrawings;
   measurements: FavoriteMeasurements;
+}
+
+export interface PrintCapabilities {
+  /** Root object for print capabilities */
+  print?: {
+    /** Possible file types for printing */
+    formats?: string[];
+    /** Accepted DPI values */
+    dpis?: number[];
+    /** List of reports and their map sizes */
+    reports?: {
+      /** Name of the report */
+      name?: string;
+      /** Size of the map in this report */
+      map?: {
+        width?: number;
+        height?: number;
+      };
+    }[];
+    /** List of valid print settings combinations, old implementation */
+    valid_combinations?: {
+      /** Paper size plus orientation, space separated */
+      report?: string;
+      /** If the legend should be rendered as well */
+      show_legend?: boolean;
+      /** DPI of the printed map */
+      dpi?: number;
+      /** File type */
+      format?: string;
+    }[];
+    /** List of valid print settings combinations */
+    valid_combinations_machine_readable?: [];
+  };
+}
+
+// Manually adjusted to fit typing.
+export interface PrintCapabilitiesCombination {
+  /** Standard or mapset */
+  reportType: ReportType;
+  /** Portrait or landscape */
+  reportOrientation: ReportOrientation;
+  /** Paper size, DIN A */
+  layout: DocumentFormat;
+  /** DPI of the printed map */
+  dpi: DpiSetting;
+  /** File type */
+  fileFormat: FileFormat;
+  /** If the legend should be rendered as well */
+  showLegend: boolean;
+}
+
+export interface PrintError {
+  /** Error messages */
+  errors: string[];
 }
 
 export type PrintFeatureInfoNew = {
@@ -1337,19 +1393,33 @@ export type MetadataDatasetsListData = MetadataDatasets;
 
 export type MetadataDatasetsDetailData = MetadataDataset;
 
+export type MetadataDatasetsImageListData = any;
+
+export type MetadataDatasetsPdfListData = any;
+
+export type MetadataDatasetsMxdListData = any;
+
+export type MetadataDatasetsLyrsDetailData = any;
+
 export type MetadataGeoshopProductsListData = MetadataGeoshopProducts;
 
 export type MetadataMapsListData = MetadataMaps;
 
 export type MetadataMapsDetailData = MetadataMap;
 
+export type MetadataMapsImageListData = any;
+
 export type MetadataProductsListData = MetadataProducts;
 
 export type MetadataProductsDetailData = MetadataProduct;
 
+export type MetadataProductsImageListData = any;
+
 export type MetadataServicesListData = MetadataServices;
 
 export type MetadataServicesDetailData = MetadataService;
+
+export type MetadataServicesImageListData = any;
 
 export type MunicipalitiesListData = MunicipalitiesList;
 
@@ -1368,6 +1438,8 @@ export type PrintCreateData = PrintReport;
 export type PrintFeatureInfoCreateData = PrintReport;
 
 export type PrintLegendCreateData = PrintReport;
+
+export type PrintCapabilitiesListData = PrintCapabilities;
 
 export type PrintDetailData = any;
 
