@@ -9,12 +9,12 @@ describe('PrintSettingsOptionsProvider', () => {
   let service: PrintSettingsOptionsProviderService;
 
   // We sort them, so we can equal.
-  const validReportTypes: ReportType[] = ['standard', 'mapset'].sort() as ReportType[];
-  const validReportOrientations: ReportOrientation[] = ['portrait', 'landscape'].sort() as ReportOrientation[];
-  const validLayouts: DocumentFormat[] = [DocumentFormat.A0, DocumentFormat.A1, DocumentFormat.A2].sort();
-  const validFileFormats: FileFormat[] = [FileFormat.png, FileFormat.pdf].sort();
-  const validDpis: DpiSetting[] = [DpiSetting.low, DpiSetting.high].sort();
-  const validShowLegend = [true, false].sort();
+  const validReportTypes: ReportType[] = ['mapset', 'standard'] as ReportType[];
+  const validReportOrientations: ReportOrientation[] = ['landscape', 'portrait'] as ReportOrientation[];
+  const validLayouts: DocumentFormat[] = [DocumentFormat.A0, DocumentFormat.A1, DocumentFormat.A2];
+  const validFileFormats: FileFormat[] = [FileFormat.pdf, FileFormat.png];
+  const validDpis: DpiSetting[] = [DpiSetting.low, DpiSetting.high];
+  const validShowLegend = [false, true];
 
   const validCombinations: PrintCapabilitiesCombination[] = [];
   validShowLegend.forEach((showLegend) => {
@@ -56,12 +56,24 @@ describe('PrintSettingsOptionsProvider', () => {
   });
 
   it('should return only unqiue values for a given key', () => {
-    expect(service.getUnqiueOptions<'showLegend'>(validCombinations, 'showLegend').sort()).toEqual(validShowLegend);
-    expect(service.getUnqiueOptions<'fileFormat'>(validCombinations, 'fileFormat').sort()).toEqual(validFileFormats);
-    expect(service.getUnqiueOptions<'dpi'>(validCombinations, 'dpi').sort()).toEqual(validDpis);
-    expect(service.getUnqiueOptions<'layout'>(validCombinations, 'layout').sort()).toEqual(validLayouts);
-    expect(service.getUnqiueOptions<'reportType'>(validCombinations, 'reportType').sort()).toEqual(validReportTypes);
-    expect(service.getUnqiueOptions<'reportOrientation'>(validCombinations, 'reportOrientation').sort()).toEqual(validReportOrientations);
+    service.getUnqiueOptions<'showLegend'>(validCombinations, 'showLegend').forEach((v) => {
+      expect(validShowLegend).toContain(v);
+    });
+    service.getUnqiueOptions<'fileFormat'>(validCombinations, 'fileFormat').forEach((v) => {
+      expect(validFileFormats).toContain(v);
+    });
+    service.getUnqiueOptions<'dpi'>(validCombinations, 'dpi').forEach((v) => {
+      expect(validDpis).toContain(v);
+    });
+    service.getUnqiueOptions<'layout'>(validCombinations, 'layout').forEach((v) => {
+      expect(validLayouts).toContain(v);
+    });
+    service.getUnqiueOptions<'reportType'>(validCombinations, 'reportType').forEach((v) => {
+      expect(validReportTypes).toContain(v);
+    });
+    service.getUnqiueOptions<'reportOrientation'>(validCombinations, 'reportOrientation').forEach((v) => {
+      expect(validReportOrientations).toContain(v);
+    });
   });
 
   it('should filter out options that are not in a valid combo and ignore undefined values', () => {

@@ -39,13 +39,13 @@ export class PrintSettingsOptionsProviderService {
         return; // We don't check for an undefined value, since no combinations would look out of that.
       }
 
-      otherKeys.forEach((otherKey) => {
+      for (const otherKey of otherKeys) {
         // Explicitly casting to `any` since TS thinks the type of the items in the same array might magically change.
-        available[otherKey] = available[otherKey]!.filter(
-          (v) => allCombinations.some((c) => c[currentKey] === selectedValue && c[otherKey] === v),
+        available[otherKey] = available[otherKey]
+          .filter((v) => allCombinations.some((c) => c[currentKey] === selectedValue && c[otherKey] === v))
           // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Since we know it's the same (available[otherKey] = available[otherKey].filter - filter doesn't alter value types), but TS thinks that it sometimes isn't we need to go via any.
-        ).filter((v) => v !== undefined && v !== null) as any;
-      });
+          .filter((v) => v !== undefined && v !== null) as any;
+      }
     });
 
     return available;

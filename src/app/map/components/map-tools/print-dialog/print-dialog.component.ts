@@ -164,7 +164,14 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
               previous.rotation === current.rotation &&
               previous.fileFormat === current.fileFormat,
           ),
-          tap((value) => this.updatePrintPreview(value.layout, value.reportOrientation, parseInt(value.scale!), value.rotation)),
+          tap((value) =>
+            this.updatePrintPreview(
+              value.layout,
+              value.reportOrientation,
+              value.scale !== null ? parseInt(value.scale) : 0,
+              value.rotation,
+            ),
+          ),
         )
         .subscribe(),
     );

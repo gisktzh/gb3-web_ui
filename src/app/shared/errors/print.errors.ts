@@ -17,7 +17,7 @@ function isErrorFromGb3(error: any): error is Gb3PrintErrorResponse {
 }
 
 export class PrintRequestCouldNotBeHandled extends RecoverableError {
-  private translatedErrorMessagePatterns = {
+  private readonly translatedErrorMessagePatterns = {
     '^Invalid report name$': 'Report-Name existiert nicht',
     '^Missing attributes$': 'Es fehlen Angaben',
     '^Invalid output format$': 'Das Ausgabe-Format existiert nicht',
@@ -54,7 +54,7 @@ export class PrintRequestCouldNotBeHandled extends RecoverableError {
     const translationPatterns = Object.keys(this.translatedErrorMessagePatterns).map((p) => new RegExp(p));
 
     const translatedErrors = this.originalError.error.errors
-      .filter((e) => translationPatterns.some((p) => e.match(p)))
+      .filter((e) => translationPatterns.some((p) => p.exec(e)))
       .map((e) => {
         Object.entries(this.translatedErrorMessagePatterns).forEach(([pattern, translation]) => {
           const p = new RegExp(pattern);
