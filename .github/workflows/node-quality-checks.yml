@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies and run linter
         run: |
-          npm ci
+          npm ci --ignore-scripts
           npm run lint
 
   tests:
@@ -58,7 +58,7 @@ jobs:
 
       - name: Install dependencies and run tests
         run: |
-          npm ci
+          npm ci --ignore-scripts
           npm run test-ci
         env:
           # note: this is required with @arcgis/core >=4.32 due to increased memory usage for type checking

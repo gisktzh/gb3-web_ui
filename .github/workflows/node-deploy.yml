@@ -41,7 +41,7 @@ jobs:
         env:
           APP_RELEASE: 'EBP Dev Release'
         run: |
-          npm ci
+          npm ci --ignore-scripts
           npm run build-dev-ebp
           cp ./dist/browser/index.html ./dist/browser/404.html
 
