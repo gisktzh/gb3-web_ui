@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, inject, OnDestroy, OnInit} from '@angular/core';
 import {ONBOARDING_STEPS, OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {Store} from '@ngrx/store';
 import {delayWhen, interval, Subscription, tap} from 'rxjs';
@@ -139,6 +139,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     this.isMapDataCatalogueMinimized = isMinimized;
   }
 
+  @HostListener('window:keydown.esc', ['$event'])
   public closeSideDrawer() {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }
