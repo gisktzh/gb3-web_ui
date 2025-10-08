@@ -315,8 +315,12 @@ export class Gb3MetadataService extends Gb3ApiService {
     return url.toString();
   }
 
-  private createAbsoluteUrl(relativeImageUrl: string): string {
-    const url = new URL(`${this.staticFilesUrl}${relativeImageUrl}`);
+  private createAbsoluteUrl(imageUrl: string): string {
+    if (imageUrl.startsWith('http')) {
+      return imageUrl;
+    }
+
+    const url = new URL(`${this.staticFilesUrl}${imageUrl}`);
     return url.toString();
   }
 
