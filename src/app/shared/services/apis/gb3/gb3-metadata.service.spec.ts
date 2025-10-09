@@ -414,15 +414,17 @@ describe('Gb3MetadataService', () => {
 
     it('maps the response correctly with absolute pdf url', (done: DoneFn) => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(of({
-        dataset: {
-          ...mockDatasetDetailResponse.dataset,
-          pdf: {
-            ...mockDatasetDetailResponse.dataset.pdf,
-            href: 'https://geo.zh.ch' + (mockDatasetDetailResponse.dataset.pdf?.href || ''),
+      spyOn(httpClient, 'get').and.returnValue(
+        of({
+          dataset: {
+            ...mockDatasetDetailResponse.dataset,
+            pdf: {
+              ...mockDatasetDetailResponse.dataset.pdf,
+              href: 'https://geo.zh.ch' + (mockDatasetDetailResponse.dataset.pdf?.href || ''),
+            },
           },
-        },
-      }));
+        }),
+      );
 
       const expected: DatasetMetadata = {
         keywords: mockDatasetDetailResponse.dataset.keywords,
@@ -483,7 +485,7 @@ describe('Gb3MetadataService', () => {
         expect(result).toEqual(expected);
         done();
       });
-    });    
+    });
   });
 
   describe('load all', () => {
