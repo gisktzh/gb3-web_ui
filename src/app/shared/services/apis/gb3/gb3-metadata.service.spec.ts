@@ -148,7 +148,7 @@ const mockDatasetDetailResponse = {
     gesetzklasse: null,
     lyrs: [],
     documentationhtml: null,
-    pdf: null,
+    pdf: {href: '/foo/bar', title: 'foobar'},
     mxd: null,
     opendataswiss: null,
   },
@@ -347,7 +347,7 @@ describe('Gb3MetadataService', () => {
       });
     });
 
-    it('maps the response correctly', (done: DoneFn) => {
+    it('maps the response correctly with relative pdf url', (done: DoneFn) => {
       const testId = 'my-test-id';
       spyOn(httpClient, 'get').and.returnValue(of(mockDatasetDetailResponse));
 
@@ -371,7 +371,10 @@ describe('Gb3MetadataService', () => {
         })),
         dataBasis: mockDatasetDetailResponse.dataset.datengrundlage,
         remarks: mockDatasetDetailResponse.dataset.bemerkungen,
-        pdf: mockDatasetDetailResponse.dataset.pdf,
+        pdf: {
+          ...mockDatasetDetailResponse.dataset.pdf,
+          href: 'https://maps.zh.ch' + (mockDatasetDetailResponse.dataset.pdf?.href || ''),
+        },
         outputFormat: mockDatasetDetailResponse.dataset.abgabeformate,
         shortDescription: mockDatasetDetailResponse.dataset.kurzbeschreibung,
         imageUrl: mockDatasetDetailResponse.dataset.image_url,
@@ -408,6 +411,79 @@ describe('Gb3MetadataService', () => {
         done();
       });
     });
+
+    it('maps the response correctly with absolute pdf url', (done: DoneFn) => {
+      const testId = 'my-test-id';
+      spyOn(httpClient, 'get').and.returnValue(of({
+        dataset: {
+          ...mockDatasetDetailResponse.dataset,
+          pdf: {
+            ...mockDatasetDetailResponse.dataset.pdf,
+            href: 'https://geo.zh.ch' + (mockDatasetDetailResponse.dataset.pdf?.href || ''),
+          },
+        },
+      }));
+
+      const expected: DatasetMetadata = {
+        keywords: mockDatasetDetailResponse.dataset.keywords,
+        topics: mockDatasetDetailResponse.dataset.themen,
+        layers: mockDatasetDetailResponse.dataset.layers.map((layer) => ({
+          id: layer.giszhnr,
+          name: layer.name,
+          dataProcurementType: layer.datenbezugart,
+          description: layer.beschreibung,
+          metadataVisibility: layer.metadaten_sichtbarkeit,
+          path: layer.pfadfilename,
+          geometryType: layer.geometrietyp,
+          attributes: layer.attribute.map((attr) => ({
+            name: attr.name,
+            description: attr.beschreibung,
+            type: attr.typ,
+            unit: attr.einheit,
+          })),
+        })),
+        dataBasis: mockDatasetDetailResponse.dataset.datengrundlage,
+        remarks: mockDatasetDetailResponse.dataset.bemerkungen,
+        pdf: {
+          ...mockDatasetDetailResponse.dataset.pdf,
+          href: 'https://geo.zh.ch' + (mockDatasetDetailResponse.dataset.pdf?.href || ''),
+        },
+        outputFormat: mockDatasetDetailResponse.dataset.abgabeformate,
+        shortDescription: mockDatasetDetailResponse.dataset.kurzbeschreibung,
+        imageUrl: mockDatasetDetailResponse.dataset.image_url,
+        uuid: mockDatasetDetailResponse.dataset.uuid,
+        gisZHNr: mockDatasetDetailResponse.dataset.giszhnr,
+        name: mockDatasetDetailResponse.dataset.name,
+        description: mockDatasetDetailResponse.dataset.beschreibung,
+        dataCapture: mockDatasetDetailResponse.dataset.datenerfassung,
+        resolution: mockDatasetDetailResponse.dataset.aufloesung,
+        positionAccuracy: mockDatasetDetailResponse.dataset.lagegenauigkeit,
+        mxd: mockDatasetDetailResponse.dataset.mxd,
+        ogd: mockDatasetDetailResponse.dataset.ogd,
+        lyr: mockDatasetDetailResponse.dataset.lyrs,
+        geocat: mockDatasetDetailResponse.dataset.geocat,
+        geoBaseData: mockDatasetDetailResponse.dataset.geobasisdaten,
+        scale: mockDatasetDetailResponse.dataset.erfassungsmasstab,
+        scope: mockDatasetDetailResponse.dataset.geogausdehnung,
+        updateType: mockDatasetDetailResponse.dataset.nachfuehrungstyp,
+        editingStatus: mockDatasetDetailResponse.dataset.bearbeitungstatus,
+        dataStatus: mockDatasetDetailResponse.dataset.datenstand,
+        opendataSwiss: mockDatasetDetailResponse.dataset.opendataswiss,
+        statuteClass: mockDatasetDetailResponse.dataset.gesetzklasse,
+        contact: {
+          metadata: expectedMockDepartmentalContact,
+          geodata: expectedMockDepartmentalContact,
+        },
+        maps: mockDatasetDetailResponse.dataset.maps.map(({name, uuid, topic}) => ({name, uuid, topic})),
+        products: mockDatasetDetailResponse.dataset.products.map(({name, uuid}) => ({name, uuid})),
+        services: mockDatasetDetailResponse.dataset.services.map(({name, uuid, servicetyp}) => ({name, uuid, serviceType: servicetyp})),
+      };
+
+      service.loadDatasetDetail(testId).subscribe((result) => {
+        expect(result).toEqual(expected);
+        done();
+      });
+    });    
   });
 
   describe('load all', () => {
