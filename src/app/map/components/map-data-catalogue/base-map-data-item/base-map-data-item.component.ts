@@ -104,4 +104,13 @@ export class BaseMapDataItemComponent {
   public addItemLayer(layer: MapLayer) {
     this.addLayerEvent.emit(layer);
   }
+
+  public getFiltedLayersCount(layers: MapLayer[]): number {
+    if (!this.filterString) {
+      return layers.length;
+    }
+
+    const lowerCasedFilterString = this.filterString.toLowerCase();
+    return layers.filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString)).length;
+  }
 }
