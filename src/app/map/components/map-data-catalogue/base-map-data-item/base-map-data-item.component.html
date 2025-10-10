@@ -21,7 +21,7 @@
         [fontIcon]="itemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
         [matBadgeDisabled]="layers.length === 0"
         [matBadgeHidden]="!this.filterString || this.loadingState === 'loading'"
-        [matBadge]="layers.length"
+        [matBadge]="getFiltedLayersCount(layers)"
         matBadgeOverlap
         aria-hidden="false"
         [attr.aria-label]="itemExpansionPanel.expanded ? 'Pfeil nach unten' : 'Pfeil nach rechts'"
