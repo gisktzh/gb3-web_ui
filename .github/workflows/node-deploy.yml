@@ -41,7 +41,7 @@ jobs:
         env:
           APP_RELEASE: 'EBP Dev Release'
         run: |
-          npm ci
+          npm ci --ignore-scripts
           npm run build-dev-ebp
           cp ./dist/browser/index.html ./dist/browser/404.html
 
@@ -49,7 +49,7 @@ jobs:
         run: echo 'dev.geo.zh.ch' > ./dist/browser/CNAME
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist/browser
   deploy:

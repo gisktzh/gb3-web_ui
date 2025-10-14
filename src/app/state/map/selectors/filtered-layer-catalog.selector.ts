@@ -1,6 +1,7 @@
 import {createSelector} from '@ngrx/store';
 import {selectFilterString, selectItems} from '../reducers/layer-catalog.reducer';
-import {produce} from 'immer';
+import {Draft, produce} from 'immer';
+import {MapLayer} from 'src/app/shared/interfaces/topic.interface';
 
 export const selectFilteredLayerCatalog = createSelector(selectFilterString, selectItems, (filterString, layerCatalog) => {
   const lowerCasedFilterString = filterString?.toLowerCase();
@@ -16,13 +17,12 @@ export const selectFilteredLayerCatalog = createSelector(selectFilterString, sel
         return;
       }
 
-      item.maps.forEach((map) => {
-        map.layers = map.layers.filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString));
-      });
+      // Moved into separate function to not run into 4+ deep nested layers, SonarQube requirement.
+      const checkLayer = (layer: Draft<MapLayer>): boolean => layer.title.toLowerCase().includes(lowerCasedFilterString);
 
       item.maps = item.maps.filter((map) => {
         return (
-          map.layers.length > 0 ||
+          map.layers.some(checkLayer) ||
           map.title.toLowerCase().includes(lowerCasedFilterString) ||
           map.keywords.map((keyword) => keyword.toLowerCase()).includes(lowerCasedFilterString) ||
           map.id.toLowerCase().includes(lowerCasedFilterString)

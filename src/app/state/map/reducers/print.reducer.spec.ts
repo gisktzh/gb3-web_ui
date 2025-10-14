@@ -49,6 +49,8 @@ describe('print reducer', () => {
       creation: creationMock,
       creationLoadingState: 'loaded',
       creationResponse: creationResponseMock,
+      capabilitiesValidCombinations: [],
+      capabilitiesValidCombinationsLoadingState: undefined,
     };
   });
 

@@ -116,7 +116,7 @@ describe('PrintEffects', () => {
 
   describe('throwPrintRequestError$', () => {
     it('throws a PrintRequestCouldNotBeHandled error', (done: DoneFn) => {
-      const expectedOriginalError = new Error('oh no! butterfingers');
+      const expectedOriginalError = 'oh no! butterfingers';
 
       actions$ = of(PrintActions.setPrintRequestError({error: expectedOriginalError}));
       effects.throwPrintRequestError$
@@ -124,6 +124,29 @@ describe('PrintEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new PrintRequestCouldNotBeHandled(expectedOriginalError);
             expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
+    });
+
+    it('throws a PrintRequestCouldNotBeHandled error with translated original errors', (done: DoneFn) => {
+      const originalErrors = {
+        error: {
+          errors: ['Invalid report name', 'Missing attributes', 'Invalid DPI for report Hello World'],
+        },
+      };
+
+      const expectedTranslatedError =
+        'Beim Drucken ist etwas schief gelaufen: Report-Name existiert nicht\nEs fehlen Angaben\nUngültiger DPI-Wert für Report Hello World';
+
+      actions$ = of(PrintActions.setPrintRequestError({error: originalErrors}));
+      effects.throwPrintRequestError$
+        .pipe(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- has to be `any` to allow for `.message`. Type `unknown` doesn't do that.
+          catchError((error: any) => {
+            expect(error.message).toEqual(expectedTranslatedError);
             done();
             return EMPTY;
           }),
