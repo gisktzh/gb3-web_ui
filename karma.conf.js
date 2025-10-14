@@ -40,7 +40,13 @@ module.exports = function (config) {
     captureTimeout: 120000,
     browserSocketTimeout: 120000,
     pingTimeout: 120000,
-    browsers: ['ChromeHeadless'],
+    browsers: ['ChromeHeadless_with_gpu'],
+    customLaunchers: {
+      ChromeHeadless_with_gpu: {
+        base: 'Chrome',
+        flags: ['--headless=new', '--gpu', '--gpu-launcher', '--in-process-gpu', '--ignore-gpu-blacklist', '--ignore-gpu-blocklist'],
+      },
+    },
     singleRun: false,
     restartOnFileChange: true,
   });
