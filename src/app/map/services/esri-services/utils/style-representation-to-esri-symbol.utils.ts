@@ -1,3 +1,4 @@
+import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
 import {Gb3StyleRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Color from '@arcgis/core/Color';
@@ -7,9 +8,16 @@ import {SymbolUnion} from '@arcgis/core/unionTypes';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
+import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
+import {scaleCIMSymbolTo, applyCIMSymbolRotation} from '@arcgis/core/symbols/support/cimSymbolUtils.js';
+import {MapDrawingSymbol} from '../types/map-drawing-symbol.type';
 
 export class StyleRepresentationToEsriSymbolUtils {
-  public static convert(style: Gb3StyleRepresentation, labelText?: string): SymbolUnion {
+  public static async convert(
+    style: Gb3StyleRepresentation,
+    labelText?: string,
+    mapDrawingSymbol?: MapDrawingSymbol,
+  ): Promise<SymbolUnion> {
     switch (style.type) {
       case 'text': {
         return new TextSymbol({
@@ -48,6 +56,26 @@ export class StyleRepresentationToEsriSymbolUtils {
           },
         });
       }
+      case 'symbol': {
+        if (mapDrawingSymbol) {
+          if (mapDrawingSymbol.cimSymbol) {
+            scaleCIMSymbolTo(mapDrawingSymbol.cimSymbol, style.symbolSize);
+            applyCIMSymbolRotation(mapDrawingSymbol.cimSymbol, style.symbolRotation);
+
+            return mapDrawingSymbol.cimSymbol;
+          }
+
+          if (mapDrawingSymbol.webStyleSymbol) {
+            return await this.loadCimSymbol(mapDrawingSymbol.webStyleSymbol, style.symbolSize, style.symbolRotation);
+          }
+        }
+
+        if (style.webStyleSymbol) {
+          return await this.loadCimSymbol(WebStyleSymbol.fromJSON(style.webStyleSymbol), style.symbolSize, style.symbolRotation);
+        }
+
+        return new CIMSymbol(); // Empty since a symbol was requested, but no symbol is present (yet).
+      }
     }
   }
 
@@ -57,5 +85,14 @@ export class StyleRepresentationToEsriSymbolUtils {
 
   private static createEsriColor(color: SymbolizationColor): Color {
     return new Color(color);
+  }
+
+  private static async loadCimSymbol(webStyleSymbol: WebStyleSymbol, size: number, rotation: number) {
+    const cimSymbol = (await webStyleSymbol.fetchSymbol({acceptedFormats: ['cim']})) as CIMSymbol;
+
+    scaleCIMSymbolTo(cimSymbol, size);
+    applyCIMSymbolRotation(cimSymbol, rotation);
+
+    return cimSymbol;
   }
 }

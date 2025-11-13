@@ -57,7 +57,7 @@ describe('AbstractEsriDrawingStrategy', () => {
       ).and.returnValue(true);
       strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
-      expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, 'edit', undefined);
+      expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, 'edit');
     });
     it('should call handleComplete with the correct arguments if the graphic exists and the label exists', () => {
       const symbol = new TextSymbol({text: 'test'});
@@ -69,7 +69,7 @@ describe('AbstractEsriDrawingStrategy', () => {
       ).and.returnValue(true);
       strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
-      expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, 'edit', 'test');
+      expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, 'edit');
     });
   });
 });

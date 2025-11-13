@@ -29,8 +29,8 @@ describe('MapUiEffects', () => {
     scale: 101,
     basemapId: 'basemap',
     content: [],
-    drawings: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation([]),
-    measurements: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation([]),
+    drawings: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation([], 1, 1),
+    measurements: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation([], 1, 1),
   };
 
   beforeEach(() => {

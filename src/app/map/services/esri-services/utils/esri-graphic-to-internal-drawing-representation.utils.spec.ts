@@ -41,7 +41,15 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
       symbol: mockSymbol,
     });
 
-    const actual = EsriGraphicToInternalDrawingRepresentationUtils.convert(graphic, labelText, 2056, InternalDrawingLayer.Selection);
+    const actual = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      graphic,
+      labelText,
+      undefined,
+      undefined,
+      undefined,
+      2056,
+      InternalDrawingLayer.Selection,
+    );
     const expected: Gb3StyledInternalDrawingRepresentation = {
       type: 'Feature',
       source: InternalDrawingLayer.Selection,
@@ -71,6 +79,7 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
         ],
       },
       labelText: labelText,
+      mapDrawingSymbol: undefined,
     };
 
     expect(actual).toEqual(expected);
@@ -81,8 +90,16 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
       geometry: new Polyline(),
       symbol: new LineSymbol(),
     });
-    expect(() => EsriGraphicToInternalDrawingRepresentationUtils.convert(graphic, undefined, 2056, UserDrawingLayer.Drawings)).toThrow(
-      new UnsupportedGeometryType('MultiLineString'),
-    );
+    expect(() =>
+      EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        graphic,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        2056,
+        UserDrawingLayer.Drawings,
+      ),
+    ).toThrow(new UnsupportedGeometryType('MultiLineString'));
   });
 });

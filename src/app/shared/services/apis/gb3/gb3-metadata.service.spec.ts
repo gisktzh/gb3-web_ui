@@ -373,7 +373,7 @@ describe('Gb3MetadataService', () => {
         remarks: mockDatasetDetailResponse.dataset.bemerkungen,
         pdf: {
           ...mockDatasetDetailResponse.dataset.pdf,
-          href: 'https://maps.zh.ch' + (mockDatasetDetailResponse.dataset.pdf?.href || ''),
+          href: `https://maps.zh.ch${mockDatasetDetailResponse.dataset.pdf?.href || ''}`,
         },
         outputFormat: mockDatasetDetailResponse.dataset.abgabeformate,
         shortDescription: mockDatasetDetailResponse.dataset.kurzbeschreibung,
@@ -420,7 +420,7 @@ describe('Gb3MetadataService', () => {
             ...mockDatasetDetailResponse.dataset,
             pdf: {
               ...mockDatasetDetailResponse.dataset.pdf,
-              href: 'https://geo.zh.ch' + (mockDatasetDetailResponse.dataset.pdf?.href || ''),
+              href: `https://geo.zh.ch${mockDatasetDetailResponse.dataset.pdf?.href || ''}`,
             },
           },
         }),
@@ -448,7 +448,7 @@ describe('Gb3MetadataService', () => {
         remarks: mockDatasetDetailResponse.dataset.bemerkungen,
         pdf: {
           ...mockDatasetDetailResponse.dataset.pdf,
-          href: 'https://geo.zh.ch' + (mockDatasetDetailResponse.dataset.pdf?.href || ''),
+          href: `https://geo.zh.ch${mockDatasetDetailResponse.dataset.pdf?.href || ''}`,
         },
         outputFormat: mockDatasetDetailResponse.dataset.abgabeformate,
         shortDescription: mockDatasetDetailResponse.dataset.kurzbeschreibung,

@@ -4,6 +4,7 @@ import {
   Gb3StyleRepresentation,
 } from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {MapDrawingSymbol} from 'src/app/map/services/esri-services/types/map-drawing-symbol.type';
 
 export const DrawingActions = createActionGroup({
   source: 'Drawing',
@@ -15,7 +16,12 @@ export const DrawingActions = createActionGroup({
     'Select Drawing': props<{drawingId: string}>(),
     'Cancel Edit Mode': emptyProps(),
     'Delete Drawing': props<{drawingId: string}>(),
-    'Update Drawing Styles': props<{drawing: Gb3StyledInternalDrawingRepresentation; style: Gb3StyleRepresentation; labelText?: string}>(),
+    'Update Drawing Styles': props<{
+      drawing: Gb3StyledInternalDrawingRepresentation;
+      style: Gb3StyleRepresentation;
+      labelText?: string;
+      mapDrawingSymbol?: MapDrawingSymbol;
+    }>(),
     /**
      * This action can be used to remove one (or more) DrawingLayer's drawings from the state and add new layers. This is useful
      * (mostly) in the context of loading favourites, because it allows us to properly handle edge cases where a user might have

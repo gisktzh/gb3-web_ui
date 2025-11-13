@@ -22,12 +22,22 @@
     padding: 0;
   }
 
+  &--sticky-header {
+    overflow: visible;
+  }
+
   .expandable-list-item__header {
     height: auto;
     padding: 0;
 
     &:focus {
       border: solid 1px ktzh-variables.$zh-active-blue;
+    }
+
+    &--sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 1001;
     }
 
     .expandable-list-item__header__item {

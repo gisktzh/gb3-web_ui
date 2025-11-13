@@ -12,6 +12,7 @@
 import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
 import {ReportOrientation, ReportType} from '../interfaces/print.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
+import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
 
 export interface BboxGeoshop {
   /** GeoJSON geometry object */
@@ -1355,7 +1356,13 @@ export type VectorLayerStyles = {
     /** Label Y offset of the drawing */
     labelYOffset?: string;
     /** Geometry type of the drawing (point, line, polygon or text) */
-    type?: 'point' | 'line' | 'polygon' | 'text';
+    type?: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
+    /** Size of the given symbol */
+    symbolSize?: number;
+    /** Rotation of the given symbol */
+    symbolRotation?: number;
+    /** The given symbol as WebStyleSymbol, in JSON format */
+    webStyleSymbol: ReturnType<WebStyleSymbol['toJSON']>;
   };
 };
 

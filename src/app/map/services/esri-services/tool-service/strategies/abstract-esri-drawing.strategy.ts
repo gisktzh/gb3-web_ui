@@ -6,7 +6,8 @@ import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import Graphic from '@arcgis/core/Graphic';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {DrawingMode} from '../types/drawing-mode.type';
-import TextSymbol from '@arcgis/core/symbols/TextSymbol';
+import {Gb3StyleRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
+import {MapDrawingSymbol} from '../../types/map-drawing-symbol.type';
 
 export abstract class AbstractEsriDrawingStrategy<
   T extends DrawingCallbackHandler['completeDrawing'],
@@ -23,7 +24,7 @@ export abstract class AbstractEsriDrawingStrategy<
     reactiveUtils.on(
       () => this.sketchViewModel,
       'create',
-      ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
+      async ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
         switch (state) {
           case 'active':
           case 'start':
@@ -56,20 +57,37 @@ export abstract class AbstractEsriDrawingStrategy<
     );
   }
 
-  protected handleComplete(graphic: Graphic, mode: DrawingMode, labelText?: string) {
+  /**
+   * When adding drawings, the strategies usually take care of the internals themselves via dialogs.
+   * However, when editing, the internals that are late on being passed to `handleComplete` need to be taken
+   * care of in the strategy, too, so we inject them via a generalized setter. Most drawing strategies don't
+   * actually implement any logic here, though.
+   *
+   * TODO: Generalize this via a generic and a type hint.
+   */
+  public abstract updateInternals(style: Gb3StyleRepresentation, labelText?: string, mapDrawingSymbol?: MapDrawingSymbol): void;
+
+  protected handleComplete(
+    graphic: Graphic,
+    mode: DrawingMode,
+    labelText?: string,
+    mapDrawingSymbol?: MapDrawingSymbol,
+    symbolSize?: number,
+    symbolRotation?: number,
+  ) {
     this.setIdentifierOnGraphic(graphic);
-    this.completeDrawingCallbackHandler(graphic, mode, labelText);
+    this.completeDrawingCallbackHandler(graphic, mode, labelText, mapDrawingSymbol, symbolSize, symbolRotation);
   }
 
   private completeEditing(graphic: Graphic) {
     const graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
-    // checks if the graphic still exists in the layer, i. e if it was not deleted during edit
+    // checks if the graphic still exists in the layer, i.e. if it was not deleted during edit
     const graphicExistsOnLayer = this.checkIfGraphicExistsOnLayer(graphicIdentifier);
     if (!graphicExistsOnLayer) {
       this.handleComplete(graphic, 'delete');
       return;
     }
-    const labelText = graphic.symbol instanceof TextSymbol ? graphic.symbol.text : undefined;
-    this.handleComplete(graphic, 'edit', labelText);
+
+    this.handleComplete(graphic, 'edit');
   }
 }

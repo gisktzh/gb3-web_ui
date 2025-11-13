@@ -20,4 +20,8 @@ export class EsriPolygonDrawingStrategy extends AbstractEsriDrawingStrategy<Draw
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.tool = polygonType;
   }
+
+  public override updateInternals(): void {
+    // noop
+  }
 }

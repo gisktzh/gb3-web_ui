@@ -1,6 +1,6 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {of, switchMap, tap} from 'rxjs';
+import {from, of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
 import {ImportActions} from '../actions/import.actions';
 import {Gb3ImportService} from '../../../shared/services/apis/gb3/gb3-import.service';
@@ -34,14 +34,17 @@ export class ImportEffects {
   public addDrawingToMap$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ImportActions.createActiveMapItemFromDrawing),
-      map(({drawing}) => {
+      switchMap(({drawing}) =>
+        from(SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawing, UserDrawingLayer.Drawings)),
+      ),
+      map((drawingsToAdd) => {
         const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
-        const drawingsToAdd = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawing, UserDrawingLayer.Drawings);
         const drawingLayersToOverride: UserDrawingLayer[] = [];
         this.mapService.removeMapItem(activeMapItem.id);
         activeMapItem.addToMap(this.mapService, 0);
         this.mapService.getToolService().addExistingDrawingsToLayer(drawingsToAdd, UserDrawingLayer.Drawings);
         drawingLayersToOverride.push(activeMapItem.settings.userDrawingLayer);
+
         return ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd});
       }),
     );

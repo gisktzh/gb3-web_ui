@@ -128,6 +128,7 @@ export class ActiveMapItemEffects {
               case 'draw-rectangle':
               case 'draw-circle':
               case 'draw-text':
+              case 'draw-symbol':
                 activeUserDrawingLayer = UserDrawingLayer.Drawings;
                 break;
               case 'select-circle':

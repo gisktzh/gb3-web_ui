@@ -295,6 +295,7 @@ describe('Gb3PrintService', () => {
         dpi: 1337,
         rotation: 420,
         activeBasemapId: 'test-basemap',
+        mapScale: 1,
         activeMapItems: [
           createGb2WmsMapItemMock('visible map #1', 2),
           createGb2WmsMapItemMock('invisible map #2', 1, false),

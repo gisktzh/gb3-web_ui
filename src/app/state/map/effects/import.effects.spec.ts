@@ -120,23 +120,23 @@ describe('ImportEffects', () => {
       };
       const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       const drawingLayersToOverride = [UserDrawingLayer.Drawings];
-      const drawingsToAdd = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
-        mockDrawing,
-        UserDrawingLayer.Drawings,
+      SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(mockDrawing, UserDrawingLayer.Drawings).then(
+        (drawingsToAdd) => {
+          const converterSpy = spyOn(SymbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.returnValue(
+            Promise.resolve(drawingsToAdd),
+          );
+          const mapServiceSpy = spyOn(TestBed.inject(MAP_SERVICE), 'removeMapItem');
+          const toolServiceSpy = spyOn(TestBed.inject(MAP_SERVICE).getToolService(), 'addExistingDrawingsToLayer');
+          actions$ = of(ImportActions.createActiveMapItemFromDrawing({drawing: mockDrawing}));
+          effects.addDrawingToMap$.subscribe((action) => {
+            expect(converterSpy).toHaveBeenCalledOnceWith(mockDrawing, UserDrawingLayer.Drawings);
+            expect(mapServiceSpy).toHaveBeenCalledOnceWith(activeMapItem.id);
+            expect(toolServiceSpy).toHaveBeenCalledOnceWith(drawingsToAdd, UserDrawingLayer.Drawings);
+            expect(action).toEqual(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd}));
+            done();
+          });
+        },
       );
-      const converterSpy = spyOn(SymbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.returnValue(
-        drawingsToAdd,
-      );
-      const mapServiceSpy = spyOn(TestBed.inject(MAP_SERVICE), 'removeMapItem');
-      const toolServiceSpy = spyOn(TestBed.inject(MAP_SERVICE).getToolService(), 'addExistingDrawingsToLayer');
-      actions$ = of(ImportActions.createActiveMapItemFromDrawing({drawing: mockDrawing}));
-      effects.addDrawingToMap$.subscribe((action) => {
-        expect(converterSpy).toHaveBeenCalledOnceWith(mockDrawing, UserDrawingLayer.Drawings);
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(activeMapItem.id);
-        expect(toolServiceSpy).toHaveBeenCalledOnceWith(drawingsToAdd, UserDrawingLayer.Drawings);
-        expect(action).toEqual(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd}));
-        done();
-      });
     });
   });
 

@@ -14,8 +14,8 @@ export const selectUserDrawingsVectorLayers = createSelector(
     );
 
     return {
-      drawings: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw),
-      measurements: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(measurementsToDraw),
+      drawings: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw, 1, 1), // Scale and DPI don't matter here
+      measurements: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(measurementsToDraw, 1, 1),
     };
   },
 );

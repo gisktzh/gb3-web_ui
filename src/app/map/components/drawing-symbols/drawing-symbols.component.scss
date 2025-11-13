@@ -1,0 +1,9 @@
+.symbols-list {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &.symbols-list--full-height {
+    max-height: initial;
+  }
+}

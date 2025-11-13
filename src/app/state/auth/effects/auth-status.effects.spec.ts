@@ -141,7 +141,7 @@ describe('AuthStatusEffects', () => {
           drawings: [],
           basemapId: 'to be or not to be',
         };
-        const shareLinkServiceSpy = spyOn(shareLinkService, 'createMapRestoreItem').and.returnValue(mapRestoreItem);
+        const shareLinkServiceSpy = spyOn(shareLinkService, 'createMapRestoreItem').and.returnValue(Promise.resolve(mapRestoreItem));
 
         const expectedAction = AuthStatusActions.completeRestoreApplication({mapRestoreItem});
 

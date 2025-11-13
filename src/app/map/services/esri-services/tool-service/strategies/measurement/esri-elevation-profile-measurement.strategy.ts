@@ -19,4 +19,8 @@ export class EsriElevationProfileMeasurementStrategy extends AbstractEsriDrawing
 
     this.sketchViewModel.polylineSymbol = polylineSymbol;
   }
+
+  public override updateInternals(): void {
+    // noop
+  }
 }

@@ -8,7 +8,7 @@ const CENTER_TOP_LABEL_ALIGNMENT = 'ct';
 const TEXT_LABEL = '[text]';
 
 export class EsriSymbolToStyleRepresentationUtils {
-  public static convert(symbol: SymbolUnion): Gb3StyleRepresentation {
+  public static convert(symbol: SymbolUnion, symbolSize?: number, symbolRotation?: number): Gb3StyleRepresentation {
     switch (symbol.type) {
       case 'simple-marker': {
         const defaultOutline = ColorUtils.convertSymbolizationColorToHex(defaultSymbolization.point.outline.color);
@@ -57,15 +57,21 @@ export class EsriSymbolToStyleRepresentationUtils {
           type: 'text',
         };
       }
+      case 'cim':
+      case 'web-style': {
+        return {
+          type: 'symbol',
+          symbolSize: symbolSize ? symbolSize : 10,
+          symbolRotation: symbolRotation ? symbolRotation : 0,
+        };
+      }
       case 'picture-marker':
       case 'picture-fill':
       case 'point-3d':
       case 'line-3d':
       case 'polygon-3d':
-      case 'web-style':
       case 'mesh-3d':
       case 'label-3d':
-      case 'cim':
         throw new UnsupportedSymbolizationType(symbol.type);
     }
   }

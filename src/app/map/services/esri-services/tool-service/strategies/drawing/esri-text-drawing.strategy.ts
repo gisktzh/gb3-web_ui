@@ -7,10 +7,12 @@ import {tap} from 'rxjs';
 import {TextDrawingToolInputComponent} from '../../../../../components/text-drawing-tool-input/text-drawing-tool-input.component';
 import {SupportedEsriTool} from '../supported-esri-tool.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
+import Graphic from '@arcgis/core/Graphic';
 
 export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
   protected readonly tool: SupportedEsriTool = 'point';
   private readonly dialogService: MatDialog;
+  private labelText: string | undefined;
 
   constructor(
     layer: __esri.GraphicsLayer,
@@ -25,23 +27,36 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
     this.dialogService = dialogService;
   }
 
-  protected override handleComplete(graphic: __esri.Graphic, mode: DrawingMode) {
-    const dialog = this.dialogService.open<TextDrawingToolInputComponent, void, string>(TextDrawingToolInputComponent, {
-      panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false,
-      disableClose: true,
-    });
-    return dialog
-      .afterClosed()
-      .pipe(
-        tap((text = '') => {
-          if (!text) {
-            this.layer.remove(graphic);
-          }
-          (graphic.symbol as TextSymbol).text = text;
-          super.handleComplete(graphic, mode, text);
-        }),
-      )
-      .subscribe();
+  protected override handleComplete(graphic: Graphic, mode: DrawingMode) {
+    if (mode === 'add') {
+      const dialog = this.dialogService.open<TextDrawingToolInputComponent, void, string>(TextDrawingToolInputComponent, {
+        panelClass: PanelClass.ApiWrapperDialog,
+        restoreFocus: false,
+        disableClose: true,
+      });
+      return dialog
+        .afterClosed()
+        .pipe(
+          tap((text = '') => {
+            if (!text) {
+              this.layer.remove(graphic);
+            }
+            this.labelText = text;
+            (graphic.symbol as TextSymbol).text = text;
+            super.handleComplete(graphic, mode, text);
+          }),
+        )
+        .subscribe();
+    }
+
+    if (mode === 'edit') {
+      return super.handleComplete(graphic, mode, this.labelText);
+    }
+
+    return;
+  }
+
+  public override updateInternals(_: unknown, labelText?: string): void {
+    this.labelText = labelText;
   }
 }

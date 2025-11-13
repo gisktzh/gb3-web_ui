@@ -1,0 +1,25 @@
+<div class="drawing-symbols-collection__grid">
+  @for (drawingSymbol of items; track $index) {
+    <label [attr.for]="drawingSymbol.name" class="drawing-symbols-collection__grid__item">
+      <input
+        type="radio"
+        class="sr-only"
+        [name]="groupName"
+        [id]="drawingSymbol.name"
+        [checked]="isSelected(drawingSymbol.item)"
+        (change)="onValueChange(drawingSymbol.item)"
+      />
+      <img
+        loading="lazy"
+        [attr.src]="drawingSymbol.thumbnail"
+        [attr.alt]="drawingSymbol.name"
+        class="drawing-symbols-collection__grid__thumbnail"
+        width="64"
+        height="64"
+      />
+      <span class="sr-only">
+        {{ drawingSymbol.name }}
+      </span>
+    </label>
+  }
+</div>

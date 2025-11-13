@@ -125,26 +125,28 @@ export class FavouritesService implements OnDestroy {
    * @param drawings
    * @param measurements
    */
-  public getDrawingsForFavourite(
+  public async getDrawingsForFavourite(
     drawings: Gb3VectorLayer,
     measurements: Gb3VectorLayer,
-  ): {
+  ): Promise<{
     drawingsToAdd: Gb3StyledInternalDrawingRepresentation[];
     drawingActiveMapItems: DrawingActiveMapItem[];
-  } {
+  }> {
     const drawingActiveMapItems: DrawingActiveMapItem[] = [];
     const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
 
     if (measurements.geojson.features.length > 0) {
       drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawingLayerPrefix.Drawing));
       drawingsToAdd.push(
-        ...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(measurements, UserDrawingLayer.Measurements),
+        ...(await SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(measurements, UserDrawingLayer.Measurements)),
       );
     }
 
     if (drawings.geojson.features.length > 0) {
       drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing));
-      drawingsToAdd.push(...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawings, UserDrawingLayer.Drawings));
+      drawingsToAdd.push(
+        ...(await SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawings, UserDrawingLayer.Drawings)),
+      );
     }
 
     return {

@@ -15,4 +15,8 @@ export class EsriLineDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
 
     this.sketchViewModel.polylineSymbol = polylineSymbol;
   }
+
+  public override updateInternals(): void {
+    // noop
+  }
 }

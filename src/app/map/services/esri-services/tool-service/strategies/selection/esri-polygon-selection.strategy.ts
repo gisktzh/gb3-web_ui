@@ -47,6 +47,9 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     const drawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
       graphic,
       undefined,
+      undefined,
+      undefined,
+      undefined,
       this.srs,
       this.internalLayerType,
     );

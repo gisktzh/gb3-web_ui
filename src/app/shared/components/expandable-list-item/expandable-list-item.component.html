@@ -4,9 +4,18 @@
   class="expandable-list-item"
   [disabled]="disabled"
   hideToggle="true"
-  [ngClass]="{'expandable-list-item--no-padding': noPadding}"
+  [ngClass]="{
+    'expandable-list-item--no-padding': noPadding,
+    'expandable-list-item--sticky-header': stickyHeader && itemExpansionPanel.expanded,
+  }"
 >
-  <mat-expansion-panel-header class="expandable-list-item__header" [tabIndex]="allowTabFocus ? 0 : -1">
+  <mat-expansion-panel-header
+    class="expandable-list-item__header"
+    [ngClass]="{
+      'expandable-list-item__header--sticky-header': stickyHeader && itemExpansionPanel.expanded,
+    }"
+    [tabIndex]="allowTabFocus ? 0 : -1"
+  >
     <expandable-list-item-header
       [isExpanded]="itemExpansionPanel.expanded"
       [numberOfItems]="numberOfItems"
@@ -16,5 +25,6 @@
       class="expandable-list-item__header__item"
     ></expandable-list-item-header>
   </mat-expansion-panel-header>
+
   <ng-content></ng-content>
 </mat-expansion-panel>

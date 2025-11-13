@@ -6,6 +6,7 @@ import {
   Gb3StyleRepresentation,
 } from '../../shared/interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {MapDrawingSymbol} from '../services/esri-services/types/map-drawing-symbol.type';
 
 export interface ToolService {
   initializeMeasurement(measurementTool: Exclude<MeasurementTool, 'measure-elevation-profile'>): void;
@@ -18,7 +19,12 @@ export interface ToolService {
 
   addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer): void;
 
-  updateDrawingStyles(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string): void;
+  updateDrawingStyles(
+    drawing: Gb3StyledInternalDrawingRepresentation,
+    style: Gb3StyleRepresentation,
+    labelText?: string,
+    mapDrawingSymbol?: MapDrawingSymbol,
+  ): void;
 
   cancelTool(): void;
 }

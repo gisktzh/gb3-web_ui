@@ -7,6 +7,7 @@ import {SupportedSrs} from '../../../../shared/types/supported-srs.type';
 import {EsriSymbolToStyleRepresentationUtils} from './esri-symbol-to-style-representation.utils';
 import {hasNonNullishProperty} from '../type-guards/esri-nullish.type-guard';
 import {silentArcgisToGeoJSON} from './esri-transformer-wrapper.utils';
+import {MapDrawingSymbol} from '../types/map-drawing-symbol.type';
 
 export class EsriGraphicToInternalDrawingRepresentationUtils {
   /**
@@ -15,6 +16,9 @@ export class EsriGraphicToInternalDrawingRepresentationUtils {
   public static convert(
     graphic: Graphic,
     labelText: string | undefined,
+    mapDrawingSymbol: MapDrawingSymbol | undefined,
+    symbolSize: number | undefined,
+    symbolRotation: number | undefined,
     srs: SupportedSrs,
     source: DrawingLayer,
   ): Gb3StyledInternalDrawingRepresentation {
@@ -36,13 +40,14 @@ export class EsriGraphicToInternalDrawingRepresentationUtils {
       type: 'Feature',
       geometry: {...geoJsonFeature, srs},
       properties: {
-        style: EsriSymbolToStyleRepresentationUtils.convert(graphic.symbol),
+        style: EsriSymbolToStyleRepresentationUtils.convert(graphic.symbol, symbolSize, symbolRotation),
         [AbstractEsriDrawableToolStrategy.identifierFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.identifierFieldName],
         [AbstractEsriDrawableToolStrategy.belongsToFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.belongsToFieldName],
         [AbstractEsriDrawableToolStrategy.toolFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.toolFieldName],
       },
       source,
       labelText,
+      mapDrawingSymbol,
     };
   }
 }

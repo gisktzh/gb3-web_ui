@@ -17,6 +17,7 @@ import {
 } from '../../shared/interfaces/internal-drawing-representation.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
+import {MapDrawingSymbol} from 'src/app/map/services/esri-services/types/map-drawing-symbol.type';
 
 export class MapServiceStub implements MapService {
   private toolService: ToolService = {
@@ -24,7 +25,12 @@ export class MapServiceStub implements MapService {
     initializeDrawing(drawingTool: DrawingTool) {},
     initializeMeasurement(measurementTool: MeasurementTool) {},
     addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {},
-    updateDrawingStyles(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string) {},
+    updateDrawingStyles(
+      drawing: Gb3StyledInternalDrawingRepresentation,
+      style: Gb3StyleRepresentation,
+      labelText?: string,
+      mapDrawingSymbol?: MapDrawingSymbol,
+    ) {},
     cancelTool() {},
     initializeElevationProfileMeasurement() {},
   };

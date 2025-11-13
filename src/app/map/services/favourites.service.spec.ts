@@ -2442,7 +2442,7 @@ describe('FavouritesService', () => {
   });
 
   describe('getDrawingsForFavourite', () => {
-    it('converts the given vector layers to active map items and drawing representations', () => {
+    it('converts the given vector layers to active map items and drawing representations', async () => {
       const drawings: Gb3VectorLayer = {
         type: 'Vector',
         styles: {
@@ -2600,15 +2600,15 @@ describe('FavouritesService', () => {
       };
       const converterSpy = spyOn(SymbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.callFake(
         (gb3VectorLayer: Gb3VectorLayer, source: UserDrawingLayer) => {
-          return [
+          return Promise.resolve([
             {
               id: `id_${gb3VectorLayer.geojson.features.length}_${source}`,
             } as Gb3StyledInternalDrawingRepresentation,
-          ];
+          ]);
         },
       );
 
-      const actual = service.getDrawingsForFavourite(drawings, measurements);
+      const actual = await service.getDrawingsForFavourite(drawings, measurements);
       const expected: {drawingsToAdd: Gb3StyledInternalDrawingRepresentation[]; drawingActiveMapItems: DrawingActiveMapItem[]} = {
         drawingsToAdd: [
           {id: 'id_2_measurements'} as Gb3StyledInternalDrawingRepresentation,

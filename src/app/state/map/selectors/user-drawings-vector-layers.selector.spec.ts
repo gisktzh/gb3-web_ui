@@ -15,8 +15,8 @@ describe('selectUserDrawingsVectorLayers', () => {
     selectUserDrawingsVectorLayers.projector(drawingsMock, visibleLayersMock);
 
     expect(utilsMock).toHaveBeenCalledTimes(2);
-    expect(utilsMock).toHaveBeenCalledWith([drawingsMock[0]]);
-    expect(utilsMock).toHaveBeenCalledWith([drawingsMock[1]]);
+    expect(utilsMock).toHaveBeenCalledWith([drawingsMock[0]], 1, 1);
+    expect(utilsMock).toHaveBeenCalledWith([drawingsMock[1]], 1, 1);
   });
 
   it('correctly assigns drawings to their layer', () => {

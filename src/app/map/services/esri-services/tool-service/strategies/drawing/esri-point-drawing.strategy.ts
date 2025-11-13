@@ -15,4 +15,8 @@ export class EsriPointDrawingStrategy extends AbstractEsriDrawingStrategy<Drawin
 
     this.sketchViewModel.pointSymbol = pointSymbol;
   }
+
+  public override updateInternals(): void {
+    // noop
+  }
 }

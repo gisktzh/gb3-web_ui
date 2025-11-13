@@ -1,7 +1,7 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {combineLatestWith, first, take, tap} from 'rxjs';
+import {combineLatestWith, first, switchMap, take, tap} from 'rxjs';
 import {AuthStatusActions} from '../actions/auth-status.actions';
 import {AuthService} from '../../../auth/auth.service';
 import {Store} from '@ngrx/store';
@@ -83,10 +83,8 @@ export class AuthStatusEffects {
           : undefined;
       }),
       filter((shareLinkItem): shareLinkItem is ShareLinkItem => !!shareLinkItem),
-      map((shareLinkItem) => {
-        const mapRestoreItem = this.shareLinkService.createMapRestoreItem(shareLinkItem, true);
-        return AuthStatusActions.completeRestoreApplication({mapRestoreItem});
-      }),
+      switchMap(async (shareLinkItem) => await await this.shareLinkService.createMapRestoreItem(shareLinkItem, true)),
+      map((mapRestoreItem) => AuthStatusActions.completeRestoreApplication({mapRestoreItem})),
     );
   });
 

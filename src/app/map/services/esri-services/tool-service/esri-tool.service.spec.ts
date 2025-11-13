@@ -333,6 +333,9 @@ describe('EsriToolService', () => {
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
         labelText,
+        undefined,
+        undefined,
+        undefined,
         2056,
         UserDrawingLayer.Drawings,
       );
@@ -353,6 +356,9 @@ describe('EsriToolService', () => {
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
         labelText,
+        undefined,
+        undefined,
+        undefined,
         2056,
         UserDrawingLayer.Drawings,
       );
@@ -409,12 +415,18 @@ describe('EsriToolService', () => {
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
         undefined,
+        undefined,
+        undefined,
+        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
       const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         labelPoint,
         labelText,
+        undefined,
+        undefined,
+        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
@@ -456,12 +468,18 @@ describe('EsriToolService', () => {
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
         undefined,
+        undefined,
+        undefined,
+        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
       const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         labelPoint,
         labelText,
+        undefined,
+        undefined,
+        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
@@ -513,6 +531,9 @@ describe('EsriToolService', () => {
     it('completes selections by dispatching DataDownloadOrderActions.setSelection if the selection is not `undefined`', () => {
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
+        undefined,
+        undefined,
+        undefined,
         undefined,
         2056,
         InternalDrawingLayer.Selection,
@@ -651,7 +672,7 @@ describe('EsriToolService', () => {
       const style = {} as Gb3StyleRepresentation;
       const labelText = 'some Text';
       service.updateDrawingStyles(drawingMOck, style, labelText);
-      expect(convertSpy).toHaveBeenCalledOnceWith(style, labelText);
+      expect(convertSpy).toHaveBeenCalledOnceWith(style, labelText, undefined);
     });
 
     it('should not call the convert method if the drawingLayer does not exist', () => {

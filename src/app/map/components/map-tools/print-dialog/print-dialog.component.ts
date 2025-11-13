@@ -320,17 +320,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     scale: number | null | undefined,
     rotation: number | null | undefined,
   ) {
-    const defaultDocumentFormat = DocumentFormat[printConfig.defaultPrintValues.documentFormat] as keyof typeof DocumentFormat;
-    let currentReportSizing = printConfig.pixelSizes[defaultDocumentFormat].landscape;
-
-    if (layout) {
-      const documentFormat = printConfig.pixelSizes[layout as keyof typeof DocumentFormat];
-      if (reportOrientation === 'landscape') {
-        currentReportSizing = documentFormat.landscape;
-      } else {
-        currentReportSizing = documentFormat.portrait;
-      }
-    }
+    const currentReportSizing = this.getReportSizing(layout, reportOrientation);
 
     if (currentReportSizing && scale) {
       this.store.dispatch(
@@ -373,15 +363,22 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   }
 
   private getPrintData(): PrintData {
+    const reportLayout = FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.layout.value);
+    const reportOrientation = this.formGroup.controls.reportOrientation.value ?? undefined;
+    const currentReportSizing = this.getReportSizing(reportLayout, reportOrientation);
+
     return {
       format: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.fileFormat.value),
-      reportLayout: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.layout.value),
+      reportLayout: reportLayout,
       reportType: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.reportType.value),
       reportOrientation: this.formGroup.controls.reportOrientation.value ?? undefined,
+      reportSizing: currentReportSizing,
       title: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.title.value),
       comment: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.comment.value),
       showLegend: FormValueConversionUtils.getBooleanOrDefaultValue(this.formGroup.controls.showLegend.value),
       scale: parseInt(FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.scale.value)),
+      mapScale:
+        this.mapConfigState?.scale || parseInt(FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.scale.value)),
       dpi: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.dpi.value),
       rotation: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.rotation.value),
       mapCenter: {
@@ -392,5 +389,21 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       activeMapItems: FormValueConversionUtils.getArrayOrDefaultValue(this.activeMapItems),
       drawings: FormValueConversionUtils.getArrayOrDefaultValue(this.drawings),
     };
+  }
+
+  private getReportSizing(layout: string | null | undefined, reportOrientation: ReportOrientation | null | undefined) {
+    const defaultDocumentFormat = DocumentFormat[printConfig.defaultPrintValues.documentFormat] as keyof typeof DocumentFormat;
+    let currentReportSizing = printConfig.pixelSizes[defaultDocumentFormat].landscape;
+
+    if (layout) {
+      const documentFormat = printConfig.pixelSizes[layout as keyof typeof DocumentFormat];
+      if (reportOrientation === 'landscape') {
+        currentReportSizing = documentFormat.landscape;
+      } else {
+        currentReportSizing = documentFormat.portrait;
+      }
+    }
+
+    return currentReportSizing;
   }
 }
