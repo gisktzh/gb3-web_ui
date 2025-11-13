@@ -363,16 +363,11 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   }
 
   private getPrintData(): PrintData {
-    const reportLayout = FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.layout.value);
-    const reportOrientation = this.formGroup.controls.reportOrientation.value ?? undefined;
-    const currentReportSizing = this.getReportSizing(reportLayout, reportOrientation);
-
     return {
       format: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.fileFormat.value),
-      reportLayout: reportLayout,
+      reportLayout: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.layout.value),
       reportType: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.reportType.value),
       reportOrientation: this.formGroup.controls.reportOrientation.value ?? undefined,
-      reportSizing: currentReportSizing,
       title: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.title.value),
       comment: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.comment.value),
       showLegend: FormValueConversionUtils.getBooleanOrDefaultValue(this.formGroup.controls.showLegend.value),
