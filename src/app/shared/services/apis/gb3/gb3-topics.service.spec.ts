@@ -536,6 +536,10 @@ describe('Gb3TopicsService', () => {
             topic: 'AVfarbigZH',
             geolion_gdd: 263,
             geolion_karten_uuid: '26d7c027-38f2-42cb-a17a-99f17a2e383e',
+            report: {
+              url: null,
+              description: null,
+            },
             layers: [
               {
                 layer: 'RESF-1',
@@ -731,6 +735,10 @@ describe('Gb3TopicsService', () => {
               isSingleLayer: false,
               topic: 'AVfarbigZH',
               metaDataLink: '/data/maps/26d7c027-38f2-42cb-a17a-99f17a2e383e',
+              report: {
+                url: null,
+                description: null,
+              },
               layers: [
                 {
                   layer: 'RESF-1',

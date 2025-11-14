@@ -1,0 +1,19 @@
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.map-overlay__report__description {
+  margin-bottom: 8px;
+}
+
+.map-overlay__report__download-button {
+  @include mat-mixins.mat-button-ktzh-link();
+  justify-content: center;
+}
+
+.feature-info-item-icon {
+  margin: 0 12px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+}

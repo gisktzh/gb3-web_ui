@@ -320,6 +320,7 @@ export class Gb3TopicsService extends Gb3ApiService {
         x: featureInfo.query_position.x,
         y: featureInfo.query_position.y,
         results: {
+          report: featureInfo.results.report,
           isSingleLayer: isSingleLayer,
           topic: featureInfo.results.topic,
           metaDataLink: featureInfo.results.geolion_karten_uuid
