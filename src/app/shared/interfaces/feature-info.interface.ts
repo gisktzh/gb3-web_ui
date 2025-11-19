@@ -3,6 +3,7 @@ import {HasMetaDataLink} from './metaDataLink.interface';
 import {IsSingleLayer} from './single-layer.interface';
 import {LinkObject} from './link-object.interface';
 import {Image} from './image.interface';
+import {HasDownloadableReport} from './downloadable-report.interface';
 
 export type FeatureInfoResultFeatureFieldType = 'image' | 'link' | 'text';
 
@@ -43,7 +44,7 @@ export interface FeatureInfoResultLayer extends HasMetaDataLink {
   features: FeatureInfoResultFeature[];
 }
 
-export interface FeatureInfoResult extends HasMetaDataLink, IsSingleLayer {
+export interface FeatureInfoResult extends HasMetaDataLink, IsSingleLayer, HasDownloadableReport {
   topic: string;
   layers: FeatureInfoResultLayer[];
 }
@@ -61,7 +62,7 @@ export interface FeatureInfoResponse {
   featureInfo: FeatureInfoWrapper;
 }
 
-export interface FeatureInfoResultDisplay extends HasMetaDataLink, IsSingleLayer {
+export interface FeatureInfoResultDisplay extends HasMetaDataLink, IsSingleLayer, HasDownloadableReport {
   id: string;
   title: string;
   layers: FeatureInfoResultLayer[];
