@@ -1,0 +1,14 @@
+<map-overlay-list-item [forceExpanded]="false" overlayTitle="Report-Download" [hasBackgroundColor]="false">
+  <mat-icon class="feature-info-item-icon" header-icon>download</mat-icon>
+  <ng-container>
+    @if (reportDescription !== null) {
+      <p class="map-overlay__report__description">
+        {{ reportDescription }}
+      </p>
+    }
+    <a [href]="reportUrl" class="map-overlay__report__download-button" color="accent" target="_blank">
+      <mat-icon>download</mat-icon>
+      Report herunterladen
+    </a>
+  </ng-container>
+</map-overlay-list-item>
