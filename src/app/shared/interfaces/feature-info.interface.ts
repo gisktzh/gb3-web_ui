@@ -3,7 +3,7 @@ import {HasMetaDataLink} from './metaDataLink.interface';
 import {IsSingleLayer} from './single-layer.interface';
 import {LinkObject} from './link-object.interface';
 import {Image} from './image.interface';
-import {HasDownloadableReport} from './downloadableReport.interface';
+import {HasDownloadableReport} from './downloadable-report.interface';
 
 export type FeatureInfoResultFeatureFieldType = 'image' | 'link' | 'text';
 
