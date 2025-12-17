@@ -715,6 +715,7 @@ describe('Gb3TopicsService', () => {
       const httpGetSpy = spyOn(httpClient, 'get').and.returnValue(of(data));
       const x = 1337;
       const y = 42.666;
+      const scale = 1408;
       const queryTopics: QueryTopic[] = [
         {
           topic: 'AVfarbigZH',
@@ -725,7 +726,7 @@ describe('Gb3TopicsService', () => {
 
       const expectedUrl =
         `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/` +
-        `topics/AVfarbigZH/feature_info?x=${x}&y=${y}&queryLayers=TBLI-1%2CMBSF-1%2CRESF-1%2CSOSFC-1%2CLCSFC-1`;
+        `topics/AVfarbigZH/feature_info?x=${x}&y=${y}&scale=${scale}&queryLayers=TBLI-1%2CMBSF-1%2CRESF-1%2CSOSFC-1%2CLCSFC-1`;
       const expected: FeatureInfoResponse[] = [
         {
           featureInfo: {
@@ -900,7 +901,7 @@ describe('Gb3TopicsService', () => {
         },
       ];
 
-      service.loadFeatureInfos(x, y, queryTopics).subscribe((actual) => {
+      service.loadFeatureInfos(x, y, scale, queryTopics).subscribe((actual) => {
         expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl);
         expect(actual).toEqual(expected);
         done();
