@@ -7,7 +7,7 @@ import {Coordinate} from '../../../shared/interfaces/coordinate.interface';
 export const FeatureInfoActions = createActionGroup({
   source: 'FeatureInfo',
   events: {
-    'Send Request': props<Coordinate>(),
+    'Send Request': props<Coordinate & {scale: number}>(),
     'Update Content': props<{featureInfos: FeatureInfoResponse[]}>(),
     'Clear Content': emptyProps(),
     'Highlight Feature': props<{feature: GeometryWithSrs; pinnedFeatureId: string | undefined}>(),
