@@ -52,7 +52,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache coverage report
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: './coverage/gb3-frontend/lcov.info'
           key: ${{ inputs.cache_key }}
