@@ -76,6 +76,16 @@
       "matchManagers": ["dockerfile"],
       "matchDepNames": ["node"],
       "allowedVersions": "<24"
+    },
+    {
+      "matchPackageNames": ["@uppy/core", "@uppy/file-input"],
+      "rangeStrategy": "update-lockfile",
+      "allowedVersions": "<5.0.0"
+    },
+    {
+      "matchPackageNames": ["@uppy/drop-target"],
+      "rangeStrategy": "update-lockfile",
+      "allowedVersions": "<4.0.0"
     }
   ]
 }
