@@ -1,8 +1,5 @@
 name: Run Quality Checks
 
-permissions:
-  contents: read
-
 on:
   workflow_call:
     inputs:
@@ -22,12 +19,14 @@ jobs:
   lint:
     name: Run lint
     runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: 'npm'
           node-version: ${{ env.NODE_VERSION }}
@@ -40,12 +39,14 @@ jobs:
   tests:
     name: Run tests
     runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: 'npm'
           node-version: ${{ env.NODE_VERSION }}
