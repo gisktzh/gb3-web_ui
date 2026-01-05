@@ -1,6 +1,6 @@
 /// <reference types="@angular/localize" />
 
-import {enableProdMode, ErrorHandler, importProvidersFrom, LOCALE_ID} from '@angular/core';
+import {enableProdMode, ErrorHandler, importProvidersFrom, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
 
 import {environment} from './environments/environment';
 import {provideRouter, Router, withInMemoryScrolling} from '@angular/router';
@@ -36,6 +36,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZoneChangeDetection(),
     importProvidersFrom(AuthModule),
     {provide: ErrorHandler, deps: [Router, ErrorHandlerService, EmbeddedErrorHandlerService], useFactory: errorHandlerServiceFactory},
     {provide: MAP_SERVICE, useClass: EsriMapService},
