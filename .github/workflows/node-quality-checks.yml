@@ -1,8 +1,5 @@
 name: Run Quality Checks
 
-permissions:
-  contents: read
-
 on:
   workflow_call:
     inputs:
@@ -22,6 +19,8 @@ jobs:
   lint:
     name: Run lint
     runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -40,6 +39,8 @@ jobs:
   tests:
     name: Run tests
     runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
