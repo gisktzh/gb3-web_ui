@@ -9,7 +9,7 @@ export class ShowTooltipIfTruncatedDirective {
   private readonly matTooltip = inject(MatTooltip);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  @HostListener('mouseenter', ['$event'])
+  @HostListener('mouseenter')
   public setTooltipState(): void {
     const element = this.elementRef.nativeElement;
     this.matTooltip.disabled = element.scrollWidth <= element.clientWidth && element.scrollHeight <= element.clientHeight;
