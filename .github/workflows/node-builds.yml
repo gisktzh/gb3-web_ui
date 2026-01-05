@@ -17,7 +17,7 @@ on:
         type: choice
         description: 'Runner version to use for the job'
         options:
-          - ubuntu-22.04
+          - ubuntu-24.12
           - ubuntu-latest
 jobs:
   run-builds:
