@@ -146,9 +146,6 @@ export const defaultBasemaps: Basemap[] = [
     srsId: 2056,
     layers: [
       {
-        name: 'ortho_swisstopo',
-      },
-      {
         name: 'ortho_zh_aktuell',
       },
       {
