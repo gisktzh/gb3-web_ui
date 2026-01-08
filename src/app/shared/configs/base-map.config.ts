@@ -23,13 +23,7 @@ export const defaultBasemaps: Basemap[] = [
         name: 'osm_mundial_terrestris',
       },
       {
-        name: 'ch_osm_buildings',
-      },
-      {
-        name: 'ch_osm_highways',
-      },
-      {
-        name: 'ch_osm_landuse',
+        name: 'ch_osm_niveau_3',
       },
       {
         name: 'grenzen',
