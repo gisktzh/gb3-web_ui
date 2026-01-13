@@ -14,8 +14,7 @@ export abstract class AbstractEsriDrawableToolStrategy<
     | DrawingCallbackHandler['completeDrawing']
     | DrawingCallbackHandler['completeMeasurement']
     | DrawingCallbackHandler['completeSelection'],
-> implements EsriToolStrategy
-{
+> implements EsriToolStrategy {
   public static readonly identifierFieldName = MapConstants.DRAWING_IDENTIFIER;
   public static readonly belongsToFieldName = MapConstants.BELONGS_TO_IDENTIFIER;
   public static readonly toolFieldName = MapConstants.TOOL_IDENTIFIER;

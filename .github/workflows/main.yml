@@ -35,7 +35,7 @@ jobs:
     needs: builds
     runs-on: ${{ vars.RUNNER_VERSION }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: gisktzh/github-actions/docker-dry-run@main
         with:
           image: gb3-frontend
@@ -44,7 +44,7 @@ jobs:
     needs: quality-checks
     runs-on: ${{ vars.RUNNER_VERSION }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: gisktzh/github-actions/sonarcloud-analysis@main
         with:
           sonar_token: ${{ secrets.SONAR_TOKEN }}

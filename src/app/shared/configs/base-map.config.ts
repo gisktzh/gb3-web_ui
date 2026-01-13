@@ -23,13 +23,7 @@ export const defaultBasemaps: Basemap[] = [
         name: 'osm_mundial_terrestris',
       },
       {
-        name: 'ch_osm_buildings',
-      },
-      {
-        name: 'ch_osm_highways',
-      },
-      {
-        name: 'ch_osm_landuse',
+        name: 'ch_osm_niveau_3',
       },
       {
         name: 'grenzen',
@@ -146,9 +140,6 @@ export const defaultBasemaps: Basemap[] = [
     srsId: 2056,
     layers: [
       {
-        name: 'ortho_swisstopo',
-      },
-      {
         name: 'ortho_zh_aktuell',
       },
       {
@@ -185,6 +176,9 @@ export const defaultBasemaps: Basemap[] = [
       },
       {
         name: 'seen',
+      },
+      {
+        name: 'kantonsgrenzen_sw',
       },
       {
         name: 'grenzen',

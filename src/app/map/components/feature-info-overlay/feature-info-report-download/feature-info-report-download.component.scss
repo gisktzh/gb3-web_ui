@@ -6,8 +6,8 @@
   margin-bottom: 8px;
 }
 
-.map-overlay__report__download-button {
-  @include mat-mixins.mat-button-ktzh-link();
+.map-overlay__report__download-button__container {
+  display: flex;
   justify-content: center;
 }
 
