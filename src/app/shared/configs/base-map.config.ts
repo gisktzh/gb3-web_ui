@@ -178,6 +178,9 @@ export const defaultBasemaps: Basemap[] = [
         name: 'seen',
       },
       {
+        name: 'kantonsgrenzen_sw',
+      },
+      {
         name: 'grenzen',
       },
       {
