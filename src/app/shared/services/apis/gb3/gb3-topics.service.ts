@@ -235,7 +235,7 @@ export class Gb3TopicsService extends Gb3ApiService {
       alwaysMaxRange: timesliderConfiguration.alwaysMaxRange,
       dateFormat: timesliderConfiguration.dateFormat,
       description: timesliderConfiguration.description,
-      maximumDate: timesliderConfiguration.maximumDate,
+      maximumDate: this.replacePlaceholderDates(timesliderConfiguration.maximumDate),
       minimumDate: timesliderConfiguration.minimumDate,
       minimalRange: timesliderConfiguration.minimalRange,
       range: timesliderConfiguration.range,
@@ -276,6 +276,25 @@ export class Gb3TopicsService extends Gb3ApiService {
             };
           }),
         } as TimeSliderLayerSource;
+    }
+  }
+
+  private replacePlaceholderDates(dateString: string): string {
+    const currentDate = new Date();
+
+    switch (dateString) {
+      case 'CURRENT_YEAR':
+        return currentDate.getFullYear().toString();
+
+      case 'CURRENT_DAY': {
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      default:
+        return dateString;
     }
   }
 
