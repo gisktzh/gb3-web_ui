@@ -33,7 +33,7 @@ export class FeatureInfoEffects {
   public interceptMapClick$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.handleMapClick),
-      map(({x, y}) => FeatureInfoActions.sendRequest({x, y})),
+      map(({x, y, scale}) => FeatureInfoActions.sendRequest({x, y, scale})),
     );
   });
 
@@ -59,7 +59,7 @@ export class FeatureInfoEffects {
       switchMap(([action, queryLayers]) =>
         iif(
           () => queryLayers.length > 0,
-          this.topicsService.loadFeatureInfos(action.x, action.y, queryLayers).pipe(
+          this.topicsService.loadFeatureInfos(action.x, action.y, action.scale, queryLayers).pipe(
             map((featureInfos) => {
               return FeatureInfoActions.updateContent({featureInfos});
             }),

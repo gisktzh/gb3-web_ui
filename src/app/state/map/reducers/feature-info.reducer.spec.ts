@@ -21,7 +21,7 @@ describe('FeatureInfo Reducer', () => {
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loading',
-        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false}],
+        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false, report: {url: null, description: null}}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
       };
@@ -52,7 +52,7 @@ describe('FeatureInfo Reducer', () => {
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loading',
-        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false}],
+        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false, report: {url: null, description: null}}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
       };
@@ -75,7 +75,7 @@ describe('FeatureInfo Reducer', () => {
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loading',
-        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false}],
+        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false, report: {url: null, description: null}}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
       };
@@ -99,6 +99,10 @@ describe('FeatureInfo Reducer', () => {
             y: 2,
             results: {
               topic: 'Topic1',
+              report: {
+                url: null,
+                description: null,
+              },
               layers: [{layer: 'test', title: 'title', features: [], metaDataLink: 'url2'}],
               metaDataLink: 'url',
               isSingleLayer: false,
@@ -122,11 +126,11 @@ describe('FeatureInfo Reducer', () => {
   describe('sendRequest', () => {
     it('resets the current state to initial state, sets the location and loadingstate', () => {
       const location: FeatureInfoQueryLocation = {x: 1337, y: 42};
-      const action = FeatureInfoActions.sendRequest({x: location.x!, y: location.y!});
+      const action = FeatureInfoActions.sendRequest({x: location.x!, y: location.y!, scale: 1408});
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loaded',
-        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false}],
+        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false, report: {url: null, description: null}}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
       };

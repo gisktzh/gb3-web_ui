@@ -859,7 +859,7 @@ export class EsriMapService implements MapService, OnDestroy {
           if (this.isEditModeActive) {
             this.isEditModeActive = false;
           } else {
-            this.dispatchFeatureInfoRequest(x, y);
+            this.dispatchFeatureInfoRequest(x, y, Math.round(this.mapView.scale));
           }
         } else if (event.button === EsriMouseButtonType.RightClick) {
           const layersToTest = this.mapView.map.layers
@@ -965,8 +965,8 @@ export class EsriMapService implements MapService, OnDestroy {
     return updating ? 'updating' : 'completed';
   }
 
-  private dispatchFeatureInfoRequest(x: number, y: number) {
-    this.store.dispatch(MapConfigActions.handleMapClick({x, y}));
+  private dispatchFeatureInfoRequest(x: number, y: number, scale: number) {
+    this.store.dispatch(MapConfigActions.handleMapClick({x, y, scale}));
   }
 
   private dispatchRotationEvent(rotation: number) {

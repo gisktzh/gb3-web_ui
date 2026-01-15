@@ -3,6 +3,11 @@
   [overlayTitle]="featureInfo.title"
   [metaDataLink]="showInteractiveElements ? featureInfo.metaDataLink : undefined"
 >
+  @if (featureInfo.report.url !== null) {
+    <div class="feature-info-item">
+      <feature-info-report-download [reportUrl]="featureInfo.report.url" [reportDescription]="featureInfo.report.description" />
+    </div>
+  }
   @for (layer of featureInfo.layers; track layer) {
     <div class="feature-info-item">
       <!-- For some results, there may be no features; if so, hide the sublayer. This might be an error API-wise, but we can handle it gracefully. -->

@@ -62,9 +62,9 @@ export class Gb3TopicsService extends Gb3ApiService {
     return forkJoin(legendRequests);
   }
 
-  public loadFeatureInfos(x: number, y: number, queryTopics: QueryTopic[]): Observable<FeatureInfoResponse[]> {
+  public loadFeatureInfos(x: number, y: number, scale: number, queryTopics: QueryTopic[]): Observable<FeatureInfoResponse[]> {
     const featureInfoRequests = queryTopics.map((queryTopic) =>
-      this.get<TopicsFeatureInfoDetailData>(this.createFeatureInfoUrl(queryTopic.topic, x, y, queryTopic.layersToQuery)).pipe(
+      this.get<TopicsFeatureInfoDetailData>(this.createFeatureInfoUrl(queryTopic.topic, x, y, scale, queryTopic.layersToQuery)).pipe(
         map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data, queryTopic.isSingleLayer)),
       ),
     );
@@ -298,10 +298,11 @@ export class Gb3TopicsService extends Gb3ApiService {
     return url.toString();
   }
 
-  private createFeatureInfoUrl(topicName: string, x: number, y: number, queryLayers: string): string {
+  private createFeatureInfoUrl(topicName: string, x: number, y: number, scale: number, queryLayers: string): string {
     const url = new URL(`${this.getFullEndpointUrl()}/${topicName}/feature_info`);
     url.searchParams.append('x', x.toString());
     url.searchParams.append('y', y.toString());
+    url.searchParams.append('scale', scale.toString());
     url.searchParams.append('queryLayers', queryLayers);
     return url.toString();
   }
@@ -320,6 +321,7 @@ export class Gb3TopicsService extends Gb3ApiService {
         x: featureInfo.query_position.x,
         y: featureInfo.query_position.y,
         results: {
+          report: featureInfo.results.report,
           isSingleLayer: isSingleLayer,
           topic: featureInfo.results.topic,
           metaDataLink: featureInfo.results.geolion_karten_uuid

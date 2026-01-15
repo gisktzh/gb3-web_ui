@@ -536,6 +536,10 @@ describe('Gb3TopicsService', () => {
             topic: 'AVfarbigZH',
             geolion_gdd: 263,
             geolion_karten_uuid: '26d7c027-38f2-42cb-a17a-99f17a2e383e',
+            report: {
+              url: null,
+              description: null,
+            },
             layers: [
               {
                 layer: 'RESF-1',
@@ -711,6 +715,7 @@ describe('Gb3TopicsService', () => {
       const httpGetSpy = spyOn(httpClient, 'get').and.returnValue(of(data));
       const x = 1337;
       const y = 42.666;
+      const scale = 1408;
       const queryTopics: QueryTopic[] = [
         {
           topic: 'AVfarbigZH',
@@ -721,7 +726,7 @@ describe('Gb3TopicsService', () => {
 
       const expectedUrl =
         `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/` +
-        `topics/AVfarbigZH/feature_info?x=${x}&y=${y}&queryLayers=TBLI-1%2CMBSF-1%2CRESF-1%2CSOSFC-1%2CLCSFC-1`;
+        `topics/AVfarbigZH/feature_info?x=${x}&y=${y}&scale=${scale}&queryLayers=TBLI-1%2CMBSF-1%2CRESF-1%2CSOSFC-1%2CLCSFC-1`;
       const expected: FeatureInfoResponse[] = [
         {
           featureInfo: {
@@ -731,6 +736,10 @@ describe('Gb3TopicsService', () => {
               isSingleLayer: false,
               topic: 'AVfarbigZH',
               metaDataLink: '/data/maps/26d7c027-38f2-42cb-a17a-99f17a2e383e',
+              report: {
+                url: null,
+                description: null,
+              },
               layers: [
                 {
                   layer: 'RESF-1',
@@ -892,7 +901,7 @@ describe('Gb3TopicsService', () => {
         },
       ];
 
-      service.loadFeatureInfos(x, y, queryTopics).subscribe((actual) => {
+      service.loadFeatureInfos(x, y, scale, queryTopics).subscribe((actual) => {
         expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl);
         expect(actual).toEqual(expected);
         done();

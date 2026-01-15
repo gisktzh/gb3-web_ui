@@ -79,6 +79,11 @@ export interface Feature {
       topic: string;
       /** Geolion ID of topic */
       geolion_gdd: number | null;
+      /** Jasper Report info, if any */
+      report: {
+        url: string | null;
+        description: string | null;
+      };
       /** UUID from geometadatabase */
       geolion_karten_uuid: string | null;
       layers: {
