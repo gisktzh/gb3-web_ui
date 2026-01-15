@@ -1,8 +1,9 @@
 import {Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {EsriDrawingSymbolsService} from 'src/app/map/services/esri-services/esri-drawing-symbols.service';
-import {DrawingSymbolsCollectionItem} from '../../../services/esri-services/types/drawing-symbols-collection.type';
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
 import {Subscription} from 'rxjs';
+import {DrawingSymbolsService} from 'src/app/shared/interfaces/drawing-symbols-service.interface';
+import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
+import {DrawingSymbolChoice} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-choice.interface';
+import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 
 @Component({
   selector: 'drawing-symbols-collection',
@@ -12,12 +13,11 @@ import {Subscription} from 'rxjs';
 export class DrawingSymbolsCollectionComponent implements OnInit, OnDestroy {
   @Input() public collectionId: string = '';
   @Input() public groupName: string = '';
-  @Input() public value: WebStyleSymbol | undefined = undefined;
-  @Output() public valueChange = new EventEmitter<WebStyleSymbol>();
-  public items: DrawingSymbolsCollectionItem[] = [];
+  @Input() public value: DrawingSymbolDefinition | undefined = undefined;
+  @Output() public valueChange = new EventEmitter<DrawingSymbolDefinition>();
+  public items: DrawingSymbolChoice[] = [];
   private readonly subscriptions: Subscription = new Subscription();
-
-  private readonly estriDrawingSymbolsService = inject(EsriDrawingSymbolsService);
+  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   ngOnInit() {
     this.initSubscriptions();
@@ -29,18 +29,22 @@ export class DrawingSymbolsCollectionComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.estriDrawingSymbolsService.getCollection(this.collectionId).subscribe((response) => {
+      this.drawingSymbolsService.getCollection(this.collectionId).subscribe((response) => {
         this.items = response;
       }),
     );
   }
 
-  public onValueChange(value: WebStyleSymbol) {
+  public onValueChange(value: DrawingSymbolDefinition) {
     this.value = value;
     this.valueChange.emit(value);
   }
 
-  public isSelected(value: WebStyleSymbol) {
-    return this.value?.name === value.name && this.value?.styleUrl === value.styleUrl;
+  public isSelected(value: DrawingSymbolDefinition) {
+    if (!this.value) {
+      return false;
+    }
+
+    return this.drawingSymbolsService.isSameSymbol(value, this.value);
   }
 }

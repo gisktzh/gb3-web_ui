@@ -1,4 +1,4 @@
-import {Gb3SymbolStyle} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
+import {Gb3SymbolStyleUtils} from './../../../../shared/utils/gb3-symbol-style.utils';
 import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {filter, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -13,13 +13,10 @@ import {LineEditComponent} from './line-edit/line-edit.component';
 import {PolygonEditComponent} from './polygon-edit/polygon-edit.component';
 import {TextEditComponent} from './text-edit/text-edit.component';
 import {SymbolEditComponent} from './symbol-edit/symbol-edit.component';
-import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
-import {scaleCIMSymbolTo, applyCIMSymbolRotation} from '@arcgis/core/symbols/support/cimSymbolUtils.js';
+import {DrawingSymbolsService} from 'src/app/shared/interfaces/drawing-symbols-service.interface';
+import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
+import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 
-function isGb3SymbolStyle(style: Gb3StyleRepresentation): style is Gb3SymbolStyle {
-  return style.type === 'symbol';
-}
 @Component({
   selector: 'drawing-edit',
   templateUrl: './drawing-edit.component.html',
@@ -28,6 +25,7 @@ function isGb3SymbolStyle(style: Gb3StyleRepresentation): style is Gb3SymbolStyl
 })
 export class DrawingEditComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
+  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   public selectedFeature?: Gb3StyledInternalDrawingRepresentation;
   public style?: Gb3StyleRepresentation;
@@ -43,28 +41,24 @@ export class DrawingEditComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public async updateStyle(style: Gb3StyleRepresentation, labelText?: string, webStyleSymbol?: WebStyleSymbol) {
-    if (webStyleSymbol && isGb3SymbolStyle(style)) {
-      const cimSymbol = (await webStyleSymbol.fetchSymbol({acceptedFormats: ['cim']})) as CIMSymbol;
-
-      scaleCIMSymbolTo(cimSymbol, style.symbolSize);
-      applyCIMSymbolRotation(cimSymbol, style.symbolRotation);
+  public async updateStyle(style: Gb3StyleRepresentation, labelText?: string, drawingSymbolDefinition?: DrawingSymbolDefinition) {
+    if (drawingSymbolDefinition && Gb3SymbolStyleUtils.isGb3SymbolStyle(style)) {
+      const mapDrawingSymbol = await this.drawingSymbolsService.convertToMapDrawingSymbol(
+        drawingSymbolDefinition,
+        style.symbolSize,
+        style.symbolRotation,
+      );
 
       this.store.dispatch(
         DrawingActions.updateDrawingStyles({
           style,
           drawing: this.selectedFeature!,
           labelText,
-          mapDrawingSymbol: {
-            webStyleSymbol,
-            cimSymbol,
-          },
+          mapDrawingSymbol,
         }),
       );
     } else {
-      this.store.dispatch(
-        DrawingActions.updateDrawingStyles({style, drawing: this.selectedFeature!, labelText, mapDrawingSymbol: undefined}),
-      );
+      this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: this.selectedFeature!, labelText}));
     }
   }
 

@@ -1,4 +1,3 @@
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
 import {Feature} from 'geojson';
 import {DrawingLayer} from '../enums/drawing-layer.enum';
 import {HasSrs} from './geojson-types-with-srs.interface';
@@ -6,7 +5,8 @@ import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {AbstractEsriDrawableToolStrategy} from '../../map/services/esri-services/tool-service/strategies/abstract-esri-drawable-tool.strategy';
 import {MapfishPrintStyleProperties} from '../models/mapfish-print-style-properties-generated.interface';
 import {SupportedEsriTool} from '../../map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
-import {MapDrawingSymbol} from 'src/app/map/services/esri-services/types/map-drawing-symbol.type';
+import {DrawingSymbolDefinition} from './drawing-symbol/drawing-symbol-definition.interface';
+import {MapDrawingSymbol} from './map-drawing-symbol.interface';
 
 interface InternalDrawingRepresentation<T = Record<never, never>> extends Feature<SupportedGeometry, T> {
   labelText?: string;
@@ -38,7 +38,7 @@ export type TextStyleConfiguration = Pick<
 export type DrawingSymbolStyleConfiguration = {
   symbolSize: number;
   symbolRotation: number;
-  webStyleSymbol?: WebStyleSymbol;
+  symbolDefinition?: DrawingSymbolDefinition;
 };
 
 export interface Gb3LineStringStyle extends InternalDrawingType, LineStyleConfiguration {

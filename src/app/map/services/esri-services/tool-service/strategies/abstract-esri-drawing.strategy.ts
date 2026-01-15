@@ -1,20 +1,27 @@
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {AbstractEsriDrawableToolStrategy} from './abstract-esri-drawable-tool.strategy';
-import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
+import {
+  DrawingCallbackHandler,
+  DrawingCallbackHandlerArgsDrawing,
+  DrawingCallbackHandlerArgsLists,
+  DrawingCallbackHandlerArgsSymbolDrawing,
+  DrawingCallbackHandlerArgsTextDrawing,
+  DrawingInternalUpdateArgs,
+} from '../interfaces/drawing-callback-handler.interface';
 import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import Graphic from '@arcgis/core/Graphic';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {DrawingMode} from '../types/drawing-mode.type';
-import {Gb3StyleRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
-import {MapDrawingSymbol} from '../../types/map-drawing-symbol.type';
+import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export abstract class AbstractEsriDrawingStrategy<
-  T extends DrawingCallbackHandler['completeDrawing'],
-> extends AbstractEsriDrawableToolStrategy<T> {
+  CallbackType extends DrawingCallbackHandlerArgsDrawing | DrawingCallbackHandlerArgsTextDrawing | DrawingCallbackHandlerArgsSymbolDrawing,
+  ArgsType extends DrawingInternalUpdateArgs[CallbackType] = DrawingInternalUpdateArgs[CallbackType],
+  SymbolType extends MapDrawingSymbol = MapDrawingSymbol,
+> extends AbstractEsriDrawableToolStrategy<CallbackType, SymbolType> {
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Drawings;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: T) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: DrawingCallbackHandler<CallbackType, SymbolType>) {
     super(layer, mapView, completeCallbackHandler);
   }
 
@@ -65,18 +72,17 @@ export abstract class AbstractEsriDrawingStrategy<
    *
    * TODO: Generalize this via a generic and a type hint.
    */
-  public abstract updateInternals(style: Gb3StyleRepresentation, labelText?: string, mapDrawingSymbol?: MapDrawingSymbol): void;
+  public updateInternals(..._: ArgsType): void {
+    // noop
+  }
 
-  protected handleComplete(
-    graphic: Graphic,
-    mode: DrawingMode,
-    labelText?: string,
-    mapDrawingSymbol?: MapDrawingSymbol,
-    symbolSize?: number,
-    symbolRotation?: number,
-  ) {
-    this.setIdentifierOnGraphic(graphic);
-    this.completeDrawingCallbackHandler(graphic, mode, labelText, mapDrawingSymbol, symbolSize, symbolRotation);
+  protected handleComplete(...args: DrawingCallbackHandlerArgsLists<SymbolType>[CallbackType]) {
+    const graphic = args[0];
+    if (graphic) {
+      this.setIdentifierOnGraphic(graphic);
+    }
+
+    this.completeDrawingCallbackHandler(...args);
   }
 
   private completeEditing(graphic: Graphic) {

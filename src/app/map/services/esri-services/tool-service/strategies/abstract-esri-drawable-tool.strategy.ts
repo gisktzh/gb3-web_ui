@@ -1,19 +1,19 @@
+import {DrawingCallbackHandler} from './../interfaces/drawing-callback-handler.interface';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriToolStrategy} from '../interfaces/strategy.interface';
-import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandlerArgsType} from '../interfaces/drawing-callback-handler.interface';
 import Graphic from '@arcgis/core/Graphic';
 import {DrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {UuidUtils} from '../../../../../shared/utils/uuid.utils';
 import {SupportedEsriTool} from './supported-esri-tool.type';
+import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export abstract class AbstractEsriDrawableToolStrategy<
-  T extends
-    | DrawingCallbackHandler['completeDrawing']
-    | DrawingCallbackHandler['completeMeasurement']
-    | DrawingCallbackHandler['completeSelection'],
+  ArgsType extends DrawingCallbackHandlerArgsType,
+  SymbolType extends MapDrawingSymbol = MapDrawingSymbol,
 > implements EsriToolStrategy
 {
   public static readonly identifierFieldName = MapConstants.DRAWING_IDENTIFIER;
@@ -26,10 +26,14 @@ export abstract class AbstractEsriDrawableToolStrategy<
    * Called when the SketchViewModel emits a 'complete' event.
    * @protected
    */
-  protected readonly completeDrawingCallbackHandler: T;
+  protected readonly completeDrawingCallbackHandler: DrawingCallbackHandler<ArgsType, SymbolType>;
   protected abstract readonly tool: SupportedEsriTool;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: T) {
+  protected constructor(
+    layer: GraphicsLayer,
+    mapView: MapView,
+    completeDrawingCallbackHandler: DrawingCallbackHandler<ArgsType, SymbolType>,
+  ) {
     // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
     this.sketchViewModel = new SketchViewModel({
       view: mapView,

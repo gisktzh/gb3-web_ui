@@ -18,6 +18,7 @@ export class ImportEffects {
   private readonly actions$ = inject(Actions);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
   private readonly importService = inject(Gb3ImportService);
+  private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
   public requestImportDrawing$ = createEffect(() => {
     return this.actions$.pipe(
@@ -35,7 +36,7 @@ export class ImportEffects {
     return this.actions$.pipe(
       ofType(ImportActions.createActiveMapItemFromDrawing),
       switchMap(({drawing}) =>
-        from(SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawing, UserDrawingLayer.Drawings)),
+        from(this.symbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawing, UserDrawingLayer.Drawings)),
       ),
       map((drawingsToAdd) => {
         const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);

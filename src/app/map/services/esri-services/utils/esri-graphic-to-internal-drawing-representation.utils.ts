@@ -7,16 +7,35 @@ import {SupportedSrs} from '../../../../shared/types/supported-srs.type';
 import {EsriSymbolToStyleRepresentationUtils} from './esri-symbol-to-style-representation.utils';
 import {hasNonNullishProperty} from '../type-guards/esri-nullish.type-guard';
 import {silentArcgisToGeoJSON} from './esri-transformer-wrapper.utils';
-import {MapDrawingSymbol} from '../types/map-drawing-symbol.type';
+import {EsriMapDrawingSymbol} from '../types/esri-map-drawing-symbol.type';
 
 export class EsriGraphicToInternalDrawingRepresentationUtils {
+  public static convert(graphic: Graphic, srs: SupportedSrs, source: DrawingLayer) {
+    return this.generalizedConvert(graphic, undefined, undefined, undefined, undefined, srs, source);
+  }
+
+  public static convertLabelText(graphic: Graphic, labelText: string, srs: SupportedSrs, source: DrawingLayer) {
+    return this.generalizedConvert(graphic, labelText, undefined, undefined, undefined, srs, source);
+  }
+
+  public static convertMapDrawingSymbol(
+    graphic: Graphic,
+    mapDrawingSymbol: EsriMapDrawingSymbol,
+    symbolSize: number,
+    symbolRotation: number,
+    srs: SupportedSrs,
+    source: DrawingLayer,
+  ) {
+    return this.generalizedConvert(graphic, undefined, mapDrawingSymbol, symbolSize, symbolRotation, srs, source);
+  }
+
   /**
    * This mapper converts an Esri graphic object to the GB3 internal drawing representation
    */
-  public static convert(
+  private static generalizedConvert(
     graphic: Graphic,
     labelText: string | undefined,
-    mapDrawingSymbol: MapDrawingSymbol | undefined,
+    mapDrawingSymbol: EsriMapDrawingSymbol | undefined,
     symbolSize: number | undefined,
     symbolRotation: number | undefined,
     srs: SupportedSrs,

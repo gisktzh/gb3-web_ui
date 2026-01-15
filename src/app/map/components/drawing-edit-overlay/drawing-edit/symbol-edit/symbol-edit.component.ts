@@ -5,7 +5,7 @@ import {
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {DrawingSymbolsComponent} from '../../../drawing-symbols/drawing-symbols.component';
 import {debounceTime, Subject, Subscription, tap} from 'rxjs';
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
+import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 
 const INPUT_DEBOUNCE_IN_MS = 10;
 
@@ -17,9 +17,9 @@ const INPUT_DEBOUNCE_IN_MS = 10;
 })
 export class SymbolEditComponent implements OnInit, OnDestroy {
   @Input() public style!: Gb3SymbolStyle;
-  @Input() public selectedSymbol: WebStyleSymbol | undefined = undefined;
+  @Input() public selectedSymbol: DrawingSymbolDefinition | undefined = undefined;
 
-  @Output() public updateStyleEvent = new EventEmitter<{style: Gb3SymbolStyle; webStyleSymbol: WebStyleSymbol}>();
+  @Output() public updateStyleEvent = new EventEmitter<{style: Gb3SymbolStyle; drawingSymbolDefinition: DrawingSymbolDefinition}>();
 
   private readonly subscriptions = new Subscription();
   private readonly debouncer = new Subject<{
@@ -27,11 +27,11 @@ export class SymbolEditComponent implements OnInit, OnDestroy {
     value: number;
   }>();
 
-  public onSymbolChange(value: WebStyleSymbol) {
+  public onSymbolChange(value: DrawingSymbolDefinition) {
     this.selectedSymbol = value;
 
     this.updateStyleEvent.emit({
-      webStyleSymbol: value,
+      drawingSymbolDefinition: value,
       style: this.style,
     });
   }
@@ -58,7 +58,7 @@ export class SymbolEditComponent implements OnInit, OnDestroy {
     };
 
     if (this.selectedSymbol) {
-      this.updateStyleEvent.emit({style: this.style, webStyleSymbol: this.selectedSymbol});
+      this.updateStyleEvent.emit({style: this.style, drawingSymbolDefinition: this.selectedSymbol});
     }
   }
 

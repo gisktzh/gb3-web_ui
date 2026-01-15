@@ -1,11 +1,11 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {combineLatestWith, first, switchMap, take, tap} from 'rxjs';
+import {combineLatestWith, first, from, switchMap, take, tap} from 'rxjs';
 import {AuthStatusActions} from '../actions/auth-status.actions';
 import {AuthService} from '../../../auth/auth.service';
 import {Store} from '@ngrx/store';
-import {selectCurrentShareLinkItem} from '../../map/selectors/current-share-link-item.selector';
+import {selectCurrentInternalShareLinkItem} from '../../map/selectors/current-share-link-item.selector';
 import {SessionStorageService} from '../../../shared/services/session-storage.service';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 import {filter, map} from 'rxjs';
@@ -20,6 +20,7 @@ import {MapService} from '../../../map/interfaces/map.service';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {defaultActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {SymbolizationToGb3ConverterUtils} from 'src/app/shared/utils/symbolization-to-gb3-converter.utils';
 
 @Injectable()
 export class AuthStatusEffects {
@@ -29,13 +30,19 @@ export class AuthStatusEffects {
   private readonly sessionStorageService = inject(SessionStorageService);
   private readonly shareLinkService = inject(Gb3ShareLinkService);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
   public login$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(AuthStatusActions.performLogin),
-        concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
-        tap(([_, shareLinkItem]) => {
+        concatLatestFrom(() => this.store.select(selectCurrentInternalShareLinkItem)),
+        map(([_, shareLinkItem]) => ({
+          ...shareLinkItem,
+          drawings: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(shareLinkItem.drawings),
+          measurements: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(shareLinkItem.measurements),
+        })),
+        tap((shareLinkItem) => {
           this.sessionStorageService.set('shareLinkItem', this.sessionStorageService.stringifyJson(shareLinkItem));
           this.authService.login();
         }),
@@ -48,8 +55,16 @@ export class AuthStatusEffects {
     () => {
       return this.actions$.pipe(
         ofType(AuthStatusActions.performLogout),
-        concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
-        tap(([{isForced}, shareLinkItem]) => {
+        concatLatestFrom(() => this.store.select(selectCurrentInternalShareLinkItem)),
+        map(([{isForced}, shareLinkItem]) => ({
+          isForced,
+          shareLinkItem: {
+            ...shareLinkItem,
+            drawings: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(shareLinkItem.drawings),
+            measurements: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(shareLinkItem.measurements),
+          },
+        })),
+        tap(({isForced, shareLinkItem}) => {
           this.sessionStorageService.set('shareLinkItem', this.sessionStorageService.stringifyJson(shareLinkItem));
           this.authService.logout(isForced);
         }),
@@ -83,7 +98,7 @@ export class AuthStatusEffects {
           : undefined;
       }),
       filter((shareLinkItem): shareLinkItem is ShareLinkItem => !!shareLinkItem),
-      switchMap(async (shareLinkItem) => await await this.shareLinkService.createMapRestoreItem(shareLinkItem, true)),
+      switchMap((shareLinkItem) => from(this.shareLinkService.createMapRestoreItem(shareLinkItem, true))),
       map((mapRestoreItem) => AuthStatusActions.completeRestoreApplication({mapRestoreItem})),
     );
   });

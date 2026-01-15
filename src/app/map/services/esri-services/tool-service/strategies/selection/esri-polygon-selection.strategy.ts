@@ -2,7 +2,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import {AbstractEsriDrawableToolStrategy} from '../abstract-esri-drawable-tool.strategy';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler, DrawingCallbackHandlerArgsSelection} from '../../interfaces/drawing-callback-handler.interface';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/esri-graphic-to-internal-drawing-representation.utils';
@@ -11,7 +11,7 @@ import Graphic from '@arcgis/core/Graphic';
 import {SupportedEsriPolygonTool, SupportedEsriTool} from '../supported-esri-tool.type';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
-export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy<DrawingCallbackHandler['completeSelection']> {
+export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy<DrawingCallbackHandlerArgsSelection> {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
   protected readonly tool: SupportedEsriTool = 'polygon';
   private readonly srs: SupportedSrs;
@@ -44,15 +44,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
 
   private complete(graphic: Graphic) {
     this.setIdentifierOnGraphic(graphic);
-    const drawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
-      graphic,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      this.srs,
-      this.internalLayerType,
-    );
+    const drawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(graphic, this.srs, this.internalLayerType);
     const selection: DataDownloadSelection = {
       type: 'polygon',
       drawingRepresentation,
@@ -64,7 +56,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     layer: GraphicsLayer,
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
-    completeCallbackHandler: DrawingCallbackHandler['completeSelection'],
+    completeCallbackHandler: DrawingCallbackHandler<'completeSelection'>,
     polygonType: SupportedEsriPolygonTool,
     srs: SupportedSrs,
   ) {

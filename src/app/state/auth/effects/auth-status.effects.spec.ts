@@ -8,7 +8,7 @@ import {AuthService} from '../../../auth/auth.service';
 import {AuthStatusEffects} from './auth-status.effects';
 import {SessionStorageService} from '../../../shared/services/session-storage.service';
 import {AuthStatusActions} from '../actions/auth-status.actions';
-import {selectCurrentShareLinkItem} from '../../map/selectors/current-share-link-item.selector';
+import {selectCurrentInternalShareLinkItem} from '../../map/selectors/current-share-link-item.selector';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {ShareLinkItemTestUtils} from '../../../testing/map-testing/share-link-item-test.utils';
 import {selectActiveMapItemConfigurations} from '../../map/selectors/active-map-item-configuration.selector';
@@ -29,7 +29,12 @@ import {selectDrawings} from '../../map/reducers/drawing.reducer';
 import {ToolService} from '../../../map/interfaces/tool.service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
-import {MAP_SERVICE, TIME_SERVICE} from '../../../app.tokens';
+import {DRAWING_SYMBOLS_SERVICE, MAP_SERVICE, TIME_SERVICE} from '../../../app.tokens';
+import {InternalShareLinkItem} from 'src/app/shared/interfaces/internal-share-link.interface';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
+import {UuidUtils} from 'src/app/shared/utils/uuid.utils';
+
+const mockUuid = '32b50136-2190-4faa-8fef-b9d07319c749'; // Chosen by fair dice roll.
 
 const mockOAuthService = jasmine.createSpyObj<AuthService>({
   logout: void 0,
@@ -54,6 +59,7 @@ describe('AuthStatusEffects', () => {
         {provide: AuthService, useValue: mockOAuthService},
         AuthStatusEffects,
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -65,10 +71,12 @@ describe('AuthStatusEffects', () => {
     store.overrideSelector(selectMaps, []);
     store.overrideSelector(selectFavouriteBaseConfig, {center: {x: 0, y: 0}, scale: 0, basemap: ''});
     store.overrideSelector(selectUserDrawingsVectorLayers, {
-      drawings: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
-      measurements: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
+      drawings: [],
+      measurements: [],
     });
     effects = TestBed.inject(AuthStatusEffects);
+
+    spyOn(UuidUtils, 'createUuid').and.returnValue(mockUuid);
   });
 
   afterEach(() => {
@@ -77,21 +85,32 @@ describe('AuthStatusEffects', () => {
 
   describe('login$', () => {
     it('logins using the AuthService and stores the current map state into a share link item; dispatches no further actions', (done: DoneFn) => {
-      const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+      const internalShareLinkItem: InternalShareLinkItem = ShareLinkItemTestUtils.createInternalShareLinkItem(
         timeService.createUTCDateFromString('1000'),
         timeService.createUTCDateFromString('2020'),
       );
-      const storageServiceSpy = spyOn(storageService, 'set');
-      store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
 
-      const expectedShareLinkItem = JSON.stringify(shareLinkItem);
+      const expectedShareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+        timeService.createUTCDateFromString('1000'),
+        timeService.createUTCDateFromString('2020'),
+        mockUuid,
+      );
+
+      store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
+
+      const storageServiceSpy = spyOn(storageService, 'set');
 
       const expectedAction = AuthStatusActions.performLogin();
       actions$ = of(expectedAction);
-      effects.login$.subscribe(([action, _]) => {
-        expect(action).toEqual(expectedAction);
+      effects.login$.subscribe(() => {
         expect(mockOAuthService.login).toHaveBeenCalledOnceWith();
-        expect(storageServiceSpy).toHaveBeenCalledOnceWith('shareLinkItem', expectedShareLinkItem);
+        expect(storageServiceSpy).toHaveBeenCalledTimes(1);
+
+        const passedArgs = storageServiceSpy.calls.mostRecent().args;
+
+        expect(passedArgs[0]).toBe('shareLinkItem');
+        expect(JSON.parse(passedArgs[1])).toEqual(JSON.parse(JSON.stringify(expectedShareLinkItem)));
+
         done();
       });
     });
@@ -99,22 +118,32 @@ describe('AuthStatusEffects', () => {
 
   describe('logout$', () => {
     it('logouts using the AuthService and stores the current map state into a share link item; dispatches no further actions', (done: DoneFn) => {
-      const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+      const internalShareLinkItem: InternalShareLinkItem = ShareLinkItemTestUtils.createInternalShareLinkItem(
         timeService.createUTCDateFromString('1000'),
         timeService.createUTCDateFromString('2020'),
       );
-      const storageServiceSpy = spyOn(storageService, 'set');
-      store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
-      const isForced = true;
 
-      const expectedShareLinkItem = JSON.stringify(shareLinkItem);
+      const expectedShareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+        timeService.createUTCDateFromString('1000'),
+        timeService.createUTCDateFromString('2020'),
+        mockUuid,
+      );
+
+      const storageServiceSpy = spyOn(storageService, 'set');
+      store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
+      const isForced = true;
 
       const expectedAction = AuthStatusActions.performLogout({isForced});
       actions$ = of(expectedAction);
-      effects.logout$.subscribe(([action, _]) => {
-        expect(action).toEqual(expectedAction);
+      effects.logout$.subscribe(() => {
         expect(mockOAuthService.logout).toHaveBeenCalledOnceWith(isForced);
-        expect(storageServiceSpy).toHaveBeenCalledOnceWith('shareLinkItem', expectedShareLinkItem);
+        expect(storageServiceSpy).toHaveBeenCalledTimes(1);
+
+        const passedArgs = storageServiceSpy.calls.mostRecent().args;
+
+        expect(passedArgs[0]).toBe('shareLinkItem');
+        expect(JSON.parse(passedArgs[1])).toEqual(JSON.parse(JSON.stringify(expectedShareLinkItem)));
+
         done();
       });
     });
@@ -128,6 +157,7 @@ describe('AuthStatusEffects', () => {
         const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
           timeService.createUTCDateFromString('1000'),
           timeService.createUTCDateFromString('2020'),
+          mockUuid,
         );
         const shareLinkItemString = JSON.stringify(shareLinkItem);
         const storageServiceGetSpy = spyOn(storageService, 'get').and.returnValue(shareLinkItemString);

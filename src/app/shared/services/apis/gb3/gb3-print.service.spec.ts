@@ -24,7 +24,8 @@ import {Basemap} from '../../../interfaces/basemap.interface';
 import {PrintData} from '../../../../map/interfaces/print-data.interface';
 import {TimeService} from '../../../interfaces/time-service.interface';
 import {TimeSliderConfiguration} from '../../../interfaces/topic.interface';
-import {TIME_SERVICE} from '../../../../app.tokens';
+import {DRAWING_SYMBOLS_SERVICE, TIME_SERVICE} from '../../../../app.tokens';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 
 describe('Gb3PrintService', () => {
   let service: Gb3PrintService;
@@ -35,7 +36,12 @@ describe('Gb3PrintService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        provideMockStore(),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
+      ],
     });
     service = TestBed.inject(Gb3PrintService);
     httpClient = TestBed.inject(HttpClient);

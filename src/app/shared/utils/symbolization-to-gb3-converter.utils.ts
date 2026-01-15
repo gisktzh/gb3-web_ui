@@ -1,29 +1,30 @@
-import {
-  Gb3StyledInternalDrawingRepresentation,
-  Gb3StyleRepresentation,
-  Gb3SymbolStyle,
-} from '../interfaces/internal-drawing-representation.interface';
+import {Gb3SymbolStyleUtils} from './gb3-symbol-style.utils';
+import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {Gb3GeoJsonFeature, Gb3VectorLayer, Gb3VectorLayerStyle} from '../interfaces/gb3-vector-layer.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {MapConstants} from '../constants/map.constants';
 import {UuidUtils} from './uuid.utils';
-import cimSymbolToSVG from '@gisktzh/cim-symbol-to-svg';
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
-import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
 import {Gb2Constants} from '../constants/gb2.constants';
+import {inject, Injectable} from '@angular/core';
+import {DrawingSymbolsService} from '../interfaces/drawing-symbols-service.interface';
+import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
+import {DrawingSymbolDescriptor} from '../interfaces/drawing-symbol/drawing-symbol-descriptor.interface';
+import {SupportedGeometry} from '../types/SupportedGeometry.type';
+import {HasSrs} from '../interfaces/geojson-types-with-srs.interface';
 
-function isGb3SymbolStyle(style: Gb3StyleRepresentation): style is Gb3SymbolStyle {
-  return style.type === 'symbol';
-}
-
+@Injectable({
+  providedIn: 'root',
+})
 export class SymbolizationToGb3ConverterUtils {
+  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
+
   /**
    * Converts a list of internal drawings to a GB3VectorLayer representation.
    */
-  public static convertInternalToExternalRepresentation(
+  public convertInternalToExternalRepresentation(
     features: Gb3StyledInternalDrawingRepresentation[],
-    mapScale: number,
-    printScale: number,
+    mapScale?: number,
+    printScale?: number,
   ): Gb3VectorLayer {
     const gb3GeoJsonFeatures: Gb3GeoJsonFeature[] = [];
     const allStyles: Gb3VectorLayerStyle = {};
@@ -31,37 +32,42 @@ export class SymbolizationToGb3ConverterUtils {
     features.forEach((feature) => {
       const uuid = UuidUtils.createUuid();
 
-      // Gb3VectorLayerStyle specifies this as `any`, so we work with `any` here, too.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Gb3VectorLayerStyle specifies this as `any`, so we work with `any` here, too.
       let style: any = {...feature.properties.style};
 
-      if (feature.properties.style && isGb3SymbolStyle(feature.properties.style) && feature.mapDrawingSymbol !== undefined) {
-        if (!feature.mapDrawingSymbol?.cimSymbol) {
-          return;
-        }
-
-        const iconSize = this.getSvgSize(
-          feature.properties.style.symbolSize,
-          feature.properties.style.symbolRotation,
-          mapScale,
-          printScale,
-        );
-
+      if (
+        feature.properties.style &&
+        Gb3SymbolStyleUtils.isGb3SymbolStyle(feature.properties.style) &&
+        feature.mapDrawingSymbol !== undefined &&
+        feature.mapDrawingSymbol.drawingSymbolDescriptor !== undefined
+      ) {
         style = {
           type: 'symbol',
-          externalGraphic: this.getSVGString(feature.mapDrawingSymbol.cimSymbol, iconSize),
           graphicName: 'symbol',
           graphicOpacity: 1,
-          pointRadius: iconSize, // Map units
-          webStyleSymbol: feature.mapDrawingSymbol?.webStyleSymbol?.toJSON(),
+          pointRadius: feature.properties.style.symbolSize,
+          drawingSymbolDefinition: feature.mapDrawingSymbol?.drawingSymbolDefinition?.toJSON(),
           symbolSize: feature.properties.style.symbolSize,
           symbolRotation: feature.properties.style.symbolRotation,
         };
+
+        // Since print scale is given, the user wants to print. We, therefore, also need to set the external Graphic.
+        if (printScale && mapScale) {
+          const iconSize = this.getSvgSize(
+            feature.properties.style.symbolSize,
+            feature.properties.style.symbolRotation,
+            mapScale,
+            printScale,
+          );
+
+          style.externalGraphic = this.getSVGString(feature.mapDrawingSymbol.drawingSymbolDescriptor, iconSize);
+          style.pointRadius = iconSize;
+        }
       }
 
-      const gb3GeoJsonFeature = {
+      const gb3GeoJsonFeature: Gb3GeoJsonFeature = {
         type: feature.type,
-        geometry: feature.geometry,
+        geometry: feature.geometry ? this.supportedGeometryWithSrsToSupportedGeometry(feature.geometry) : feature.geometry,
         properties: {
           id: feature.properties[MapConstants.DRAWING_IDENTIFIER],
           belongsTo: feature.properties[MapConstants.BELONGS_TO_IDENTIFIER],
@@ -85,7 +91,7 @@ export class SymbolizationToGb3ConverterUtils {
     };
   }
 
-  public static async convertExternalToInternalRepresentation(
+  public async convertExternalToInternalRepresentation(
     gb3VectorLayer: Gb3VectorLayer,
     source: UserDrawingLayer,
   ): Promise<Gb3StyledInternalDrawingRepresentation[]> {
@@ -111,11 +117,7 @@ export class SymbolizationToGb3ConverterUtils {
         };
 
         if (styleForFeature && styleForFeature.type === 'symbol') {
-          const webStyleSymbol = WebStyleSymbol.fromJSON(styleForFeature.webStyleSymbol);
-          featureData.mapDrawingSymbol = {
-            webStyleSymbol: webStyleSymbol,
-            cimSymbol: (await webStyleSymbol.fetchSymbol({acceptedFormats: ['cim']})) as CIMSymbol,
-          };
+          featureData.mapDrawingSymbol = await this.drawingSymbolsService.mapDrawingSymbolFromJSON(styleForFeature.drawingSymbolDefinition);
         }
 
         return featureData;
@@ -123,18 +125,18 @@ export class SymbolizationToGb3ConverterUtils {
     );
   }
 
-  private static getSvgSize(originalSize: number, rotation: number, printScale: number, mapScale: number) {
+  private getSvgSize(originalSize: number, rotation: number, printScale: number, mapScale: number) {
     let size = ((originalSize * (printScale / mapScale)) / Gb2Constants.PRINT_DPI) * MapConstants.DPI;
     if (rotation !== 0) {
       // In this case, the given size is technically the hypothenuse. Since the icon is rotate, we need to calculate the _actual_ width and height.
-      // Otherwise, the size in thee print is skewed.
+      // Otherwise, the size in the print is skewed.
 
       // Radians
       const alpha = 90 * (Math.PI / 180);
       const beta = Math.abs(rotation) * (Math.PI / 180);
       const gamma = (90 - beta) * (Math.PI / 180);
 
-      // We know all angles and one side, so we can caluclate the rest of the sides
+      // We know all angles and one side, so we can calculate the rest of the sides
       const c = originalSize;
       const a = (c * Math.sin(alpha)) / Math.sin(gamma);
       const b = (a * Math.sin(beta)) / Math.sin(alpha);
@@ -146,23 +148,20 @@ export class SymbolizationToGb3ConverterUtils {
     return size;
   }
 
-  private static getSVGString(symbol: CIMSymbol, iconSize: number) {
-    const svg = cimSymbolToSVG(symbol);
+  private getSVGString(symbol: DrawingSymbolDescriptor, iconSize: number) {
+    return this.drawingSymbolsService.getSVGString(symbol, iconSize);
+  }
 
-    if (!svg) {
-      return '';
+  private supportedGeometryWithSrsToSupportedGeometry<T extends SupportedGeometry>(geometry: T & HasSrs): T {
+    const newGeometry: T = {
+      type: geometry.type,
+      coordinates: geometry.coordinates,
+    } as T;
+
+    if (geometry.bbox) {
+      newGeometry.bbox = geometry.bbox;
     }
 
-    svg.setAttribute('width', iconSize.toString());
-    svg.setAttribute('height', iconSize.toString());
-
-    const container = document.createElement('div');
-    container.appendChild(svg);
-
-    const svgString = container.innerHTML;
-    const decoded = decodeURI(encodeURIComponent(svgString));
-    const base64 = btoa(decoded);
-
-    return `data:image/svg+xml;base64,${base64}`;
+    return newGeometry;
   }
 }

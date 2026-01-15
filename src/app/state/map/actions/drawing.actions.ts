@@ -4,7 +4,7 @@ import {
   Gb3StyleRepresentation,
 } from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {MapDrawingSymbol} from 'src/app/map/services/esri-services/types/map-drawing-symbol.type';
+import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export const DrawingActions = createActionGroup({
   source: 'Drawing',

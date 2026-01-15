@@ -21,4 +21,5 @@ export class ExpandableListItemComponent {
   @Input() public noPadding: boolean = false;
   @Input() public allowTabFocus: boolean = true;
   @Input() public stickyHeader: boolean = false;
+  @Input() public renderContentEagerly: boolean = false;
 }

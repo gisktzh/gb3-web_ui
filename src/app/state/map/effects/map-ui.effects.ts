@@ -23,7 +23,7 @@ import {ShareLinkActions} from '../actions/share-link.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-items.selector';
-import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
+import {selectCurrentInternalShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {ElevationProfileActions} from '../actions/elevation-profile.actions';
 import {UrlActions} from '../../app/actions/url.actions';
 import {selectUrlState} from '../../app/reducers/url.reducer';
@@ -31,6 +31,8 @@ import {DataDownloadEmailConfirmationDialogComponent} from '../../../map/compone
 import {MapImportDialogComponent} from '../../../map/components/map-tools/map-import/map-import-dialog/map-import-dialog.component';
 import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-item.actions';
 import {selectMapAttributeFiltersItem} from '../selectors/map-attribute-filters-item.selector';
+import {SymbolizationToGb3ConverterUtils} from 'src/app/shared/utils/symbolization-to-gb3-converter.utils';
+import {ShareLinkItem} from 'src/app/shared/interfaces/share-link.interface';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -41,6 +43,7 @@ export class MapUiEffects {
   private readonly actions$ = inject(Actions);
   private readonly store = inject(Store);
   private readonly dialogService = inject(MatDialog);
+  private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
   public hideUiElementsDependingOnShownSideDrawer$ = createEffect(() => {
     return this.actions$.pipe(
@@ -185,16 +188,32 @@ export class MapUiEffects {
     return this.actions$.pipe(
       ofType(MapUiActions.showBottomSheet),
       filter(({bottomSheetContent}) => bottomSheetContent === 'share-link'),
-      concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
-      map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
+      concatLatestFrom(() => this.store.select(selectCurrentInternalShareLinkItem)),
+      map(
+        ([_, internalShareLinkItem]) =>
+          ({
+            ...internalShareLinkItem,
+            drawings: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(internalShareLinkItem.drawings),
+            measurements: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(internalShareLinkItem.measurements),
+          }) as ShareLinkItem,
+      ),
+      map((shareLinkItem) => ShareLinkActions.createItem({item: shareLinkItem})),
     );
   });
 
   public createShareLinkAfterDialogOpen$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showShareLinkDialog),
-      concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
-      map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
+      concatLatestFrom(() => this.store.select(selectCurrentInternalShareLinkItem)),
+      map(
+        ([_, internalShareLinkItem]) =>
+          ({
+            ...internalShareLinkItem,
+            drawings: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(internalShareLinkItem.drawings),
+            measurements: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(internalShareLinkItem.measurements),
+          }) as ShareLinkItem,
+      ),
+      map((shareLinkItem) => ShareLinkActions.createItem({item: shareLinkItem})),
     );
   });
 

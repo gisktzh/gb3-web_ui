@@ -12,6 +12,8 @@ import {selectMaps} from '../../../../state/map/selectors/maps.selector';
 import {selectActiveMapItemConfigurations} from '../../../../state/map/selectors/active-map-item-configuration.selector';
 import {selectFavouriteBaseConfig} from '../../../../state/map/selectors/favourite-base-config.selector';
 import {selectUserDrawingsVectorLayers} from '../../../../state/map/selectors/user-drawings-vector-layers.selector';
+import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 
 // todo: add tests for vector layers
 const mockedVectorLayer = {type: undefined, styles: undefined, geojson: {type: undefined, features: []}} as unknown as Gb3VectorLayer;
@@ -104,15 +106,20 @@ describe('Gb3ShareLinkService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [provideMockStore({}), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        provideMockStore({}),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
+      ],
     });
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectActiveMapItemConfigurations, []);
     store.overrideSelector(selectMaps, []);
     store.overrideSelector(selectFavouriteBaseConfig, {center: {x: 0, y: 0}, scale: 0, basemap: ''});
     store.overrideSelector(selectUserDrawingsVectorLayers, {
-      drawings: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
-      measurements: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
+      drawings: [],
+      measurements: [],
     });
     service = TestBed.inject(Gb3ShareLinkService);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

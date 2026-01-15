@@ -17,7 +17,7 @@ import {
 } from '../../shared/interfaces/internal-drawing-representation.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
-import {MapDrawingSymbol} from 'src/app/map/services/esri-services/types/map-drawing-symbol.type';
+import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export class MapServiceStub implements MapService {
   private toolService: ToolService = {

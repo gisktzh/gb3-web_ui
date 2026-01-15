@@ -48,6 +48,7 @@ export class FavouritesService implements OnDestroy {
   private readonly favouriteBaseConfig$ = this.store.select(selectFavouriteBaseConfig);
   private readonly subscriptions: Subscription = new Subscription();
   private readonly userDrawingsVectorLayers$ = this.store.select(selectUserDrawingsVectorLayers);
+  private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
   constructor() {
     this.initSubscriptions();
@@ -61,8 +62,8 @@ export class FavouritesService implements OnDestroy {
           title,
           content: this.activeMapItemConfigurations,
           baseConfig,
-          measurements,
-          drawings,
+          measurements: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(measurements),
+          drawings: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawings),
         });
       }),
     );
@@ -138,14 +139,17 @@ export class FavouritesService implements OnDestroy {
     if (measurements.geojson.features.length > 0) {
       drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawingLayerPrefix.Drawing));
       drawingsToAdd.push(
-        ...(await SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(measurements, UserDrawingLayer.Measurements)),
+        ...(await this.symbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
+          measurements,
+          UserDrawingLayer.Measurements,
+        )),
       );
     }
 
     if (drawings.geojson.features.length > 0) {
       drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing));
       drawingsToAdd.push(
-        ...(await SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawings, UserDrawingLayer.Drawings)),
+        ...(await this.symbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawings, UserDrawingLayer.Drawings)),
       );
     }
 

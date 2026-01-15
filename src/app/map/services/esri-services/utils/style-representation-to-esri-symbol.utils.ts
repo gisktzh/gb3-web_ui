@@ -1,4 +1,3 @@
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
 import {Gb3StyleRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Color from '@arcgis/core/Color';
@@ -8,9 +7,11 @@ import {SymbolUnion} from '@arcgis/core/unionTypes';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
-import {scaleCIMSymbolTo, applyCIMSymbolRotation} from '@arcgis/core/symbols/support/cimSymbolUtils.js';
-import {MapDrawingSymbol} from '../types/map-drawing-symbol.type';
+import {EsriDrawingSymbolDefinition} from '../tool-service/strategies/drawing/drawing-symbol/esri-drawing-symbol-definition';
+import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
+import {DrawingSymbolDescriptor} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-descriptor.interface';
+import {EsriDrawingSymbolDescriptor} from '../tool-service/strategies/drawing/drawing-symbol/esri-drawing-symbol-descriptor';
+import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 
 export class StyleRepresentationToEsriSymbolUtils {
   public static async convert(
@@ -58,23 +59,40 @@ export class StyleRepresentationToEsriSymbolUtils {
       }
       case 'symbol': {
         if (mapDrawingSymbol) {
-          if (mapDrawingSymbol.cimSymbol) {
-            scaleCIMSymbolTo(mapDrawingSymbol.cimSymbol, style.symbolSize);
-            applyCIMSymbolRotation(mapDrawingSymbol.cimSymbol, style.symbolRotation);
+          if (mapDrawingSymbol.drawingSymbolDescriptor) {
+            const drawingSymbolDescriptor = mapDrawingSymbol.drawingSymbolDescriptor;
+            drawingSymbolDescriptor.resize(style.symbolSize);
+            drawingSymbolDescriptor.rotate(style.symbolRotation);
 
-            return mapDrawingSymbol.cimSymbol;
+            if (StyleRepresentationToEsriSymbolUtils.isEsriDrawingSymbolDescriptor(drawingSymbolDescriptor)) {
+              return drawingSymbolDescriptor;
+            }
+
+            return EsriDrawingSymbolDescriptor.fromJSON(drawingSymbolDescriptor.toJSON());
           }
 
-          if (mapDrawingSymbol.webStyleSymbol) {
-            return await this.loadCimSymbol(mapDrawingSymbol.webStyleSymbol, style.symbolSize, style.symbolRotation);
+          if (mapDrawingSymbol.drawingSymbolDefinition) {
+            const drawingSymbolDefinition = mapDrawingSymbol.drawingSymbolDefinition;
+
+            if (StyleRepresentationToEsriSymbolUtils.isEsriDrawingSymbolDefinition(drawingSymbolDefinition)) {
+              return await drawingSymbolDefinition.fetchDrawingSymbolDescriptor(style.symbolSize, style.symbolRotation);
+            }
+
+            return await EsriDrawingSymbolDefinition.fromJSON(drawingSymbolDefinition.toJSON()).fetchDrawingSymbolDescriptor(
+              style.symbolSize,
+              style.symbolRotation,
+            );
           }
         }
 
-        if (style.webStyleSymbol) {
-          return await this.loadCimSymbol(WebStyleSymbol.fromJSON(style.webStyleSymbol), style.symbolSize, style.symbolRotation);
+        if (style.symbolDefinition) {
+          return await EsriDrawingSymbolDefinition.fromJSON(style.symbolDefinition).fetchDrawingSymbolDescriptor(
+            style.symbolSize,
+            style.symbolRotation,
+          );
         }
 
-        return new CIMSymbol(); // Empty since a symbol was requested, but no symbol is present (yet).
+        return new EsriDrawingSymbolDescriptor(); // Empty since a symbol was requested, but no symbol is present (yet).
       }
     }
   }
@@ -87,12 +105,15 @@ export class StyleRepresentationToEsriSymbolUtils {
     return new Color(color);
   }
 
-  private static async loadCimSymbol(webStyleSymbol: WebStyleSymbol, size: number, rotation: number) {
-    const cimSymbol = (await webStyleSymbol.fetchSymbol({acceptedFormats: ['cim']})) as CIMSymbol;
+  private static isEsriDrawingSymbolDescriptor(
+    drawingSymbolDescriptor: DrawingSymbolDescriptor,
+  ): drawingSymbolDescriptor is EsriDrawingSymbolDescriptor {
+    return drawingSymbolDescriptor.type === 'cim';
+  }
 
-    scaleCIMSymbolTo(cimSymbol, size);
-    applyCIMSymbolRotation(cimSymbol, rotation);
-
-    return cimSymbol;
+  private static isEsriDrawingSymbolDefinition(
+    drawingSymbolDefinition: DrawingSymbolDefinition,
+  ): drawingSymbolDefinition is EsriDrawingSymbolDefinition {
+    return drawingSymbolDefinition.type === 'web-style';
   }
 }

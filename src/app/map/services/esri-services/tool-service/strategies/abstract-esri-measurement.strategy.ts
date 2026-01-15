@@ -1,3 +1,4 @@
+import {DrawingCallbackHandlerArgsMeasurement} from './../interfaces/drawing-callback-handler.interface';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Polygon from '@arcgis/core/geometry/Polygon';
@@ -14,11 +15,15 @@ export type LabelConfiguration = {location: Point; symbolization: TextSymbol};
 
 export abstract class AbstractEsriMeasurementStrategy<
   TGeometry extends Polygon | Polyline | Point,
-  TDrawingCallbackHandler extends DrawingCallbackHandler['completeMeasurement'],
-> extends AbstractEsriDrawableToolStrategy<TDrawingCallbackHandler> {
+  TDrawingCallbackHandlerArgs extends DrawingCallbackHandlerArgsMeasurement,
+> extends AbstractEsriDrawableToolStrategy<TDrawingCallbackHandlerArgs> {
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Measurements;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: TDrawingCallbackHandler) {
+  protected constructor(
+    layer: GraphicsLayer,
+    mapView: MapView,
+    completeDrawingCallbackHandler: DrawingCallbackHandler<TDrawingCallbackHandlerArgs>,
+  ) {
     super(layer, mapView, completeDrawingCallbackHandler);
     this.sketchViewModel.tooltipOptions.enabled = true;
     this.sketchViewModel.tooltipOptions.visibleElements.helpMessage = true;

@@ -3,13 +3,13 @@
     <drawing-symbols
       class="symbols--is-flex"
       name="symbols"
-      [symbolValue]="webStyleSymbol"
+      [symbolValue]="drawingSymbolDefinition"
       (symbolChange)="onSymbolChange($event)"
       (sizeChange)="onSizeChange($event)"
       (rotationChange)="onRotationChange($event)"
     ></drawing-symbols>
   </ng-container>
   <ng-container actions>
-    <button mat-button [matDialogClose]="{webStyleSymbol, size, rotation}">Hinzufügen</button>
+    <button mat-button [matDialogClose]="{drawingSymbolDefinition, size, rotation}">Hinzufügen</button>
   </ng-container>
 </api-dialog-wrapper>

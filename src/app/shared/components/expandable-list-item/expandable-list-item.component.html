@@ -26,5 +26,7 @@
     ></expandable-list-item-header>
   </mat-expansion-panel-header>
 
-  <ng-content></ng-content>
+  @if (renderContentEagerly || itemExpansionPanel.expanded) {
+    <ng-content></ng-content>
+  }
 </mat-expansion-panel>

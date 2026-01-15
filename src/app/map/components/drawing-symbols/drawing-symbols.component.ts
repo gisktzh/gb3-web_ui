@@ -1,56 +1,11 @@
-import {Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
+import {Component, EventEmitter, forwardRef, inject, Input, Output} from '@angular/core';
 import {ExpandableListItemComponent} from 'src/app/shared/components/expandable-list-item/expandable-list-item.component';
 import {DrawingSymbolsCollectionComponent} from './drawing-symbols-collection/drawing-symbols-collection.component';
 import {NG_VALUE_ACCESSOR} from '@angular/forms';
 import {SliderEditComponent} from '../drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
-
-const COLLECTIONS = [
-  {
-    label: 'Tiere',
-    id: '1fbb242c54e4415d9b8e8a343ca7a9d0',
-  },
-  {
-    label: 'Pfeile',
-    id: 'eef578633a3e41b985d0c980275c6d74',
-  },
-  {
-    label: 'Gebäude',
-    id: 'fe12ab0e0c834ca2adff4e10f68e1327',
-  },
-  {
-    label: 'Öffentliche Hand',
-    id: '6eeef46c653b40c9bda04f9bed913b70',
-  },
-  {
-    label: 'Landschaften 1',
-    id: 'e9cb6bb3273342b69628e0da4be1b60c',
-  },
-  {
-    label: 'Landschaften 2',
-    id: '8560ce55ee7547a0b6b1d59df76d3f6b',
-  },
-  {
-    label: 'Nationalpark/Naturpark',
-    id: '36359a4a8f3143b6bf44d5688e007900',
-  },
-  {
-    label: 'Orte von Interesse',
-    id: '11e7b433c72a4cef90c8a428de131147',
-  },
-  {
-    label: 'Öffentliche Sicherheit',
-    id: 'b117b6e14d7b429a9ea8c58a5cb6abad',
-  },
-  {
-    label: 'Bäume',
-    id: 'e08037675f354ea1bab42359b9a0c04b',
-  },
-  {
-    label: 'UN OCHA',
-    id: '806df898e9c04516a704a9f93e2a0a5e',
-  },
-];
+import {DrawingSymbolsService} from 'src/app/shared/interfaces/drawing-symbols-service.interface';
+import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
+import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 
 @Component({
   selector: 'drawing-symbols',
@@ -67,17 +22,20 @@ const COLLECTIONS = [
 })
 export class DrawingSymbolsComponent {
   @Input() public groupName: string = '';
-  @Input() public symbolValue: WebStyleSymbol | undefined = undefined;
+  @Input() public symbolValue: DrawingSymbolDefinition | undefined = undefined;
   @Input() public sizeValue: number = 10;
   @Input() public rotationValue: number = 0;
   @Input() public fullHeight: boolean = false;
-  @Output() public symbolChange = new EventEmitter<WebStyleSymbol>();
+  @Output() public symbolChange = new EventEmitter<DrawingSymbolDefinition>();
   @Output() public sizeChange = new EventEmitter<number>();
   @Output() public rotationChange = new EventEmitter<number>();
+  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
-  public collections = COLLECTIONS;
+  public get collections() {
+    return this.drawingSymbolsService.getCollectionInfos();
+  }
 
-  public onSymbolChange(value: WebStyleSymbol) {
+  public onSymbolChange(value: DrawingSymbolDefinition) {
     this.symbolValue = value;
     this.symbolChange.emit(value);
   }

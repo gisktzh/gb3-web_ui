@@ -330,19 +330,16 @@ describe('EsriToolService', () => {
       const mode: DrawingMode = 'add';
       const storeSpy = spyOn(store, 'dispatch').and.callThrough();
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
-      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         graphicMock,
         labelText,
-        undefined,
-        undefined,
-        undefined,
         2056,
         UserDrawingLayer.Drawings,
       );
 
       const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
 
-      service.completeDrawing(graphicMock, mode, labelText);
+      service.completeTextDrawing(graphicMock, mode, labelText);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();
@@ -353,19 +350,16 @@ describe('EsriToolService', () => {
       const mode: DrawingMode = 'edit';
       const storeSpy = spyOn(store, 'dispatch').and.callThrough();
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
-      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         graphicMock,
         labelText,
-        undefined,
-        undefined,
-        undefined,
         2056,
         UserDrawingLayer.Drawings,
       );
 
       const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
 
-      service.completeDrawing(graphicMock, mode, labelText);
+      service.completeTextDrawing(graphicMock, mode, labelText);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();
@@ -380,7 +374,7 @@ describe('EsriToolService', () => {
 
       const expectedAction = DrawingActions.deleteDrawing({drawingId});
 
-      service.completeDrawing(graphicMock, mode, labelText);
+      service.completeTextDrawing(graphicMock, mode, labelText);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();
@@ -414,19 +408,12 @@ describe('EsriToolService', () => {
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
-      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         labelPoint,
         labelText,
-        undefined,
-        undefined,
-        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
@@ -467,19 +454,12 @@ describe('EsriToolService', () => {
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
-      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         labelPoint,
         labelText,
-        undefined,
-        undefined,
-        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
@@ -531,10 +511,6 @@ describe('EsriToolService', () => {
     it('completes selections by dispatching DataDownloadOrderActions.setSelection if the selection is not `undefined`', () => {
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
         2056,
         InternalDrawingLayer.Selection,
       );

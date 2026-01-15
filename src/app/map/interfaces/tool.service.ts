@@ -6,7 +6,7 @@ import {
   Gb3StyleRepresentation,
 } from '../../shared/interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
-import {MapDrawingSymbol} from '../services/esri-services/types/map-drawing-symbol.type';
+import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export interface ToolService {
   initializeMeasurement(measurementTool: Exclude<MeasurementTool, 'measure-elevation-profile'>): void;

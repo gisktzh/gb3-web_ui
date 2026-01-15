@@ -1,35 +1,42 @@
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {
+  DrawingCallbackHandler,
+  DrawingCallbackHandlerArgsSymbolDrawing,
+  DrawingInternalUpdateArgs,
+} from '../../interfaces/drawing-callback-handler.interface';
 import {MatDialog} from '@angular/material/dialog';
 import {SupportedEsriTool} from '../supported-esri-tool.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
 import {SymbolDrawingToolInputComponent} from 'src/app/map/components/symbols-drawing-tool-input/symbol-drawing-tool-input.component';
 import {PanelClass} from 'src/app/shared/enums/panel-class.enum';
-import {filter, tap} from 'rxjs';
+import {tap} from 'rxjs';
 import Graphic from '@arcgis/core/Graphic';
-import {scaleCIMSymbolTo, applyCIMSymbolRotation} from '@arcgis/core/symbols/support/cimSymbolUtils.js';
-import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
 import {Gb3SymbolStyle} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
-import {MapDrawingSymbol} from '../../../types/map-drawing-symbol.type';
+import {EsriMapDrawingSymbol} from '../../../types/esri-map-drawing-symbol.type';
+import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.constants';
+import {EsriDrawingSymbolDefinition} from './drawing-symbol/esri-drawing-symbol-definition';
 
 export type SymbolDrawingInputComponentOutput = {
-  webStyleSymbol: WebStyleSymbol;
+  drawingSymbolDefinition: EsriDrawingSymbolDefinition;
   size: number;
   rotation: number;
 };
 
-export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
-  protected readonly tool: SupportedEsriTool = 'point'; // Technically. ESRI doesn't know a "symbol" drawing strategy. We have to emulate that. A symbol is itself set with a point geometry, so it _does_ check out.
+export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
+  DrawingCallbackHandlerArgsSymbolDrawing,
+  DrawingInternalUpdateArgs<EsriMapDrawingSymbol>[DrawingCallbackHandlerArgsSymbolDrawing],
+  EsriMapDrawingSymbol
+> {
+  protected readonly tool: SupportedEsriTool = 'point';
   private readonly dialogService: MatDialog;
-  private mapDrawingSymbol: MapDrawingSymbol | undefined = undefined;
-  private symbolSize: number = 10;
-  private symbolRotation: number = 0;
+  private mapDrawingSymbol: EsriMapDrawingSymbol | undefined = undefined;
+  private symbolSize: number = SymbolStyleConstants.DEFAULT_SYMBOL_SIZE;
+  private symbolRotation: number = SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION;
 
   constructor(
     layer: __esri.GraphicsLayer,
     mapView: __esri.MapView,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsSymbolDrawing, EsriMapDrawingSymbol>,
     dialogService: MatDialog,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
@@ -49,18 +56,21 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<Drawi
     dialog
       .afterClosed()
       .pipe(
-        filter((value): value is SymbolDrawingInputComponentOutput => !!value),
-        tap(async ({webStyleSymbol, size, rotation}) => {
-          const cimSymbol = (await webStyleSymbol.fetchSymbol({acceptedFormats: ['cim']})) as CIMSymbol;
+        tap(async (value) => {
+          if (!value) {
+            super.handleComplete(undefined, 'add');
+            return;
+          }
 
-          scaleCIMSymbolTo(cimSymbol, size);
-          applyCIMSymbolRotation(cimSymbol, rotation);
+          const {drawingSymbolDefinition, size, rotation} = value;
 
-          this.sketchViewModel.pointSymbol = cimSymbol;
+          const drawingSymbolDescriptor = await drawingSymbolDefinition.fetchDrawingSymbolDescriptor(size, rotation);
+
+          this.sketchViewModel.pointSymbol = drawingSymbolDescriptor;
 
           this.mapDrawingSymbol = {
-            webStyleSymbol,
-            cimSymbol,
+            drawingSymbolDefinition,
+            drawingSymbolDescriptor,
           };
           this.symbolSize = size;
           this.symbolRotation = rotation;
@@ -71,13 +81,13 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<Drawi
       .subscribe();
   }
 
-  public override updateInternals(style: Gb3SymbolStyle, _: string, mapDrawingSymbol?: MapDrawingSymbol) {
+  public override updateInternals(style: Gb3SymbolStyle, mapDrawingSymbol?: EsriMapDrawingSymbol) {
     this.mapDrawingSymbol = mapDrawingSymbol;
     this.symbolSize = style.symbolSize;
     this.symbolRotation = style.symbolRotation;
   }
 
   protected override handleComplete(graphic: Graphic, mode: DrawingMode) {
-    super.handleComplete(graphic, mode, undefined, this.mapDrawingSymbol, this.symbolSize, this.symbolRotation);
+    super.handleComplete(graphic, mode, this.mapDrawingSymbol, this.symbolSize, this.symbolRotation);
   }
 }

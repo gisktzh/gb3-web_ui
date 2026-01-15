@@ -4,7 +4,8 @@ import {MatDialogRef, MatDialogClose} from '@angular/material/dialog';
 import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
 import {MatButton} from '@angular/material/button';
 import {DrawingSymbolsComponent} from '../drawing-symbols/drawing-symbols.component';
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
+import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.constants';
+import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 
 @Component({
   selector: 'symbol-drawing-tool-input',
@@ -13,18 +14,17 @@ import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
   imports: [ApiDialogWrapperComponent, FormsModule, ReactiveFormsModule, MatButton, MatDialogClose, DrawingSymbolsComponent],
 })
 export class SymbolDrawingToolInputComponent {
-  private readonly dialogRef =
-    inject<MatDialogRef<SymbolDrawingToolInputComponent, {webStyleSymbol: WebStyleSymbol; size: number; rotation: number}>>(MatDialogRef);
-  public webStyleSymbol!: WebStyleSymbol;
-  public size: number = 10;
-  public rotation: number = 0;
+  private readonly dialogRef = inject<MatDialogRef<SymbolDrawingToolInputComponent, SymbolDrawingToolInputComponent>>(MatDialogRef);
+  public drawingSymbolDefinition!: DrawingSymbolDefinition;
+  public size: number = SymbolStyleConstants.DEFAULT_SYMBOL_SIZE;
+  public rotation: number = SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION;
 
   public close() {
     this.dialogRef.close();
   }
 
-  public onSymbolChange(value: WebStyleSymbol) {
-    this.webStyleSymbol = value;
+  public onSymbolChange(value: DrawingSymbolDefinition) {
+    this.drawingSymbolDefinition = value;
   }
 
   public onSizeChange(value: number) {

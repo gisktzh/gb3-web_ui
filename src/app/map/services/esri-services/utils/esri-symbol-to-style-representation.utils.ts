@@ -3,6 +3,7 @@ import {UnsupportedSymbolizationType} from '../errors/esri.errors';
 import {SymbolUnion} from '@arcgis/core/unionTypes';
 import {defaultSymbolization} from '../../../../shared/configs/symbolization.config';
 import {ColorUtils} from '../../../../shared/utils/color.utils';
+import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.constants';
 
 const CENTER_TOP_LABEL_ALIGNMENT = 'ct';
 const TEXT_LABEL = '[text]';
@@ -61,8 +62,8 @@ export class EsriSymbolToStyleRepresentationUtils {
       case 'web-style': {
         return {
           type: 'symbol',
-          symbolSize: symbolSize ? symbolSize : 10,
-          symbolRotation: symbolRotation ? symbolRotation : 0,
+          symbolSize: symbolSize ? symbolSize : SymbolStyleConstants.DEFAULT_SYMBOL_SIZE,
+          symbolRotation: symbolRotation ? symbolRotation : SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION,
         };
       }
       case 'picture-marker':

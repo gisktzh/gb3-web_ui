@@ -19,8 +19,8 @@
     @case ('symbol') {
       <symbol-edit
         [style]="style"
-        (updateStyleEvent)="updateStyle($event.style, undefined, $event.webStyleSymbol)"
-        [selectedSymbol]="selectedFeature?.mapDrawingSymbol?.webStyleSymbol"
+        (updateStyleEvent)="updateStyle($event.style, undefined, $event.drawingSymbolDefinition)"
+        [selectedSymbol]="selectedFeature?.mapDrawingSymbol?.drawingSymbolDefinition"
       ></symbol-edit>
     }
   }

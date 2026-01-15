@@ -1,5 +1,5 @@
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler, DrawingCallbackHandlerArgsTextDrawing} from '../../interfaces/drawing-callback-handler.interface';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {MatDialog} from '@angular/material/dialog';
 import {PanelClass} from '../../../../../../shared/enums/panel-class.enum';
@@ -9,7 +9,7 @@ import {SupportedEsriTool} from '../supported-esri-tool.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
 import Graphic from '@arcgis/core/Graphic';
 
-export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
+export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandlerArgsTextDrawing> {
   protected readonly tool: SupportedEsriTool = 'point';
   private readonly dialogService: MatDialog;
   private labelText: string | undefined;
@@ -18,7 +18,7 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
     layer: __esri.GraphicsLayer,
     mapView: __esri.MapView,
     textSymbol: __esri.TextSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsTextDrawing>,
     dialogService: MatDialog,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
@@ -56,7 +56,7 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
     return;
   }
 
-  public override updateInternals(_: unknown, labelText?: string): void {
+  public override updateInternals(_: unknown, labelText: string): void {
     this.labelText = labelText;
   }
 }

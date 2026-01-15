@@ -35,6 +35,7 @@ import {TimeSliderParameterSource} from '../../../interfaces/topic.interface';
 export class Gb3PrintService extends Gb3ApiService {
   private readonly basemapConfigService = inject(BasemapConfigService);
   private readonly gb3TopicsService = inject(Gb3TopicsService);
+  private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
   protected readonly endpoint = 'print';
 
@@ -245,7 +246,7 @@ export class Gb3PrintService extends Gb3ApiService {
   ): PrintMapItem {
     const drawingsToDraw = drawings.filter((drawing) => drawing.source === drawingSettings.userDrawingLayer);
 
-    return SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw, mapScale, printScale);
+    return this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw, mapScale, printScale);
   }
 
   private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): PrintNew {

@@ -41,12 +41,9 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
       symbol: mockSymbol,
     });
 
-    const actual = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+    const actual = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
       graphic,
       labelText,
-      undefined,
-      undefined,
-      undefined,
       2056,
       InternalDrawingLayer.Selection,
     );
@@ -90,16 +87,8 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
       geometry: new Polyline(),
       symbol: new LineSymbol(),
     });
-    expect(() =>
-      EsriGraphicToInternalDrawingRepresentationUtils.convert(
-        graphic,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        2056,
-        UserDrawingLayer.Drawings,
-      ),
-    ).toThrow(new UnsupportedGeometryType('MultiLineString'));
+    expect(() => EsriGraphicToInternalDrawingRepresentationUtils.convert(graphic, 2056, UserDrawingLayer.Drawings)).toThrow(
+      new UnsupportedGeometryType('MultiLineString'),
+    );
   });
 });

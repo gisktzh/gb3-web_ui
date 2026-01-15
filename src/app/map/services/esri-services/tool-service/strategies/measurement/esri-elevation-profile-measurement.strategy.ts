@@ -6,21 +6,17 @@ import {SupportedEsriTool} from '../supported-esri-tool.type';
  * Note: Although used for measurement, it is actually a DrawingStrategy, because none of the MeasurementStrategy's specifics are
  * required for this measurement.
  */
-export class EsriElevationProfileMeasurementStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
+export class EsriElevationProfileMeasurementStrategy extends AbstractEsriDrawingStrategy<'completeDrawing'> {
   protected readonly tool: SupportedEsriTool = 'polyline';
 
   constructor(
     layer: __esri.GraphicsLayer,
     mapView: __esri.MapView,
     polylineSymbol: __esri.SimpleLineSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler<'completeDrawing'>,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 
     this.sketchViewModel.polylineSymbol = polylineSymbol;
-  }
-
-  public override updateInternals(): void {
-    // noop
   }
 }
