@@ -24,13 +24,17 @@ export class MapServiceStub implements MapService {
     initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {},
     initializeDrawing(drawingTool: DrawingTool) {},
     initializeMeasurement(measurementTool: MeasurementTool) {},
-    addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {},
+    addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
+      return Promise.resolve();
+    },
     updateDrawingStyles(
       drawing: Gb3StyledInternalDrawingRepresentation,
       style: Gb3StyleRepresentation,
       labelText?: string,
       mapDrawingSymbol?: MapDrawingSymbol,
-    ) {},
+    ) {
+      return Promise.resolve();
+    },
     cancelTool() {},
     initializeElevationProfileMeasurement() {},
   };

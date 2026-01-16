@@ -17,14 +17,14 @@ export interface ToolService {
 
   initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool): void;
 
-  addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer): void;
+  addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer): Promise<void>;
 
   updateDrawingStyles(
     drawing: Gb3StyledInternalDrawingRepresentation,
     style: Gb3StyleRepresentation,
     labelText?: string,
     mapDrawingSymbol?: MapDrawingSymbol,
-  ): void;
+  ): Promise<void>;
 
   cancelTool(): void;
 }
