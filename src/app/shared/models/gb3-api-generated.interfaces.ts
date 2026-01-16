@@ -376,17 +376,17 @@ export interface PrintCapabilities {
 // Manually adjusted to fit typing.
 export interface PrintCapabilitiesCombination {
   /** Standard or mapset */
-  reportType: ReportType;
+  report_type: ReportType;
   /** Portrait or landscape */
-  reportOrientation: ReportOrientation;
+  report_orientation: ReportOrientation;
   /** Paper size, DIN A */
   layout: DocumentFormat;
   /** DPI of the printed map */
   dpi: DpiSetting;
   /** File type */
-  fileFormat: FileFormat;
+  file_format: FileFormat;
   /** If the legend should be rendered as well */
-  showLegend: boolean;
+  show_legend: boolean;
 }
 
 export interface PrintError {

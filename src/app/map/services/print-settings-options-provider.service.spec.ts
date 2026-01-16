@@ -32,12 +32,16 @@ describe('PrintSettingsOptionsProvider', () => {
           validReportTypes.forEach((reportType) => {
             validReportOrientations.forEach((reportOrientation) => {
               validCombinations.push({
-                showLegend,
-                fileFormat,
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- Necessary to comply with interface coming from GB2 API.
+                show_legend: showLegend,
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- Necessary to comply with interface coming from GB2 API.
+                file_format: fileFormat,
                 dpi,
                 layout,
-                reportType,
-                reportOrientation,
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- Necessary to comply with interface coming from GB2 API.
+                report_type: reportType,
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- Necessary to comply with interface coming from GB2 API.
+                report_orientation: reportOrientation,
               });
             });
           });
@@ -56,10 +60,10 @@ describe('PrintSettingsOptionsProvider', () => {
   });
 
   it('should return only unqiue values for a given key', () => {
-    service.getUnqiueOptions<'showLegend'>(validCombinations, 'showLegend').forEach((v) => {
+    service.getUnqiueOptions<'show_legend'>(validCombinations, 'show_legend').forEach((v) => {
       expect(validShowLegend).toContain(v);
     });
-    service.getUnqiueOptions<'fileFormat'>(validCombinations, 'fileFormat').forEach((v) => {
+    service.getUnqiueOptions<'file_format'>(validCombinations, 'file_format').forEach((v) => {
       expect(validFileFormats).toContain(v);
     });
     service.getUnqiueOptions<'dpi'>(validCombinations, 'dpi').forEach((v) => {
@@ -68,10 +72,10 @@ describe('PrintSettingsOptionsProvider', () => {
     service.getUnqiueOptions<'layout'>(validCombinations, 'layout').forEach((v) => {
       expect(validLayouts).toContain(v);
     });
-    service.getUnqiueOptions<'reportType'>(validCombinations, 'reportType').forEach((v) => {
+    service.getUnqiueOptions<'report_type'>(validCombinations, 'report_type').forEach((v) => {
       expect(validReportTypes).toContain(v);
     });
-    service.getUnqiueOptions<'reportOrientation'>(validCombinations, 'reportOrientation').forEach((v) => {
+    service.getUnqiueOptions<'report_orientation'>(validCombinations, 'report_orientation').forEach((v) => {
       expect(validReportOrientations).toContain(v);
     });
   });
