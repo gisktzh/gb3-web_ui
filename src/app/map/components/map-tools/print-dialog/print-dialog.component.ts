@@ -257,13 +257,13 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
             this.allDpiSettings = this.printSettingsOptionsProvider.getUnqiueOptions<'dpi'>(capabilitiesValidCombinations, 'dpi');
             this.allLayouts = this.printSettingsOptionsProvider.getUnqiueOptions<'layout'>(capabilitiesValidCombinations, 'layout');
-            this.allOrientations = this.printSettingsOptionsProvider.getUnqiueOptions<'reportOrientation'>(
+            this.allOrientations = this.printSettingsOptionsProvider.getUnqiueOptions<'report_orientation'>(
               capabilitiesValidCombinations,
-              'reportOrientation',
+              'report_orientation',
             );
-            this.allFileFormats = this.printSettingsOptionsProvider.getUnqiueOptions<'fileFormat'>(
+            this.allFileFormats = this.printSettingsOptionsProvider.getUnqiueOptions<'file_format'>(
               capabilitiesValidCombinations,
-              'fileFormat',
+              'file_format',
             );
           }),
         )
