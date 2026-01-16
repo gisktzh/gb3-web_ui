@@ -343,10 +343,12 @@ describe('ShareLinkEffects', () => {
 
         it('dispatches ShareLinkActions.completeValidation() with the service response on success with no drawings', (done: DoneFn) => {
           actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
-          favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
-            drawingsToAdd: [],
-            drawingActiveMapItems: [],
-          });
+          favouriteServiceMock.getDrawingsForFavourite.and.returnValue(
+            Promise.resolve({
+              drawingsToAdd: [],
+              drawingActiveMapItems: [],
+            }),
+          );
 
           const expectedAction = ShareLinkActions.completeValidation({mapRestoreItem: {...expectedCompleteItem, drawings: []}});
 
@@ -366,10 +368,12 @@ describe('ShareLinkEffects', () => {
             const drawingActiveMapItems = expectedCompleteItem.drawings.map(() =>
               ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing),
             );
-            favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
-              drawingsToAdd: expectedCompleteItem.drawings,
-              drawingActiveMapItems: drawingActiveMapItems,
-            });
+            favouriteServiceMock.getDrawingsForFavourite.and.returnValue(
+              Promise.resolve({
+                drawingsToAdd: expectedCompleteItem.drawings,
+                drawingActiveMapItems: drawingActiveMapItems,
+              }),
+            );
 
             const expectedAction = ShareLinkActions.completeValidation({
               mapRestoreItem: {

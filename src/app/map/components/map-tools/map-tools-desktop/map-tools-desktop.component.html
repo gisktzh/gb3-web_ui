@@ -78,7 +78,7 @@
     </button>
   </div>
   @if (toolMenuVisibility !== undefined) {
-    <div class="map-tools-desktop__list">
+    <div class="map-tools-desktop__list" [attr.data-tool]="activeTool">
       @if (toolMenuVisibility === 'measurement') {
         <measurement-tools></measurement-tools>
       }

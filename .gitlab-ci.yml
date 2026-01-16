@@ -4,8 +4,8 @@ stages:
 
 variables:
   DOCKER_HOST: tcp://docker:2375
-  DOCKER_TLS_CERTDIR: ""
-  CA_CERTIFICATE: "$CA_CERTIFICATE"
+  DOCKER_TLS_CERTDIR: ''
+  CA_CERTIFICATE: '$CA_CERTIFICATE'
   WORK_DIR: gb3-web_ui
   STAGE: staging
 

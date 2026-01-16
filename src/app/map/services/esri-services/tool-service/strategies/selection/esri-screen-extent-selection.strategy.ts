@@ -6,15 +6,17 @@ import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/in
 import Extent from '@arcgis/core/geometry/Extent';
 import {AbstractEsriSelectionStrategy} from '../abstract-esri-selection.strategy';
 import {Observable, of} from 'rxjs';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler, DrawingCallbackHandlerArgsSelection} from '../../interfaces/drawing-callback-handler.interface';
 
-export class EsriScreenExtentSelectionStrategy extends AbstractEsriSelectionStrategy<DrawingCallbackHandler['completeSelection']> {
+export class EsriScreenExtentSelectionStrategy extends AbstractEsriSelectionStrategy<
+  DrawingCallbackHandler<DrawingCallbackHandlerArgsSelection>
+> {
   private readonly screenExtent;
 
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
-    completeCallbackHandler: DrawingCallbackHandler['completeSelection'],
+    completeCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsSelection>,
     screenExtent: Extent,
   ) {
     super(layer, polygonSymbol, completeCallbackHandler);

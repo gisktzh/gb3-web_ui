@@ -46,19 +46,21 @@
               [disabled]="favouritesLoadingState === 'loading' || favouritesLoadingState === 'error'"
               [showBadge]="!!filterString && favouritesLoadingState !== 'loading'"
             >
-              <!-- 'Favourite' content -->
-              @if (filteredFavourites.length === 0) {
-                <p><em>Noch keine Favoriten hinzugefügt.</em></p>
-              }
-              @for (favourite of filteredFavourites; track favourite) {
-                <map-data-item-favourite
-                  (addEvent)="addFavouriteToMap(favourite)"
-                  (deleteEvent)="deleteFavourite(favourite)"
-                  [filterString]="filterString"
-                  [invalid]="favourite.invalid"
-                  [loadingState]="favouritesLoadingState"
-                  [title]="favourite.title"
-                ></map-data-item-favourite>
+              @defer {
+                <!-- 'Favourite' content -->
+                @if (filteredFavourites.length === 0) {
+                  <p><em>Noch keine Favoriten hinzugefügt.</em></p>
+                }
+                @for (favourite of filteredFavourites; track favourite) {
+                  <map-data-item-favourite
+                    (addEvent)="addFavouriteToMap(favourite)"
+                    (deleteEvent)="deleteFavourite(favourite)"
+                    [filterString]="filterString"
+                    [invalid]="favourite.invalid"
+                    [loadingState]="favouritesLoadingState"
+                    [title]="favourite.title"
+                  ></map-data-item-favourite>
+                }
               }
             </expandable-list-item>
           }
@@ -73,26 +75,29 @@
             [loadingState]="catalogueLoadingState"
             [showBadge]="!!filterString"
           >
-            <!-- 'Topic' content -->
-            <div class="map-data-catalogue__content__items__item__content">
-              @for (map of topic.maps; track trackByMapId($index, map); let isLastMap = $last) {
-                <map-data-item-map
-                  (addEvent)="addActiveMap(map)"
-                  (addLayerEvent)="addActiveLayer(map, $event)"
-                  (hoverStartEvent)="addTemporaryMapItem(map, $event)"
-                  (hoverEndEvent)="removeTemporaryMapItem(map, $event)"
-                  [filterString]="filterString"
-                  [imageUrl]="map.icon"
-                  [layers]="map.layers"
-                  [title]="map.title"
-                  [gb2Url]="map.gb2Url"
-                  class="map-data-catalogue__content__items__item__content__item"
-                ></map-data-item-map>
-                @if (!isLastMap) {
-                  <mat-divider></mat-divider>
+            @defer {
+              <!-- 'Topic' content -->
+              <div class="map-data-catalogue__content__items__item__content">
+                @for (map of topic.maps; track trackByMapId($index, map); let isLastMap = $last) {
+                  <map-data-item-map
+                    (addEvent)="addActiveMap(map)"
+                    (addLayerEvent)="addActiveLayer(map, $event)"
+                    (hoverStartEvent)="addTemporaryMapItem(map, $event)"
+                    (hoverEndEvent)="removeTemporaryMapItem(map, $event)"
+                    [filterString]="filterString"
+                    [imageUrl]="map.icon"
+                    [layers]="map.layers"
+                    [title]="map.title"
+                    [gb2Url]="map.gb2Url"
+                    class="map-data-catalogue__content__items__item__content__item"
+                  ></map-data-item-map>
+
+                  @if (!isLastMap) {
+                    <mat-divider></mat-divider>
+                  }
                 }
-              }
-            </div>
+              </div>
+            }
           </expandable-list-item>
         }
       </mat-accordion>

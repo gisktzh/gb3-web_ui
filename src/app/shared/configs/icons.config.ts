@@ -186,6 +186,10 @@ const drawingSymbolIconsConfig = [
     id: 'ktzh_drawing_symbol_elevation',
     path: 'assets/icons/drawing-symbols/elevation.svg',
   },
+  {
+    id: 'ktzh_drawing_symbol_symbol',
+    path: 'assets/icons/drawing-symbols/symbol.svg',
+  },
 ];
 
 /**

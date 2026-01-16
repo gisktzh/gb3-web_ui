@@ -14,6 +14,8 @@ import {MatDivider} from '@angular/material/divider';
 import {MeasurementToolsComponent} from '../measurement-tools/measurement-tools.component';
 import {DrawingToolsComponent} from '../drawing-tools/drawing-tools.component';
 import {DataDownloadSelectionToolsComponent} from '../data-download-selection-tools/data-download-selection-tools.component';
+import {ToolType} from 'src/app/shared/types/tool.type';
+import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 
 const TOOLTIP_TEXT = {
   measurement: 'Messen',
@@ -50,7 +52,9 @@ export class MapToolsDesktopComponent implements OnInit, OnDestroy {
 
   private readonly toolMenuVisibility$ = this.store.select(selectToolMenuVisibility);
   private readonly isMapReady$ = this.store.select(selectReady);
+  private readonly activeTool$ = this.store.select(selectActiveTool);
   private readonly subscriptions: Subscription = new Subscription();
+  public activeTool: ToolType | undefined = undefined;
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -87,5 +91,6 @@ export class MapToolsDesktopComponent implements OnInit, OnDestroy {
       this.toolMenuVisibility$.pipe(tap((toolMenuVisibility) => (this.toolMenuVisibility = toolMenuVisibility))).subscribe(),
     );
     this.subscriptions.add(this.isMapReady$.pipe(tap((ready) => (this.isMapReady = ready))).subscribe());
+    this.subscriptions.add(this.activeTool$.pipe(tap((activeTool) => (this.activeTool = activeTool))).subscribe());
   }
 }

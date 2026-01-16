@@ -3,10 +3,24 @@ import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from './symbolization-to-gb3-converter.utils';
 import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
 import {MapConstants} from '../constants/map.constants';
+import {TestBed} from '@angular/core/testing';
+import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 
 describe('SymbolizationToGb3ConverterUtils', () => {
+  let utils: SymbolizationToGb3ConverterUtils;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [],
+      providers: [{provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub}],
+    });
+
+    utils = TestBed.inject(SymbolizationToGb3ConverterUtils);
+  });
+
   describe('convertInternalToExternalRepresentation', () => {
-    it('maps all features into the geojson features array and returns a Gb3VectorLayer', () => {
+    it('maps all features into the geojson features array and returns a Gb3VectorLayer', async () => {
       const drawingsMock: Gb3StyledInternalDrawingRepresentation[] = [
         {
           type: 'Feature',
@@ -32,7 +46,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         },
       ];
 
-      const actual = SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsMock);
+      const actual = await utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1);
 
       expect(actual.geojson.features.length).toEqual(2);
       expect(actual.geojson.features[0].properties.text).toEqual(drawingsMock[0].labelText);
@@ -41,7 +55,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
   });
 
   describe('convertExternalToInternalRepresentation', () => {
-    it('correctly maps an external item to the internal representation', () => {
+    it('correctly maps an external item to the internal representation', async () => {
       const mockText = 'Gurkenbröters';
       const mockVectorLayer: Gb3VectorLayer = {
         type: 'Vector',
@@ -74,7 +88,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
       };
       const mockedSource: UserDrawingLayer = UserDrawingLayer.Drawings;
 
-      const actual = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(mockVectorLayer, mockedSource);
+      const actual = await utils.convertExternalToInternalRepresentation(mockVectorLayer, mockedSource);
 
       expect(actual[0].labelText).toEqual(mockText);
       expect(actual[0].geometry.type).toEqual('Point');

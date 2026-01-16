@@ -139,7 +139,7 @@ export class AuthService {
   private async getUserInfo(): Promise<string> {
     const userInfo = (await this.oauthService.loadUserProfile()) as Gb2UserInfo;
 
-    return userInfo.info.name;
+    return userInfo.info?.name;
   }
 
   private registerImpendingLogoutHandler() {

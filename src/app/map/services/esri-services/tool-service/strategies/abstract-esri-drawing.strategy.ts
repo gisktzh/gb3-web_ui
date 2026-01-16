@@ -1,19 +1,27 @@
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {AbstractEsriDrawableToolStrategy} from './abstract-esri-drawable-tool.strategy';
-import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
+import {
+  DrawingCallbackHandler,
+  DrawingCallbackHandlerArgsDrawing,
+  DrawingCallbackHandlerArgsLists,
+  DrawingCallbackHandlerArgsSymbolDrawing,
+  DrawingCallbackHandlerArgsTextDrawing,
+  DrawingInternalUpdateArgs,
+} from '../interfaces/drawing-callback-handler.interface';
 import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import Graphic from '@arcgis/core/Graphic';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {DrawingMode} from '../types/drawing-mode.type';
-import TextSymbol from '@arcgis/core/symbols/TextSymbol';
+import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export abstract class AbstractEsriDrawingStrategy<
-  T extends DrawingCallbackHandler['completeDrawing'],
-> extends AbstractEsriDrawableToolStrategy<T> {
+  CallbackType extends DrawingCallbackHandlerArgsDrawing | DrawingCallbackHandlerArgsTextDrawing | DrawingCallbackHandlerArgsSymbolDrawing,
+  ArgsType extends DrawingInternalUpdateArgs[CallbackType] = DrawingInternalUpdateArgs[CallbackType],
+  SymbolType extends MapDrawingSymbol = MapDrawingSymbol,
+> extends AbstractEsriDrawableToolStrategy<CallbackType, SymbolType> {
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Drawings;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: T) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: DrawingCallbackHandler<CallbackType, SymbolType>) {
     super(layer, mapView, completeCallbackHandler);
   }
 
@@ -23,7 +31,7 @@ export abstract class AbstractEsriDrawingStrategy<
     reactiveUtils.on(
       () => this.sketchViewModel,
       'create',
-      ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
+      async ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
         switch (state) {
           case 'active':
           case 'start':
@@ -56,20 +64,36 @@ export abstract class AbstractEsriDrawingStrategy<
     );
   }
 
-  protected handleComplete(graphic: Graphic, mode: DrawingMode, labelText?: string) {
-    this.setIdentifierOnGraphic(graphic);
-    this.completeDrawingCallbackHandler(graphic, mode, labelText);
+  /**
+   * When adding drawings, the strategies usually take care of the internals themselves via dialogs.
+   * However, when editing, the internals that are late on being passed to `handleComplete` need to be taken
+   * care of in the strategy, too, so we inject them via a generalized setter. Most drawing strategies don't
+   * actually implement any logic here, though.
+   *
+   * TODO: Generalize this via a generic and a type hint.
+   */
+  public updateInternals(..._: ArgsType): void {
+    // noop
+  }
+
+  protected handleComplete(...args: DrawingCallbackHandlerArgsLists<SymbolType>[CallbackType]) {
+    const graphic = args[0];
+    if (graphic) {
+      this.setIdentifierOnGraphic(graphic);
+    }
+
+    this.completeDrawingCallbackHandler(...args);
   }
 
   private completeEditing(graphic: Graphic) {
     const graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
-    // checks if the graphic still exists in the layer, i. e if it was not deleted during edit
+    // checks if the graphic still exists in the layer, i.e. if it was not deleted during edit
     const graphicExistsOnLayer = this.checkIfGraphicExistsOnLayer(graphicIdentifier);
     if (!graphicExistsOnLayer) {
       this.handleComplete(graphic, 'delete');
       return;
     }
-    const labelText = graphic.symbol instanceof TextSymbol ? graphic.symbol.text : undefined;
-    this.handleComplete(graphic, 'edit', labelText);
+
+    this.handleComplete(graphic, 'edit');
   }
 }

@@ -330,7 +330,7 @@ describe('EsriToolService', () => {
       const mode: DrawingMode = 'add';
       const storeSpy = spyOn(store, 'dispatch').and.callThrough();
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
-      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         graphicMock,
         labelText,
         2056,
@@ -339,7 +339,7 @@ describe('EsriToolService', () => {
 
       const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
 
-      service.completeDrawing(graphicMock, mode, labelText);
+      service.completeTextDrawing(graphicMock, mode, labelText);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();
@@ -350,7 +350,7 @@ describe('EsriToolService', () => {
       const mode: DrawingMode = 'edit';
       const storeSpy = spyOn(store, 'dispatch').and.callThrough();
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
-      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         graphicMock,
         labelText,
         2056,
@@ -359,7 +359,7 @@ describe('EsriToolService', () => {
 
       const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
 
-      service.completeDrawing(graphicMock, mode, labelText);
+      service.completeTextDrawing(graphicMock, mode, labelText);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();
@@ -374,7 +374,7 @@ describe('EsriToolService', () => {
 
       const expectedAction = DrawingActions.deleteDrawing({drawingId});
 
-      service.completeDrawing(graphicMock, mode, labelText);
+      service.completeTextDrawing(graphicMock, mode, labelText);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();
@@ -408,11 +408,10 @@ describe('EsriToolService', () => {
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
-        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
-      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         labelPoint,
         labelText,
         2056,
@@ -455,11 +454,10 @@ describe('EsriToolService', () => {
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
-        undefined,
         2056,
         UserDrawingLayer.Measurements,
       );
-      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         labelPoint,
         labelText,
         2056,
@@ -513,7 +511,6 @@ describe('EsriToolService', () => {
     it('completes selections by dispatching DataDownloadOrderActions.setSelection if the selection is not `undefined`', () => {
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
-        undefined,
         2056,
         InternalDrawingLayer.Selection,
       );
@@ -651,7 +648,7 @@ describe('EsriToolService', () => {
       const style = {} as Gb3StyleRepresentation;
       const labelText = 'some Text';
       service.updateDrawingStyles(drawingMOck, style, labelText);
-      expect(convertSpy).toHaveBeenCalledOnceWith(style, labelText);
+      expect(convertSpy).toHaveBeenCalledOnceWith(style, labelText, undefined);
     });
 
     it('should not call the convert method if the drawingLayer does not exist', () => {

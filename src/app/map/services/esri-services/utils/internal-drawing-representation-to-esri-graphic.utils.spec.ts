@@ -14,7 +14,7 @@ import Point from '@arcgis/core/geometry/Point';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 
 describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
-  it('converts a GB3 internal polygon drawing representation to an esri graphic', () => {
+  it('converts a GB3 internal polygon drawing representation to an esri graphic', async () => {
     const fillColorHex = '#abcdef';
     const strokeColorHex = '#080085';
     const strokeWidth = 42;
@@ -53,7 +53,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
       labelText: labelText,
     };
 
-    const actual = InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation);
+    const actual = await InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation);
     const expected = new Graphic({
       geometry: new Polygon({
         spatialReference: {wkid: 4326},
@@ -80,7 +80,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
     expect(actual.toJSON()).toEqual(expected.toJSON());
   });
 
-  it('converts a GB3 internal line drawing representation to an esri graphic', () => {
+  it('converts a GB3 internal line drawing representation to an esri graphic', async () => {
     const strokeColorHex = '#080085';
     const strokeWidth = 42;
     const id = 'testidone';
@@ -112,7 +112,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
       labelText: labelText,
     };
 
-    const actual = InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation);
+    const actual = await InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation);
     const expected = new Graphic({
       geometry: new Polyline({
         spatialReference: {wkid: 2056},
@@ -138,7 +138,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
     expect(actual.toJSON()).toEqual(expected.toJSON());
   });
 
-  it('converts a GB3 internal point drawing representation to an esri graphic', () => {
+  it('converts a GB3 internal point drawing representation to an esri graphic', async () => {
     const fillColorHex = '#abcdef';
     const strokeColorHex = '#080085';
     const strokeWidth = 42;
@@ -169,7 +169,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
       labelText: undefined,
     };
 
-    const actual = InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation);
+    const actual = await InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation);
     const expected = new Graphic({
       geometry: new Point({
         spatialReference: {wkid: 2056},
@@ -194,7 +194,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
     expect(actual.toJSON()).toEqual(expected.toJSON());
   });
 
-  it('throws an error if the geometry type is not supported', () => {
+  it('throws an error if the geometry type is not supported', async () => {
     const internalDrawingRepresentation = {
       type: 'Feature',
       source: UserDrawingLayer.Drawings,
@@ -215,7 +215,8 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         geometries: [MinimalGeometriesUtils.getMinimalPoint(2056), MinimalGeometriesUtils.getMinimalPolygon(2056)],
       },
     } as unknown as Gb3StyledInternalDrawingRepresentation;
-    expect(() => InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation)).toThrow(
+
+    await expectAsync(InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation)).toBeRejectedWith(
       new UnsupportedGeometryType('GeometryCollection'),
     );
   });

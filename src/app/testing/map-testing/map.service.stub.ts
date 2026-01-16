@@ -17,14 +17,24 @@ import {
 } from '../../shared/interfaces/internal-drawing-representation.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
+import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export class MapServiceStub implements MapService {
   private toolService: ToolService = {
     initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {},
     initializeDrawing(drawingTool: DrawingTool) {},
     initializeMeasurement(measurementTool: MeasurementTool) {},
-    addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {},
-    updateDrawingStyles(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string) {},
+    addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
+      return Promise.resolve();
+    },
+    updateDrawingStyles(
+      drawing: Gb3StyledInternalDrawingRepresentation,
+      style: Gb3StyleRepresentation,
+      labelText?: string,
+      mapDrawingSymbol?: MapDrawingSymbol,
+    ) {
+      return Promise.resolve();
+    },
     cancelTool() {},
     initializeElevationProfileMeasurement() {},
   };

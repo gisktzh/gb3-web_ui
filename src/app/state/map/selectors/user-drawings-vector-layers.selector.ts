@@ -1,7 +1,6 @@
 import {createSelector} from '@ngrx/store';
 import {selectDrawings} from '../reducers/drawing.reducer';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
 import {selectVisibleDrawingLayers} from './visible-drawing-layers.selector';
 
 export const selectUserDrawingsVectorLayers = createSelector(
@@ -14,8 +13,8 @@ export const selectUserDrawingsVectorLayers = createSelector(
     );
 
     return {
-      drawings: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw),
-      measurements: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(measurementsToDraw),
+      drawings: drawingsToDraw,
+      measurements: measurementsToDraw,
     };
   },
 );

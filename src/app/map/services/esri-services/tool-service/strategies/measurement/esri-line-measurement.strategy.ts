@@ -3,14 +3,14 @@ import Polyline from '@arcgis/core/geometry/Polyline';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {NumberUtils} from '../../../../../../shared/utils/number.utils';
 import {AbstractEsriMeasurementStrategy, LabelConfiguration} from '../abstract-esri-measurement.strategy';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler, DrawingCallbackHandlerArgsMeasurement} from '../../interfaces/drawing-callback-handler.interface';
 import Point from '@arcgis/core/geometry/Point';
 import {SupportedEsriTool} from '../supported-esri-tool.type';
 import {LabelPositionCalculationFailed} from '../../../errors/esri.errors';
 
 const M_TO_KM_CONVERSION_THRESHOLD = 10_000;
 
-export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polyline, DrawingCallbackHandler['completeMeasurement']> {
+export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polyline, DrawingCallbackHandlerArgsMeasurement> {
   protected readonly tool: SupportedEsriTool = 'polyline';
   private readonly labelSymbolization: TextSymbol;
 
@@ -19,7 +19,7 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     mapView: __esri.MapView,
     polylineSymbol: __esri.SimpleLineSymbol,
     labelSymbolization: __esri.TextSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['completeMeasurement'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsMeasurement>,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 

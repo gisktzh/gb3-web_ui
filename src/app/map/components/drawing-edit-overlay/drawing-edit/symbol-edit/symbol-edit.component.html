@@ -1,0 +1,11 @@
+<drawing-symbols
+  class="symbol-edit"
+  groupName="symbols"
+  [sizeValue]="style.symbolSize"
+  [rotationValue]="style.symbolRotation"
+  [fullHeight]="true"
+  [symbolValue]="selectedSymbol"
+  (symbolChange)="onSymbolChange($event)"
+  (sizeChange)="updateValueWithDelay('symbolSize', $event)"
+  (rotationChange)="updateValueWithDelay('symbolRotation', $event)"
+></drawing-symbols>

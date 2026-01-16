@@ -72,3 +72,11 @@ export class ZoomExtentMissing extends RecoverableError {
 export class SRSMissing extends RecoverableError {
   public override message = 'Das Koordinatensystem fehlt.';
 }
+
+export class EsriSymbolDescriptorFetchingFailed extends RecoverableError {
+  public override message = 'Ein Fehler ist beim Laden der Symbole aufgetreten.';
+}
+
+export class EsriSymbolDescriptorToSVGFailed extends RecoverableError {
+  public override message = 'Das Symbol konnte nicht umgewandelt werden.';
+}

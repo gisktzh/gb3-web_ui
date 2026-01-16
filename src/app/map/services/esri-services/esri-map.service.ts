@@ -182,7 +182,7 @@ export class EsriMapService implements MapService, OnDestroy {
       .pipe(
         first(),
         withLatestFrom(this.store.select(selectAllItems), this.store.select(selectDrawings)),
-        tap(([config, activeMapItems, drawings]) => {
+        tap(async ([config, activeMapItems, drawings]) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId, activeBasemapId} = config;
@@ -192,14 +192,18 @@ export class EsriMapService implements MapService, OnDestroy {
           this.addBasemapSubscription();
           this.rotationReset();
           this.initDrawingLayers();
-          activeMapItems.forEach((mapItem, position) => {
-            mapItem.addToMap(this, position);
+          await Promise.all(
+            activeMapItems.map(async (mapItem, position) => {
+              mapItem.addToMap(this, position);
 
-            if (mapItem instanceof DrawingActiveMapItem) {
-              const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.userDrawingLayer);
-              this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.userDrawingLayer);
-            }
-          });
+              if (mapItem instanceof DrawingActiveMapItem) {
+                const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.userDrawingLayer);
+                return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.userDrawingLayer);
+              }
+
+              return Promise.resolve();
+            }),
+          );
           this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
         }),
       )
@@ -213,7 +217,6 @@ export class EsriMapService implements MapService, OnDestroy {
     const graphicsLayer = new GraphicsLayer({
       id: mapItem.id,
     });
-
     const index = this.getIndexForPosition(position);
     this.mapView.map.add(graphicsLayer, index);
   }

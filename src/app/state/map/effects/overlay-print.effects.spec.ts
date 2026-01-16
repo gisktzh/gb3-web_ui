@@ -16,7 +16,8 @@ import {FeatureInfoPrintConfiguration, PrintableOverlayItem} from '../../../shar
 import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items.selector';
 import {FileDownloadService} from '../../../shared/services/file-download-service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {MAP_SERVICE} from '../../../app.tokens';
+import {DRAWING_SYMBOLS_SERVICE, MAP_SERVICE} from '../../../app.tokens';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 
 describe('OverlayPrintEffects', () => {
   const creationResponseMock: PrintCreationResponse = {reportUrl: 'response url'};
@@ -36,6 +37,7 @@ describe('OverlayPrintEffects', () => {
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],

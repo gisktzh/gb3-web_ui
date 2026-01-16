@@ -12,13 +12,15 @@ import {Municipality, MunicipalityWithGeometry} from '../../../../../../shared/i
 import {Gb3GeoshopMunicipalitiesService} from '../../../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {map} from 'rxjs';
 import {ConfigService} from '../../../../../../shared/services/config.service';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler, DrawingCallbackHandlerArgsSelection} from '../../interfaces/drawing-callback-handler.interface';
 
-export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStrategy<DrawingCallbackHandler['completeSelection']> {
+export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStrategy<
+  DrawingCallbackHandler<DrawingCallbackHandlerArgsSelection>
+> {
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
-    completeCallbackHandler: DrawingCallbackHandler['completeSelection'],
+    completeCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsSelection>,
     private readonly dialogService: MatDialog,
     private readonly configService: ConfigService,
     private readonly geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService,

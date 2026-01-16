@@ -19,13 +19,15 @@ import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolizat
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {MAP_SERVICE} from '../../../app.tokens';
+import {DRAWING_SYMBOLS_SERVICE, MAP_SERVICE} from '../../../app.tokens';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 
 describe('ImportEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: ImportEffects;
   let gb3ImportService: Gb3ImportService;
+  let symbolizationToGb3ConverterUtils: SymbolizationToGb3ConverterUtils;
   beforeEach(() => {
     actions$ = new Observable<Action>();
 
@@ -38,11 +40,13 @@ describe('ImportEffects', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
       ],
     });
     effects = TestBed.inject(ImportEffects);
     store = TestBed.inject(MockStore);
     gb3ImportService = TestBed.inject(Gb3ImportService);
+    symbolizationToGb3ConverterUtils = TestBed.inject(SymbolizationToGb3ConverterUtils);
   });
 
   afterEach(() => {
@@ -120,23 +124,23 @@ describe('ImportEffects', () => {
       };
       const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       const drawingLayersToOverride = [UserDrawingLayer.Drawings];
-      const drawingsToAdd = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
-        mockDrawing,
-        UserDrawingLayer.Drawings,
-      );
-      const converterSpy = spyOn(SymbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.returnValue(
-        drawingsToAdd,
-      );
-      const mapServiceSpy = spyOn(TestBed.inject(MAP_SERVICE), 'removeMapItem');
-      const toolServiceSpy = spyOn(TestBed.inject(MAP_SERVICE).getToolService(), 'addExistingDrawingsToLayer');
-      actions$ = of(ImportActions.createActiveMapItemFromDrawing({drawing: mockDrawing}));
-      effects.addDrawingToMap$.subscribe((action) => {
-        expect(converterSpy).toHaveBeenCalledOnceWith(mockDrawing, UserDrawingLayer.Drawings);
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(activeMapItem.id);
-        expect(toolServiceSpy).toHaveBeenCalledOnceWith(drawingsToAdd, UserDrawingLayer.Drawings);
-        expect(action).toEqual(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd}));
-        done();
-      });
+      symbolizationToGb3ConverterUtils
+        .convertExternalToInternalRepresentation(mockDrawing, UserDrawingLayer.Drawings)
+        .then((drawingsToAdd) => {
+          const converterSpy = spyOn(symbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.returnValue(
+            Promise.resolve(drawingsToAdd),
+          );
+          const mapServiceSpy = spyOn(TestBed.inject(MAP_SERVICE), 'removeMapItem');
+          const toolServiceSpy = spyOn(TestBed.inject(MAP_SERVICE).getToolService(), 'addExistingDrawingsToLayer');
+          actions$ = of(ImportActions.createActiveMapItemFromDrawing({drawing: mockDrawing}));
+          effects.addDrawingToMap$.subscribe((action) => {
+            expect(converterSpy).toHaveBeenCalledOnceWith(mockDrawing, UserDrawingLayer.Drawings);
+            expect(mapServiceSpy).toHaveBeenCalledOnceWith(activeMapItem.id);
+            expect(toolServiceSpy).toHaveBeenCalledOnceWith(drawingsToAdd, UserDrawingLayer.Drawings);
+            expect(action).toEqual(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd}));
+            done();
+          });
+        });
     });
   });
 
