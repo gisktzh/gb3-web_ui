@@ -10,9 +10,9 @@ import {geojsonToArcGIS} from '@terraformer/arcgis';
 import {UnstyledInternalDrawingRepresentation} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingCallbackHandler, DrawingCallbackHandlerArgsSelection} from '../interfaces/drawing-callback-handler.interface';
 
-export abstract class AbstractEsriSelectionStrategy<T extends DrawingCallbackHandler<DrawingCallbackHandlerArgsSelection>>
-  implements EsriToolStrategy
-{
+export abstract class AbstractEsriSelectionStrategy<
+  T extends DrawingCallbackHandler<DrawingCallbackHandlerArgsSelection>,
+> implements EsriToolStrategy {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
 
   protected readonly layer: GraphicsLayer;

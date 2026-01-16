@@ -14,8 +14,7 @@ import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.int
 export abstract class AbstractEsriDrawableToolStrategy<
   ArgsType extends DrawingCallbackHandlerArgsType,
   SymbolType extends MapDrawingSymbol = MapDrawingSymbol,
-> implements EsriToolStrategy
-{
+> implements EsriToolStrategy {
   public static readonly identifierFieldName = MapConstants.DRAWING_IDENTIFIER;
   public static readonly belongsToFieldName = MapConstants.BELONGS_TO_IDENTIFIER;
   public static readonly toolFieldName = MapConstants.TOOL_IDENTIFIER;
