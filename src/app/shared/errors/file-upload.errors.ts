@@ -10,18 +10,22 @@ const FILE_VALIDATION_ERRORS = {
 
 export class FileValidationError extends RecoverableError {
   public override name = 'FileValidationError';
-  constructor(message?: string) {
-    super();
-    if (message === 'You can only upload 1 file') {
-      this.message = FILE_VALIDATION_ERRORS.TOO_MANY_FILES;
-    } else if (message?.startsWith('You can only upload:')) {
-      this.message = FILE_VALIDATION_ERRORS.INVALID_FILE_TYPE;
-    } else if (message?.includes('exceeds maximum allowed size of')) {
-      this.message = FILE_VALIDATION_ERRORS.FILE_SIZE_TOO_LARGE;
-    } else {
-      this.message = FILE_VALIDATION_ERRORS.DEFAULT;
-    }
-  }
+  public override message = FILE_VALIDATION_ERRORS.DEFAULT;
+}
+
+export class TooManyFilesValidationError extends FileValidationError {
+  public override name = 'TooManyFilesImportError';
+  public override message = FILE_VALIDATION_ERRORS.TOO_MANY_FILES;
+}
+
+export class InvalidFileTypeValidationError extends FileValidationError {
+  public override name = 'InvalidFileTypeValidationError';
+  public override message = FILE_VALIDATION_ERRORS.INVALID_FILE_TYPE;
+}
+
+export class FileSizeTooLargeValidationError extends FileValidationError {
+  public override name = 'FileSizeTooLargeValidationError';
+  public override message = FILE_VALIDATION_ERRORS.FILE_SIZE_TOO_LARGE;
 }
 
 export class FileImportError extends RecoverableError {

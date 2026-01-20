@@ -3,7 +3,12 @@ import {NgClass} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {FileUploadRestrictionsConfig} from '../../configs/file-upload-restrictions.config';
-import {FileValidationError} from '../../errors/file-upload.errors';
+import {
+  FileSizeTooLargeValidationError,
+  FileValidationError,
+  InvalidFileTypeValidationError,
+  TooManyFilesValidationError,
+} from '../../errors/file-upload.errors';
 
 /**
  * This component only handles the file upload into a File object; it does _NOT_ handle the actual upload to the server.
@@ -54,26 +59,24 @@ export class DropZoneComponent {
       this.validateFile(files);
       this.addedFileEvent.emit(files[0]);
     } catch (e) {
-      this.uploadErrorEvent.emit((e as Error).message);
+      this.uploadErrorEvent.emit((e as FileValidationError).message);
       this.isHovered = false;
     }
   }
 
   private validateFile(files: FileList) {
     if (files.length !== 1) {
-      throw new FileValidationError('You can only upload 1 file');
+      throw new TooManyFilesValidationError();
     }
 
     const file = files[0];
 
     if (!FileUploadRestrictionsConfig.allowedFileTypes.some((ft) => file.name.toLowerCase().endsWith(ft.toLowerCase()))) {
-      throw new FileValidationError(`You can only upload: ${FileUploadRestrictionsConfig.allowedFileTypes.join(', ')}`);
+      throw new InvalidFileTypeValidationError();
     }
 
     if (file.size > FileUploadRestrictionsConfig.maxFileSize) {
-      throw new FileValidationError(
-        `Uploaded file exceeds maximum allowed size of ${FileUploadRestrictionsConfig.maxFileSize / 1_000_000}MB`,
-      );
+      throw new FileSizeTooLargeValidationError();
     }
   }
 }
