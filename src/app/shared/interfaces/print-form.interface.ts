@@ -22,8 +22,19 @@ export interface PrintForm {
   showLegend: FormControl<boolean | null>;
 }
 
-export type PrintFormValues = FormGroupValues<PrintForm>;
-
 export type ToArrays<T> = {
   [K in keyof T]: Array<T[K]>;
 };
+
+export interface PrintFormCapabilitiesCombination {
+  reportType: ReportType;
+  reportOrientation: ReportOrientation;
+  layout: DocumentFormat;
+  dpi: DpiSetting;
+  fileFormat: FileFormat;
+  showLegend: boolean;
+}
+
+export type PrintFormAvailableOptionsFromCapabilities = ToArrays<PrintFormCapabilitiesCombination>;
+
+export type PrintFormValues = FormGroupValues<PrintForm>;
