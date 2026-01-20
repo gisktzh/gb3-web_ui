@@ -1,12 +1,6 @@
 import {RecoverableError} from './abstract.errors';
 import {FileUploadRestrictionsConfig} from '../configs/file-upload-restrictions.config';
 
-/**
- * The clean solution would be to use the @uppy/locales module, but there seems to be some issues with exporting the locales (https://uppy.io/docs/locales/).
- * This is a workaround to provide the error messages in the correct language.
- * If Uppy changes their error messages, the errors will no longer be displayed correctly and this file has to be updated.
- * If we ever add other Languages, we will have to reconsider this approach.
- */
 const FILE_VALIDATION_ERRORS = {
   TOO_MANY_FILES: 'Es kann nur eine Datei hochgeladen werden.',
   INVALID_FILE_TYPE: `Es können nur Dateien mit den folgenden Endungen hochgeladen werden: ${FileUploadRestrictionsConfig.allowedFileTypes!.join(', ')}`,
