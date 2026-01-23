@@ -17,7 +17,10 @@ export class TimeSliderService {
    */
   public createInitialTimeSliderExtent(timeSliderConfig: TimeSliderConfiguration): TimeExtent {
     const minimumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maximumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = this.timeService.createUTCDateFromString(
+      this.timeService.replacePlaceholderDates(timeSliderConfig.maximumDate),
+      timeSliderConfig.dateFormat,
+    );
     return {
       start: minimumDate,
       end: timeSliderConfig.range ? this.timeService.addRangeToDate(minimumDate, timeSliderConfig.range) : maximumDate,
@@ -131,7 +134,10 @@ export class TimeSliderService {
 
   public isTimeExtentValid(timeSliderConfig: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
     const minDate = this.timeService.createUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maxDate = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const maxDate = this.timeService.createUTCDateFromString(
+      this.timeService.replacePlaceholderDates(timeSliderConfig.maximumDate),
+      timeSliderConfig.dateFormat,
+    );
 
     const updatedTimeExtent: TimeExtent = this.createValidTimeExtent(timeSliderConfig, timeExtent, false, minDate, maxDate);
 
@@ -179,7 +185,10 @@ export class TimeSliderService {
    */
   private createStopsForParameterSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
     const minimumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maximumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = this.timeService.createUTCDateFromString(
+      this.timeService.replacePlaceholderDates(timeSliderConfig.maximumDate),
+      timeSliderConfig.dateFormat,
+    );
     const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
     if (
       initialRange &&

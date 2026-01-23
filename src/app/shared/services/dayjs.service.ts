@@ -82,6 +82,18 @@ export class DayjsService implements TimeService {
     return this.createDayjsObject(date).subtract(this.createDayjsDurationFromNumber(value, unit)).toDate();
   }
 
+  public replacePlaceholderDates(dateString: string): string {
+    const currentDate = new Date();
+    switch (dateString) {
+      case 'CURRENT_YEAR':
+        return currentDate.getFullYear().toString();
+      case 'CURRENT_DAY':
+        return currentDate.toISOString().split('T')[0];
+      default:
+        return dateString;
+    }
+  }
+
   private createDayjsDurationFromNumber(value: number, unit: ManipulateType): Duration {
     return dayjs.duration(value, unit);
   }
