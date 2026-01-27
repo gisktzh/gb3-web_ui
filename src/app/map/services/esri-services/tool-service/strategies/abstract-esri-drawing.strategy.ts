@@ -69,8 +69,6 @@ export abstract class AbstractEsriDrawingStrategy<
    * However, when editing, the internals that are late on being passed to `handleComplete` need to be taken
    * care of in the strategy, too, so we inject them via a generalized setter. Most drawing strategies don't
    * actually implement any logic here, though.
-   *
-   * TODO: Generalize this via a generic and a type hint.
    */
   public updateInternals(..._: ArgsType): void {
     // noop

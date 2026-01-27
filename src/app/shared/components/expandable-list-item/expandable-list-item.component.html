@@ -28,5 +28,7 @@
 
   @if (renderContentEagerly || itemExpansionPanel.expanded) {
     <ng-content></ng-content>
+  } @else {
+    <ng-template matExpansionPanelContent></ng-template>
   }
 </mat-expansion-panel>

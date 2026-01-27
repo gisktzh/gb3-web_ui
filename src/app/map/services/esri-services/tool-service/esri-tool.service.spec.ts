@@ -84,6 +84,9 @@ describe('EsriToolService', () => {
       on(type: string | string[], listener: __esri.EventHandler): IHandle {
         return {} as IHandle;
       },
+      goTo(_1: __esri.GoToTarget2D, _2?: __esri.GoToOptions2D): Promise<any> {
+        return Promise.resolve();
+      },
     } as __esri.MapView;
   });
 
@@ -325,7 +328,7 @@ describe('EsriToolService', () => {
       }),
     });
 
-    it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing for drawingMOde = "add"', () => {
+    it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing for drawingMode = "add"', () => {
       const labelText = 'labelText';
       const mode: DrawingMode = 'add';
       const storeSpy = spyOn(store, 'dispatch').and.callThrough();

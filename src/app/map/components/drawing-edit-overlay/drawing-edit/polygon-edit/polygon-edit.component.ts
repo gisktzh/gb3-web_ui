@@ -13,7 +13,7 @@ import {MatDivider} from '@angular/material/divider';
 export class PolygonEditComponent {
   @Input() public polygonStyle!: Gb3PolygonStyle;
 
-  @Output() public updateStyleEvent = new EventEmitter<Gb3PolygonStyle>();
+  @Output() public readonly updateStyleEvent = new EventEmitter<Gb3PolygonStyle>();
 
   public updateValue(field: keyof AreaStyleConfiguration, value: number | string) {
     this.polygonStyle = {

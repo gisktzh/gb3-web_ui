@@ -65,13 +65,13 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
           const {drawingSymbolDefinition, size, rotation} = value;
 
           const drawingSymbolDescriptor = await drawingSymbolDefinition.fetchDrawingSymbolDescriptor(size, rotation);
-
           this.sketchViewModel.pointSymbol = drawingSymbolDescriptor;
 
           this.mapDrawingSymbol = {
             drawingSymbolDefinition,
             drawingSymbolDescriptor,
           };
+
           this.symbolSize = size;
           this.symbolRotation = rotation;
 

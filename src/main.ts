@@ -29,7 +29,7 @@ import {effects, metaReducers, reducers} from './app/state';
 import {provideRouterStore} from '@ngrx/router-store';
 import {AppComponent} from './app/app.component';
 import {AuthModule} from './app/auth/auth.module';
-import {EsriDrawingSymbolsService} from './app/map/services/esri-services/drawing-symbols-service/esri-drawing-symbols.service';
+import {EsriDrawingSymbolsService} from './app/map/services/esri-services/esri-drawing-symbols.service';
 import {provideStoreDevtools} from '@ngrx/store-devtools';
 
 if (environment.production) {

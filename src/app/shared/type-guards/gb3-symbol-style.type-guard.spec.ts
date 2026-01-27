@@ -5,9 +5,9 @@ import {
   Gb3SymbolStyle,
   Gb3TextStyle,
 } from '../interfaces/internal-drawing-representation.interface';
-import {Gb3SymbolStyleUtils} from './gb3-symbol-style.utils';
+import {isGb3SymbolStyle} from './gb3-symbol-style.type-guard';
 
-describe('Gb3SymbolStyleUtils', () => {
+describe('isGb3SymbolStyle', () => {
   it('should return true for a symbol style', () => {
     const style: Gb3SymbolStyle = {
       type: 'symbol',
@@ -15,11 +15,11 @@ describe('Gb3SymbolStyleUtils', () => {
       symbolRotation: 90,
     };
 
-    expect(Gb3SymbolStyleUtils.isGb3SymbolStyle(style)).toBeTrue();
+    expect(isGb3SymbolStyle(style)).toBeTrue();
   });
 
   it('should return false for any other style', () => {
-    // Convenience objects so we don'pt have to repeat the same key/value pairs over and over.
+    // Convenience objects so we don't have to repeat the same key/value pairs over and over.
     const stroke = {
       strokeColor: '#ff6600',
       strokeWidth: -1,
@@ -57,9 +57,9 @@ describe('Gb3SymbolStyleUtils', () => {
       haloRadius: 'yes',
     };
 
-    expect(Gb3SymbolStyleUtils.isGb3SymbolStyle(lineStringStyle)).toBeFalse();
-    expect(Gb3SymbolStyleUtils.isGb3SymbolStyle(pointStyle)).toBeFalse();
-    expect(Gb3SymbolStyleUtils.isGb3SymbolStyle(polygonStyle)).toBeFalse();
-    expect(Gb3SymbolStyleUtils.isGb3SymbolStyle(textStyle)).toBeFalse();
+    expect(isGb3SymbolStyle(lineStringStyle)).toBeFalse();
+    expect(isGb3SymbolStyle(pointStyle)).toBeFalse();
+    expect(isGb3SymbolStyle(polygonStyle)).toBeFalse();
+    expect(isGb3SymbolStyle(textStyle)).toBeFalse();
   });
 });

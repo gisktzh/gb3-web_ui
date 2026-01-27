@@ -205,6 +205,10 @@ export class EsriToolService implements ToolService, OnDestroy {
           UserDrawingLayer.Drawings,
         );
 
+        // Gently poke the map view into rerendering itself, thus also reliably render the new text graphic.
+        const mapView = this.esriMapViewService.mapView;
+        mapView.goTo(mapView.extent);
+
         this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
         break;
       }
@@ -235,6 +239,10 @@ export class EsriToolService implements ToolService, OnDestroy {
           this.configService.mapConfig.defaultMapConfig.srsId,
           UserDrawingLayer.Drawings,
         );
+
+        // Gently poke the map view into rerendering itself, thus also reliably render the new symbol graphic.
+        const mapView = this.esriMapViewService.mapView;
+        mapView.goTo(mapView.extent);
 
         this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
         break;

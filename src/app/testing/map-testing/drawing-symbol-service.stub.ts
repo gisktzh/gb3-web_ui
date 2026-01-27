@@ -6,8 +6,8 @@ import {DrawingSymbolsService} from 'src/app/shared/interfaces/drawing-symbols-s
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export class DrawingSymbolServiceStub implements DrawingSymbolsService {
-  getCollectionInfos(): {label: string; id: string}[] {
-    return [];
+  getCollectionInfos(): {[key: string]: {label: string; url: string}} {
+    return {};
   }
 
   getCollection(id: string): Observable<DrawingSymbolChoice[]> {

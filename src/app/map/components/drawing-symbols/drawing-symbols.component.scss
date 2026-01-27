@@ -9,4 +9,10 @@
   &.symbols-list--full-height {
     max-height: initial;
   }
+
+  .symbol-list__collections-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
 }

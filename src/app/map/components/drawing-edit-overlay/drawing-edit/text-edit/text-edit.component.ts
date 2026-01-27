@@ -20,7 +20,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   @Input() public textStyle!: Gb3TextStyle;
   @Input() public labelText!: string;
 
-  @Output() public updateStyleEvent = new EventEmitter<{style: Gb3TextStyle; labelText: string}>();
+  @Output() public readonly updateStyleEvent = new EventEmitter<{style: Gb3TextStyle; labelText: string}>();
 
   public readonly maxLength: number = MapConstants.TEXT_DRAWING_MAX_LENGTH;
 

@@ -15,22 +15,22 @@
   title="Rotation"
 ></slider-edit>
 <div class="symbols-list" [class.symbols-list--full-height]="fullHeight">
-  @for (collection of this.collections; track $index) {
-    <expandable-list-item
-      [header]="collection.label"
-      [stickyHeader]="true"
-      [noPadding]="true"
-      [renderContentEagerly]="false"
-      [expanded]="!!symbolValue?.belongsToCollection(collection.id)"
-    >
-      @defer {
+  <mat-accordion class="symbol-list__collections-container">
+    @for (collection of this.collections; track $index) {
+      <expandable-list-item
+        [header]="collection.label"
+        [stickyHeader]="true"
+        [noPadding]="true"
+        [renderContentEagerly]="false"
+        [expanded]="!!symbolValue?.belongsToCollection(collection.id)"
+      >
         <drawing-symbols-collection
           [collectionId]="collection.id"
           [groupName]="groupName"
           [value]="symbolValue"
           (valueChange)="onSymbolChange($event)"
         ></drawing-symbols-collection>
-      }
-    </expandable-list-item>
-  }
+      </expandable-list-item>
+    }
+  </mat-accordion>
 </div>

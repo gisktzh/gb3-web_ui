@@ -15,7 +15,7 @@ import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/
 })
 export class SymbolDrawingToolInputComponent {
   private readonly dialogRef = inject<MatDialogRef<SymbolDrawingToolInputComponent, SymbolDrawingToolInputComponent>>(MatDialogRef);
-  public drawingSymbolDefinition!: DrawingSymbolDefinition;
+  public drawingSymbolDefinition: DrawingSymbolDefinition | undefined = undefined;
   public size: number = SymbolStyleConstants.DEFAULT_SYMBOL_SIZE;
   public rotation: number = SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION;
 

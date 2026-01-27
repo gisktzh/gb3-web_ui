@@ -1,4 +1,3 @@
-import {Gb3SymbolStyleUtils} from './gb3-symbol-style.utils';
 import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {Gb3GeoJsonFeature, Gb3VectorLayer, Gb3VectorLayerStyle} from '../interfaces/gb3-vector-layer.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
@@ -11,6 +10,7 @@ import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
 import {DrawingSymbolDescriptor} from '../interfaces/drawing-symbol/drawing-symbol-descriptor.interface';
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {HasSrs} from '../interfaces/geojson-types-with-srs.interface';
+import {isGb3SymbolStyle} from '../type-guards/gb3-symbol-style.type-guard';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +37,7 @@ export class SymbolizationToGb3ConverterUtils {
 
       if (
         feature.properties.style &&
-        Gb3SymbolStyleUtils.isGb3SymbolStyle(feature.properties.style) &&
+        isGb3SymbolStyle(feature.properties.style) &&
         feature.mapDrawingSymbol !== undefined &&
         feature.mapDrawingSymbol.drawingSymbolDescriptor !== undefined
       ) {

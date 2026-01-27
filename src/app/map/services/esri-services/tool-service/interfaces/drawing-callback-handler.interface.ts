@@ -20,14 +20,7 @@ export type DrawingCallbackHandlerArgsType =
 export type DrawingCallbackHandlerArgsLists<SymbolType extends MapDrawingSymbol = MapDrawingSymbol> = {
   completeDrawing: [Graphic, DrawingMode];
   completeTextDrawing: [Graphic, DrawingMode, string?];
-  completeSymbolDrawing: [
-    Graphic | undefined,
-    DrawingMode,
-    // All following args are optional since we can cancel before actually selecting any icon.
-    SymbolType?,
-    number?,
-    number?,
-  ];
+  completeSymbolDrawing: [Graphic | undefined, DrawingMode, SymbolType?, number?, number?];
   completeMeasurement: [Graphic, Graphic, string, DrawingMode];
   completeSelection: [DataDownloadSelection | undefined];
 };

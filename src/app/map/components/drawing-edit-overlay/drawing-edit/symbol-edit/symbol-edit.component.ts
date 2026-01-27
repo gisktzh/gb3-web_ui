@@ -19,7 +19,10 @@ export class SymbolEditComponent implements OnInit, OnDestroy {
   @Input() public style!: Gb3SymbolStyle;
   @Input() public selectedSymbol: DrawingSymbolDefinition | undefined = undefined;
 
-  @Output() public updateStyleEvent = new EventEmitter<{style: Gb3SymbolStyle; drawingSymbolDefinition: DrawingSymbolDefinition}>();
+  @Output() public readonly updateStyleEvent = new EventEmitter<{
+    style: Gb3SymbolStyle;
+    drawingSymbolDefinition: DrawingSymbolDefinition;
+  }>();
 
   private readonly subscriptions = new Subscription();
   private readonly debouncer = new Subject<{

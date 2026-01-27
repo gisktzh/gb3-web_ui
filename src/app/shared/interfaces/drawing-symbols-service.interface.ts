@@ -5,7 +5,7 @@ import {DrawingSymbolDescriptor} from './drawing-symbol/drawing-symbol-descripto
 import {DrawingSymbolChoice} from './drawing-symbol/drawing-symbol-choice.interface';
 
 export interface DrawingSymbolsService {
-  getCollectionInfos(): {label: string; id: string}[];
+  getCollectionInfos(): {[key: string]: {label: string; url: string}};
   getCollection(id: string): Observable<DrawingSymbolChoice[]>;
   convertToMapDrawingSymbol(symbol: DrawingSymbolDefinition, size: number, rotation: number): Promise<MapDrawingSymbol>;
   getSVGString(symbol: DrawingSymbolDescriptor, iconSize: number): string;

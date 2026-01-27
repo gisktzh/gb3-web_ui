@@ -10,6 +10,8 @@
     ></drawing-symbols>
   </ng-container>
   <ng-container actions>
-    <button mat-button [matDialogClose]="{drawingSymbolDefinition, size, rotation}">Hinzufügen</button>
+    <button mat-button [matDialogClose]="{drawingSymbolDefinition, size, rotation}" [disabled]="!drawingSymbolDefinition">
+      Hinzufügen
+    </button>
   </ng-container>
 </api-dialog-wrapper>

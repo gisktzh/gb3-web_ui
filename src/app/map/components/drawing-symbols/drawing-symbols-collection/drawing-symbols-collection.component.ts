@@ -11,10 +11,10 @@ import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/
   styleUrls: ['./drawing-symbols-collection.component.scss'],
 })
 export class DrawingSymbolsCollectionComponent implements OnInit, OnDestroy {
-  @Input() public collectionId: string = '';
+  @Input() public collectionId!: string;
   @Input() public groupName: string = '';
   @Input() public value: DrawingSymbolDefinition | undefined = undefined;
-  @Output() public valueChange = new EventEmitter<DrawingSymbolDefinition>();
+  @Output() public readonly valueChange = new EventEmitter<DrawingSymbolDefinition>();
   public items: DrawingSymbolChoice[] = [];
   private readonly subscriptions: Subscription = new Subscription();
   private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);

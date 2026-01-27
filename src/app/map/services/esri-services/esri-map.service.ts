@@ -68,6 +68,7 @@ import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOpera
 import GraphicHit = __esri.GraphicHit;
 import {MapViewWithMap} from './types/esri-mapview-with-map.type';
 import {TIME_SERVICE} from '../../../app.tokens';
+import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -102,6 +103,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
   private isEditModeActive = false;
+  private isToolActive = false;
   private readonly printPreviewHandle$: BehaviorSubject<IHandle | null> = new BehaviorSubject<IHandle | null>(null);
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
@@ -205,6 +207,18 @@ export class EsriMapService implements MapService, OnDestroy {
             }),
           );
           this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+        }),
+      )
+      .subscribe();
+
+    this.store
+      .select(selectActiveTool)
+      .pipe(
+        tap((value) => {
+          this.isToolActive = value !== undefined;
+          if (this.mapView.container) {
+            this.mapView.container.style.cursor = value === undefined ? 'default' : 'wait';
+          }
         }),
       )
       .subscribe();
@@ -854,6 +868,11 @@ export class EsriMapService implements MapService, OnDestroy {
       () => this.mapView,
       'click',
       async (event: __esri.ViewClickEvent) => {
+        // Tool handles all clicks, and as long as a tool is active, but hasn't fully initialized yet, we don't want any interaction on the map.
+        if (this.isToolActive) {
+          return;
+        }
+
         if (event.button === EsriMouseButtonType.LeftClick) {
           const {x, y} = this.transformationService.transform(event.mapPoint);
           if (this.isEditModeActive) {

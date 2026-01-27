@@ -1,4 +1,3 @@
-import {Gb3SymbolStyleUtils} from './../../../../shared/utils/gb3-symbol-style.utils';
 import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {filter, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -16,6 +15,7 @@ import {SymbolEditComponent} from './symbol-edit/symbol-edit.component';
 import {DrawingSymbolsService} from 'src/app/shared/interfaces/drawing-symbols-service.interface';
 import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
 import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
+import {isGb3SymbolStyle} from 'src/app/shared/type-guards/gb3-symbol-style.type-guard';
 
 @Component({
   selector: 'drawing-edit',
@@ -42,7 +42,7 @@ export class DrawingEditComponent implements OnInit, OnDestroy {
   }
 
   public async updateStyle(style: Gb3StyleRepresentation, labelText?: string, drawingSymbolDefinition?: DrawingSymbolDefinition) {
-    if (drawingSymbolDefinition && Gb3SymbolStyleUtils.isGb3SymbolStyle(style)) {
+    if (drawingSymbolDefinition && isGb3SymbolStyle(style)) {
       const mapDrawingSymbol = await this.drawingSymbolsService.convertToMapDrawingSymbol(
         drawingSymbolDefinition,
         style.symbolSize,
