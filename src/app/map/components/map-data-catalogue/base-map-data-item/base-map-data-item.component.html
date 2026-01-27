@@ -33,7 +33,7 @@
       [matTooltipDisabled]="!isAddItemDisabled"
     >
       @if (imageUrl) {
-        <img class="base-map-data-item__header__image-container__image" [alt]="title" [src]="imageUrl" />
+        <img class="base-map-data-item__header__image-container__image" [alt]="title" [src]="imageUrl" loading="lazy" />
       } @else {
         <span
           class="base-map-data-item__header__image-container__image-placeholder"

@@ -12,13 +12,13 @@ import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.
 import {HasBoundingBox} from '../../../../../../shared/interfaces/has-bounding-box.interface';
 import {BoundingBoxDataDownloadSelectionGeometry} from '../../../../../../shared/types/data-download-selection-geometry.type';
 
-export class EsriBoundingBoxSelectionStrategy extends AbstractEsriSelectionStrategy<DrawingCallbackHandler['completeSelection']> {
+export class EsriBoundingBoxSelectionStrategy extends AbstractEsriSelectionStrategy<DrawingCallbackHandler<'completeSelection'>> {
   private readonly boundingBoxWithGeometry$;
   private readonly type: BoundingBoxDataDownloadSelectionGeometry;
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
-    completeCallbackHandler: DrawingCallbackHandler['completeSelection'],
+    completeCallbackHandler: DrawingCallbackHandler<'completeSelection'>,
     boundingBoxWithGeometry$: Observable<HasBoundingBox | undefined>,
     type: BoundingBoxDataDownloadSelectionGeometry,
     private readonly configService: ConfigService,

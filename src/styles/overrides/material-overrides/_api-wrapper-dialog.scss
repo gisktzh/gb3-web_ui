@@ -24,6 +24,10 @@
     border-radius: unset;
   }
 
+  &--is-flex .api-dialog-wrapper__content {
+    display: flex;
+  }
+
   & .mdc-dialog__actions {
     min-height: 49px;
     max-height: 49px;

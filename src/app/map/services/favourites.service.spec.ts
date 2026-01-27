@@ -23,7 +23,8 @@ import {Map} from '../../shared/interfaces/topic.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {TimeService} from '../../shared/interfaces/time-service.interface';
 import {TimeSliderService} from './time-slider.service';
-import {TIME_SERVICE} from '../../app.tokens';
+import {DRAWING_SYMBOLS_SERVICE, TIME_SERVICE} from '../../app.tokens';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 
 describe('FavouritesService', () => {
   let service: FavouritesService;
@@ -31,11 +32,17 @@ describe('FavouritesService', () => {
   let gb3FavouritesService: Gb3FavouritesService;
   let timeService: TimeService;
   let timeSliderService: TimeSliderService;
+  let symbolizationToGb3ConverterUtils: SymbolizationToGb3ConverterUtils;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [provideMockStore({}), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        provideMockStore({}),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
+      ],
     });
     store = TestBed.inject(MockStore);
     timeService = TestBed.inject(TIME_SERVICE);
@@ -44,11 +51,12 @@ describe('FavouritesService', () => {
     store.overrideSelector(selectMaps, []);
     store.overrideSelector(selectFavouriteBaseConfig, {center: {x: 0, y: 0}, scale: 0, basemap: ''});
     store.overrideSelector(selectUserDrawingsVectorLayers, {
-      drawings: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
-      measurements: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
+      drawings: [],
+      measurements: [],
     });
     service = TestBed.inject(FavouritesService);
     gb3FavouritesService = TestBed.inject(Gb3FavouritesService);
+    symbolizationToGb3ConverterUtils = TestBed.inject(SymbolizationToGb3ConverterUtils);
   });
 
   it('should be created', () => {
@@ -2442,7 +2450,7 @@ describe('FavouritesService', () => {
   });
 
   describe('getDrawingsForFavourite', () => {
-    it('converts the given vector layers to active map items and drawing representations', () => {
+    it('converts the given vector layers to active map items and drawing representations', async () => {
       const drawings: Gb3VectorLayer = {
         type: 'Vector',
         styles: {
@@ -2598,17 +2606,17 @@ describe('FavouritesService', () => {
           ],
         },
       };
-      const converterSpy = spyOn(SymbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.callFake(
+      const converterSpy = spyOn(symbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.callFake(
         (gb3VectorLayer: Gb3VectorLayer, source: UserDrawingLayer) => {
-          return [
+          return Promise.resolve([
             {
               id: `id_${gb3VectorLayer.geojson.features.length}_${source}`,
             } as Gb3StyledInternalDrawingRepresentation,
-          ];
+          ]);
         },
       );
 
-      const actual = service.getDrawingsForFavourite(drawings, measurements);
+      const actual = await service.getDrawingsForFavourite(drawings, measurements);
       const expected: {drawingsToAdd: Gb3StyledInternalDrawingRepresentation[]; drawingActiveMapItems: DrawingActiveMapItem[]} = {
         drawingsToAdd: [
           {id: 'id_2_measurements'} as Gb3StyledInternalDrawingRepresentation,

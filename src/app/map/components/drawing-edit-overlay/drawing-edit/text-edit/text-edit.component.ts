@@ -9,7 +9,7 @@ import {SliderEditComponent} from '../slider-edit/slider-edit.component';
 import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.component';
 import {DecimalPipe} from '@angular/common';
 
-const COLOR_INPUT_DEBOUNCE_IN_MS = 10;
+const INPUT_DEBOUNCE_IN_MS = 10;
 @Component({
   selector: 'text-edit',
   templateUrl: './text-edit.component.html',
@@ -20,7 +20,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   @Input() public textStyle!: Gb3TextStyle;
   @Input() public labelText!: string;
 
-  @Output() public updateStyleEvent = new EventEmitter<{style: Gb3TextStyle; labelText: string}>();
+  @Output() public readonly updateStyleEvent = new EventEmitter<{style: Gb3TextStyle; labelText: string}>();
 
   public readonly maxLength: number = MapConstants.TEXT_DRAWING_MAX_LENGTH;
 
@@ -34,7 +34,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.debouncer
         .pipe(
-          debounceTime(COLOR_INPUT_DEBOUNCE_IN_MS),
+          debounceTime(INPUT_DEBOUNCE_IN_MS),
           tap(({field, value}) => this.updateValue(field, value)),
         )
         .subscribe(),
@@ -44,6 +44,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
   public updateValue(field: keyof TextStyleConfiguration, value: number | string) {
     if (field !== 'label') {
       this.textStyle = {
@@ -51,6 +52,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
         [field]: value.toString(),
       };
     }
+
     if (this.labelText) {
       this.updateStyleEvent.emit({style: this.textStyle, labelText: this.labelText});
     }

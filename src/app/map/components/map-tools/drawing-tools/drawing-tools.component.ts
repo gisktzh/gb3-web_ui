@@ -21,6 +21,7 @@ const TOOLTIP_TEXT = {
   circleDrawing: 'Kreis: Mittelpunkt und Radius wählen.',
   textDrawing: 'Text: In Karte klicken um Position zu wählen, anschliessend Text eingeben.',
   uploadDrawings: 'Zeichnungen hochladen',
+  symbolDrawing: 'Symbol: Auswählen und auf Karte hinzufügen',
 };
 @Component({
   selector: 'drawing-tools',
@@ -52,6 +53,10 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
 
   public toggleTextDrawing() {
     this.toggleTool('draw-text');
+  }
+
+  public toggleSymbolDrawing() {
+    this.toggleTool('draw-symbol');
   }
 
   public openSettingsDialog() {

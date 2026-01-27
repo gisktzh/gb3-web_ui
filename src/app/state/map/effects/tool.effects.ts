@@ -34,6 +34,7 @@ export class ToolEffects {
             case 'draw-rectangle':
             case 'draw-circle':
             case 'draw-text':
+            case 'draw-symbol':
               this.toolService.initializeDrawing(tool);
               break;
             case 'select-circle':

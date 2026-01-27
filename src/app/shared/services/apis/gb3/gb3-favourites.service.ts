@@ -32,6 +32,7 @@ export class Gb3FavouritesService extends Gb3ApiService {
 
           return next.getTime() - current.getTime();
         });
+
         return this.mapFavouritesListDataToFavouritesResponse(data);
       }),
     );

@@ -11,7 +11,7 @@ import {SkipLinkTemplateVariable} from '../../enums/skip-link-template-variable.
 export class SkipLinkComponent {
   @Input() public skipLinks: SkipLink[] = [];
 
-  @Output() public skipToLocationEvent = new EventEmitter<string>();
+  @Output() public readonly skipToLocationEvent = new EventEmitter<string>();
 
   public skipToLocation(id: SkipLinkTemplateVariable): void {
     this.skipToLocationEvent.emit(id);

@@ -2,6 +2,7 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
 
 :host ::ng-deep .expandable-list-item {
   &.mat-expansion-panel {
@@ -22,12 +23,22 @@
     padding: 0;
   }
 
+  &--sticky-header {
+    overflow: visible;
+  }
+
   .expandable-list-item__header {
     height: auto;
     padding: 0;
 
     &:focus {
       border: solid 1px ktzh-variables.$zh-active-blue;
+    }
+
+    &--sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: z-index-variables.$sicky-header;
     }
 
     .expandable-list-item__header__item {

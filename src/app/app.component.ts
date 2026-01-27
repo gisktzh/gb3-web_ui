@@ -94,7 +94,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('document:click', ['$event'])
-  private onDocumentClick(event: PointerEvent) {
+  public onDocumentClick(event: PointerEvent) {
     this.documentService.documentClicked$.next(event);
   }
 

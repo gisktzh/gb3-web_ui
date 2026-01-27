@@ -30,7 +30,7 @@ export class Gb3ShareLinkService extends Gb3ApiService {
     );
   }
 
-  public createMapRestoreItem(shareLinkItem: ShareLinkItem, ignoreErrors: boolean = false): MapRestoreItem {
+  public async createMapRestoreItem(shareLinkItem: ShareLinkItem, ignoreErrors: boolean = false): Promise<MapRestoreItem> {
     const {content, drawings, basemapId, scale, center, measurements} = shareLinkItem;
 
     // validate basemap
@@ -50,7 +50,7 @@ export class Gb3ShareLinkService extends Gb3ApiService {
     const activeMapItems = this.favouritesService.getActiveMapItemsForFavourite(content, ignoreErrors);
 
     // extract drawing layers that are needed for the given favourite (i.e. they contain features)
-    const {drawingsToAdd, drawingActiveMapItems} = this.favouritesService.getDrawingsForFavourite(drawings, measurements);
+    const {drawingsToAdd, drawingActiveMapItems} = await this.favouritesService.getDrawingsForFavourite(drawings, measurements);
 
     // complete validation
     return {

@@ -18,7 +18,7 @@ export const toolFeature = createFeature({
     on(ToolActions.cancelTool, (): ToolState => {
       return {...initialState};
     }),
-    on(ToolActions.activateTool, (state, {tool}): ToolState => {
+    on(ToolActions.activateTool, (_, {tool}): ToolState => {
       return {...initialState, activeTool: tool};
     }),
   ),

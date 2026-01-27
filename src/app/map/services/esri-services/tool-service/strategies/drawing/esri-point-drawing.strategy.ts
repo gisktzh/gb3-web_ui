@@ -1,15 +1,15 @@
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler, DrawingCallbackHandlerArgsDrawing} from '../../interfaces/drawing-callback-handler.interface';
 import {SupportedEsriTool} from '../supported-esri-tool.type';
 
-export class EsriPointDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
+export class EsriPointDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandlerArgsDrawing> {
   protected readonly tool: SupportedEsriTool = 'point';
 
   constructor(
     layer: __esri.GraphicsLayer,
     mapView: __esri.MapView,
     pointSymbol: __esri.SimpleMarkerSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsDrawing>,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 

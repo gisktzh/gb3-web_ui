@@ -13,7 +13,7 @@ import {MatDivider} from '@angular/material/divider';
 export class PointEditComponent {
   @Input() public pointStyle!: Gb3PointStyle;
 
-  @Output() public updateStyleEvent = new EventEmitter<Gb3PointStyle>();
+  @Output() public readonly updateStyleEvent = new EventEmitter<Gb3PointStyle>();
 
   public updateValue(field: keyof PointStyleConfiguration, value: number | string) {
     this.pointStyle = {
