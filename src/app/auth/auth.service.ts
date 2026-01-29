@@ -41,6 +41,7 @@ export class AuthService {
     this.oauthService.loadDiscoveryDocumentAndTryLogin().then(async () => {
       this.registerIsAuthenticatedHandler();
       this.registerImpendingLogoutHandler();
+
       if (this.oauthService.state) {
         await this.redirect(this.oauthService.state);
       }

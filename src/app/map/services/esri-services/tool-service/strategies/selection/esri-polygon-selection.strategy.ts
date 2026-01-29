@@ -16,6 +16,22 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
   protected readonly tool: SupportedEsriTool = 'polygon';
   private readonly srs: SupportedSrs;
 
+  constructor(
+    layer: GraphicsLayer,
+    mapView: MapView,
+    polygonSymbol: SimpleFillSymbol,
+    completeCallbackHandler: DrawingCallbackHandler<'completeSelection'>,
+    polygonType: SupportedEsriPolygonTool,
+    srs: SupportedSrs,
+  ) {
+    super(layer, mapView, completeCallbackHandler);
+
+    layer.removeAll();
+    this.sketchViewModel.polygonSymbol = polygonSymbol;
+    this.tool = polygonType;
+    this.srs = srs;
+  }
+
   public start(): void {
     this.sketchViewModel.create(this.tool, {mode: 'click'});
 
@@ -50,21 +66,5 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
       drawingRepresentation,
     };
     this.completeDrawingCallbackHandler(selection);
-  }
-
-  constructor(
-    layer: GraphicsLayer,
-    mapView: MapView,
-    polygonSymbol: SimpleFillSymbol,
-    completeCallbackHandler: DrawingCallbackHandler<'completeSelection'>,
-    polygonType: SupportedEsriPolygonTool,
-    srs: SupportedSrs,
-  ) {
-    super(layer, mapView, completeCallbackHandler);
-
-    layer.removeAll();
-    this.sketchViewModel.polygonSymbol = polygonSymbol;
-    this.tool = polygonType;
-    this.srs = srs;
   }
 }

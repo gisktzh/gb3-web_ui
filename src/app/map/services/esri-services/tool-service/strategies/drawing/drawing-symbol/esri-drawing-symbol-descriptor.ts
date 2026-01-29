@@ -39,10 +39,13 @@ export class EsriDrawingSymbolDescriptor extends CIMSymbol implements DrawingSym
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- to keep the method signature equal to the one of the super class.
   public static override fromJSON(json: any): EsriDrawingSymbolDescriptor {
     // This is, again, due to the way @arcgis/core handles classes in a deprecated way.
-    const webStyleSymbol = super.fromJSON(json);
-    const usableJson = webStyleSymbol.toJSON();
+    const cimSymbol = super.fromJSON(json);
+    const usableJson = cimSymbol.toJSON();
     delete usableJson.type;
     const esriDrawingSymbolDescriptor = new EsriDrawingSymbolDescriptor(usableJson);
+
+    // This doesn't happen when one instantiates it.
+    esriDrawingSymbolDescriptor.data = json.data;
 
     return esriDrawingSymbolDescriptor;
   }

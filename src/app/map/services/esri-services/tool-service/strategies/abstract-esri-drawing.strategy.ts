@@ -1,8 +1,5 @@
-import MapView from '@arcgis/core/views/MapView';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {AbstractEsriDrawableToolStrategy} from './abstract-esri-drawable-tool.strategy';
 import {
-  DrawingCallbackHandler,
   DrawingCallbackHandlerArgsDrawing,
   DrawingCallbackHandlerArgsLists,
   DrawingCallbackHandlerArgsSymbolDrawing,
@@ -20,10 +17,6 @@ export abstract class AbstractEsriDrawingStrategy<
   SymbolType extends MapDrawingSymbol = MapDrawingSymbol,
 > extends AbstractEsriDrawableToolStrategy<CallbackType, SymbolType> {
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Drawings;
-
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: DrawingCallbackHandler<CallbackType, SymbolType>) {
-    super(layer, mapView, completeCallbackHandler);
-  }
 
   public start(): void {
     this.sketchViewModel.create(this.tool, {mode: 'click'});
@@ -46,7 +39,7 @@ export abstract class AbstractEsriDrawingStrategy<
   }
 
   public edit(graphic: __esri.Graphic) {
-    void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
+    this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
 
     reactiveUtils.on(
       () => this.sketchViewModel,

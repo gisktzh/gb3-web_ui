@@ -1,7 +1,6 @@
 import {createSelector} from '@ngrx/store';
 import {selectActiveBasemapId, selectMapConfigState} from '../reducers/map-config.reducer';
 import {selectActiveMapItemConfigurations} from './active-map-item-configuration.selector';
-
 import {selectUserDrawingsVectorLayers} from './user-drawings-vector-layers.selector';
 import {InternalShareLinkItem} from 'src/app/shared/interfaces/internal-share-link.interface';
 
