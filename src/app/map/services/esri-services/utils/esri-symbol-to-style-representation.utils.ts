@@ -62,8 +62,8 @@ export class EsriSymbolToStyleRepresentationUtils {
       case 'web-style': {
         return {
           type: 'symbol',
-          symbolSize: symbolSize ? symbolSize : SymbolStyleConstants.DEFAULT_SYMBOL_SIZE,
-          symbolRotation: symbolRotation ? symbolRotation : SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION,
+          symbolSize: symbolSize || SymbolStyleConstants.DEFAULT_SYMBOL_SIZE,
+          symbolRotation: symbolRotation || SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION,
         };
       }
       case 'picture-marker':

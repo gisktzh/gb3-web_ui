@@ -38,8 +38,7 @@ export class SymbolizationToGb3ConverterUtils {
       if (
         feature.properties.style &&
         isGb3SymbolStyle(feature.properties.style) &&
-        feature.mapDrawingSymbol !== undefined &&
-        feature.mapDrawingSymbol.drawingSymbolDescriptor !== undefined
+        feature.mapDrawingSymbol?.drawingSymbolDescriptor !== undefined
       ) {
         style = {
           type: 'symbol',
@@ -116,7 +115,7 @@ export class SymbolizationToGb3ConverterUtils {
           labelText: feature.properties.text,
         };
 
-        if (styleForFeature && styleForFeature.type === 'symbol') {
+        if (styleForFeature?.type === 'symbol') {
           featureData.mapDrawingSymbol = await this.drawingSymbolsService.mapDrawingSymbolFromJSON(styleForFeature.drawingSymbolDefinition);
         }
 
@@ -125,7 +124,7 @@ export class SymbolizationToGb3ConverterUtils {
     );
   }
 
-  private getSvgSize(originalSize: number, rotation: number, printScale: number, mapScale: number) {
+  private getSvgSize(originalSize: number, rotation: number, mapScale: number, printScale: number) {
     let size = ((originalSize * (printScale / mapScale)) / Gb2Constants.PRINT_DPI) * MapConstants.DPI;
     if (rotation !== 0) {
       // In this case, the given size is technically the hypothenuse. Since the icon is rotate, we need to calculate the _actual_ width and height.

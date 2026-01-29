@@ -58,35 +58,33 @@ export class StyleRepresentationToEsriSymbolUtils {
         });
       }
       case 'symbol': {
-        if (mapDrawingSymbol) {
-          if (mapDrawingSymbol.drawingSymbolDescriptor) {
-            const drawingSymbolDescriptor = mapDrawingSymbol.drawingSymbolDescriptor;
-            drawingSymbolDescriptor.resize(style.symbolSize);
-            drawingSymbolDescriptor.rotate(style.symbolRotation);
+        if (mapDrawingSymbol?.drawingSymbolDescriptor) {
+          const drawingSymbolDescriptor = mapDrawingSymbol.drawingSymbolDescriptor;
+          drawingSymbolDescriptor.resize(style.symbolSize);
+          drawingSymbolDescriptor.rotate(style.symbolRotation);
 
-            if (StyleRepresentationToEsriSymbolUtils.isEsriDrawingSymbolDescriptor(drawingSymbolDescriptor)) {
-              return drawingSymbolDescriptor;
-            }
-
-            return EsriDrawingSymbolDescriptor.fromJSON(drawingSymbolDescriptor.toJSON());
+          if (StyleRepresentationToEsriSymbolUtils.isEsriDrawingSymbolDescriptor(drawingSymbolDescriptor)) {
+            return drawingSymbolDescriptor;
           }
 
-          if (mapDrawingSymbol.drawingSymbolDefinition) {
-            const drawingSymbolDefinition = mapDrawingSymbol.drawingSymbolDefinition;
+          return EsriDrawingSymbolDescriptor.fromJSON(drawingSymbolDescriptor.toJSON());
+        }
 
-            if (StyleRepresentationToEsriSymbolUtils.isEsriDrawingSymbolDefinition(drawingSymbolDefinition)) {
-              return await drawingSymbolDefinition.fetchDrawingSymbolDescriptor(style.symbolSize, style.symbolRotation);
-            }
+        if (mapDrawingSymbol?.drawingSymbolDefinition) {
+          const drawingSymbolDefinition = mapDrawingSymbol.drawingSymbolDefinition;
 
-            return await EsriDrawingSymbolDefinition.fromJSON(drawingSymbolDefinition.toJSON()).fetchDrawingSymbolDescriptor(
-              style.symbolSize,
-              style.symbolRotation,
-            );
+          if (StyleRepresentationToEsriSymbolUtils.isEsriDrawingSymbolDefinition(drawingSymbolDefinition)) {
+            return await drawingSymbolDefinition.fetchDrawingSymbolDescriptor(style.symbolSize, style.symbolRotation);
           }
+
+          return await EsriDrawingSymbolDefinition.fromJSON(drawingSymbolDefinition.toJSON()).fetchDrawingSymbolDescriptor(
+            style.symbolSize,
+            style.symbolRotation,
+          );
         }
 
         if (style.symbolDefinition) {
-          return await EsriDrawingSymbolDefinition.fromJSON(style.symbolDefinition).fetchDrawingSymbolDescriptor(
+          return await EsriDrawingSymbolDefinition.fromJSON(style.symbolDefinition.toJSON()).fetchDrawingSymbolDescriptor(
             style.symbolSize,
             style.symbolRotation,
           );
