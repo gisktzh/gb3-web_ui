@@ -168,7 +168,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
             this.updatePrintPreview(
               value.layout,
               value.reportOrientation,
-              value.scale !== null ? parseInt(value.scale) : 0,
+              value.scale !== null ? Number.parseInt(value.scale) : 0,
               value.rotation,
             ),
           ),
@@ -371,9 +371,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       title: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.title.value),
       comment: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.comment.value),
       showLegend: FormValueConversionUtils.getBooleanOrDefaultValue(this.formGroup.controls.showLegend.value),
-      scale: parseInt(FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.scale.value)),
+      scale: Number.parseInt(FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.scale.value)),
       mapScale:
-        this.mapConfigState?.scale || parseInt(FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.scale.value)),
+        this.mapConfigState?.scale ||
+        Number.parseInt(FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.scale.value)),
       dpi: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.dpi.value),
       rotation: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.rotation.value),
       mapCenter: {
