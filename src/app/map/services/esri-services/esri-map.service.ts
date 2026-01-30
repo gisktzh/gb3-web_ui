@@ -202,8 +202,6 @@ export class EsriMapService implements MapService, OnDestroy {
                 const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.userDrawingLayer);
                 return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.userDrawingLayer);
               }
-
-              return Promise.resolve();
             }),
           );
           this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());

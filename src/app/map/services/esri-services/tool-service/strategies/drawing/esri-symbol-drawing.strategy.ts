@@ -28,10 +28,10 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
   EsriMapDrawingSymbol
 > {
   protected readonly tool: SupportedEsriTool = 'point';
+  protected mapDrawingSymbol: EsriMapDrawingSymbol | undefined = undefined;
+  protected symbolSize: number = SymbolStyleConstants.DEFAULT_SYMBOL_SIZE;
+  protected symbolRotation: number = SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION;
   private readonly dialogService: MatDialog;
-  private mapDrawingSymbol: EsriMapDrawingSymbol | undefined = undefined;
-  private symbolSize: number = SymbolStyleConstants.DEFAULT_SYMBOL_SIZE;
-  private symbolRotation: number = SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION;
 
   constructor(
     layer: __esri.GraphicsLayer,

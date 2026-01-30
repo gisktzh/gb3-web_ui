@@ -66,9 +66,8 @@ function getGraphic(withGeometry: boolean, symbol: SimpleFillSymbol | undefined)
       [MapConstants.DRAWING_IDENTIFIER]: id,
       [MapConstants.TOOL_IDENTIFIER]: 'polygon',
     },
-    geometry: !withGeometry
-      ? null
-      : new Polygon({
+    geometry: withGeometry
+      ? new Polygon({
           spatialReference: {wkid: 2056},
           rings: [
             [
@@ -77,7 +76,8 @@ function getGraphic(withGeometry: boolean, symbol: SimpleFillSymbol | undefined)
               [0, 12],
             ],
           ],
-        }),
+        })
+      : null,
     symbol: symbol,
   });
 }

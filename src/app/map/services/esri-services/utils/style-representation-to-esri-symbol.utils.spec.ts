@@ -350,7 +350,7 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
     };
 
     const expected = new EsriDrawingSymbolDescriptor();
-    const actual = await StyleRepresentationToEsriSymbolUtils.convert(mockStyle, undefined, undefined);
+    const actual = await StyleRepresentationToEsriSymbolUtils.convert(mockStyle);
 
     expect(actual).toEqualSymbolDescriptor(expected);
   });

@@ -46,7 +46,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         },
       ];
 
-      const actual = await utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1);
+      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1);
 
       expect(actual.geojson.features.length).toEqual(2);
       expect(actual.geojson.features[0].properties.text).toEqual(drawingsMock[0].labelText);

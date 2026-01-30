@@ -52,8 +52,6 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
     if (mode === 'edit') {
       return super.handleComplete(graphic, mode, this.labelText);
     }
-
-    return;
   }
 
   public override updateInternals(_: unknown, labelText: string): void {

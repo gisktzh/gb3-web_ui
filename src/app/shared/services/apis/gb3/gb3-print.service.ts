@@ -152,7 +152,7 @@ export class Gb3PrintService extends Gb3ApiService {
       .forEach((activeMapItem) => {
         switch (activeMapItem.settings.type) {
           case 'drawing':
-            mapItems.push(this.createDrawingPrintItem(activeMapItem.settings, drawings, mapScale, printScale));
+            mapItems.push(this.createDrawingPrintItem(activeMapItem.settings, drawings, printScale, mapScale));
             break;
           case 'gb2Wms':
             mapItems.push(this.createGb2WmsPrintItem(activeMapItem, activeMapItem.settings));
