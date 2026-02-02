@@ -191,4 +191,20 @@ export const externalAppsData: ExternalApp[] = [
     description:
       'App stellt in Analogie zu Google Street View 360° Bilder aus Gewässeroptik zur Verfügung. Die Bilder zeigen die Uferböschungen und Uferwege in hoher Auflösung. Aktuell liegen Bilder zur Glatt zwischen Dübendorf und Opfikon vor. Künftig werden Bilder entlang weiterer Gewässer integriert.',
   },
+  {
+    appUrl: 'https://maps.zh.ch/gbguessr',
+    department: 'ARE',
+    image: {
+      url: '/assets/images/apps/gbguessr_thumbnail.webp',
+      altText: '',
+    },
+    title: 'GBGuessr: Kartenraten',
+    email: 'gis@bd.zh.ch',
+    keywords: ['Ratespiel', 'Quiz', 'Spiel', 'Guess', 'Guessr', 'Guesser', 'Zürich', 'Game'],
+    topic: 'Freizeit',
+    categories: ['Fachapplikationen'],
+    visibility: 'both',
+    description:
+      'GBGuessr ist ein Kartenratespiel, das auf den öffentlich zugänglichen Karten des kantonalen GIS-Browsers basiert. Es erleichtert den Zugang zu räumlichen Daten und macht die Vielfalt der publizierten Karten auf spielerische und interaktive Weise erlebbar.',
+  },
 ];
