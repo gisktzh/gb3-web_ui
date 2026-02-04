@@ -13,10 +13,16 @@ import {TextDrawingToolInputComponent} from '../../../../../components/text-draw
 import Point from '@arcgis/core/geometry/Point';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
+import {DrawingMode} from '../../types/drawing-mode.type';
+import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
 class EsriTextDrawingStrategyWrapper extends EsriTextDrawingStrategy {
   public get svm() {
     return this.sketchViewModel;
+  }
+
+  public override handleComplete(graphic: Graphic, mode: DrawingMode) {
+    super.handleComplete(graphic, mode);
   }
 }
 
@@ -28,8 +34,8 @@ describe('EsriTextDrawingStrategy', () => {
   let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let textSymbol: TextSymbol;
-  const callbackHandler = {
-    handle: () => {
+  const callbackHandler: {handle: DrawingCallbackHandler<'completeTextDrawing'>} = {
+    handle(_1: Graphic | undefined, _2: DrawingMode, _3: string | undefined) {
       return undefined;
     },
   };
@@ -53,7 +59,7 @@ describe('EsriTextDrawingStrategy', () => {
   describe('cancellation', () => {
     it('does not fire the callback handler on cancel', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
-      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, () => callbackHandler.handle(), dialog);
+      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
 
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
@@ -65,7 +71,7 @@ describe('EsriTextDrawingStrategy', () => {
   describe('completion', () => {
     it('fires the callback handler on completion after the dialog is confirmed', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
-      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, () => callbackHandler.handle(), dialog);
+      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
       const graphic = new Graphic({
         geometry: new Point({
           spatialReference: {wkid: 2056},
@@ -86,7 +92,7 @@ describe('EsriTextDrawingStrategy', () => {
 
     it('sets the label on the graphic to the input from the dialog', () => {
       const expectedText = 'Rivendell best Lego Set';
-      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, () => callbackHandler.handle(), dialog);
+      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
       const graphic = new Graphic({
         geometry: new Point({
           spatialReference: {wkid: 2056},
@@ -106,7 +112,7 @@ describe('EsriTextDrawingStrategy', () => {
     });
 
     it('calls completeEditing on completion for editing drawings', () => {
-      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, () => callbackHandler.handle(), dialog);
+      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- spy on private method of prototype
       const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
       const graphic = new Graphic({
@@ -127,20 +133,30 @@ describe('EsriTextDrawingStrategy', () => {
 
   describe('mode', () => {
     it('sets mode to click', () => {
-      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, () => callbackHandler.handle(), dialog);
+      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
       const spy = spyOn(strategy.svm, 'create');
 
       strategy.start();
 
       expect(spy).toHaveBeenCalledOnceWith('point', {mode: 'click'});
     });
-    it('sets mode to update', () => {
-      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, () => callbackHandler.handle(), dialog);
-      const spy = spyOn(strategy.svm, 'update');
+
+    it('sets mode to update and completes without dialog', () => {
+      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const dialogSpy = spyOn(dialog, 'open');
+      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
+      const svmSpy = spyOn(strategy.svm, 'update');
       const graphic = new Graphic();
+      const mockLabelText = 'new text';
       strategy.edit(graphic);
 
-      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
+      expect(svmSpy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
+      strategy.updateInternals(undefined, mockLabelText);
+
+      strategy.handleComplete(graphic, 'edit');
+
+      expect(dialogSpy).not.toHaveBeenCalled();
+      expect(callbackSpy).toHaveBeenCalledWith(graphic, 'edit', mockLabelText);
     });
   });
 });

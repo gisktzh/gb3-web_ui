@@ -26,6 +26,7 @@ import LineSymbol3D from '@arcgis/core/symbols/LineSymbol3D';
 import PolygonSymbol3D from '@arcgis/core/symbols/PolygonSymbol3D';
 import MeshSymbol3D from '@arcgis/core/symbols/MeshSymbol3D';
 import LabelSymbol3D from '@arcgis/core/symbols/LabelSymbol3D';
+import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.constants';
 
 describe('EsriSymbolToStyleRepresentationUtils', () => {
   it('returns a Gb3PointStyle for a simple-marker symbol', () => {
@@ -131,6 +132,17 @@ describe('EsriSymbolToStyleRepresentationUtils', () => {
     expect(actual.type).toEqual('symbol');
     expect((actual as Gb3SymbolStyle).symbolSize).toEqual(mockSymbolSize);
     expect((actual as Gb3SymbolStyle).symbolRotation).toEqual(mockSymbolRotation);
+    expect((actual as Gb3SymbolStyle).symbolDefinition).toEqual(undefined);
+  });
+
+  it('returns a Gb3SymbolStyle for a WebStyle drawing symbol with default size and rotation', () => {
+    const mockSymbol = new WebStyleSymbol();
+
+    const actual = EsriSymbolToStyleRepresentationUtils.convert(mockSymbol);
+
+    expect(actual.type).toEqual('symbol');
+    expect((actual as Gb3SymbolStyle).symbolSize).toEqual(SymbolStyleConstants.DEFAULT_SYMBOL_SIZE);
+    expect((actual as Gb3SymbolStyle).symbolRotation).toEqual(SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION);
     expect((actual as Gb3SymbolStyle).symbolDefinition).toEqual(undefined);
   });
 

@@ -1,5 +1,4 @@
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -40,7 +39,7 @@ class EsriSymbolDrawingStrategyWrapper extends EsriSymbolDrawingStrategy {
 }
 
 describe('EsriSymbolDrawingStrategy', () => {
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   const callbackHandler: {handle: DrawingCallbackHandler<'completeSymbolDrawing', EsriMapDrawingSymbol>} = {
     handle(_1: Graphic | undefined, _2: DrawingMode, _3?: EsriMapDrawingSymbol, _4?: number, _5?: number) {
@@ -60,11 +59,11 @@ describe('EsriSymbolDrawingStrategy', () => {
     });
     dialog = TestBed.inject(MatDialog);
 
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
   });
 
   it('should not attempt to add anything when the initial dialog was closed without a value', fakeAsync(() => {

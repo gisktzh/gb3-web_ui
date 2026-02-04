@@ -389,6 +389,7 @@ export class EsriToolService implements ToolService, OnDestroy {
         }
       },
     );
+
     this.esriMapViewService.mapView.addHandles(handle, HANDLE_GROUP_KEY);
   }
 
@@ -407,10 +408,6 @@ export class EsriToolService implements ToolService, OnDestroy {
   private setToolStrategyForEditingFeature(graphic: Graphic) {
     if (!hasNonNullishProperty(graphic, 'geometry')) {
       throw new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten');
-    }
-
-    if (!hasNonNullishProperty(graphic, 'layer')) {
-      throw new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.');
     }
 
     const tool: SupportedEsriTool = (graphic.getAttribute('__tool') as SupportedEsriTool) ?? graphic.geometry.type;
@@ -449,7 +446,8 @@ export class EsriToolService implements ToolService, OnDestroy {
         break;
     }
 
-    const layerId = String(graphic.layer.id);
+    // Since this is a private method and the caller already checks for the layer to be non-nullish, we can expect it existing.
+    const layerId = String(graphic.layer!.id);
     if (layerId.includes(UserDrawingLayer.Drawings)) {
       this.setDrawingStrategy(drawingType, graphic.layer as GraphicsLayer);
     } else if (layerId.includes(UserDrawingLayer.Measurements)) {
