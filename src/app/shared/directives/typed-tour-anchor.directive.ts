@@ -1,6 +1,7 @@
-import {Directive, Input, OnInit} from '@angular/core';
+import {Directive, input, Input, OnInit} from '@angular/core';
 import {TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
 import {OnboardingGuideAnchor} from '../../onboarding-guide/types/onboarding-guide-anchor.type';
+import {SIGNAL} from '@angular/core/primitives/signals';
 
 /**
  * An extension of the TourAnchor directive of the ngx-ui-tour package which forces the usage of anchors that are defined in the
@@ -11,7 +12,7 @@ export class TypedTourAnchorDirective extends TourAnchorMatMenuDirective impleme
   @Input() public typedTourAnchor!: OnboardingGuideAnchor;
 
   override ngOnInit() {
-    this.tourAnchor = this.typedTourAnchor;
+    this.tourAnchor[SIGNAL].value = this.typedTourAnchor;
     super.ngOnInit();
   }
 }

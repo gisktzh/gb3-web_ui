@@ -31,6 +31,7 @@ import {AppComponent} from './app/app.component';
 import {AuthModule} from './app/auth/auth.module';
 import {EsriDrawingSymbolsService} from './app/map/services/esri-services/esri-drawing-symbols.service';
 import {provideStoreDevtools} from '@ngrx/store-devtools';
+import {provideUiTour} from 'ngx-ui-tour-md-menu';
 
 if (environment.production) {
   enableProdMode();
@@ -64,5 +65,6 @@ bootstrapApplication(AppComponent, {
     provideRouterStore(),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
+    provideUiTour(),
   ],
 }).catch((err) => console.error(err));
