@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {Component, inject, input, output} from '@angular/core';
 import {ExpandableListItemComponent} from 'src/app/shared/components/expandable-list-item/expandable-list-item.component';
 import {DrawingSymbolsCollectionComponent} from './drawing-symbols-collection/drawing-symbols-collection.component';
 import {SliderEditComponent} from '../drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
@@ -15,39 +15,16 @@ import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.consta
   imports: [DrawingSymbolsCollectionComponent, ExpandableListItemComponent, SliderEditComponent, MatAccordion],
 })
 export class DrawingSymbolsComponent {
-  @Input() public groupName: string = '';
-  @Input() public fullHeight: boolean = false;
+  public readonly groupName = input<string>('');
+  public readonly fullHeight = input<boolean>(false);
+  public readonly symbolValue = input<DrawingSymbolDefinition | undefined>(undefined);
+  public readonly sizeValue = input<number>(SymbolStyleConstants.DEFAULT_SYMBOL_SIZE);
+  public readonly rotationValue = input<number>(0);
 
-  private internallSymbol: DrawingSymbolDefinition | undefined = undefined;
-  @Input()
-  public set symbolValue(value: DrawingSymbolDefinition | undefined) {
-    this.internallSymbol = value;
-  }
-  public get symbolValue() {
-    return this.internallSymbol;
-  }
+  public readonly symbolChange = output<DrawingSymbolDefinition>();
+  public readonly sizeChange = output<number>();
+  public readonly rotationChange = output<number>();
 
-  private internalSize: number = SymbolStyleConstants.DEFAULT_SYMBOL_SIZE;
-  @Input()
-  public set sizeValue(value: number) {
-    this.internalSize = value;
-  }
-  public get sizeValue() {
-    return this.internalSize;
-  }
-
-  private internalRotation: number = 0;
-  @Input()
-  public set rotationValue(value: number) {
-    this.internalRotation = value;
-  }
-  public get rotationValue() {
-    return this.internalRotation;
-  }
-
-  @Output() public readonly symbolChange = new EventEmitter<DrawingSymbolDefinition>();
-  @Output() public readonly sizeChange = new EventEmitter<number>();
-  @Output() public readonly rotationChange = new EventEmitter<number>();
   private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   public get collections() {
@@ -55,20 +32,5 @@ export class DrawingSymbolsComponent {
       id,
       ...collectionInfo,
     }));
-  }
-
-  public onSymbolChange(value: DrawingSymbolDefinition) {
-    this.internallSymbol = value;
-    this.symbolChange.emit(value);
-  }
-
-  public onSizeChange(value: number) {
-    this.internalSize = value;
-    this.sizeChange.emit(value);
-  }
-
-  public onRotationChange(value: number) {
-    this.internalRotation = value;
-    this.rotationChange.emit(value);
   }
 }

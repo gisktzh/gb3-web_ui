@@ -1,20 +1,20 @@
 <slider-edit
-  (updateSliderEvent)="onSizeChange($event)"
-  [sliderValue]="sizeValue"
+  (updateSliderEvent)="sizeChange.emit($event)"
+  [sliderValue]="sizeValue()"
   [min]="1"
   [max]="50"
   [step]="1"
-  title="Grösse"
+  title="Size"
 ></slider-edit>
 <slider-edit
-  (updateSliderEvent)="onRotationChange($event)"
-  [sliderValue]="rotationValue"
+  (updateSliderEvent)="rotationChange.emit($event)"
+  [sliderValue]="rotationValue()"
   [min]="0"
   [max]="360"
   [step]="1"
   title="Rotation"
 ></slider-edit>
-<div class="symbols-list" [class.symbols-list--full-height]="fullHeight">
+<div class="symbols-list" [class.symbols-list--full-height]="fullHeight()">
   <mat-accordion class="symbol-list__collections-container">
     @for (collection of this.collections; track $index) {
       <expandable-list-item
@@ -22,13 +22,13 @@
         [stickyHeader]="true"
         [noPadding]="true"
         [renderContentEagerly]="false"
-        [expanded]="!!symbolValue?.belongsToCollection(collection.id)"
+        [expanded]="!!symbolValue()?.belongsToCollection(collection.id)"
       >
         <drawing-symbols-collection
           [collectionId]="collection.id"
-          [groupName]="groupName"
-          [value]="symbolValue"
-          (valueChange)="onSymbolChange($event)"
+          [groupName]="groupName()"
+          [value]="symbolValue()"
+          (valueChange)="symbolChange.emit($event)"
         ></drawing-symbols-collection>
       </expandable-list-item>
     }
