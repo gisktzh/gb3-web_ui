@@ -72,7 +72,6 @@
   "devDependencies": {
     "@angular-eslint/schematics": "^21.0.0",
     "@angular-eslint/template-parser": "^21.0.0",
-    "@angular/build": "^21.0.4",
     "@eslint/js": "^9.19.0",
     "@ngrx/eslint-plugin": "^20.0.0",
     "@ngrx/schematics": "^21.0.0",
