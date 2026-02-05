@@ -13,9 +13,75 @@ import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {selectUserDrawingsVectorLayers} from '../selectors/user-drawings-vector-layers.selector';
 import {ExportFormat} from '../../../shared/enums/export-format.enum';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
+import {UserDrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
+import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
+import {UuidUtils} from 'src/app/shared/utils/uuid.utils';
 
 describe('ExportEffects', () => {
-  const mockDrawings: UserDrawingVectorLayers = {
+  const mockUuid = '4fce85dd-3e65-4b9d-851c-6a4b4d1db154'; // Chosen by fair dice roll
+
+  const mockDrawings: {drawings: Gb3StyledInternalDrawingRepresentation[]; measurements: Gb3StyledInternalDrawingRepresentation[]} = {
+    drawings: [
+      {
+        source: UserDrawingLayer.Drawings,
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: [
+            [0, 0],
+            [1, 1],
+          ],
+          srs: 2056,
+        },
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- necessary because of type
+          __id: 'test',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- necessary because of type
+          __tool: 'point',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- necessary because of type
+          __belongsTo: 'yes',
+          style: {
+            type: 'line',
+            strokeColor: '',
+            strokeOpacity: 0,
+            strokeWidth: 0,
+          },
+        },
+      },
+    ],
+    measurements: [
+      {
+        source: UserDrawingLayer.Measurements,
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: [
+            [0, 0],
+            [1, 1],
+          ],
+          srs: 2056,
+        },
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- necessary because of type
+          __id: '2',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- necessary because of type
+          __tool: 'point',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- necessary because of type
+          __belongsTo: 'yes',
+          style: {
+            type: 'line',
+            strokeColor: '',
+            strokeOpacity: 0,
+            strokeWidth: 0,
+          },
+        },
+      },
+    ],
+  };
+
+  const mockUserDrawingsVectorLayer: UserDrawingVectorLayers = {
     drawings: {
       type: 'Vector',
       geojson: {
@@ -25,8 +91,10 @@ describe('ExportEffects', () => {
             type: 'Feature',
             properties: {
               id: 'test',
-              style: 'style',
+              style: mockUuid,
               tool: 'point',
+              belongsTo: 'yes',
+              text: undefined,
             },
             geometry: {
               type: 'LineString',
@@ -38,7 +106,14 @@ describe('ExportEffects', () => {
           },
         ],
       },
-      styles: {},
+      styles: {
+        [mockUuid]: {
+          type: 'line',
+          strokeColor: '',
+          strokeOpacity: 0,
+          strokeWidth: 0,
+        },
+      },
     },
 
     measurements: {
@@ -50,8 +125,10 @@ describe('ExportEffects', () => {
             type: 'Feature',
             properties: {
               id: '2',
-              style: 'style2',
+              style: mockUuid,
               tool: 'point',
+              belongsTo: 'yes',
+              text: undefined,
             },
             geometry: {
               type: 'LineString',
@@ -63,7 +140,14 @@ describe('ExportEffects', () => {
           },
         ],
       },
-      styles: {},
+      styles: {
+        [mockUuid]: {
+          type: 'line',
+          strokeColor: '',
+          strokeOpacity: 0,
+          strokeWidth: 0,
+        },
+      },
     },
   };
 
@@ -83,6 +167,7 @@ describe('ExportEffects', () => {
         provideMockStore(),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
       ],
     });
     effects = TestBed.inject(ExportEffects);
@@ -98,11 +183,12 @@ describe('ExportEffects', () => {
     it('dispatches ExportActions.setExportDrawingsRequestResponse()', (done: DoneFn) => {
       const expectedFormat: ExportFormat = ExportFormat.Geojson;
       const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(of(new Blob()));
+      spyOn(UuidUtils, 'createUuid').and.returnValue(mockUuid);
 
       store.overrideSelector(selectUserDrawingsVectorLayers, mockDrawings);
       actions$ = of(ExportActions.requestDrawingsExport({exportFormat: expectedFormat}));
       effects.requestExportDrawings$.subscribe((action) => {
-        expect(gb3ExportServiceSpy).toHaveBeenCalledOnceWith(expectedFormat, mockDrawings.drawings);
+        expect(gb3ExportServiceSpy).toHaveBeenCalledOnceWith(expectedFormat, mockUserDrawingsVectorLayer.drawings);
         expect(action).toEqual(ExportActions.setDrawingsExportRequestResponse());
         done();
       });
@@ -112,11 +198,12 @@ describe('ExportEffects', () => {
       const expectedFormat: ExportFormat = ExportFormat.Geojson;
       const expectedError = new Error('oh no! butterfingers');
       const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(throwError(() => expectedError));
+      spyOn(UuidUtils, 'createUuid').and.returnValue(mockUuid);
 
       store.overrideSelector(selectUserDrawingsVectorLayers, mockDrawings);
       actions$ = of(ExportActions.requestDrawingsExport({exportFormat: expectedFormat}));
       effects.requestExportDrawings$.subscribe((action) => {
-        expect(gb3ExportServiceSpy).toHaveBeenCalledOnceWith(expectedFormat, mockDrawings.drawings);
+        expect(gb3ExportServiceSpy).toHaveBeenCalledOnceWith(expectedFormat, mockUserDrawingsVectorLayer.drawings);
         expect(action).toEqual(ExportActions.setDrawingsExportRequestError({error: expectedError}));
         done();
       });

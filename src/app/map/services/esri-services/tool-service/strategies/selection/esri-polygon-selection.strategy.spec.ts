@@ -10,6 +10,7 @@ import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-do
 import {TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
+import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/esri-graphic-to-internal-drawing-representation.utils';
 
 class EsriPolygonSelectionStrategyWrapper extends EsriPolygonSelectionStrategy {
   public get svm() {
@@ -68,6 +69,7 @@ describe('EsriPolygonSelectionStrategy', () => {
   describe('start', () => {
     it('removes all existing layers on start', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
+      const layerRemoveAllSpy = spyOn(layer, 'removeAll');
       const strategy = new EsriPolygonSelectionStrategyWrapper(
         layer,
         mapView,
@@ -76,11 +78,12 @@ describe('EsriPolygonSelectionStrategy', () => {
         'polygon',
         2056,
       );
-      const layerRemoveAllSpy = spyOn(layer, 'removeAll');
 
       strategy.start();
       strategy.svm.emit('create', {state: 'start'});
-      expect(layerRemoveAllSpy).toHaveBeenCalledTimes(1);
+
+      // Called once by constructor and a second time during `start`.
+      expect(layerRemoveAllSpy).toHaveBeenCalledTimes(2);
       expect(callbackSpy).not.toHaveBeenCalled();
     });
   });
@@ -88,6 +91,7 @@ describe('EsriPolygonSelectionStrategy', () => {
   describe('completion', () => {
     it('fires the callback handler on completion', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
+      const converterSpy = spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convert');
       const strategy = new EsriPolygonSelectionStrategyWrapper(
         layer,
         mapView,
@@ -114,6 +118,7 @@ describe('EsriPolygonSelectionStrategy', () => {
       strategy.svm.emit('create', {state: 'complete', graphic});
 
       expect(callbackSpy).toHaveBeenCalledOnceWith(jasmine.objectContaining({type: 'polygon'}));
+      expect(converterSpy).toHaveBeenCalledWith(graphic, 2056, InternalDrawingLayer.Selection);
     });
   });
 

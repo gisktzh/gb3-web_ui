@@ -4,8 +4,7 @@ import Point from '@arcgis/core/geometry/Point';
 import {NumberUtils} from '../../../../../../shared/utils/number.utils';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import {SupportedEsriTool} from '../supported-esri-tool.type';
-
-export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrategy<Point, DrawingCallbackHandler['completeMeasurement']> {
+export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrategy<Point, 'completeMeasurement'> {
   protected readonly tool: SupportedEsriTool = 'point';
   private readonly labelSymbolization: TextSymbol;
 
@@ -14,7 +13,7 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
     mapView: __esri.MapView,
     pointSymbol: __esri.SimpleMarkerSymbol,
     labelSymbolization: __esri.TextSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['completeMeasurement'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler<'completeMeasurement'>,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 

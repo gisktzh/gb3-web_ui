@@ -35,6 +35,7 @@ import {TimeSliderParameterSource} from '../../../interfaces/topic.interface';
 export class Gb3PrintService extends Gb3ApiService {
   private readonly basemapConfigService = inject(BasemapConfigService);
   private readonly gb3TopicsService = inject(Gb3TopicsService);
+  private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
   protected readonly endpoint = 'print';
 
@@ -75,7 +76,13 @@ export class Gb3PrintService extends Gb3ApiService {
    * Creates a PrintCreation object from the given parameters used to create a print job on the print API
    */
   public createPrintCreation(printData: PrintData): PrintCreation {
-    const mapItems = this.createPrintCreationMapItems(printData.activeMapItems, printData.activeBasemapId, printData.drawings);
+    const mapItems = this.createPrintCreationMapItems(
+      printData.activeMapItems,
+      printData.activeBasemapId,
+      printData.drawings,
+      printData.mapScale,
+      printData.scale,
+    );
     const reportTitle = mapItems
       .map((mapItem) => (mapItem.type === 'WMS' && !mapItem.background ? mapItem.mapTitle : undefined))
       .filter((mapItemTitle): mapItemTitle is string => !!mapItemTitle)
@@ -121,8 +128,10 @@ export class Gb3PrintService extends Gb3ApiService {
     activeMapItems: ActiveMapItem[],
     activeBasemapId: string,
     drawings: Gb3StyledInternalDrawingRepresentation[],
+    mapScale: number,
+    printScale: number,
   ): PrintMapItem[] {
-    const printMapItems = this.convertActiveMapItemsToPrintMapItems(activeMapItems, drawings);
+    const printMapItems = this.convertActiveMapItemsToPrintMapItems(activeMapItems, drawings, mapScale, printScale);
     const printBasemapItem = this.convertActiveBaseMapToPrintMapItem(activeBasemapId);
     if (printBasemapItem) {
       printMapItems.push(printBasemapItem);
@@ -134,6 +143,8 @@ export class Gb3PrintService extends Gb3ApiService {
   private convertActiveMapItemsToPrintMapItems(
     activeMapItems: ActiveMapItem[],
     drawings: Gb3StyledInternalDrawingRepresentation[],
+    mapScale: number,
+    printScale: number,
   ): PrintMapItem[] {
     const mapItems: PrintMapItem[] = [];
     activeMapItems
@@ -141,7 +152,7 @@ export class Gb3PrintService extends Gb3ApiService {
       .forEach((activeMapItem) => {
         switch (activeMapItem.settings.type) {
           case 'drawing':
-            mapItems.push(this.createDrawingPrintItem(activeMapItem.settings, drawings));
+            mapItems.push(this.createDrawingPrintItem(activeMapItem.settings, drawings, printScale, mapScale));
             break;
           case 'gb2Wms':
             mapItems.push(this.createGb2WmsPrintItem(activeMapItem, activeMapItem.settings));
@@ -227,9 +238,15 @@ export class Gb3PrintService extends Gb3ApiService {
     };
   }
 
-  private createDrawingPrintItem(drawingSettings: DrawingLayerSettings, drawings: Gb3StyledInternalDrawingRepresentation[]): PrintMapItem {
+  private createDrawingPrintItem(
+    drawingSettings: DrawingLayerSettings,
+    drawings: Gb3StyledInternalDrawingRepresentation[],
+    printScale: number,
+    mapScale: number,
+  ): PrintMapItem {
     const drawingsToDraw = drawings.filter((drawing) => drawing.source === drawingSettings.userDrawingLayer);
-    return SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw);
+
+    return this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw, mapScale, printScale);
   }
 
   private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): PrintNew {

@@ -6,14 +6,14 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler, DrawingCallbackHandlerArgsMeasurement} from '../../interfaces/drawing-callback-handler.interface';
 import Point from '@arcgis/core/geometry/Point';
 import {SupportedEsriPolygonTool} from '../supported-esri-tool.type';
 import {LabelPositionCalculationFailed} from '../../../errors/esri.errors';
 
 const M2_TO_KM2_CONVERSION_THRESHOLD = 100_000;
 
-export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polygon, DrawingCallbackHandler['completeMeasurement']> {
+export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polygon, DrawingCallbackHandlerArgsMeasurement> {
   protected readonly tool: SupportedEsriPolygonTool;
   private readonly labelSymbolization: TextSymbol;
 
@@ -22,7 +22,7 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
     labelSymbolization: TextSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['completeMeasurement'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsMeasurement>,
     polygonType: SupportedEsriPolygonTool,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);

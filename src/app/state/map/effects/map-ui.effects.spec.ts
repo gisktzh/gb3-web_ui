@@ -8,9 +8,7 @@ import {MapUiActions} from '../actions/map-ui.actions';
 import {ShareLinkDialogComponent} from '../../../map/components/share-link-dialog/share-link-dialog.component';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {ShareLinkActions} from '../actions/share-link.actions';
-import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
-import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
-import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
+import {selectCurrentInternalShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-item.actions';
 import {selectMapAttributeFiltersItem} from '../selectors/map-attribute-filters-item.selector';
@@ -18,19 +16,46 @@ import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {SearchActions} from '../../app/actions/search.actions';
 import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {InternalShareLinkItem} from 'src/app/shared/interfaces/internal-share-link.interface';
+import {ShareLinkItem} from 'src/app/shared/interfaces/share-link.interface';
+import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 
 describe('MapUiEffects', () => {
   let actions$: Observable<Action>;
   let effects: MapUiEffects;
   let dialogService: jasmine.SpyObj<MatDialog>;
   let store: MockStore;
+  const internalShareLinkItem: InternalShareLinkItem = {
+    center: {x: 1, y: 1},
+    scale: 101,
+    basemapId: 'basemap',
+    content: [],
+    drawings: [],
+    measurements: [],
+  };
+
   const shareLinkItem: ShareLinkItem = {
     center: {x: 1, y: 1},
     scale: 101,
     basemapId: 'basemap',
     content: [],
-    drawings: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation([]),
-    measurements: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation([]),
+    drawings: {
+      type: 'Vector',
+      geojson: {
+        type: 'FeatureCollection',
+        features: [],
+      },
+      styles: {},
+    },
+    measurements: {
+      type: 'Vector',
+      geojson: {
+        type: 'FeatureCollection',
+        features: [],
+      },
+      styles: {},
+    },
   };
 
   beforeEach(() => {
@@ -38,7 +63,13 @@ describe('MapUiEffects', () => {
     const spyDialogService = jasmine.createSpyObj('MatDialog', ['open']);
 
     TestBed.configureTestingModule({
-      providers: [MapUiEffects, provideMockActions(() => actions$), provideMockStore(), {provide: MatDialog, useValue: spyDialogService}],
+      providers: [
+        MapUiEffects,
+        provideMockActions(() => actions$),
+        provideMockStore(),
+        {provide: MatDialog, useValue: spyDialogService},
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
+      ],
     });
 
     effects = TestBed.inject(MapUiEffects);
@@ -66,7 +97,7 @@ describe('MapUiEffects', () => {
 
   describe('createShareLinkAfterDialogOpen$', () => {
     it('dispatches ShareLinkActions.createItem()', (done: DoneFn) => {
-      store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
+      store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
 
       const expectedAction = ShareLinkActions.createItem({item: shareLinkItem});
       actions$ = of(MapUiActions.showShareLinkDialog());
@@ -80,7 +111,7 @@ describe('MapUiEffects', () => {
 
   describe('createShareLinkAfterBottomSheetOpen$', () => {
     it('dispatches ShareLinkActions.createItem() if the bottomSheetContent is share-link', (done: DoneFn) => {
-      store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
+      store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
       const expectedAction = ShareLinkActions.createItem({item: shareLinkItem});
 
       actions$ = of(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
@@ -91,7 +122,7 @@ describe('MapUiEffects', () => {
     });
 
     it('does not dispatch ShareLinkActions.createItem() if the bottomSheetContent is not share-link', fakeAsync(() => {
-      store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
+      store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
       let actualAction;
 
       actions$ = of(MapUiActions.showBottomSheet({bottomSheetContent: 'basemap'}));

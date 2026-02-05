@@ -1,0 +1,47 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
+
+.drawing-symbols-collection__grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+}
+
+.drawing-symbols-collection__grid__item {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  aspect-ratio: 1;
+  background-color: ktzh-variables.$zh-background-color;
+
+  &:hover {
+    opacity: 0.6;
+  }
+
+  &:has(input:checked) {
+    background-color: ktzh-variables.$zh-active-blue;
+  }
+}
+
+.drawing-symbols-collection__grid__thumbnail {
+  width: 100%;
+  height: 100%;
+  transform: scale(1.25);
+}
+
+.sr-only {
+  /* sr = Screen Reader. Courtesy of Tailwind. */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

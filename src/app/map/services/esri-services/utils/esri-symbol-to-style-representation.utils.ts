@@ -3,12 +3,13 @@ import {UnsupportedSymbolizationType} from '../errors/esri.errors';
 import {SymbolUnion} from '@arcgis/core/unionTypes';
 import {defaultSymbolization} from '../../../../shared/configs/symbolization.config';
 import {ColorUtils} from '../../../../shared/utils/color.utils';
+import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.constants';
 
 const CENTER_TOP_LABEL_ALIGNMENT = 'ct';
 const TEXT_LABEL = '[text]';
 
 export class EsriSymbolToStyleRepresentationUtils {
-  public static convert(symbol: SymbolUnion): Gb3StyleRepresentation {
+  public static convert(symbol: SymbolUnion, symbolSize?: number, symbolRotation?: number): Gb3StyleRepresentation {
     switch (symbol.type) {
       case 'simple-marker': {
         const defaultOutline = ColorUtils.convertSymbolizationColorToHex(defaultSymbolization.point.outline.color);
@@ -57,15 +58,21 @@ export class EsriSymbolToStyleRepresentationUtils {
           type: 'text',
         };
       }
+      case 'cim':
+      case 'web-style': {
+        return {
+          type: 'symbol',
+          symbolSize: symbolSize || SymbolStyleConstants.DEFAULT_SYMBOL_SIZE,
+          symbolRotation: symbolRotation || SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION,
+        };
+      }
       case 'picture-marker':
       case 'picture-fill':
       case 'point-3d':
       case 'line-3d':
       case 'polygon-3d':
-      case 'web-style':
       case 'mesh-3d':
       case 'label-3d':
-      case 'cim':
         throw new UnsupportedSymbolizationType(symbol.type);
     }
   }

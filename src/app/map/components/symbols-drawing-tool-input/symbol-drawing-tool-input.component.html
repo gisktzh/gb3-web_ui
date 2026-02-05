@@ -1,0 +1,17 @@
+<api-dialog-wrapper title="Symbolauswahl" (closeEvent)="close()">
+  <ng-container content>
+    <drawing-symbols
+      class="symbols--is-flex"
+      name="symbols"
+      [symbolValue]="drawingSymbolDefinition"
+      (symbolChange)="onSymbolChange($event)"
+      (sizeChange)="onSizeChange($event)"
+      (rotationChange)="onRotationChange($event)"
+    ></drawing-symbols>
+  </ng-container>
+  <ng-container actions>
+    <button mat-button [matDialogClose]="{drawingSymbolDefinition, size, rotation}" [disabled]="!drawingSymbolDefinition">
+      Hinzufügen
+    </button>
+  </ng-container>
+</api-dialog-wrapper>

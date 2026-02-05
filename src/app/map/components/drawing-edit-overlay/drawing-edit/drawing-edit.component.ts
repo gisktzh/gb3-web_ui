@@ -11,15 +11,21 @@ import {PointEditComponent} from './point-edit/point-edit.component';
 import {LineEditComponent} from './line-edit/line-edit.component';
 import {PolygonEditComponent} from './polygon-edit/polygon-edit.component';
 import {TextEditComponent} from './text-edit/text-edit.component';
+import {SymbolEditComponent} from './symbol-edit/symbol-edit.component';
+import {DrawingSymbolsService} from 'src/app/shared/interfaces/drawing-symbols-service.interface';
+import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
+import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
+import {isGb3SymbolStyle} from 'src/app/shared/type-guards/gb3-symbol-style.type-guard';
 
 @Component({
   selector: 'drawing-edit',
   templateUrl: './drawing-edit.component.html',
   styleUrl: './drawing-edit.component.scss',
-  imports: [PointEditComponent, LineEditComponent, PolygonEditComponent, TextEditComponent],
+  imports: [PointEditComponent, LineEditComponent, PolygonEditComponent, TextEditComponent, SymbolEditComponent],
 })
 export class DrawingEditComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
+  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   public selectedFeature?: Gb3StyledInternalDrawingRepresentation;
   public style?: Gb3StyleRepresentation;
@@ -35,8 +41,25 @@ export class DrawingEditComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public updateStyle(style: Gb3StyleRepresentation, labelText?: string) {
-    this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: this.selectedFeature!, labelText}));
+  public async updateStyle(style: Gb3StyleRepresentation, labelText?: string, drawingSymbolDefinition?: DrawingSymbolDefinition) {
+    if (drawingSymbolDefinition && isGb3SymbolStyle(style)) {
+      const mapDrawingSymbol = await this.drawingSymbolsService.convertToMapDrawingSymbol(
+        drawingSymbolDefinition,
+        style.symbolSize,
+        style.symbolRotation,
+      );
+
+      this.store.dispatch(
+        DrawingActions.updateDrawingStyles({
+          style,
+          drawing: this.selectedFeature!,
+          labelText,
+          mapDrawingSymbol,
+        }),
+      );
+    } else {
+      this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: this.selectedFeature!, labelText}));
+    }
   }
 
   private initSubscriptions() {
