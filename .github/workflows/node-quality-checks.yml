@@ -1,8 +1,5 @@
 name: Run Quality Checks
 
-permissions:
-  contents: read
-
 on:
   workflow_call:
     inputs:
@@ -16,18 +13,20 @@ on:
         description: 'Runner version to use for the job'
 
 env:
-  NODE_VERSION: '22'
+  NODE_VERSION: '24'
 
 jobs:
   lint:
     name: Run lint
     runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: 'npm'
           node-version: ${{ env.NODE_VERSION }}
@@ -40,18 +39,20 @@ jobs:
   tests:
     name: Run tests
     runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: 'npm'
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache coverage report
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: './coverage/gb3-frontend/lcov.info'
           key: ${{ inputs.cache_key }}

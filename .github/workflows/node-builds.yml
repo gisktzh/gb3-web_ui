@@ -17,7 +17,7 @@ on:
         type: choice
         description: 'Runner version to use for the job'
         options:
-          - ubuntu-22.04
+          - ubuntu-24.12
           - ubuntu-latest
 jobs:
   run-builds:
@@ -30,10 +30,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: 'npm'
           node-version: ${{ env.NODE_VERSION }}

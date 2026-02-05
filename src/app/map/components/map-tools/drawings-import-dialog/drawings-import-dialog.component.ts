@@ -23,6 +23,7 @@ export class DrawingsImportDialogComponent implements OnInit, OnDestroy {
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly loadingState$ = this.store.select(selectLoadingState);
+  protected fileUploadErrorMessage = '';
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -43,6 +44,7 @@ export class DrawingsImportDialogComponent implements OnInit, OnDestroy {
 
   public handleFileError(error: string) {
     this.store.dispatch(ImportActions.setFileValidationError({errorMessage: error}));
+    this.fileUploadErrorMessage = error;
   }
 
   private initSubscriptions() {

@@ -1,5 +1,9 @@
 import {Injectable} from '@angular/core';
-import {PrintFormValues, ToArrays} from 'src/app/shared/interfaces/print-form.interface';
+import {
+  PrintFormAvailableOptionsFromCapabilities,
+  PrintFormCapabilitiesCombination,
+  PrintFormValues,
+} from 'src/app/shared/interfaces/print-form.interface';
 import {PrintCapabilitiesCombination} from 'src/app/shared/models/gb3-api-generated.interfaces';
 
 @Injectable({
@@ -16,15 +20,17 @@ export class PrintSettingsOptionsProviderService {
   public filterOptions(
     formValue: PrintFormValues,
     allCombinations: PrintCapabilitiesCombination[],
-    checkPriority: (keyof PrintCapabilitiesCombination)[],
-  ): ToArrays<PrintCapabilitiesCombination> {
-    const available: ToArrays<PrintCapabilitiesCombination> = {
-      reportType: this.getUnqiueOptions<'reportType'>(allCombinations, 'reportType'),
-      reportOrientation: this.getUnqiueOptions<'reportOrientation'>(allCombinations, 'reportOrientation'),
+    checkPriority: (keyof PrintFormCapabilitiesCombination)[],
+  ): PrintFormAvailableOptionsFromCapabilities {
+    const allFormCombinations = this.mapAllCombinationsToFormFormat(allCombinations);
+
+    const available: PrintFormAvailableOptionsFromCapabilities = {
+      reportType: this.getUnqiueOptions<'report_type'>(allCombinations, 'report_type'),
+      reportOrientation: this.getUnqiueOptions<'report_orientation'>(allCombinations, 'report_orientation'),
       layout: this.getUnqiueOptions<'layout'>(allCombinations, 'layout'),
       dpi: this.getUnqiueOptions<'dpi'>(allCombinations, 'dpi'),
-      fileFormat: this.getUnqiueOptions<'fileFormat'>(allCombinations, 'fileFormat'),
-      showLegend: this.getUnqiueOptions<'showLegend'>(allCombinations, 'showLegend'),
+      fileFormat: this.getUnqiueOptions<'file_format'>(allCombinations, 'file_format'),
+      showLegend: this.getUnqiueOptions<'show_legend'>(allCombinations, 'show_legend'),
     };
 
     checkPriority.forEach((currentKey, i) => {
@@ -40,14 +46,24 @@ export class PrintSettingsOptionsProviderService {
       }
 
       for (const otherKey of otherKeys) {
-        // Explicitly casting to `any` since TS thinks the type of the items in the same array might magically change.
         available[otherKey] = available[otherKey]
-          .filter((v) => allCombinations.some((c) => c[currentKey] === selectedValue && c[otherKey] === v))
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Since we know it's the same (available[otherKey] = available[otherKey].filter - filter doesn't alter value types), but TS thinks that it sometimes isn't we need to go via any.
+          .filter((v) => allFormCombinations.some((c) => c[currentKey] === selectedValue && c[otherKey] === v))
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Since we know it's the same (available[otherKey] = available[otherKey].filter - filter doesn't alter value types), but TS thinks that it sometimes does, we need to go via any.
           .filter((v) => v !== undefined && v !== null) as any;
       }
     });
 
     return available;
+  }
+
+  private mapAllCombinationsToFormFormat(allCombinations: PrintCapabilitiesCombination[]): PrintFormCapabilitiesCombination[] {
+    return allCombinations.map((c) => ({
+      reportType: c.report_type,
+      reportOrientation: c.report_orientation,
+      layout: c.layout,
+      dpi: c.dpi,
+      fileFormat: c.file_format,
+      showLegend: c.show_legend,
+    }));
   }
 }
