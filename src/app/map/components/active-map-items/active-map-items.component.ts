@@ -1,4 +1,4 @@
-import {CdkDrag, CdkDragDrop, CdkDropList, ɵɵCdkScrollable, CdkDragHandle, CdkDragPlaceholder} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragDrop, CdkDropList, CdkDragHandle, CdkDragPlaceholder} from '@angular/cdk/drag-drop';
 import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
