@@ -29,7 +29,7 @@ build:
     - if: $CI_COMMIT_BRANCH == "main"
 
 deploy:
-  image: ubuntu:22.04
+  image: ubuntu:24.04
   stage: deploy
   tags: [docker]
   before_script:
