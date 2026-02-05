@@ -1,6 +1,6 @@
 /// <reference types="@angular/localize" />
 
-import {enableProdMode, ErrorHandler, importProvidersFrom, LOCALE_ID} from '@angular/core';
+import {enableProdMode, ErrorHandler, importProvidersFrom, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
 
 import {environment} from './environments/environment';
 import {provideRouter, Router, withInMemoryScrolling} from '@angular/router';
@@ -31,6 +31,7 @@ import {AppComponent} from './app/app.component';
 import {AuthModule} from './app/auth/auth.module';
 import {EsriDrawingSymbolsService} from './app/map/services/esri-services/esri-drawing-symbols.service';
 import {provideStoreDevtools} from '@ngrx/store-devtools';
+import {provideUiTour} from 'ngx-ui-tour-md-menu';
 
 if (environment.production) {
   enableProdMode();
@@ -38,6 +39,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZoneChangeDetection(),
     importProvidersFrom(AuthModule),
     {provide: ErrorHandler, deps: [Router, ErrorHandlerService, EmbeddedErrorHandlerService], useFactory: errorHandlerServiceFactory},
     {provide: MAP_SERVICE, useClass: EsriMapService},
@@ -63,5 +65,6 @@ bootstrapApplication(AppComponent, {
     provideRouterStore(),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
+    provideUiTour(),
   ],
 }).catch((err) => console.error(err));
