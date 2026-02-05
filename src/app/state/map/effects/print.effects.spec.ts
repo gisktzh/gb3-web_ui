@@ -15,7 +15,8 @@ import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {FileDownloadService} from '../../../shared/services/file-download-service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {MAP_SERVICE} from '../../../app.tokens';
+import {DRAWING_SYMBOLS_SERVICE, MAP_SERVICE} from '../../../app.tokens';
+import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 
 describe('PrintEffects', () => {
   const creationMock: PrintCreation = {
@@ -71,6 +72,7 @@ describe('PrintEffects', () => {
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],

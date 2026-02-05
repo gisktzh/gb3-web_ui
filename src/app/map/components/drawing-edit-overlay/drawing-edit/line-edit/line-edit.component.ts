@@ -12,7 +12,7 @@ import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.c
 export class LineEditComponent {
   @Input() public lineStyle!: Gb3LineStringStyle;
 
-  @Output() public updateStyleEvent = new EventEmitter<Gb3LineStringStyle>();
+  @Output() public readonly updateStyleEvent = new EventEmitter<Gb3LineStringStyle>();
 
   public updateValue(field: keyof LineStyleConfiguration, value: number | string) {
     this.lineStyle = {

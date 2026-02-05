@@ -6,6 +6,7 @@ import {
   Gb3StyleRepresentation,
 } from '../../shared/interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export interface ToolService {
   initializeMeasurement(measurementTool: Exclude<MeasurementTool, 'measure-elevation-profile'>): void;
@@ -16,9 +17,14 @@ export interface ToolService {
 
   initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool): void;
 
-  addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer): void;
+  addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer): Promise<void>;
 
-  updateDrawingStyles(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string): void;
+  updateDrawingStyles(
+    drawing: Gb3StyledInternalDrawingRepresentation,
+    style: Gb3StyleRepresentation,
+    labelText?: string,
+    mapDrawingSymbol?: MapDrawingSymbol,
+  ): Promise<void>;
 
   cancelTool(): void;
 }

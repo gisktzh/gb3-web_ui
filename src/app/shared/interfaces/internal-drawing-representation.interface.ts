@@ -5,9 +5,12 @@ import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {AbstractEsriDrawableToolStrategy} from '../../map/services/esri-services/tool-service/strategies/abstract-esri-drawable-tool.strategy';
 import {MapfishPrintStyleProperties} from '../models/mapfish-print-style-properties-generated.interface';
 import {SupportedEsriTool} from '../../map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
+import {DrawingSymbolDefinition} from './drawing-symbol/drawing-symbol-definition.interface';
+import {MapDrawingSymbol} from './map-drawing-symbol.interface';
 
 interface InternalDrawingRepresentation<T = Record<never, never>> extends Feature<SupportedGeometry, T> {
   labelText?: string;
+  mapDrawingSymbol?: MapDrawingSymbol;
   source: DrawingLayer;
   geometry: SupportedGeometry & HasSrs;
 }
@@ -18,7 +21,7 @@ interface InternalDrawingRepresentation<T = Record<never, never>> extends Featur
 export type UnstyledInternalDrawingRepresentation = InternalDrawingRepresentation;
 
 export interface InternalDrawingType {
-  type: 'point' | 'line' | 'polygon' | 'text';
+  type: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
 }
 
 export type LineStyleConfiguration = Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'>;
@@ -31,6 +34,12 @@ export type TextStyleConfiguration = Pick<
   MapfishPrintStyleProperties,
   'label' | 'fontSize' | 'fontColor' | 'fontFamily' | 'labelYOffset' | 'labelAlign' | 'haloColor' | 'haloRadius'
 >;
+
+export type DrawingSymbolStyleConfiguration = {
+  symbolSize: number;
+  symbolRotation: number;
+  symbolDefinition?: DrawingSymbolDefinition;
+};
 
 export interface Gb3LineStringStyle extends InternalDrawingType, LineStyleConfiguration {
   type: 'line';
@@ -48,7 +57,11 @@ export interface Gb3TextStyle extends InternalDrawingType, TextStyleConfiguratio
   type: 'text';
 }
 
-export type Gb3StyleRepresentation = Gb3TextStyle | Gb3PointStyle | Gb3LineStringStyle | Gb3PolygonStyle;
+export interface Gb3SymbolStyle extends InternalDrawingType, DrawingSymbolStyleConfiguration {
+  type: 'symbol';
+}
+
+export type Gb3StyleRepresentation = Gb3TextStyle | Gb3PointStyle | Gb3LineStringStyle | Gb3PolygonStyle | Gb3SymbolStyle;
 
 /**
  * An internal drawing representation that has the required properties for usage with the GB3 system.

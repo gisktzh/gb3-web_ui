@@ -23,6 +23,10 @@ export class DrawingEffects {
 
   private readonly toolService: ToolService;
 
+  constructor() {
+    this.toolService = this.mapService.getToolService();
+  }
+
   public clearSingleDrawingLayer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.removeActiveMapItem),
@@ -63,8 +67,8 @@ export class DrawingEffects {
     () => {
       return this.actions$.pipe(
         ofType(DrawingActions.updateDrawingStyles),
-        tap(({drawing, style, labelText}) => {
-          this.toolService.updateDrawingStyles(drawing, style, labelText);
+        tap(({drawing, style, labelText, mapDrawingSymbol}) => {
+          this.toolService.updateDrawingStyles(drawing, style, labelText, mapDrawingSymbol);
         }),
       );
     },
@@ -80,8 +84,4 @@ export class DrawingEffects {
       }),
     );
   });
-
-  constructor() {
-    this.toolService = this.mapService.getToolService();
-  }
 }
