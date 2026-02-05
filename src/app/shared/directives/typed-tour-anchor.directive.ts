@@ -1,4 +1,4 @@
-import {Directive, input, Input, OnInit} from '@angular/core';
+import {Directive, Input, OnInit} from '@angular/core';
 import {TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
 import {OnboardingGuideAnchor} from '../../onboarding-guide/types/onboarding-guide-anchor.type';
 import {SIGNAL} from '@angular/core/primitives/signals';
