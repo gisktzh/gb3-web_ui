@@ -10,11 +10,11 @@ variables:
   STAGE: staging
 
 build:
-  image: docker:28.5.2
+  image: docker:29.1.5
   stage: build
   tags: [docker]
   services:
-    - name: docker:28.5.2-dind
+    - name: docker:29.1.5-dind
       command:
         - /bin/sh
         - -c
