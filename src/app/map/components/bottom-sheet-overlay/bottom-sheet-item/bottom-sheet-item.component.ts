@@ -11,14 +11,14 @@ import {MatCard, MatCardHeader, MatCardContent} from '@angular/material/card';
 import {NgClass} from '@angular/common';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {ɵɵCdkScrollable} from '@angular/cdk/drag-drop';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
+import {CdkScrollable} from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'bottom-sheet-item',
   templateUrl: './bottom-sheet-item.component.html',
   styleUrls: ['./bottom-sheet-item.component.scss'],
-  imports: [MatCard, NgClass, MatCardHeader, MatIconButton, MatIcon, MatCardContent, ɵɵCdkScrollable, ResizeHandlerComponent],
+  imports: [MatCard, NgClass, MatCardHeader, MatIconButton, MatIcon, MatCardContent, CdkScrollable, ResizeHandlerComponent],
 })
 export class BottomSheetItemComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

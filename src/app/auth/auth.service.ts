@@ -41,6 +41,7 @@ export class AuthService {
     this.oauthService.loadDiscoveryDocumentAndTryLogin().then(async () => {
       this.registerIsAuthenticatedHandler();
       this.registerImpendingLogoutHandler();
+
       if (this.oauthService.state) {
         await this.redirect(this.oauthService.state);
       }
@@ -139,7 +140,7 @@ export class AuthService {
   private async getUserInfo(): Promise<string> {
     const userInfo = (await this.oauthService.loadUserProfile()) as Gb2UserInfo;
 
-    return userInfo.info.name;
+    return userInfo.info?.name;
   }
 
   private registerImpendingLogoutHandler() {

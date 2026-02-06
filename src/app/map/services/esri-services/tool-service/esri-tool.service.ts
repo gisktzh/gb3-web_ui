@@ -24,7 +24,6 @@ import {ConfigService} from '../../../../shared/services/config.service';
 import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
-import {DrawingCallbackHandler} from './interfaces/drawing-callback-handler.interface';
 import Graphic from '@arcgis/core/Graphic';
 import {
   Gb3StyledInternalDrawingRepresentation,
@@ -53,6 +52,9 @@ import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representatio
 import {DrawingMode} from './types/drawing-mode.type';
 import {hasNonNullishProperty} from '../type-guards/esri-nullish.type-guard';
 import {silentArcgisToGeoJSON} from '../utils/esri-transformer-wrapper.utils';
+import {EsriSymbolDrawingStrategy} from './strategies/drawing/esri-symbol-drawing.strategy';
+import {AbstractEsriDrawingStrategy} from './strategies/abstract-esri-drawing.strategy';
+import {EsriMapDrawingSymbol} from '../types/esri-map-drawing-symbol.type';
 
 export const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -73,7 +75,7 @@ export const HANDLE_GROUP_KEY = 'EsriToolService';
 @Injectable({
   providedIn: 'root',
 })
-export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackHandler {
+export class EsriToolService implements ToolService, OnDestroy {
   private readonly esriMapViewService = inject(EsriMapViewService);
   private readonly store = inject(Store);
   private readonly esriSymbolizationService = inject(EsriSymbolizationService);
@@ -107,30 +109,47 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     if (!drawingId) {
       return;
     }
+
     this.setToolStrategyForEditingFeature(graphic);
+
     // Open the panel only for drawings, not measurements or elevation profile, as their style is not currently editable
     if (String(graphic.layer.id).includes(UserDrawingLayer.Drawings)) {
       this.store.dispatch(DrawingActions.selectDrawing({drawingId}));
     }
+
     this.toolStrategy.edit(graphic);
   }
 
-  public updateDrawingStyles(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string) {
+  public async updateDrawingStyles(
+    drawing: Gb3StyledInternalDrawingRepresentation,
+    style: Gb3StyleRepresentation,
+    labelText?: string,
+    mapDrawingSymbol?: EsriMapDrawingSymbol,
+  ) {
     const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Drawing, drawing.source);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
-    if (!drawingLayer) {
+    if (!this.isGraphicsLayer(drawingLayer)) {
       return;
     }
 
-    const graphic = (drawingLayer as GraphicsLayer).graphics.find(
+    const graphic = drawingLayer.graphics.find(
       (existingGraphic) =>
         existingGraphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) ===
         drawing.properties[AbstractEsriDrawableToolStrategy.identifierFieldName],
     );
-    if (graphic) {
-      graphic.symbol = StyleRepresentationToEsriSymbolUtils.convert(style, labelText);
+
+    if (!graphic) {
+      return;
     }
+
+    // This check is for TS only, since updateDrawingStyle is technically only supposed to be called in a drawing context.
+    // However: If some other strategy decides to invoke this, we need to be a little defensive.
+    if (this.toolStrategy instanceof AbstractEsriDrawingStrategy) {
+      this.toolStrategy.updateInternals(style, labelText, mapDrawingSymbol);
+    }
+
+    graphic.symbol = await StyleRepresentationToEsriSymbolUtils.convert(style, labelText, mapDrawingSymbol);
   }
 
   public initializeDrawing(drawingTool: DrawingTool) {
@@ -153,16 +172,78 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     );
   }
 
-  public completeDrawing(graphic: Graphic, mode: DrawingMode, labelText?: string) {
+  public completeDrawing(graphic: Graphic, mode: DrawingMode) {
     switch (mode) {
       case 'add':
       case 'edit': {
         const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
           graphic,
+          this.configService.mapConfig.defaultMapConfig.srsId,
+          UserDrawingLayer.Drawings,
+        );
+
+        this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
+        break;
+      }
+      case 'delete': {
+        const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+        this.store.dispatch(DrawingActions.deleteDrawing({drawingId}));
+        break;
+      }
+    }
+    this.endDrawing();
+  }
+
+  public completeTextDrawing(graphic: Graphic, mode: DrawingMode, labelText: string) {
+    switch (mode) {
+      case 'add':
+      case 'edit': {
+        const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
+          graphic,
           labelText,
           this.configService.mapConfig.defaultMapConfig.srsId,
           UserDrawingLayer.Drawings,
         );
+
+        // Gently poke the map view into rerendering itself, thus also reliably render the new text graphic.
+        const mapView = this.esriMapViewService.mapView;
+        mapView.goTo(mapView.extent);
+
+        this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
+        break;
+      }
+      case 'delete': {
+        const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+        this.store.dispatch(DrawingActions.deleteDrawing({drawingId}));
+        break;
+      }
+    }
+    this.endDrawing();
+  }
+
+  public completeMapSymbolDrawing(
+    graphic: Graphic,
+    mode: DrawingMode,
+    mapDrawingSymbol: EsriMapDrawingSymbol,
+    symbolSize: number,
+    symbolRotation: number,
+  ) {
+    switch (mode) {
+      case 'add':
+      case 'edit': {
+        const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convertMapDrawingSymbol(
+          graphic,
+          mapDrawingSymbol,
+          symbolSize,
+          symbolRotation,
+          this.configService.mapConfig.defaultMapConfig.srsId,
+          UserDrawingLayer.Drawings,
+        );
+
+        // Gently poke the map view into rerendering itself, thus also reliably render the new symbol graphic.
+        const mapView = this.esriMapViewService.mapView;
+        mapView.goTo(mapView.extent);
+
         this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
         break;
       }
@@ -181,11 +262,10 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       case 'edit': {
         const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
           graphic,
-          undefined,
           this.configService.mapConfig.defaultMapConfig.srsId,
           UserDrawingLayer.Measurements,
         );
-        const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
           labelPoint,
           labelText,
           this.configService.mapConfig.defaultMapConfig.srsId,
@@ -213,12 +293,13 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
   }
 
-  public addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
+  public async addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
     const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Drawing, layerIdentifier);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (drawingLayer) {
-      const graphics = drawingsToAdd.map((drawing) => InternalDrawingRepresentationToEsriGraphicUtils.convert(drawing));
+      const graphics = await Promise.all(drawingsToAdd.map((drawing) => InternalDrawingRepresentationToEsriGraphicUtils.convert(drawing)));
+
       (drawingLayer as GraphicsLayer).addMany(graphics);
     } else {
       throw new DrawingLayerNotInitialized();
@@ -308,6 +389,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         }
       },
     );
+
     this.esriMapViewService.mapView.addHandles(handle, HANDLE_GROUP_KEY);
   }
 
@@ -328,13 +410,11 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       throw new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten');
     }
 
-    if (!hasNonNullishProperty(graphic, 'layer')) {
-      throw new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.');
-    }
-
     const tool: SupportedEsriTool = (graphic.getAttribute('__tool') as SupportedEsriTool) ?? graphic.geometry.type;
+
     let drawingType: DrawingTool;
     let measurementType: MeasurementTool;
+
     switch (tool) {
       case 'polyline':
         drawingType = 'draw-line';
@@ -353,12 +433,21 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         measurementType = 'measure-area';
         break;
       case 'point':
-        measurementType = 'measure-point';
         drawingType = 'draw-point';
+
+        // Since point could also be a symbol or text, we need to double-check.
+        if (graphic.symbol?.type === 'cim') {
+          drawingType = 'draw-symbol';
+        } else if (graphic.symbol?.type === 'text') {
+          drawingType = 'draw-text';
+        }
+
+        measurementType = 'measure-point';
         break;
     }
 
-    const layerId = String(graphic.layer.id);
+    // Since this is a private method and the caller already checks for the layer to be non-nullish, we can expect it existing.
+    const layerId = String(graphic.layer!.id);
     if (layerId.includes(UserDrawingLayer.Drawings)) {
       this.setDrawingStrategy(drawingType, graphic.layer as GraphicsLayer);
     } else if (layerId.includes(UserDrawingLayer.Measurements)) {
@@ -435,8 +524,8 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
     switch (drawingType) {
       case 'draw-point':
-        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, (geometry, mode, labelText) =>
-          this.completeDrawing(geometry, mode, labelText),
+        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, (geometry, mode) =>
+          this.completeDrawing(geometry, mode),
         );
         break;
       case 'draw-line':
@@ -476,7 +565,18 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           textStyle,
-          (geometry, mode, labelText) => (labelText ? this.completeDrawing(geometry, mode, labelText) : this.endDrawing()),
+          (geometry, mode, labelText) => (labelText ? this.completeTextDrawing(geometry, mode, labelText) : this.endDrawing()),
+          this.dialogService,
+        );
+        break;
+      case 'draw-symbol':
+        this.toolStrategy = new EsriSymbolDrawingStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          (geometry, mode, mapDrawingSymbol, symbolSize, symbolRotation) =>
+            mapDrawingSymbol && symbolSize !== undefined && symbolRotation !== undefined && geometry
+              ? this.completeMapSymbolDrawing(geometry, mode, mapDrawingSymbol, symbolSize, symbolRotation)
+              : this.endDrawing(),
           this.dialogService,
         );
         break;
@@ -556,5 +656,9 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         );
         break;
     }
+  }
+
+  private isGraphicsLayer(drawingLayer: __esri.Layer | undefined): drawingLayer is GraphicsLayer {
+    return !!drawingLayer && !!(drawingLayer as GraphicsLayer).graphics;
   }
 }

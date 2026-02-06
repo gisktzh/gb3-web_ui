@@ -141,10 +141,8 @@ export class ShareLinkEffects {
   public validateShareLinkItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.validateItem),
-      map(({item}) => {
-        const mapRestoreItem = this.shareLinkService.createMapRestoreItem(item);
-        return ShareLinkActions.completeValidation({mapRestoreItem});
-      }),
+      switchMap(async ({item}) => await this.shareLinkService.createMapRestoreItem(item)),
+      map((mapRestoreItem) => ShareLinkActions.completeValidation({mapRestoreItem})),
       catchError((error: unknown) => of(ShareLinkActions.setValidationError({error}))),
     );
   });

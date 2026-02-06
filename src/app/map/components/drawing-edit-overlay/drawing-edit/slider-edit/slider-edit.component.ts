@@ -17,7 +17,7 @@ export class SliderEditComponent {
   @Input() public title: string = '';
   @Input() public showLineWidth: boolean = false;
 
-  @Output() public updateSliderEvent = new EventEmitter<number>();
+  @Output() public readonly updateSliderEvent = new EventEmitter<number>();
 
   public updateSlider() {
     this.updateSliderEvent.emit(this.sliderValue);

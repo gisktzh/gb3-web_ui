@@ -139,7 +139,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     this.isMapDataCatalogueMinimized = isMinimized;
   }
 
-  @HostListener('window:keydown.esc', ['$event'])
+  @HostListener('window:keydown.esc')
   public closeSideDrawer() {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }

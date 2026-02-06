@@ -3,7 +3,12 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["jasmine", "twitter-for-web", "@angular/localize"]
+    "types": ["jasmine", "twitter-for-web", "@angular/localize"],
+    "paths": {
+      /* Following are mocked ES modules, so wew can spy on them being called. */
+      "@gisktzh/cim-symbol-to-svg": ["src/app/testing/mock-modules/cim-symbol-to-svg.utils.ts"],
+      "@arcgis/core/symbols/support/cimSymbolUtils": ["src/app/testing/mock-modules/esri-cim.utils.ts"]
+    }
   },
   "files": ["src/test.ts", "src/polyfills.ts"],
   "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]
