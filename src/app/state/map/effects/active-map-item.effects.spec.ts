@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -543,8 +543,16 @@ describe('ActiveMapItemEffects', () => {
       });
     });
 
-    it('dispatches MapConfigActions.clearInitialMapsConfig() and nothing else (if the map service is not yet initialized)', (done: DoneFn) => {
+    it('waits for map service initialization and then adds items and dispatches MapConfigActions.clearInitialMapsConfig()', (done: DoneFn) => {
+      const isInitialized$ = new BehaviorSubject<boolean>(false);
       store.overrideSelector(selectIsMapServiceInitialized, false);
+      store.select = jasmine.createSpy().and.callFake((selector: unknown) => {
+        if (selector === selectIsMapServiceInitialized) {
+          return isInitialized$;
+        }
+        return store.pipe();
+      });
+
       const expectedInitialActiveMapItems: ActiveMapItem[] = [
         createGb2WmsMapItemMock('initialItemOne'),
         createGb2WmsMapItemMock('initialItemTwo'),
@@ -557,11 +565,14 @@ describe('ActiveMapItemEffects', () => {
       actions$ = of(ActiveMapItemActions.addInitialMapItems({initialMapItems: expectedInitialActiveMapItems}));
       effects.addInitialMapItems$.subscribe((action) => {
         activeMapItemSpies.forEach((itemSpy) => {
-          expect(itemSpy.spy).not.toHaveBeenCalled();
+          expect(itemSpy.spy).toHaveBeenCalledOnceWith(mapService, itemSpy.expectedPosition);
         });
         expect(action).toEqual(MapConfigActions.clearInitialMapsConfig());
         done();
       });
+
+      // Simulate map service becoming initialized after a delay
+      isInitialized$.next(true);
     });
   });
 

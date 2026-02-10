@@ -2,7 +2,7 @@ import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
-import {filter, map, tap} from 'rxjs';
+import {filter, first, map, switchMap, tap} from 'rxjs';
 import {MapService} from '../../../map/interfaces/map.service';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
@@ -351,17 +351,18 @@ export class ActiveMapItemEffects {
   public addInitialMapItems$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.addInitialMapItems),
-      concatLatestFrom(() => [this.store.select(selectIsMapServiceInitialized)]),
-      map(([{initialMapItems}, isMapServiceInitialized]) => {
-        if (isMapServiceInitialized) {
-          // only add the map items to the map if the map service is initialized;
-          // otherwise this happens automatically during initialization
-          initialMapItems.forEach((initialMapItem, index) => {
-            initialMapItem.addToMap(this.mapService, index);
-          });
-        }
-        return MapConfigActions.clearInitialMapsConfig();
-      }),
+      switchMap(({initialMapItems}) =>
+        this.store.select(selectIsMapServiceInitialized).pipe(
+          filter((isInitialized) => isInitialized),
+          first(),
+          map(() => {
+            initialMapItems.forEach((initialMapItem, index) => {
+              initialMapItem.addToMap(this.mapService, index);
+            });
+            return MapConfigActions.clearInitialMapsConfig();
+          }),
+        ),
+      ),
     );
   });
 

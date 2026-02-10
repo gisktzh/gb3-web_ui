@@ -112,6 +112,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly rotation$ = this.store.select(selectRotation);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
+  private mapInitialized = false;
 
   constructor() {
     /**
@@ -179,6 +180,11 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public init(): void {
+    if (this.mapInitialized) {
+      return;
+    }
+    this.mapInitialized = true;
+
     this.store
       .select(selectMapConfigState)
       .pipe(
