@@ -1,5 +1,7 @@
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {MapConfigActions} from '../actions/map-config.actions';
+import {ActiveMapItemActions} from '../actions/active-map-item.actions';
+import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {MapConfigState} from '../states/map-config.state';
 import {initialState as defaultMapConfigState, reducer} from './map-config.reducer';
 
@@ -86,6 +88,34 @@ describe('MapConfig Reducer', () => {
       const state = reducer(defaultMapConfigState, action);
 
       expect(state.referenceDistanceInMeters).toEqual(expectedReferenceDistance);
+    });
+  });
+
+  describe('initialMaps clearing', () => {
+    const stateWithInitialMaps: MapConfigState = {
+      ...defaultMapConfigState,
+      initialMaps: ['map1', 'map2'],
+    };
+
+    it('clears initialMaps on addInitialMapItems', () => {
+      const action = ActiveMapItemActions.addInitialMapItems({initialMapItems: []});
+      const state = reducer(stateWithInitialMaps, action);
+
+      expect(state.initialMaps).toEqual([]);
+    });
+
+    it('clears initialMaps on setInitialMapsError', () => {
+      const action = LayerCatalogActions.setInitialMapsError({error: new Error('test')});
+      const state = reducer(stateWithInitialMaps, action);
+
+      expect(state.initialMaps).toEqual([]);
+    });
+
+    it('clears initialMaps on clearInitialMapsConfig', () => {
+      const action = MapConfigActions.clearInitialMapsConfig();
+      const state = reducer(stateWithInitialMaps, action);
+
+      expect(state.initialMaps).toEqual([]);
     });
   });
 });

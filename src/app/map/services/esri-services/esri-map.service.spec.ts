@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {EsriMapService} from './esri-map.service';
-import {provideMockStore} from '@ngrx/store/testing';
+import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 import {AuthModule} from '../../../auth/auth.module';
 import {AuthService} from '../../../auth/auth.service';
@@ -12,6 +12,11 @@ import {EsriMapViewService} from './esri-map-view.service';
 import {EsriToolService} from './tool-service/esri-tool.service';
 import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {FilterConfiguration} from '../../../shared/interfaces/topic.interface';
+import {selectMapConfigState} from 'src/app/state/map/reducers/map-config.reducer';
+import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
+import {Observable} from 'rxjs';
+import {selectAllItems} from 'src/app/state/map/selectors/active-map-items.selector';
+import {selectDrawings} from 'src/app/state/map/reducers/drawing.reducer';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: __esri.Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -57,6 +62,7 @@ describe('EsriMapService', () => {
   let service: EsriMapService;
   let mapMock: EsriMapMock;
   let mapViewService: EsriMapViewService = new EsriMapViewService();
+  let store: MockStore;
 
   beforeEach(() => {
     const toolServiceSpy = jasmine.createSpyObj<EsriToolService>(['initializeMeasurement']);
@@ -83,10 +89,29 @@ describe('EsriMapService', () => {
     mapMock = new EsriMapMock(internalLayers);
     mapViewService = TestBed.inject(EsriMapViewService);
     mapViewService.mapView = {map: mapMock} as __esri.MapView;
+    store = TestBed.inject(MockStore);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should not initialize twice', () => {
+    const storeSelectSpy = spyOn(store, 'select').and.returnValue(new Observable());
+
+    service.init();
+
+    expect(storeSelectSpy).toHaveBeenCalledTimes(4);
+    expect(storeSelectSpy).toHaveBeenCalledWith(selectMapConfigState);
+    expect(storeSelectSpy).toHaveBeenCalledWith(selectAllItems);
+    expect(storeSelectSpy).toHaveBeenCalledWith(selectDrawings);
+    expect(storeSelectSpy).toHaveBeenCalledWith(selectActiveTool);
+
+    storeSelectSpy.calls.reset();
+
+    service.init();
+
+    expect(storeSelectSpy).not.toHaveBeenCalled();
   });
 
   it('should add new items to the desired position', () => {
