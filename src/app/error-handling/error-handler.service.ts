@@ -21,8 +21,7 @@ export class ErrorHandlerService implements ErrorHandler {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- official handleError type from Angular
   public handleError(error: any) {
     // log errors to console for easier debugging in non-productive environments
-    if (!environment.production || window.location.hostname === 'dev.geo.zh.ch') {
-      //temporary fix for better log
+    if (!environment.production) {
       console.error(error);
 
       if (error instanceof Gb3RuntimeError && error.originalError) {

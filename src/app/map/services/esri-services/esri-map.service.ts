@@ -997,6 +997,9 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   private updateMapConfig() {
+    if (!this.transformationService.projectionOperatorLoaded) {
+      return;
+    }
     const {center, scale} = this.mapView;
     const {x, y} = this.transformationService.transform(center);
     this.store.dispatch(MapConfigActions.setMapExtent({x, y, scale}));
