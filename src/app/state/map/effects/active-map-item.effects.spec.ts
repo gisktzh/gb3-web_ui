@@ -522,7 +522,7 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('addInitialMapItems$', () => {
-    it('dispatches MapConfigActions.clearInitialMapsConfig() after adding all initial map items using the map service (if it is initialized)', (done: DoneFn) => {
+    it('adds all initial map items using the map service when it is initialized', (done: DoneFn) => {
       store.overrideSelector(selectIsMapServiceInitialized, true);
       const expectedInitialActiveMapItems: ActiveMapItem[] = [
         createGb2WmsMapItemMock('initialItemOne'),
@@ -534,16 +534,15 @@ describe('ActiveMapItemEffects', () => {
       }));
 
       actions$ = of(ActiveMapItemActions.addInitialMapItems({initialMapItems: expectedInitialActiveMapItems}));
-      effects.addInitialMapItems$.subscribe((action) => {
+      effects.addInitialMapItems$.subscribe(() => {
         activeMapItemSpies.forEach((itemSpy) => {
           expect(itemSpy.spy).toHaveBeenCalledOnceWith(mapService, itemSpy.expectedPosition);
         });
-        expect(action).toEqual(MapConfigActions.clearInitialMapsConfig());
         done();
       });
     });
 
-    it('waits for map service initialization and then adds items and dispatches MapConfigActions.clearInitialMapsConfig()', (done: DoneFn) => {
+    it('waits for map service initialization and then adds items', (done: DoneFn) => {
       const isInitialized$ = new BehaviorSubject<boolean>(false);
       store.overrideSelector(selectIsMapServiceInitialized, false);
       store.select = jasmine.createSpy().and.callFake((selector: unknown) => {
@@ -563,11 +562,10 @@ describe('ActiveMapItemEffects', () => {
       }));
 
       actions$ = of(ActiveMapItemActions.addInitialMapItems({initialMapItems: expectedInitialActiveMapItems}));
-      effects.addInitialMapItems$.subscribe((action) => {
+      effects.addInitialMapItems$.subscribe(() => {
         activeMapItemSpies.forEach((itemSpy) => {
           expect(itemSpy.spy).toHaveBeenCalledOnceWith(mapService, itemSpy.expectedPosition);
         });
-        expect(action).toEqual(MapConfigActions.clearInitialMapsConfig());
         done();
       });
 

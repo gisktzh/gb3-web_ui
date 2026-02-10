@@ -348,23 +348,25 @@ export class ActiveMapItemEffects {
     );
   });
 
-  public addInitialMapItems$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ActiveMapItemActions.addInitialMapItems),
-      switchMap(({initialMapItems}) =>
-        this.store.select(selectIsMapServiceInitialized).pipe(
-          filter((isInitialized) => isInitialized),
-          first(),
-          map(() => {
-            initialMapItems.forEach((initialMapItem, index) => {
-              initialMapItem.addToMap(this.mapService, index);
-            });
-            return MapConfigActions.clearInitialMapsConfig();
-          }),
+  public addInitialMapItems$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.addInitialMapItems),
+        switchMap(({initialMapItems}) =>
+          this.store.select(selectIsMapServiceInitialized).pipe(
+            filter((isInitialized) => isInitialized),
+            first(),
+            tap(() => {
+              initialMapItems.forEach((initialMapItem, index) => {
+                initialMapItem.addToMap(this.mapService, index);
+              });
+            }),
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+    {dispatch: false},
+  );
 
   public setTimeSliderExtent$ = createEffect(() => {
     return this.actions$.pipe(
