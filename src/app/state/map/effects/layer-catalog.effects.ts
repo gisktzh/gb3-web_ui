@@ -53,8 +53,9 @@ export class LayerCatalogEffects {
       // only proceed if both the layer catalog and initialMaps are available
       filter(([_, availableMaps, {initialMaps}]) => availableMaps.length > 0 && initialMaps.length > 0),
       // create an array of ActiveMapItems for each id in the initialMaps configuration that has a matching map in the layer catalog
-      // dispatch clearInitialMapsConfig immediately to prevent double-firing when both triggers arrive close together
-      switchMap(([_, availableMaps, {initialMaps}]) => {
+      // the map-config reducer reacts to both addInitialMapItems and setInitialMapsError by clearing initialMaps,
+      // preventing double-firing when both triggers arrive close together
+      map(([_, availableMaps, {initialMaps}]) => {
         try {
           const initialMapItems = initialMaps.map((initialMap) => {
             const actualAvailableMap = availableMaps.find((availableMap) => availableMap.id === initialMap);
@@ -64,9 +65,9 @@ export class LayerCatalogEffects {
             return ActiveMapItemFactory.createGb2WmsMapItem(actualAvailableMap);
           });
 
-          return [ActiveMapItemActions.addInitialMapItems({initialMapItems}), MapConfigActions.clearInitialMapsConfig()];
+          return ActiveMapItemActions.addInitialMapItems({initialMapItems});
         } catch (error: unknown) {
-          return [LayerCatalogActions.setInitialMapsError({error}), MapConfigActions.clearInitialMapsConfig()];
+          return LayerCatalogActions.setInitialMapsError({error});
         }
       }),
     );

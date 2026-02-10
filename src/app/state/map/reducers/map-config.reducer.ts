@@ -4,6 +4,8 @@ import {defaultMapConfig} from '../../../shared/configs/map.config';
 import {MapConfigState} from '../states/map-config.state';
 import {produce} from 'immer';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {ActiveMapItemActions} from '../actions/active-map-item.actions';
+import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 
 export const mapConfigFeatureKey = 'mapConfig';
 
@@ -94,6 +96,12 @@ export const mapConfigFeature = createFeature({
       return {...state, activeBasemapId};
     }),
     on(MapConfigActions.clearInitialMapsConfig, (state): MapConfigState => {
+      return {...state, initialMaps: []};
+    }),
+    on(ActiveMapItemActions.addInitialMapItems, (state): MapConfigState => {
+      return {...state, initialMaps: []};
+    }),
+    on(LayerCatalogActions.setInitialMapsError, (state): MapConfigState => {
       return {...state, initialMaps: []};
     }),
     on(MapConfigActions.setRotation, (state, {rotation}): MapConfigState => {

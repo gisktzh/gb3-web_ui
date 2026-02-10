@@ -92,7 +92,7 @@ describe('LayerCatalogEffects', () => {
   });
 
   describe('handleInitialMapLoad', () => {
-    it('dispatches ActiveMapItemActions.addInitialMapItems and MapConfigActions.clearInitialMapsConfig with the correct initial Maps', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.addInitialMapItems with the correct initial Maps', (done: DoneFn) => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
@@ -101,22 +101,15 @@ describe('LayerCatalogEffects', () => {
 
       store.overrideSelector(selectMaps, mapMock);
       store.overrideSelector(selectMapConfigState, mapConfigStateMock);
-      const expectedActions = [
-        ActiveMapItemActions.addInitialMapItems({initialMapItems: [activeMapItemMock]}),
-        MapConfigActions.clearInitialMapsConfig(),
-      ];
-      const receivedActions: Action[] = [];
+      const expectedAction = ActiveMapItemActions.addInitialMapItems({initialMapItems: [activeMapItemMock]});
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.handleInitialMapLoad.subscribe((action) => {
-        receivedActions.push(action);
-        if (receivedActions.length === expectedActions.length) {
-          expect(receivedActions).toEqual(expectedActions);
-          done();
-        }
+        expect(action).toEqual(expectedAction);
+        done();
       });
     });
 
-    it('dispatches LayerCatalogActions.setInitialMapsError and MapConfigActions.clearInitialMapsConfig if a map is not found', (done: DoneFn) => {
+    it('dispatches LayerCatalogActions.setInitialMapsError if a map is not found', (done: DoneFn) => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
@@ -125,15 +118,11 @@ describe('LayerCatalogEffects', () => {
       store.overrideSelector(selectMaps, mapMock);
       store.overrideSelector(selectMapConfigState, mapConfigStateMock);
       const expectedError = new InitialMapIdsParameterInvalid(mapConfigStateMock.initialMaps[0]);
-      const expectedActions = [LayerCatalogActions.setInitialMapsError({error: expectedError}), MapConfigActions.clearInitialMapsConfig()];
-      const receivedActions: Action[] = [];
+      const expectedAction = LayerCatalogActions.setInitialMapsError({error: expectedError});
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.handleInitialMapLoad.subscribe((action) => {
-        receivedActions.push(action);
-        if (receivedActions.length === expectedActions.length) {
-          expect(receivedActions).toEqual(expectedActions);
-          done();
-        }
+        expect(action).toEqual(expectedAction);
+        done();
       });
     });
 
@@ -146,20 +135,13 @@ describe('LayerCatalogEffects', () => {
 
       store.overrideSelector(selectMaps, mapMock);
       store.overrideSelector(selectMapConfigState, mapConfigStateMock);
-      const expectedActions = [
-        ActiveMapItemActions.addInitialMapItems({initialMapItems: [activeMapItemMock]}),
-        MapConfigActions.clearInitialMapsConfig(),
-      ];
-      const receivedActions: Action[] = [];
+      const expectedAction = ActiveMapItemActions.addInitialMapItems({initialMapItems: [activeMapItemMock]});
       actions$ = of(
         MapConfigActions.setInitialMapConfig({x: undefined, y: undefined, scale: undefined, basemapId: '', initialMaps: ['1']}),
       );
       effects.handleInitialMapLoad.subscribe((action) => {
-        receivedActions.push(action);
-        if (receivedActions.length === expectedActions.length) {
-          expect(receivedActions).toEqual(expectedActions);
-          done();
-        }
+        expect(action).toEqual(expectedAction);
+        done();
       });
     });
 
