@@ -63,6 +63,10 @@ export interface TimeService {
   /**
    * Returns an ISO 8601 range in milliseconds.
    */
+  replacePlaceholderDates: (dateString: string) => string;
+  /**
+   * Replaces placeholder dates like 'CURRENT_YEAR' and 'CURRENT_DAY' with the actual date string.
+   */
   getISORangeInMilliseconds: (range: string) => number;
   /**
    * Adds a range of 1 of the given unit to the date.

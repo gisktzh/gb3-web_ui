@@ -12,6 +12,7 @@
 import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
 import {ReportOrientation, ReportType} from '../interfaces/print.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
+import {DrawingSymbolDefinition} from '../interfaces/drawing-symbol/drawing-symbol-definition.interface';
 
 export interface BboxGeoshop {
   /** GeoJSON geometry object */
@@ -376,17 +377,17 @@ export interface PrintCapabilities {
 // Manually adjusted to fit typing.
 export interface PrintCapabilitiesCombination {
   /** Standard or mapset */
-  reportType: ReportType;
+  report_type: ReportType;
   /** Portrait or landscape */
-  reportOrientation: ReportOrientation;
+  report_orientation: ReportOrientation;
   /** Paper size, DIN A */
   layout: DocumentFormat;
   /** DPI of the printed map */
   dpi: DpiSetting;
   /** File type */
-  fileFormat: FileFormat;
+  file_format: FileFormat;
   /** If the legend should be rendered as well */
-  showLegend: boolean;
+  show_legend: boolean;
 }
 
 export interface PrintError {
@@ -1359,8 +1360,14 @@ export type VectorLayerStyles = {
     labelXOffset?: string;
     /** Label Y offset of the drawing */
     labelYOffset?: string;
-    /** Geometry type of the drawing (point, line, polygon or text) */
-    type?: 'point' | 'line' | 'polygon' | 'text';
+    /** Geometry type of the drawing (point, line, polygon, text or symbol) */
+    type?: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
+    /** Size of the given symbol */
+    symbolSize?: number;
+    /** Rotation of the given symbol */
+    symbolRotation?: number;
+    /** The given symbol as in JSON format */
+    drawingSymbolDefinition: ReturnType<DrawingSymbolDefinition['toJSON']>;
   };
 };
 

@@ -2,6 +2,7 @@ import {TestBed} from '@angular/core/testing';
 
 import {ONBOARDING_STEPS, OnboardingGuideService} from './onboarding-guide.service';
 import {OnboardingGuideConfig} from '../interfaces/onboarding-guide-config.interface';
+import {provideUiTour} from 'ngx-ui-tour-md-menu';
 
 const mockTour: OnboardingGuideConfig = {
   id: 'mock.tour',
@@ -24,7 +25,7 @@ describe('OnboardingGuideService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [OnboardingGuideService, {provide: ONBOARDING_STEPS, useValue: mockTour}],
+      providers: [provideUiTour(), OnboardingGuideService, {provide: ONBOARDING_STEPS, useValue: mockTour}],
     });
     service = TestBed.inject(OnboardingGuideService);
 

@@ -89,4 +89,24 @@ describe('DayjsService', () => {
       expect(dayjsService.createPartialFromString('2023-10-01', 'months')).toBe(9); // month is 0-indexed
     });
   });
+
+  describe('replacePlaceholderDates', () => {
+    it('should replace CURRENT_YEAR with the current year', () => {
+      const currentYear = new Date().getFullYear().toString();
+      const result = dayjsService.replacePlaceholderDates('CURRENT_YEAR');
+      expect(result).toBe(currentYear);
+    });
+
+    it('should replace CURRENT_DAY with the current date in YYYY-MM-DD format', () => {
+      const currentDate = new Date().toISOString().split('T')[0];
+      const result = dayjsService.replacePlaceholderDates('CURRENT_DAY');
+      expect(result).toBe(currentDate);
+    });
+
+    it('should return the original string if no placeholder is provided', () => {
+      const value = '2020-01-01';
+      const result = dayjsService.replacePlaceholderDates(value);
+      expect(result).toBe(value);
+    });
+  });
 });

@@ -2,13 +2,14 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {LayerCatalogEffects} from './layer-catalog.effects';
-import {TestBed} from '@angular/core/testing';
+import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {selectMaps} from '../selectors/maps.selector';
 import {selectMapConfigState} from '../reducers/map-config.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
 import {MapConfigState} from '../states/map-config.state';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
@@ -91,7 +92,7 @@ describe('LayerCatalogEffects', () => {
   });
 
   describe('handleInitialMapLoad', () => {
-    it('dispatches ActiveMapItemActions.addInitialMapItems with the correct inital Maps', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.addInitialMapItems with the correct initial Maps', (done: DoneFn) => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
@@ -112,7 +113,7 @@ describe('LayerCatalogEffects', () => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
-      const mapMock = [] as Map[];
+      const mapMock = [{id: '2'}] as Map[];
 
       store.overrideSelector(selectMaps, mapMock);
       store.overrideSelector(selectMapConfigState, mapConfigStateMock);
@@ -124,6 +125,54 @@ describe('LayerCatalogEffects', () => {
         done();
       });
     });
+
+    it('also reacts on MapConfigActions.setInitialMapConfig', (done: DoneFn) => {
+      const mapConfigStateMock: MapConfigState = {
+        initialMaps: ['1'],
+      } as MapConfigState;
+      const mapMock = [{id: '1'}] as Map[];
+      const activeMapItemMock = ActiveMapItemFactory.createGb2WmsMapItem(mapMock[0]);
+
+      store.overrideSelector(selectMaps, mapMock);
+      store.overrideSelector(selectMapConfigState, mapConfigStateMock);
+      const expectedAction = ActiveMapItemActions.addInitialMapItems({initialMapItems: [activeMapItemMock]});
+      actions$ = of(
+        MapConfigActions.setInitialMapConfig({x: undefined, y: undefined, scale: undefined, basemapId: '', initialMaps: ['1']}),
+      );
+      effects.handleInitialMapLoad.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('filters when availableMaps is empty', fakeAsync(() => {
+      const mapConfigStateMock: MapConfigState = {
+        initialMaps: ['1'],
+      } as MapConfigState;
+
+      store.overrideSelector(selectMaps, []);
+      store.overrideSelector(selectMapConfigState, mapConfigStateMock);
+      let actualAction;
+      actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
+      effects.handleInitialMapLoad.subscribe((action) => (actualAction = action));
+      flush();
+      expect(actualAction).toBeUndefined();
+    }));
+
+    it('filters when initialMaps is empty', fakeAsync(() => {
+      const mapConfigStateMock: MapConfigState = {
+        initialMaps: [] as string[],
+      } as MapConfigState;
+      const mapMock = [{id: '1'}] as Map[];
+
+      store.overrideSelector(selectMaps, mapMock);
+      store.overrideSelector(selectMapConfigState, mapConfigStateMock);
+      let actualAction;
+      actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
+      effects.handleInitialMapLoad.subscribe((action) => (actualAction = action));
+      flush();
+      expect(actualAction).toBeUndefined();
+    }));
   });
 
   describe('setErrorForInvalidInitialMapIds$', () => {

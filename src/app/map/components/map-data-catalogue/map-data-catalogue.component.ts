@@ -98,10 +98,10 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   /**
    * Dispatches an action that adds a favourite to the map.
    */
-  public addFavouriteToMap({id, content, drawings, measurements, baseConfig}: Favourite) {
+  public async addFavouriteToMap({id, content, drawings, measurements, baseConfig}: Favourite) {
     try {
       const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(content);
-      const {drawingsToAdd, drawingActiveMapItems} = this.favouritesService.getDrawingsForFavourite(drawings, measurements);
+      const {drawingsToAdd, drawingActiveMapItems} = await this.favouritesService.getDrawingsForFavourite(drawings, measurements);
 
       this.store.dispatch(
         ActiveMapItemActions.addFavourite({

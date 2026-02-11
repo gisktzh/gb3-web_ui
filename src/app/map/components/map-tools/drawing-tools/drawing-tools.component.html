@@ -77,6 +77,17 @@
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_text"></mat-icon>
   </button>
+  <button
+    (click)="this.toggleSymbolDrawing()"
+    [ngClass]="{'drawing-tools__button--active': activeTool === 'draw-symbol'}"
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+    [matTooltip]="tooltipText.symbolDrawing"
+    [attr.aria-label]="tooltipText.symbolDrawing"
+  >
+    <mat-icon svgIcon="ktzh_drawing_symbol_symbol"></mat-icon>
+  </button>
   <mat-divider class="drawing-tools__divider"></mat-divider>
   <button
     class="drawing-tools__button"

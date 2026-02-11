@@ -12,8 +12,12 @@ import {AbstractEsriDrawableToolStrategy} from '../tool-service/strategies/abstr
 import {GeometryUnion} from '@arcgis/core/unionTypes';
 
 export class InternalDrawingRepresentationToEsriGraphicUtils {
-  public static convert(drawing: Gb3StyledInternalDrawingRepresentation): Graphic {
-    const symbolization = StyleRepresentationToEsriSymbolUtils.convert(drawing.properties.style, drawing.labelText);
+  public static async convert(drawing: Gb3StyledInternalDrawingRepresentation): Promise<Graphic> {
+    const symbolization = await StyleRepresentationToEsriSymbolUtils.convert(
+      drawing.properties.style,
+      drawing.labelText,
+      drawing.mapDrawingSymbol,
+    );
     const geometry = InternalDrawingRepresentationToEsriGraphicUtils.convertGeoJsonToArcGIS(drawing.geometry);
     const attributes = {
       [AbstractEsriDrawableToolStrategy.identifierFieldName]: drawing.properties.__id,

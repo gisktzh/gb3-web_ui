@@ -4,17 +4,17 @@ stages:
 
 variables:
   DOCKER_HOST: tcp://docker:2375
-  DOCKER_TLS_CERTDIR: ""
-  CA_CERTIFICATE: "$CA_CERTIFICATE"
+  DOCKER_TLS_CERTDIR: ''
+  CA_CERTIFICATE: '$CA_CERTIFICATE'
   WORK_DIR: gb3-web_ui
   STAGE: staging
 
 build:
-  image: docker:28.5.2
+  image: docker:29.2.1
   stage: build
   tags: [docker]
   services:
-    - name: docker:28.5.2-dind
+    - name: docker:29.2.1-dind
       command:
         - /bin/sh
         - -c
@@ -29,7 +29,7 @@ build:
     - if: $CI_COMMIT_BRANCH == "main"
 
 deploy:
-  image: ubuntu:22.04
+  image: ubuntu:24.04
   stage: deploy
   tags: [docker]
   before_script:

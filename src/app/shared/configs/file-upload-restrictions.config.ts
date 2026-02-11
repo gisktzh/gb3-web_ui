@@ -1,7 +1,4 @@
-import {Restrictions} from '@uppy/core/lib/Restricter';
-
-export const FileUploadRestrictionsConfig: Partial<Restrictions> = {
-  maxNumberOfFiles: 1,
+export const FileUploadRestrictionsConfig = {
   maxFileSize: 10_000_000, // 10MB
   allowedFileTypes: ['.kml', '.json', '.geojson'],
 };

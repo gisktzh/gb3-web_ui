@@ -1,4 +1,4 @@
-import {CdkDrag, CdkDragDrop, CdkDropList, ɵɵCdkScrollable, CdkDragHandle, CdkDragPlaceholder} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragDrop, CdkDropList, CdkDragHandle, CdkDragPlaceholder} from '@angular/cdk/drag-drop';
 import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -25,6 +25,7 @@ import {NotificationIndicatorComponent} from '../notification-indicator/notifica
 import {MatAccordion} from '@angular/material/expansion';
 import {ActiveMapItemComponent} from './active-map-item/active-map-item.component';
 import {DragCursorDirective} from '../../../shared/directives/drag-cursor.directive';
+import {CdkScrollable} from '@angular/cdk/scrolling';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Um einen Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
@@ -55,7 +56,7 @@ const TOOLTIP_TEXT = {
     NotificationIndicatorComponent,
     MatAccordion,
     CdkDropList,
-    ɵɵCdkScrollable,
+    CdkScrollable,
     ActiveMapItemComponent,
     CdkDrag,
     DragCursorDirective,

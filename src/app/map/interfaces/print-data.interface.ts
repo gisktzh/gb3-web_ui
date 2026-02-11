@@ -13,6 +13,7 @@ export interface PrintData {
   showLegend: boolean;
   dpi: number;
   scale: number;
+  mapScale: number;
   rotation: number;
   mapCenter: Coordinate;
   activeBasemapId: string;

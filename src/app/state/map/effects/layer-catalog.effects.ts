@@ -1,9 +1,10 @@
-import {Injectable, inject} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {catchError, iif, map, of, switchMap} from 'rxjs';
+import {catchError, filter, iif, map, of, switchMap} from 'rxjs';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
 import {selectMaps} from '../selectors/maps.selector';
 import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../reducers/map-config.reducer';
@@ -46,22 +47,29 @@ export class LayerCatalogEffects {
 
   public handleInitialMapLoad = createEffect(() => {
     return this.actions$.pipe(
-      ofType(LayerCatalogActions.setLayerCatalog),
+      ofType(LayerCatalogActions.setLayerCatalog, MapConfigActions.setInitialMapConfig),
       // get latest maps only (so we don't have to loop through the whole catalog), add the current mapconfiguration
       concatLatestFrom(() => [this.store.select(selectMaps), this.store.select(selectMapConfigState)]),
+      // only proceed if both the layer catalog and initialMaps are available
+      filter(([_, availableMaps, {initialMaps}]) => availableMaps.length > 0 && initialMaps.length > 0),
       // create an array of ActiveMapItems for each id in the initialMaps configuration that has a matching map in the layer catalog
+      // the map-config reducer reacts to both addInitialMapItems and setInitialMapsError by clearing initialMaps,
+      // preventing double-firing when both triggers arrive close together
       map(([_, availableMaps, {initialMaps}]) => {
-        const initialMapItems = initialMaps.map((initialMap) => {
-          const actualAvailableMap = availableMaps.find((availableMap) => availableMap.id === initialMap);
-          if (!actualAvailableMap) {
-            throw new InitialMapIdsParameterInvalid(initialMap);
-          }
-          return ActiveMapItemFactory.createGb2WmsMapItem(actualAvailableMap);
-        });
+        try {
+          const initialMapItems = initialMaps.map((initialMap) => {
+            const actualAvailableMap = availableMaps.find((availableMap) => availableMap.id === initialMap);
+            if (!actualAvailableMap) {
+              throw new InitialMapIdsParameterInvalid(initialMap);
+            }
+            return ActiveMapItemFactory.createGb2WmsMapItem(actualAvailableMap);
+          });
 
-        return ActiveMapItemActions.addInitialMapItems({initialMapItems});
+          return ActiveMapItemActions.addInitialMapItems({initialMapItems});
+        } catch (error: unknown) {
+          return LayerCatalogActions.setInitialMapsError({error});
+        }
       }),
-      catchError((error: unknown) => of(LayerCatalogActions.setInitialMapsError({error}))),
     );
   });
 

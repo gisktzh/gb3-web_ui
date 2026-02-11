@@ -68,6 +68,7 @@ import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOpera
 import GraphicHit = __esri.GraphicHit;
 import {MapViewWithMap} from './types/esri-mapview-with-map.type';
 import {TIME_SERVICE} from '../../../app.tokens';
+import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -102,6 +103,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
   private isEditModeActive = false;
+  private isToolActive = false;
   private readonly printPreviewHandle$: BehaviorSubject<IHandle | null> = new BehaviorSubject<IHandle | null>(null);
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
@@ -110,6 +112,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly rotation$ = this.store.select(selectRotation);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
+  private mapInitialized = false;
 
   constructor() {
     /**
@@ -177,12 +180,17 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public init(): void {
+    if (this.mapInitialized) {
+      return;
+    }
+    this.mapInitialized = true;
+
     this.store
       .select(selectMapConfigState)
       .pipe(
         first(),
         withLatestFrom(this.store.select(selectAllItems), this.store.select(selectDrawings)),
-        tap(([config, activeMapItems, drawings]) => {
+        tap(async ([config, activeMapItems, drawings]) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId, activeBasemapId} = config;
@@ -192,15 +200,29 @@ export class EsriMapService implements MapService, OnDestroy {
           this.addBasemapSubscription();
           this.rotationReset();
           this.initDrawingLayers();
-          activeMapItems.forEach((mapItem, position) => {
-            mapItem.addToMap(this, position);
+          await Promise.all(
+            activeMapItems.map(async (mapItem, position) => {
+              mapItem.addToMap(this, position);
 
-            if (mapItem instanceof DrawingActiveMapItem) {
-              const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.userDrawingLayer);
-              this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.userDrawingLayer);
-            }
-          });
+              if (mapItem instanceof DrawingActiveMapItem) {
+                const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.userDrawingLayer);
+                return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.userDrawingLayer);
+              }
+            }),
+          );
           this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+        }),
+      )
+      .subscribe();
+
+    this.store
+      .select(selectActiveTool)
+      .pipe(
+        tap((value) => {
+          this.isToolActive = value !== undefined;
+          if (this.mapView.container) {
+            this.mapView.container.style.cursor = value === undefined ? 'default' : 'wait';
+          }
         }),
       )
       .subscribe();
@@ -213,7 +235,6 @@ export class EsriMapService implements MapService, OnDestroy {
     const graphicsLayer = new GraphicsLayer({
       id: mapItem.id,
     });
-
     const index = this.getIndexForPosition(position);
     this.mapView.map.add(graphicsLayer, index);
   }
@@ -851,6 +872,11 @@ export class EsriMapService implements MapService, OnDestroy {
       () => this.mapView,
       'click',
       async (event: __esri.ViewClickEvent) => {
+        // Tool handles all clicks, and as long as a tool is active, but hasn't fully initialized yet, we don't want any interaction on the map.
+        if (this.isToolActive) {
+          return;
+        }
+
         if (event.button === EsriMouseButtonType.LeftClick) {
           const {x, y} = this.transformationService.transform(event.mapPoint);
           if (this.isEditModeActive) {
@@ -971,6 +997,9 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   private updateMapConfig() {
+    if (!this.transformationService.projectionOperatorLoaded) {
+      return;
+    }
     const {center, scale} = this.mapView;
     const {x, y} = this.transformationService.transform(center);
     this.store.dispatch(MapConfigActions.setMapExtent({x, y, scale}));
