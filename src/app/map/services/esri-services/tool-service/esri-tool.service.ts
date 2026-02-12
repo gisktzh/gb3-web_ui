@@ -28,6 +28,7 @@ import Graphic from '@arcgis/core/Graphic';
 import {
   Gb3StyledInternalDrawingRepresentation,
   Gb3StyleRepresentation,
+  Gb3SymbolStyle,
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {DrawingLayerNotInitialized, EditFeatureInitializationFailed, NonEditableLayerType} from '../errors/esri.errors';
@@ -146,7 +147,11 @@ export class EsriToolService implements ToolService, OnDestroy {
     // This check is for TS only, since updateDrawingStyle is technically only supposed to be called in a drawing context.
     // However: If some other strategy decides to invoke this, we need to be a little defensive.
     if (this.toolStrategy instanceof AbstractEsriDrawingStrategy) {
-      this.toolStrategy.updateInternals(style, labelText, mapDrawingSymbol);
+      if (this.toolStrategy instanceof EsriSymbolDrawingStrategy) {
+        this.toolStrategy.updateInternals(style as Gb3SymbolStyle, mapDrawingSymbol);
+      } else {
+        this.toolStrategy.updateInternals(style, labelText, mapDrawingSymbol);
+      }
     }
 
     graphic.symbol = await StyleRepresentationToEsriSymbolUtils.convert(style, labelText, mapDrawingSymbol);
