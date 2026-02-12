@@ -94,8 +94,8 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       expect(actualStyle.externalGraphic).toEqual(mockSVGString);
       // This value has been pre-calculated.
-      expect(actualStyle.pointRadius).toBe(133.33333333333331);
-      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 133.33333333333331);
+      expect(actualStyle.pointRadius).toBe(48.75);
+      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 48.75);
     });
 
     it('should calculate the size of the icon correctly when rotating', () => {
