@@ -125,7 +125,7 @@ export class SymbolizationToGb3ConverterUtils {
   }
 
   private getSvgSize(originalSize: number, rotation: number, mapScale: number, printScale: number) {
-    let size = ((originalSize * (printScale / mapScale)) / Gb2Constants.PRINT_DPI) * MapConstants.DPI;
+    let size = ((originalSize * (mapScale / printScale)) / Gb2Constants.PRINT_DPI) * MapConstants.DPI;
     if (rotation !== 0) {
       // In this case, the given size is technically the hypothenuse. Since the icon is rotate, we need to calculate the _actual_ width and height.
       // Otherwise, the size in the print is skewed.
