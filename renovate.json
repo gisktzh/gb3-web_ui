@@ -49,7 +49,14 @@
     {
       "matchManagers": ["npm"],
       "groupName": "eslint",
-      "matchPackageNames": ["eslint", "eslint{/,}**", "@angular-eslint{/,}**", "@ngrx/eslint{/,}**", "@typescript-eslint{/,}**"]
+      "matchPackageNames": [
+        "eslint",
+        "eslint{/,}**",
+        "@eslint/{/,}**",
+        "@angular-eslint{/,}**",
+        "@ngrx/eslint{/,}**",
+        "@typescript-eslint{/,}**"
+      ]
     },
     {
       "matchManagers": ["npm"],
