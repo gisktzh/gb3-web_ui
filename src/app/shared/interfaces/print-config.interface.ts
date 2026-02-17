@@ -1,5 +1,6 @@
 import {DocumentFormat, DpiSetting, FileFormat} from './print-rules.interface';
 import {ReportOrientation, ReportType} from './print.interface';
+import {ReportSizing} from './report-sizing.interface';
 
 interface DefaultPrintSettings {
   reportType: ReportType;
@@ -14,10 +15,7 @@ interface DefaultPrintSettings {
 export interface PrintConfig {
   pixelSizes: {
     [K in keyof typeof DocumentFormat]: {
-      [R in ReportOrientation]: {
-        width: number;
-        height: number;
-      };
+      [R in ReportOrientation]: ReportSizing;
     };
   };
   defaultPrintValues: DefaultPrintSettings;

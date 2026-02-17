@@ -28,6 +28,9 @@ import {Gb2WmsSettings} from '../../../../map/models/implementations/gb2-wms.mod
 import {DrawingLayerSettings} from '../../../../map/models/implementations/drawing.model';
 import {Gb3TopicsService} from './gb3-topics.service';
 import {TimeSliderParameterSource} from '../../../interfaces/topic.interface';
+import {DocumentFormat} from 'src/app/shared/interfaces/print-rules.interface';
+import {printConfig} from 'src/app/shared/configs/print.config';
+import {ReportSizing} from 'src/app/shared/interfaces/report-sizing.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -82,6 +85,7 @@ export class Gb3PrintService extends Gb3ApiService {
       printData.drawings,
       printData.mapScale,
       printData.scale,
+      this.getReportSizing(printData.reportLayout, printData.reportOrientation),
     );
     const reportTitle = mapItems
       .map((mapItem) => (mapItem.type === 'WMS' && !mapItem.background ? mapItem.mapTitle : undefined))
@@ -108,6 +112,22 @@ export class Gb3PrintService extends Gb3ApiService {
     };
   }
 
+  public getReportSizing(layout: string | null | undefined, reportOrientation: ReportOrientation | null | undefined) {
+    const defaultDocumentFormat = DocumentFormat[printConfig.defaultPrintValues.documentFormat] as keyof typeof DocumentFormat;
+    let currentReportSizing = printConfig.pixelSizes[defaultDocumentFormat].landscape;
+
+    if (layout) {
+      const documentFormat = printConfig.pixelSizes[layout as keyof typeof DocumentFormat];
+      if (reportOrientation === 'landscape') {
+        currentReportSizing = documentFormat.landscape;
+      } else {
+        currentReportSizing = documentFormat.portrait;
+      }
+    }
+
+    return currentReportSizing;
+  }
+
   private createPrintLegendUrl(): string {
     return `${this.getFullEndpointUrl()}/legend`;
   }
@@ -130,8 +150,9 @@ export class Gb3PrintService extends Gb3ApiService {
     drawings: Gb3StyledInternalDrawingRepresentation[],
     mapScale: number,
     printScale: number,
+    reportSizing: ReportSizing,
   ): PrintMapItem[] {
-    const printMapItems = this.convertActiveMapItemsToPrintMapItems(activeMapItems, drawings, mapScale, printScale);
+    const printMapItems = this.convertActiveMapItemsToPrintMapItems(activeMapItems, drawings, mapScale, printScale, reportSizing);
     const printBasemapItem = this.convertActiveBaseMapToPrintMapItem(activeBasemapId);
     if (printBasemapItem) {
       printMapItems.push(printBasemapItem);
@@ -145,6 +166,7 @@ export class Gb3PrintService extends Gb3ApiService {
     drawings: Gb3StyledInternalDrawingRepresentation[],
     mapScale: number,
     printScale: number,
+    reportSizing: ReportSizing,
   ): PrintMapItem[] {
     const mapItems: PrintMapItem[] = [];
     activeMapItems
@@ -152,7 +174,7 @@ export class Gb3PrintService extends Gb3ApiService {
       .forEach((activeMapItem) => {
         switch (activeMapItem.settings.type) {
           case 'drawing':
-            mapItems.push(this.createDrawingPrintItem(activeMapItem.settings, drawings, printScale, mapScale));
+            mapItems.push(this.createDrawingPrintItem(activeMapItem.settings, drawings, printScale, mapScale, reportSizing));
             break;
           case 'gb2Wms':
             mapItems.push(this.createGb2WmsPrintItem(activeMapItem, activeMapItem.settings));
@@ -243,10 +265,16 @@ export class Gb3PrintService extends Gb3ApiService {
     drawings: Gb3StyledInternalDrawingRepresentation[],
     printScale: number,
     mapScale: number,
+    reportSizing: {width: number; height: number},
   ): PrintMapItem {
     const drawingsToDraw = drawings.filter((drawing) => drawing.source === drawingSettings.userDrawingLayer);
 
-    return this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw, mapScale, printScale);
+    return this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(
+      drawingsToDraw,
+      mapScale,
+      printScale,
+      reportSizing,
+    );
   }
 
   private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): PrintNew {

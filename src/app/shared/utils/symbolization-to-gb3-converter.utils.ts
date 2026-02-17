@@ -3,7 +3,6 @@ import {Gb3GeoJsonFeature, Gb3VectorLayer, Gb3VectorLayerStyle} from '../interfa
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {MapConstants} from '../constants/map.constants';
 import {UuidUtils} from './uuid.utils';
-import {Gb2Constants} from '../constants/gb2.constants';
 import {inject, Injectable} from '@angular/core';
 import {DrawingSymbolsService} from '../interfaces/drawing-symbols-service.interface';
 import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
@@ -11,6 +10,7 @@ import {DrawingSymbolDescriptor} from '../interfaces/drawing-symbol/drawing-symb
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {HasSrs} from '../interfaces/geojson-types-with-srs.interface';
 import {isGb3SymbolStyle} from '../type-guards/gb3-symbol-style.type-guard';
+import {ReportSizing} from '../interfaces/report-sizing.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +25,7 @@ export class SymbolizationToGb3ConverterUtils {
     features: Gb3StyledInternalDrawingRepresentation[],
     mapScale?: number,
     printScale?: number,
+    reportSizing?: ReportSizing,
   ): Gb3VectorLayer {
     const gb3GeoJsonFeatures: Gb3GeoJsonFeature[] = [];
     const allStyles: Gb3VectorLayerStyle = {};
@@ -44,23 +45,24 @@ export class SymbolizationToGb3ConverterUtils {
           type: 'symbol',
           graphicName: 'symbol',
           graphicOpacity: 1,
-          pointRadius: feature.properties.style.symbolSize,
+          pointRadius: feature.properties.style.symbolSize / 2, // Radius, not circumference, so halved.
           drawingSymbolDefinition: feature.mapDrawingSymbol?.drawingSymbolDefinition?.toJSON(),
           symbolSize: feature.properties.style.symbolSize,
           symbolRotation: feature.properties.style.symbolRotation,
         };
 
         // Since print scale is given, the user wants to print. We, therefore, also need to set the external Graphic.
-        if (printScale && mapScale) {
+        if (printScale && mapScale && reportSizing) {
           const iconSize = this.getSvgSize(
             feature.properties.style.symbolSize,
             feature.properties.style.symbolRotation,
             mapScale,
             printScale,
+            reportSizing,
           );
 
           style.externalGraphic = this.getSVGString(feature.mapDrawingSymbol.drawingSymbolDescriptor, iconSize);
-          style.pointRadius = iconSize;
+          style.pointRadius = iconSize / 2;
         }
       }
 
@@ -124,9 +126,9 @@ export class SymbolizationToGb3ConverterUtils {
     );
   }
 
-  private getSvgSize(originalSize: number, rotation: number, mapScale: number, printScale: number) {
-    // We need to  downscale the icon a little, because otherwise it's printed too large.
-    let size = originalSize * (mapScale / printScale) * (Gb2Constants.PRINT_DPI / MapConstants.DPI) * 0.65;
+  private getSvgSize(originalSize: number, rotation: number, mapScale: number, printScale: number, reportSizing: ReportSizing) {
+    const scale = printScale / mapScale;
+    let size = (originalSize / (reportSizing.width * scale)) * reportSizing.width;
 
     if (rotation !== 0) {
       // In this case, the given size is technically the hypothenuse. Since the icon is rotated, we need to calculate the _actual_ width and height of the bounding box.
