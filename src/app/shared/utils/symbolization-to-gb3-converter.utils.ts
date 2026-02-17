@@ -126,17 +126,23 @@ export class SymbolizationToGb3ConverterUtils {
     );
   }
 
-  private getSvgSize(originalSize: number, rotation: number, mapScale: number, printScale: number, reportSizing: ReportSizing) {
+  private getSvgSize(originalSize: number, desiredRotation: number, mapScale: number, printScale: number, reportSizing: ReportSizing) {
     const scale = printScale / mapScale;
     let size = (originalSize / (reportSizing.width * scale)) * reportSizing.width;
 
-    if (rotation !== 0) {
+    let angle = Math.abs(desiredRotation) % 45;
+    if (angle === 0 && desiredRotation !== 0) {
+      // Was a multiple of 45, so we default to 45.
+      angle = 45;
+    }
+
+    if (angle !== 0) {
       // In this case, the given size is technically the hypothenuse. Since the icon is rotated, we need to calculate the _actual_ width and height of the bounding box.
       // Otherwise, the size in the print is skewed.
 
       // Radians
       const alpha = 90 * (Math.PI / 180);
-      const beta = Math.abs(rotation) * (Math.PI / 180);
+      const beta = angle * (Math.PI / 180);
       const gamma = (90 - beta) * (Math.PI / 180);
 
       // We know all angles and one side, so we can calculate the rest of the sides
