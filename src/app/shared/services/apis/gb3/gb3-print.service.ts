@@ -30,6 +30,7 @@ import {Gb3TopicsService} from './gb3-topics.service';
 import {TimeSliderParameterSource} from '../../../interfaces/topic.interface';
 import {DocumentFormat} from 'src/app/shared/interfaces/print-rules.interface';
 import {printConfig} from 'src/app/shared/configs/print.config';
+import {ReportSizing} from 'src/app/shared/interfaces/report-sizing.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -149,7 +150,7 @@ export class Gb3PrintService extends Gb3ApiService {
     drawings: Gb3StyledInternalDrawingRepresentation[],
     mapScale: number,
     printScale: number,
-    reportSizing: {width: number; height: number},
+    reportSizing: ReportSizing,
   ): PrintMapItem[] {
     const printMapItems = this.convertActiveMapItemsToPrintMapItems(activeMapItems, drawings, mapScale, printScale, reportSizing);
     const printBasemapItem = this.convertActiveBaseMapToPrintMapItem(activeBasemapId);
@@ -165,7 +166,7 @@ export class Gb3PrintService extends Gb3ApiService {
     drawings: Gb3StyledInternalDrawingRepresentation[],
     mapScale: number,
     printScale: number,
-    reportSizing: {width: number; height: number},
+    reportSizing: ReportSizing,
   ): PrintMapItem[] {
     const mapItems: PrintMapItem[] = [];
     activeMapItems

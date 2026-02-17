@@ -10,6 +10,7 @@ import {DrawingSymbolDescriptor} from '../interfaces/drawing-symbol/drawing-symb
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {HasSrs} from '../interfaces/geojson-types-with-srs.interface';
 import {isGb3SymbolStyle} from '../type-guards/gb3-symbol-style.type-guard';
+import {ReportSizing} from '../interfaces/report-sizing.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,7 @@ export class SymbolizationToGb3ConverterUtils {
     features: Gb3StyledInternalDrawingRepresentation[],
     mapScale?: number,
     printScale?: number,
-    reportSizing?: {width: number; height: number},
+    reportSizing?: ReportSizing,
   ): Gb3VectorLayer {
     const gb3GeoJsonFeatures: Gb3GeoJsonFeature[] = [];
     const allStyles: Gb3VectorLayerStyle = {};
@@ -44,7 +45,7 @@ export class SymbolizationToGb3ConverterUtils {
           type: 'symbol',
           graphicName: 'symbol',
           graphicOpacity: 1,
-          pointRadius: feature.properties.style.symbolSize / 2, // Radius, not circumference, so halfed.
+          pointRadius: feature.properties.style.symbolSize / 2, // Radius, not circumference, so halved.
           drawingSymbolDefinition: feature.mapDrawingSymbol?.drawingSymbolDefinition?.toJSON(),
           symbolSize: feature.properties.style.symbolSize,
           symbolRotation: feature.properties.style.symbolRotation,
@@ -125,13 +126,7 @@ export class SymbolizationToGb3ConverterUtils {
     );
   }
 
-  private getSvgSize(
-    originalSize: number,
-    rotation: number,
-    mapScale: number,
-    printScale: number,
-    reportSizing: {width: number; height: number},
-  ) {
+  private getSvgSize(originalSize: number, rotation: number, mapScale: number, printScale: number, reportSizing: ReportSizing) {
     const scale = printScale / mapScale;
     let size = (originalSize / (reportSizing.width * scale)) * reportSizing.width;
 
