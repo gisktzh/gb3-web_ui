@@ -141,14 +141,11 @@ export class SymbolizationToGb3ConverterUtils {
       // Otherwise, the size in the print is skewed.
 
       // Radians
-      const alpha = 90 * (Math.PI / 180);
-      const beta = angle * (Math.PI / 180);
-      const gamma = (90 - beta) * (Math.PI / 180);
+      const alpha = (90 - angle) * (Math.PI / 180);
 
       // We know all angles and one side, so we can calculate the rest of the sides
-      const c = originalSize;
-      const a = (c * Math.sin(alpha)) / Math.sin(gamma);
-      const b = (a * Math.sin(beta)) / Math.sin(alpha);
+      const a = size * Math.sin(alpha);
+      const b = size * Math.cos(alpha);
 
       // Since there's always two similar triangles next to each other, we add both sides to get the full width of the encasing square.
       size = a + b;
