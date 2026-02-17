@@ -88,14 +88,17 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').and.returnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1);
+      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
+        width: 100,
+        height: 100,
+      });
 
       const actualStyle = actual.styles[actual.geojson.features[0].properties.style];
 
       expect(actualStyle.externalGraphic).toEqual(mockSVGString);
       // This value has been pre-calculated.
-      expect(actualStyle.pointRadius).toBe(48.75);
-      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 48.75);
+      expect(actualStyle.pointRadius).toBe(50);
+      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 100);
     });
 
     it('should calculate the size of the icon correctly when rotating', () => {
@@ -127,14 +130,17 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').and.returnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1);
+      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
+        width: 100,
+        height: 100,
+      });
 
       const actualStyle = actual.styles[actual.geojson.features[0].properties.style];
 
       expect(actualStyle.externalGraphic).toEqual(mockSVGString);
       // This value has been pre-calculated.
-      expect(actualStyle.pointRadius).toBe(170.7267179276847);
-      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 170.7267179276847);
+      expect(actualStyle.pointRadius).toBe(85.36335896384234);
+      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 85.36335896384234 * 2);
     });
   });
 

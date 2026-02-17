@@ -292,7 +292,7 @@ describe('Gb3PrintService', () => {
       const printData: PrintData = {
         reportType: 'standard',
         format: 'rom',
-        reportLayout: 'A38',
+        reportLayout: 'A3',
         reportOrientation: 'portrait',
         title: 'Asterix & Obelix',
         comment: 'Die Spinnen, die Römer',
