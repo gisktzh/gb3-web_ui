@@ -118,6 +118,7 @@ export class AuthService {
         tap((isAuthenticated) => {
           return void (async () => {
             let userName = undefined;
+            let userEmail = undefined;
 
             if (!isAuthenticated) {
               if (this.oauthService.getAccessToken()) {
@@ -127,20 +128,23 @@ export class AuthService {
               this.unregisterIsAuthenticatedCheckIntervalHandler();
             } else {
               this.registerIsAuthenticatedCheckIntervalHandler();
-              userName = await this.getUserInfo();
+              const userInfo = (await this.getUserInfo())?.info;
+
+              if (userInfo) {
+                userName = userInfo.name;
+                userEmail = userInfo.email;
+              }
             }
 
-            this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated, userName}));
+            this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated, userName, userEmail}));
           })();
         }),
       )
       .subscribe();
   }
 
-  private async getUserInfo(): Promise<string> {
-    const userInfo = (await this.oauthService.loadUserProfile()) as Gb2UserInfo;
-
-    return userInfo.info?.name;
+  private getUserInfo(): Promise<Gb2UserInfo> {
+    return this.oauthService.loadUserProfile() as Promise<Gb2UserInfo>;
   }
 
   private registerImpendingLogoutHandler() {
