@@ -185,9 +185,9 @@ describe('SymbolizationToGb3ConverterUtils', () => {
       expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 64.08563820557886 * 2);
     });
 
-    it('should calculate the size of the icon correctly when over-rotating by 20 + n * 45deg', () => {
+    it('should calculate the size of the icon correctly when over-rotating by 20 + n * 90deg', () => {
       const mockSymbolSize = 100;
-      const mockSymbolRotation = 20 + 3 * 45; // Yields maximum size difference.
+      const mockSymbolRotation = 20 + 3 * 90; // Yields maximum size difference.
       const mockSymbolDescriptor = new EsriDrawingSymbolDescriptor();
       const mockSVGString = 'someSVG';
 

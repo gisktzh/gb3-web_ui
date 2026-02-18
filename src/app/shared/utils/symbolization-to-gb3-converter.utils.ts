@@ -130,18 +130,28 @@ export class SymbolizationToGb3ConverterUtils {
     const scale = printScale / mapScale;
     let size = (originalSize / (reportSizing.width * scale)) * reportSizing.width;
 
-    let angle = Math.abs(desiredRotation) % 45;
-    if (angle === 0 && desiredRotation !== 0) {
-      // Was a multiple of 45, so we default to 45.
-      angle = 45;
-    }
+    const angle = Math.abs(desiredRotation) % 90;
 
     if (angle !== 0) {
-      // In this case, the given size is technically the hypothenuse. Since the icon is rotated, we need to calculate the _actual_ width and height of the bounding box.
-      // Otherwise, the size in the print is skewed.
+      // In this case, the given size is technically the hypothenuse. Since the symbol is rotated,
+      // we need to calculate the _actual_ width and height of the bounding box. Otherwise, the
+      // size in the print is skewed and likely too small. The case we have can be roughly visualized
+      // like this:
+      //
+      //  ┌───────────┐ Bounding Box
+      //  │    ⟋⟍    │
+      //  │  ⟋    ⟍  │
+      //  │⟋ Symbol ⟍│
+      //  │⟍        ⟋│
+      //  │  ⟍    ⟋  │
+      //  │    ⟍⟋    │
+      //  └───────────┘
+      //
+      // All four resulting triangles are similar, so we can calculate one and add up the two catheti.
+      // The result is both the width and height of the bounding box, since symbols are always square.
 
       // Radians
-      const alpha = (90 - angle) * (Math.PI / 180);
+      const alpha = angle * (Math.PI / 180);
 
       // We know all angles and one side, so we can calculate the rest of the sides
       const a = size * Math.sin(alpha);
