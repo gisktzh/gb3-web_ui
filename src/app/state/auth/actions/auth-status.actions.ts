@@ -8,7 +8,7 @@ export const AuthStatusActions = createActionGroup({
     'Set Initial Data Loaded': emptyProps(),
     'Perform Login': emptyProps(),
     'Perform Logout': props<{isForced: boolean}>(),
-    'Set Status': props<{isAuthenticated: boolean; userName?: string}>(),
+    'Set Status': props<{isAuthenticated: boolean; userName?: string; userEmail?: string}>(),
     'Set Restore Application Error': errorProps(),
     'Complete Restore Application': props<{mapRestoreItem: MapRestoreItem}>(),
   },

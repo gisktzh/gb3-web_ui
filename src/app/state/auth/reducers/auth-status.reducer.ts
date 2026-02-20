@@ -8,6 +8,7 @@ export const initialState: AuthStatusState = {
   isAuthenticationInitialized: false,
   isAuthenticated: false,
   userName: undefined,
+  userEmail: undefined,
 };
 
 export const authStatusFeature = createFeature({
@@ -26,11 +27,18 @@ export const authStatusFeature = createFeature({
     on(AuthStatusActions.performLogout, (state): AuthStatusState => {
       return state;
     }),
-    on(AuthStatusActions.setStatus, (state, {isAuthenticated, userName}): AuthStatusState => {
-      return {...state, isAuthenticated, userName};
+    on(AuthStatusActions.setStatus, (state, {isAuthenticated, userName, userEmail}): AuthStatusState => {
+      return {...state, isAuthenticated, userName, userEmail};
     }),
   ),
 });
 
-export const {name, reducer, selectAuthStatusState, selectIsAuthenticated, selectUserName, selectIsAuthenticationInitialized} =
-  authStatusFeature;
+export const {
+  name,
+  reducer,
+  selectAuthStatusState,
+  selectIsAuthenticated,
+  selectUserName,
+  selectUserEmail,
+  selectIsAuthenticationInitialized,
+} = authStatusFeature;
