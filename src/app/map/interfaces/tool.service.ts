@@ -5,7 +5,7 @@ import {
   Gb3StyledInternalDrawingRepresentation,
   Gb3StyleRepresentation,
 } from '../../shared/interfaces/internal-drawing-representation.interface';
-import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {DrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export interface ToolService {
@@ -17,7 +17,7 @@ export interface ToolService {
 
   initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool): void;
 
-  addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer): Promise<void>;
+  addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: DrawingLayer): Promise<void>;
 
   updateDrawingStyles(
     drawing: Gb3StyledInternalDrawingRepresentation,

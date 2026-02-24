@@ -12,7 +12,7 @@ import {EsriDefaultStrategy} from './strategies/esri-default.strategy';
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
-import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {DrawingLayer, DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
@@ -298,7 +298,7 @@ export class EsriToolService implements ToolService, OnDestroy {
     this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
   }
 
-  public async addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
+  public async addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: DrawingLayer) {
     const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Drawing, layerIdentifier);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 

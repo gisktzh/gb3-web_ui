@@ -28,6 +28,7 @@ import {SearchIndex} from '../../../shared/services/apis/search/interfaces/searc
 import {isGeometrySearchApiResultMatch} from '../../../shared/type-guards/search-api-result-match.type-guard';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {isGeometryWithSrs} from 'src/app/shared/type-guards/geometry-with-srs.type-guard';
 
 @Injectable()
 export class SearchEffects {
@@ -123,7 +124,7 @@ export class SearchEffects {
         filter(([, isMapViewReady]) => isMapViewReady),
         tap(([{searchResult}]) => {
           // only zoom to result if the geometry is available in the index
-          if (searchResult.geometry) {
+          if (searchResult.geometry && isGeometryWithSrs(searchResult.geometry)) {
             this.mapService.zoomToExtent(searchResult.geometry);
             this.mapDrawingService.drawSearchResultHighlight(searchResult.geometry);
           }

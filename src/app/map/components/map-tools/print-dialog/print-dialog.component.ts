@@ -32,6 +32,10 @@ import {MatCheckbox} from '@angular/material/checkbox';
 import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
 import {PrintSettingsOptionsProviderService} from 'src/app/map/services/print-settings-options-provider.service';
 import {PrintForm} from 'src/app/shared/interfaces/print-form.interface';
+import {MAP_SERVICE} from 'src/app/app.tokens';
+import {MapService} from 'src/app/map/interfaces/map.service';
+import {DrawingLayerPrefix, InternalDrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
+import {ActiveMapItemFactory} from 'src/app/shared/factories/active-map-item.factory';
 
 @Component({
   selector: 'print-dialog',
@@ -62,6 +66,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private readonly configService = inject(ConfigService);
   private readonly printService = inject(Gb3PrintService);
   private readonly printSettingsOptionsProvider = inject(PrintSettingsOptionsProviderService);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
 
   public readonly formGroup = new FormGroup<PrintForm>({
     title: new FormControl(),
@@ -117,7 +122,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     }
 
     const printData = this.getPrintData();
+
     const printCreation = this.printService.createPrintCreation(printData);
+
     this.store.dispatch(PrintActions.requestPrintCreation({creation: printCreation}));
   }
 
@@ -363,6 +370,14 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   }
 
   private getPrintData(): PrintData {
+    const searchHighlightDrawings = this.mapService.getInternalDrawingLayerGraphics(InternalDrawingLayer.SearchResultHighlight);
+    let searchHighlightMapItems: ActiveMapItem[] = [];
+    if (searchHighlightDrawings.length) {
+      searchHighlightMapItems = [
+        ActiveMapItemFactory.createDrawingMapItem(InternalDrawingLayer.SearchResultHighlight, DrawingLayerPrefix.Internal),
+      ];
+    }
+
     return {
       format: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.fileFormat.value),
       reportLayout: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.layout.value),
@@ -382,8 +397,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         y: FormValueConversionUtils.getNumberOrDefaultValue(this.mapConfigState?.center.y),
       },
       activeBasemapId: FormValueConversionUtils.getStringOrDefaultValue(this.mapConfigState?.activeBasemapId),
-      activeMapItems: FormValueConversionUtils.getArrayOrDefaultValue(this.activeMapItems),
-      drawings: FormValueConversionUtils.getArrayOrDefaultValue(this.drawings),
+      activeMapItems: [...FormValueConversionUtils.getArrayOrDefaultValue(this.activeMapItems), ...searchHighlightMapItems],
+      drawings: [...FormValueConversionUtils.getArrayOrDefaultValue(this.drawings), ...searchHighlightDrawings],
     };
   }
 }

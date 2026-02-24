@@ -69,6 +69,8 @@ import GraphicHit = __esri.GraphicHit;
 import {MapViewWithMap} from './types/esri-mapview-with-map.type';
 import {TIME_SERVICE} from '../../../app.tokens';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
+import {EsriGraphicToInternalDrawingRepresentationUtils} from './utils/esri-graphic-to-internal-drawing-representation.utils';
+import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -139,7 +141,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {
-    const layer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(drawingLayer));
+    const layer = this.getInternalDrawingLayer(drawingLayer);
     if (layer && layer instanceof GraphicsLayer) {
       const graphicsToBeRemoved = layer.graphics.filter((graphic) => graphic.attributes[MapConstants.DRAWING_IDENTIFIER] === id).toArray();
       layer.removeMany(graphicsToBeRemoved);
@@ -452,10 +454,26 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public clearInternalDrawingLayer(internalDrawingLayer: InternalDrawingLayer) {
-    const layer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
+    const layer = this.getInternalDrawingLayer(internalDrawingLayer);
     if (layer) {
       (layer as __esri.GraphicsLayer).removeAll();
     }
+  }
+
+  public getInternalDrawingLayer(internalDrawingLayer: InternalDrawingLayer) {
+    return this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
+  }
+
+  public getInternalDrawingLayerGraphics(drawingLayer: InternalDrawingLayer): Gb3StyledInternalDrawingRepresentation[] {
+    let graphics: Gb3StyledInternalDrawingRepresentation[] = [];
+    const internalLayer = this.getInternalDrawingLayer(drawingLayer);
+    if (internalLayer) {
+      graphics = (internalLayer as GraphicsLayer).graphics
+        .toArray()
+        .map((g) => EsriGraphicToInternalDrawingRepresentationUtils.convert(g, 2056, InternalDrawingLayer.SearchResultHighlight));
+    }
+
+    return graphics;
   }
 
   public getToolService(): EsriToolService {
@@ -560,7 +578,7 @@ export class EsriMapService implements MapService, OnDestroy {
       symbol: esriSymbolization,
       attributes: {[MapConstants.DRAWING_IDENTIFIER]: id},
     });
-    const targetLayer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
+    const targetLayer = this.getInternalDrawingLayer(internalDrawingLayer);
     if (targetLayer) {
       (targetLayer as __esri.GraphicsLayer).add(graphicItem);
     }

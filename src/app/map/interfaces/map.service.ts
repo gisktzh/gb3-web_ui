@@ -7,6 +7,7 @@ import {AddToMapVisitor} from './add-to-map.visitor';
 import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 import {ToolService} from './tool.service';
 import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
+import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 
 export interface MapService extends AddToMapVisitor {
   /**
@@ -84,6 +85,12 @@ export interface MapService extends AddToMapVisitor {
    * @param id Id of the geometry which should be removed
    */
   removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void;
+
+  /**
+   * Returns the mapService's internal drawing layer.
+   * @param drawingLayer The internal drawing layer to get.
+   */
+  getInternalDrawingLayerGraphics(drawingLayer: InternalDrawingLayer): Gb3StyledInternalDrawingRepresentation[];
 
   /** Clears all geometries from an internal DrawingLayer */
   clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer): void;

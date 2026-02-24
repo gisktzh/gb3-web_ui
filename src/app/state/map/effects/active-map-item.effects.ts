@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {filter, first, map, switchMap, tap} from 'rxjs';
 import {MapService} from '../../../map/interfaces/map.service';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
-import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {ConfigService} from '../../../shared/services/config.service';
@@ -319,7 +319,7 @@ export class ActiveMapItemEffects {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.addFavourite),
       map(({activeMapItems, drawingsToAdd}) => {
-        const drawingLayersToOverride: UserDrawingLayer[] = [];
+        const drawingLayersToOverride: DrawingLayer[] = [];
         activeMapItems.forEach((activeMapItem, idx) => {
           this.mapService.removeMapItem(activeMapItem.id);
           activeMapItem.addToMap(this.mapService, idx);

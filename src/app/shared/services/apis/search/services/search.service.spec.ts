@@ -7,6 +7,8 @@ import {of} from 'rxjs';
 import {SearchIndex} from '../interfaces/search-index.interface';
 import {ConfigService} from '../../../config.service';
 import {provideMockStore} from '@ngrx/store/testing';
+import {isGeometryWithSrs} from 'src/app/shared/type-guards/geometry-with-srs.type-guard';
+import {GeometryWithSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
 
 describe('SearchService', () => {
   let service: SearchService;
@@ -358,37 +360,44 @@ describe('SearchService', () => {
         expect(match.indexName).toBeDefined();
         switch (match.indexType) {
           case 'gvz':
-            expect(match.geometry.srs).toEqual(4326);
+            expect(isGeometryWithSrs(match.geometry)).toBeTrue();
+            expect((match.geometry as GeometryWithSrs).srs).toEqual(4326);
             expect(match.indexName).toEqual('GVZ-Nr.');
             expect(match.displayString).not.toEqual('');
             break;
           case 'egrid':
-            expect(match.geometry.srs).toEqual(4326);
+            expect(isGeometryWithSrs(match.geometry)).toBeTrue();
+            expect((match.geometry as GeometryWithSrs).srs).toEqual(4326);
             expect(match.indexName).toEqual('E-GRID');
             expect(match.displayString).not.toEqual('');
             break;
           case 'egid':
-            expect(match.geometry.srs).toEqual(4326);
+            expect(isGeometryWithSrs(match.geometry)).toBeTrue();
+            expect((match.geometry as GeometryWithSrs).srs).toEqual(4326);
             expect(match.indexName).toEqual('EGID');
             expect(match.displayString).not.toEqual('');
             break;
           case 'parcels':
-            expect(match.geometry.srs).toEqual(4326);
+            expect(isGeometryWithSrs(match.geometry)).toBeTrue();
+            expect((match.geometry as GeometryWithSrs).srs).toEqual(4326);
             expect(match.indexName).toEqual('Parzellen-Nr.');
             expect(match.displayString).not.toEqual('');
             break;
           case 'addresses':
-            expect(match.geometry.srs).toEqual(4326);
+            expect(isGeometryWithSrs(match.geometry)).toBeTrue();
+            expect((match.geometry as GeometryWithSrs).srs).toEqual(4326);
             expect(match.indexName).toEqual('Adressen');
             expect(match.displayString).not.toEqual('');
             break;
           case 'places':
-            expect(match.geometry.srs).toEqual(4326);
+            expect(isGeometryWithSrs(match.geometry)).toBeTrue();
+            expect((match.geometry as GeometryWithSrs).srs).toEqual(4326);
             expect(match.indexName).toEqual('Orte');
             expect(match.displayString).not.toEqual('');
             break;
           case 'activeMapItems':
-            expect(match.geometry.srs).toEqual(4326);
+            expect(isGeometryWithSrs(match.geometry)).toBeTrue();
+            expect((match.geometry as GeometryWithSrs).srs).toEqual(4326);
             expect(searchIndexes.filter((index) => index.indexType === 'activeMapItems').map((index) => index.label)).toContain(
               match.indexName!,
             );
