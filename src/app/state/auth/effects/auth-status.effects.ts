@@ -135,8 +135,8 @@ export class AuthStatusEffects {
         tap(([_, activeMapItems, drawings]) => {
           activeMapItems.filter(isActiveMapItemOfType(DrawingActiveMapItem)).forEach((drawingActiveMapItem) => {
             this.mapService.getToolService().addExistingDrawingsToLayer(
-              drawings.filter((drawing) => drawing.source === drawingActiveMapItem.settings.userDrawingLayer),
-              drawingActiveMapItem.settings.userDrawingLayer,
+              drawings.filter((drawing) => drawing.source === drawingActiveMapItem.settings.drawingLayer),
+              drawingActiveMapItem.settings.drawingLayer,
             );
           });
         }),

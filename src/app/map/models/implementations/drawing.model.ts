@@ -4,11 +4,11 @@ import {DrawingLayer, DrawingLayerPrefix} from '../../../shared/enums/drawing-la
 
 export class DrawingLayerSettings extends AbstractActiveMapItemSettings {
   public readonly type = 'drawing';
-  public readonly userDrawingLayer: DrawingLayer;
+  public readonly drawingLayer: DrawingLayer;
 
   constructor(userDrawingLayer: DrawingLayer) {
     super();
-    this.userDrawingLayer = userDrawingLayer;
+    this.drawingLayer = userDrawingLayer;
   }
 }
 

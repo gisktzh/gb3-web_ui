@@ -207,8 +207,8 @@ export class EsriMapService implements MapService, OnDestroy {
               mapItem.addToMap(this, position);
 
               if (mapItem instanceof DrawingActiveMapItem) {
-                const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.userDrawingLayer);
-                return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.userDrawingLayer);
+                const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.drawingLayer);
+                return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.drawingLayer);
               }
             }),
           );

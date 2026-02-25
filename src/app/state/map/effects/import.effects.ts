@@ -44,7 +44,7 @@ export class ImportEffects {
         this.mapService.removeMapItem(activeMapItem.id);
         activeMapItem.addToMap(this.mapService, 0);
         this.mapService.getToolService().addExistingDrawingsToLayer(drawingsToAdd, UserDrawingLayer.Drawings);
-        drawingLayersToOverride.push(activeMapItem.settings.userDrawingLayer);
+        drawingLayersToOverride.push(activeMapItem.settings.drawingLayer);
 
         return ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd});
       }),

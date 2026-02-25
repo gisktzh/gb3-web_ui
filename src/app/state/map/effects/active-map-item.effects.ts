@@ -144,7 +144,7 @@ export class ActiveMapItemEffects {
             }
             // is there still a drawing item for the current active tool? if not => cancel tool
             return !activeMapItems.some(
-              (item) => item.settings.type === 'drawing' && item.settings.userDrawingLayer === activeUserDrawingLayer,
+              (item) => item.settings.type === 'drawing' && item.settings.drawingLayer === activeUserDrawingLayer,
             );
           case '[ActiveMapItem] Remove All Active Map Items':
             return true;
@@ -326,11 +326,11 @@ export class ActiveMapItemEffects {
 
           if (activeMapItem instanceof DrawingActiveMapItem) {
             this.mapService.getToolService().addExistingDrawingsToLayer(
-              drawingsToAdd.filter((drawing) => drawing.source === activeMapItem.settings.userDrawingLayer),
-              activeMapItem.settings.userDrawingLayer,
+              drawingsToAdd.filter((drawing) => drawing.source === activeMapItem.settings.drawingLayer),
+              activeMapItem.settings.drawingLayer,
             );
 
-            drawingLayersToOverride.push(activeMapItem.settings.userDrawingLayer);
+            drawingLayersToOverride.push(activeMapItem.settings.drawingLayer);
           }
         });
 
