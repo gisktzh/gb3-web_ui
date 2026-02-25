@@ -1,6 +1,6 @@
-import {SearchApiResultMatch} from './search-api-result-match.interface';
+import {RawSearchApiResultMatch} from './search-api-result-match.interface';
 
 export interface SearchApiResult {
   index: string;
-  matches: SearchApiResultMatch[];
+  matches: RawSearchApiResultMatch[];
 }

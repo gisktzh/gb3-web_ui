@@ -4,7 +4,7 @@ import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {Map} from '../../../../shared/interfaces/topic.interface';
-import {GeometrySearchApiResultMatch} from '../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {GeometryWithSrsSearchApiResultMatch} from '../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {selectSearchApiLoadingState, selectSelectedSearchResult, selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {
@@ -28,12 +28,12 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
   @ViewChildren(ResultGroupComponent) public readonly resultGroupComponents!: QueryList<ResultGroupComponent>;
   @Input() public showMultiplePanels: boolean = true;
   public searchTerms: string[] = [];
-  public filteredAddressesAndPlacesMatches: GeometrySearchApiResultMatch[] = [];
-  public filteredActiveMapMatches: GeometrySearchApiResultMatch[] = [];
+  public filteredAddressesAndPlacesMatches: GeometryWithSrsSearchApiResultMatch[] = [];
+  public filteredActiveMapMatches: GeometryWithSrsSearchApiResultMatch[] = [];
   public filteredMaps: Map[] = [];
   public searchApiLoadingState: LoadingState;
   public screenMode: ScreenMode = 'regular';
-  public selectedSearchResult?: GeometrySearchApiResultMatch;
+  public selectedSearchResult?: GeometryWithSrsSearchApiResultMatch;
 
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
@@ -58,8 +58,8 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
       this.filteredSearchApiResultMatches$
         .pipe(
           tap((filteredSearchApiResultMatches) => {
-            const filteredAddressesAndPlacesMatches: GeometrySearchApiResultMatch[] = [];
-            const filteredActiveMapMatches: GeometrySearchApiResultMatch[] = [];
+            const filteredAddressesAndPlacesMatches: GeometryWithSrsSearchApiResultMatch[] = [];
+            const filteredActiveMapMatches: GeometryWithSrsSearchApiResultMatch[] = [];
             filteredSearchApiResultMatches.forEach((resultMatch) => {
               if (resultMatch.indexType) {
                 switch (resultMatch.indexType) {

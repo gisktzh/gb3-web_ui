@@ -5,7 +5,7 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ActiveMapItemFactory} from '../../../../../shared/factories/active-map-item.factory';
 import {Map} from '../../../../../shared/interfaces/topic.interface';
-import {GeometrySearchApiResultMatch} from '../../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {GeometryWithSrsSearchApiResultMatch} from '../../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-item.actions';
 import {selectMapConfigState} from '../../../../../state/map/reducers/map-config.reducer';
 import {MapConfigState} from '../../../../../state/map/states/map-config.state';
@@ -45,7 +45,7 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
 
   @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElements!: QueryList<SearchResultIdentifierDirective>;
-  @Input() public searchResults: GeometrySearchApiResultMatch[] = [];
+  @Input() public searchResults: GeometryWithSrsSearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
   @Input() public header: string = '';
   @Input() public searchTerms: string[] = [];
@@ -69,9 +69,10 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public selectSearchResult(searchResult: GeometrySearchApiResultMatch) {
+  public selectSearchResult(searchResult: GeometryWithSrsSearchApiResultMatch) {
     this.store.dispatch(SearchActions.selectMapSearchResult({searchResult}));
   }
+
   public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
     if (!activeMap.gb2Url) {
       this.addActiveItem(

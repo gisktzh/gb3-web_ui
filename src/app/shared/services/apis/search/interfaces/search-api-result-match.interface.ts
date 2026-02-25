@@ -2,7 +2,9 @@ import {GeometryWithSrs} from '../../../../interfaces/geojson-types-with-srs.int
 import {SearchIndexType} from '../../../../configs/search-index.config';
 import {Geometry} from 'geojson';
 
-export type SearchApiResultMatch = GeometrySearchApiResultMatch | MetadataSearchApiResultMatch | UnknownSearchApiResultMatch;
+export type SearchApiResultMatch = GeometryWithSrsSearchApiResultMatch | MetadataSearchApiResultMatch | UnknownSearchApiResultMatch;
+
+export type RawSearchApiResultMatch = GeometrySearchApiResultMatch | MetadataSearchApiResultMatch | UnknownSearchApiResultMatch;
 
 interface AbstractSearchApiResultMatch {
   indexType: SearchIndexType;
@@ -14,6 +16,12 @@ export interface GeometrySearchApiResultMatch extends AbstractSearchApiResultMat
   indexType: 'addresses' | 'places' | 'gvz' | 'egid' | 'parcels' | 'egrid' | 'activeMapItems';
   displayString: string;
   geometry: GeometryWithSrs | Geometry;
+}
+
+export interface GeometryWithSrsSearchApiResultMatch extends AbstractSearchApiResultMatch {
+  indexType: 'addresses' | 'places' | 'gvz' | 'egid' | 'parcels' | 'egrid' | 'activeMapItems';
+  displayString: string;
+  geometry: GeometryWithSrs;
 }
 
 export interface MetadataSearchApiResultMatch extends AbstractSearchApiResultMatch {

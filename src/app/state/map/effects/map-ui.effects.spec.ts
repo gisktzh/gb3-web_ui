@@ -15,7 +15,7 @@ import {selectMapAttributeFiltersItem} from '../selectors/map-attribute-filters-
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {SearchActions} from '../../app/actions/search.actions';
-import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {GeometryWithSrsSearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {InternalShareLinkItem} from 'src/app/shared/interfaces/internal-share-link.interface';
 import {ShareLinkItem} from 'src/app/shared/interfaces/share-link.interface';
 import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
@@ -200,7 +200,7 @@ describe('MapUiEffects', () => {
   describe('closeBottomSheetAfterSelectingSearchResult$', () => {
     it('dispatches MapUiActions.hideBottomSheet() when a result is selected in the search on mobile', (done: DoneFn) => {
       const expectedAction = MapUiActions.hideBottomSheet();
-      const searchResultsMock: GeometrySearchApiResultMatch = {
+      const searchResultsMock: GeometryWithSrsSearchApiResultMatch = {
         indexType: 'places',
         displayString: 'Some Place',
         score: 1,
@@ -217,7 +217,7 @@ describe('MapUiEffects', () => {
     });
 
     it('dispatches nothing when a result is selected in the search on desktop', fakeAsync(async () => {
-      const searchResultsMock: GeometrySearchApiResultMatch = {
+      const searchResultsMock: GeometryWithSrsSearchApiResultMatch = {
         indexType: 'places',
         displayString: 'Some Place',
         score: 1,
