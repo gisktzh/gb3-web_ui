@@ -1,11 +1,6 @@
 import {RecoverableError} from './abstract.errors';
 
-export class PrintInfoCouldNotBeLoaded extends RecoverableError {
-  public override message = 'Druckoptionen konnten nicht geladen werden.';
-  public override name = 'PrintInfoCouldNotBeLoaded';
-}
-
-export type Gb3PrintErrorResponse = {
+type Gb3PrintErrorResponse = {
   error: {
     errors: string[];
   };

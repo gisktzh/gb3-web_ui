@@ -100,7 +100,7 @@ import {ImportEffects} from './map/effects/import.effects';
 import {ImportState} from './map/states/import.state';
 import {ExternalAppsState} from './external-apps/states/external-apps.state';
 
-export interface State {
+interface State {
   mapConfig: MapConfigState;
   legend: LegendState;
   featureInfo: FeatureInfoState;
