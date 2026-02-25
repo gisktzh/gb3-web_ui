@@ -15,14 +15,14 @@ interface InternalDrawingRepresentation<T = Record<never, never>> extends Featur
   geometry: SupportedGeometry & HasSrs;
 }
 
+interface InternalDrawingType {
+  type: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
+}
+
 /**
  * An internal drawing representation without any properties.
  */
 export type UnstyledInternalDrawingRepresentation = InternalDrawingRepresentation;
-
-export interface InternalDrawingType {
-  type: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
-}
 
 export type LineStyleConfiguration = Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'>;
 

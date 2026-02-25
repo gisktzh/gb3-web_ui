@@ -19,7 +19,8 @@
     "update-version": "node ./update-version.js",
     "format-all": "prettier --write ./src",
     "generate-gb3-api": "npx swagger-typescript-api generate -p https://maps.zh.ch/api-docs/gb3/v4/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body --extract-request-body --extract-request-body && node ./remove-generated-api-version-references.js ./src/app/shared/models/gb3-api-generated.interfaces.ts",
-    "lint": "eslint"
+    "lint": "eslint",
+    "knip": "knip"
   },
   "private": true,
   "engines": {
@@ -51,7 +52,6 @@
     "@terraformer/arcgis": "^2.1.2",
     "@types/file-saver": "^2.0.7",
     "@types/geojson": "^7946.0.10",
-    "@types/lodash": "^4.17.13",
     "@types/node": "^22",
     "@types/terraformer__arcgis": "^2.0.2",
     "@types/twitter-for-web": "^0.0.6",
@@ -70,6 +70,7 @@
     "zone.js": "~0.16.0"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "21.1.5",
     "@angular-eslint/schematics": "^21.0.0",
     "@angular-eslint/template-parser": "^21.0.0",
     "@eslint/js": "^9.19.0",
@@ -89,6 +90,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.2.0",
+    "knip": "^5.85.0",
     "lint-staged": "^16.0.0",
     "prettier": "^3.3.3",
     "puppeteer": "^24.0.0",

@@ -1,6 +1,12 @@
 import {Gb3VectorLayer} from './gb3-vector-layer.interface';
 import {AbstractGb3Layer} from './abstract-gb3-layer.interface';
 
+interface CustomPrintParameters {
+  transparent?: boolean;
+  format?: string;
+  dynamicStringParams: DynamicStringParameters;
+}
+
 export interface PrintCreation {
   /**
    * report layout
@@ -123,10 +129,4 @@ export interface PrintCreationResponse {
 
 export interface DynamicStringParameters {
   [key: string]: string;
-}
-
-export interface CustomPrintParameters {
-  transparent?: boolean;
-  format?: string;
-  dynamicStringParams: DynamicStringParameters;
 }
