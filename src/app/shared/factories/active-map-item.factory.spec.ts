@@ -162,8 +162,8 @@ describe('ActiveMapItemFactory', () => {
 
         expect(result.title).toBe(params.title);
         expect(result.id).toBe(params.prefix + params.id);
-        expect(result.opacity).toBe(params.opacity === undefined ? 1 : params.opacity);
-        expect(result.visible).toBe(params.visible === undefined ? true : params.visible);
+        expect(result.opacity).toBe(params.opacity ?? 1);
+        expect(result.visible).toBe(params.visible ?? true);
       });
     });
   });
