@@ -17,6 +17,7 @@ import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 import {Observable} from 'rxjs';
 import {selectAllItems} from 'src/app/state/map/selectors/active-map-items.selector';
 import {selectDrawings} from 'src/app/state/map/reducers/drawing.reducer';
+import Graphic from '@arcgis/core/Graphic';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: __esri.Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -43,11 +44,12 @@ const mockAuthService = jasmine.createSpyObj<AuthService>({
 });
 
 const internalLayerPrefix = DrawingLayerPrefix.Internal;
-const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) => {
-  return new GraphicsLayer({
-    id: `${internalLayerPrefix}${drawingLayer}`,
-  });
-});
+const internalLayers = Object.values(InternalDrawingLayer).map(
+  (drawingLayer) =>
+    new GraphicsLayer({
+      id: `${internalLayerPrefix}${drawingLayer}`,
+    }),
+);
 
 /**
  * Helper function that wraps the expected number of layers with the fixed layers. This helps to test the logic that
@@ -298,6 +300,39 @@ describe('EsriMapService', () => {
 
         expect(internalLayerSpy).toHaveBeenCalledTimes(1);
       }
+    });
+  });
+
+  /*
+    public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {
+      const layer = this.getInternalDrawingLayer(drawingLayer);
+      if (layer && layer instanceof GraphicsLayer) {
+        const graphicsToBeRemoved = layer.graphics.filter((graphic) => graphic.attributes[MapConstants.DRAWING_IDENTIFIER] === id).toArray();
+        layer.removeMany(graphicsToBeRemoved);
+      }
+    }
+  */
+
+  describe('removeGeometryFromInternalDrawingLayer', () => {
+    it('should remove a given geometry from an internal drawing layer', () => {
+      const internalDrawingLayer: InternalDrawingLayer = InternalDrawingLayer.SearchResultHighlight;
+      const internalLayer = internalLayers.find((layer) => layer.id === `${internalLayerPrefix}${internalDrawingLayer}`);
+
+      expect(internalLayer).toBeDefined();
+
+      const graphic = new Graphic({
+        attributes: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          __id: 'asdf',
+        },
+      });
+
+      internalLayer!.add(graphic);
+
+      const internalLayerSpy = spyOn(internalLayer as __esri.GraphicsLayer, 'removeMany').and.callThrough();
+
+      service.removeGeometryFromInternalDrawingLayer(InternalDrawingLayer.SearchResultHighlight, 'asdf');
+      expect(internalLayerSpy).toHaveBeenCalledWith([graphic]);
     });
   });
 });
