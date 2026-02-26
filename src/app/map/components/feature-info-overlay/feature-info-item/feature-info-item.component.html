@@ -3,7 +3,7 @@
   [overlayTitle]="featureInfo.title"
   [metaDataLink]="showInteractiveElements ? featureInfo.metaDataLink : undefined"
 >
-  @if (featureInfo.report.url !== null) {
+  @if (featureInfo.report.url !== null && !featureInfo.isSingleLayer) {
     <div class="feature-info-item">
       <feature-info-report-download [reportUrl]="featureInfo.report.url" [reportDescription]="featureInfo.report.description" />
     </div>

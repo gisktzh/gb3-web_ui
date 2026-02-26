@@ -36,6 +36,26 @@ jobs:
           npm ci --ignore-scripts
           npm run lint
 
+  knip:
+    name: Run knip
+    runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies and run knip
+        run: |
+          npm ci --ignore-scripts
+          npm run knip
+
   tests:
     name: Run tests
     runs-on: ${{ inputs.runner_version }}
