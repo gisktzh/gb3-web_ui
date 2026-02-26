@@ -2,7 +2,6 @@ import {FilterConfiguration, Map, MapLayer} from '../interfaces/topic.interface'
 import {ActiveMapItemFactory} from './active-map-item.factory';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
-import {DrawingActiveMapItem} from 'src/app/map/models/implementations/drawing.model';
 import {DrawingLayer, DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 
 type DrawingActiveMapItemConstructorArgs = {
@@ -89,7 +88,7 @@ describe('ActiveMapItemFactory', () => {
           userDrawingLayer: UserDrawingLayer.Drawings,
           title: 'Zeichnungen',
           prefix: DrawingLayerPrefix.Drawing,
-          opacity: Math.random(),
+          opacity: 0.1,
           visible: true,
         },
         {
@@ -97,7 +96,7 @@ describe('ActiveMapItemFactory', () => {
           userDrawingLayer: UserDrawingLayer.Measurements,
           title: 'Messungen',
           prefix: DrawingLayerPrefix.Drawing,
-          opacity: Math.random(),
+          opacity: 0.2,
           visible: false,
         },
         {
@@ -105,7 +104,7 @@ describe('ActiveMapItemFactory', () => {
           userDrawingLayer: InternalDrawingLayer.FeatureHighlight,
           title: 'Feature Highlight',
           prefix: DrawingLayerPrefix.Internal,
-          opacity: Math.random(),
+          opacity: 0.3,
           visible: undefined,
         },
         {
@@ -113,7 +112,7 @@ describe('ActiveMapItemFactory', () => {
           userDrawingLayer: InternalDrawingLayer.FeatureHighlight,
           title: 'Feature Query Location',
           prefix: DrawingLayerPrefix.Internal,
-          opacity: Math.random(),
+          opacity: 0.4,
           visible: true,
         },
         {
@@ -121,7 +120,7 @@ describe('ActiveMapItemFactory', () => {
           userDrawingLayer: InternalDrawingLayer.LocatePosition,
           title: 'Locate Position',
           prefix: DrawingLayerPrefix.Internal,
-          opacity: Math.random(),
+          opacity: 0.5,
           visible: false,
         },
         {
@@ -129,7 +128,7 @@ describe('ActiveMapItemFactory', () => {
           userDrawingLayer: InternalDrawingLayer.PrintPreview,
           title: 'Print Preview',
           prefix: DrawingLayerPrefix.Internal,
-          opacity: Math.random(),
+          opacity: 0.6,
           visible: undefined,
         },
         {
@@ -137,7 +136,7 @@ describe('ActiveMapItemFactory', () => {
           userDrawingLayer: InternalDrawingLayer.Selection,
           title: 'Selection',
           prefix: DrawingLayerPrefix.Internal,
-          opacity: Math.random(),
+          opacity: 0.7,
           visible: true,
         },
         {
@@ -145,7 +144,7 @@ describe('ActiveMapItemFactory', () => {
           userDrawingLayer: InternalDrawingLayer.ElevationProfile,
           title: 'Elevation Profiles',
           prefix: DrawingLayerPrefix.Internal,
-          opacity: Math.random(),
+          opacity: undefined,
           visible: false,
         },
         {
@@ -153,7 +152,7 @@ describe('ActiveMapItemFactory', () => {
           userDrawingLayer: InternalDrawingLayer.SearchResultHighlight,
           title: 'Search Result Highlight',
           prefix: DrawingLayerPrefix.Internal,
-          opacity: Math.random(),
+          opacity: undefined,
           visible: undefined,
         },
       ];
