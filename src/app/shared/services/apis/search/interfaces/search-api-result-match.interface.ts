@@ -31,4 +31,5 @@ export interface MetadataSearchApiResultMatch extends AbstractSearchApiResultMat
 
 export interface UnknownSearchApiResultMatch extends AbstractSearchApiResultMatch {
   indexType: 'unknown';
+  [key: string]: unknown;
 }

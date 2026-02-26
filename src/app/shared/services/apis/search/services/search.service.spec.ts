@@ -23,6 +23,7 @@ describe('SearchService', () => {
     {indexName: 'metadata-products', label: 'Metadata Products', active: true, indexType: 'metadata-products'},
     {indexName: 'metadata-datasets', label: 'Metadata Datasets', active: true, indexType: 'metadata-datasets'},
     {indexName: 'metadata-services', label: 'Metadata Services', active: true, indexType: 'metadata-services'},
+    {indexName: 'And now for something completely different', label: 'Unknown', active: true, indexType: 'unknown'},
   ];
 
   const mockData: {index: string; matches: any[]}[] = [
@@ -399,6 +400,16 @@ describe('SearchService', () => {
         },
       ],
     },
+    {
+      index: 'something else',
+      matches: [
+        {
+          someField: 'someValue',
+          indexType: 'unknown',
+          score: 12,
+        },
+      ],
+    },
   ];
 
   beforeEach(() => {
@@ -423,7 +434,7 @@ describe('SearchService', () => {
       req.url.includes(`${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/search`),
     );
     searchIndexes.forEach((index) => {
-      expect(request.url.includes(index.indexName)).toBeTrue();
+      expect(request.url.includes(index.indexName)).toBe(index.indexType !== 'unknown');
     });
     expect(request.url.includes(searchTerm)).toBeTrue();
   });
@@ -495,7 +506,10 @@ describe('SearchService', () => {
             expect(match.indexName).toBe('Metadata Services');
             break;
           case 'unknown':
-            fail('Unexpected index type');
+            expect(match['someField']).toEqual('someValue');
+            expect(match.indexName).toBe('something else');
+            expect(match.indexType).toBe('unknown');
+            break;
         }
       });
       done();
