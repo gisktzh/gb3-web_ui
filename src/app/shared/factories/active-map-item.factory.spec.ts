@@ -2,6 +2,16 @@ import {FilterConfiguration, Map, MapLayer} from '../interfaces/topic.interface'
 import {ActiveMapItemFactory} from './active-map-item.factory';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
+import {DrawingActiveMapItem} from 'src/app/map/models/implementations/drawing.model';
+import {DrawingLayer, DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
+
+type DrawingActiveMapItemConstructorArgs = {
+  title: string;
+  prefix: DrawingLayerPrefix;
+  userDrawingLayer: DrawingLayer;
+  visible?: boolean;
+  opacity?: number;
+};
 
 describe('ActiveMapItemFactory', () => {
   describe('createTemporaryGb2WmsMapItem', () => {
@@ -67,6 +77,94 @@ describe('ActiveMapItemFactory', () => {
         const result = ActiveMapItemFactory.createGb2WmsMapItem(map, layers[0]);
 
         expect(result.settings.layers[0].visible).toEqual(true);
+      });
+    });
+  });
+
+  describe('create active map drawings', () => {
+    it('should create a DrawingActiveMapItem with passed values and correct title', () => {
+      const combos: (DrawingActiveMapItemConstructorArgs & {id: DrawingLayer})[] = [
+        {
+          id: UserDrawingLayer.Drawings,
+          userDrawingLayer: UserDrawingLayer.Drawings,
+          title: 'Zeichnungen',
+          prefix: DrawingLayerPrefix.Drawing,
+          opacity: Math.random(),
+          visible: true,
+        },
+        {
+          id: UserDrawingLayer.Measurements,
+          userDrawingLayer: UserDrawingLayer.Measurements,
+          title: 'Messungen',
+          prefix: DrawingLayerPrefix.Drawing,
+          opacity: Math.random(),
+          visible: false,
+        },
+        {
+          id: InternalDrawingLayer.FeatureHighlight,
+          userDrawingLayer: InternalDrawingLayer.FeatureHighlight,
+          title: 'Feature Highlight',
+          prefix: DrawingLayerPrefix.Internal,
+          opacity: Math.random(),
+          visible: undefined,
+        },
+        {
+          id: InternalDrawingLayer.FeatureQueryLocation,
+          userDrawingLayer: InternalDrawingLayer.FeatureHighlight,
+          title: 'Feature Query Location',
+          prefix: DrawingLayerPrefix.Internal,
+          opacity: Math.random(),
+          visible: true,
+        },
+        {
+          id: InternalDrawingLayer.LocatePosition,
+          userDrawingLayer: InternalDrawingLayer.LocatePosition,
+          title: 'Locate Position',
+          prefix: DrawingLayerPrefix.Internal,
+          opacity: Math.random(),
+          visible: false,
+        },
+        {
+          id: InternalDrawingLayer.PrintPreview,
+          userDrawingLayer: InternalDrawingLayer.PrintPreview,
+          title: 'Print Preview',
+          prefix: DrawingLayerPrefix.Internal,
+          opacity: Math.random(),
+          visible: undefined,
+        },
+        {
+          id: InternalDrawingLayer.Selection,
+          userDrawingLayer: InternalDrawingLayer.Selection,
+          title: 'Selection',
+          prefix: DrawingLayerPrefix.Internal,
+          opacity: Math.random(),
+          visible: true,
+        },
+        {
+          id: InternalDrawingLayer.ElevationProfile,
+          userDrawingLayer: InternalDrawingLayer.ElevationProfile,
+          title: 'Elevation Profiles',
+          prefix: DrawingLayerPrefix.Internal,
+          opacity: Math.random(),
+          visible: false,
+        },
+        {
+          id: InternalDrawingLayer.SearchResultHighlight,
+          userDrawingLayer: InternalDrawingLayer.SearchResultHighlight,
+          title: 'Search Result Highlight',
+          prefix: DrawingLayerPrefix.Internal,
+          opacity: Math.random(),
+          visible: undefined,
+        },
+      ];
+
+      combos.forEach((params) => {
+        const result = ActiveMapItemFactory.createDrawingMapItem(params.id, params.prefix, params.visible, params.opacity);
+
+        expect(result.title).toBe(params.title);
+        expect(result.id).toBe(params.prefix + params.id);
+        expect(result.opacity).toBe(params.opacity === undefined ? 1 : params.opacity);
+        expect(result.visible).toBe(params.visible === undefined ? true : params.visible);
       });
     });
   });
