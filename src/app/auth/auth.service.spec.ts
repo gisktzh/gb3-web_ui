@@ -169,7 +169,9 @@ describe('AuthService', () => {
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(oauthLoadUserProfileSpy).toHaveBeenCalled();
-      expect(storeDispatchSpy).toHaveBeenCalledWith(AuthStatusActions.setStatus({isAuthenticated: true, userName: undefined}));
+      expect(storeDispatchSpy).toHaveBeenCalledWith(
+        AuthStatusActions.setStatus({isAuthenticated: true, userName: undefined, userEmail: undefined}),
+      );
     }));
 
     it('should attach the authenticated handler properly and react to a truthy isAuthenticated value and present user info appropriately', fakeAsync(() => {
@@ -177,7 +179,7 @@ describe('AuthService', () => {
       mockOAuthService.state = 'success';
       const isAuthenticated$ = new Subject<boolean>();
       const storeSelectSpy = spyOn(store, 'select').and.returnValue(isAuthenticated$.asObservable());
-      const oauthLoadUserProfileSpy = mockOAuthService.loadUserProfile.and.resolveTo({info: {name: 'hello world'}});
+      const oauthLoadUserProfileSpy = mockOAuthService.loadUserProfile.and.resolveTo({info: {name: 'hello world', email: 'hello@wor.ld'}});
       const storeDispatchSpy = spyOn(store, 'dispatch');
 
       service = TestBed.inject(AuthService);
@@ -188,7 +190,9 @@ describe('AuthService', () => {
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(oauthLoadUserProfileSpy).toHaveBeenCalled();
-      expect(storeDispatchSpy).toHaveBeenCalledWith(AuthStatusActions.setStatus({isAuthenticated: true, userName: 'hello world'}));
+      expect(storeDispatchSpy).toHaveBeenCalledWith(
+        AuthStatusActions.setStatus({isAuthenticated: true, userName: 'hello world', userEmail: 'hello@wor.ld'}),
+      );
     }));
 
     it('should attach the authenticated handler properly and react to a falsy isAuthenticated value appropriately and attempt a logout if an access token is present', fakeAsync(() => {
