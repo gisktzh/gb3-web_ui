@@ -1,6 +1,6 @@
 import {EsriSymbolToStyleRepresentationUtils} from './esri-symbol-to-style-representation.utils';
 import Color from '@arcgis/core/Color';
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import SimpleMarkerSymbol, {SimpleMarkerSymbolProperties} from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import {
   Gb3LineStringStyle,
   Gb3PointStyle,
@@ -8,16 +8,12 @@ import {
   Gb3SymbolStyle,
   Gb3TextStyle,
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
-import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
-import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import SimpleMarkerSymbolProperties = __esri.SimpleMarkerSymbolProperties;
-import SimpleFillSymbolProperties = __esri.SimpleFillSymbolProperties;
-import SimpleLineSymbolProperties = __esri.SimpleLineSymbolProperties;
-import TextSymbolProperties = __esri.TextSymbolProperties;
+import SimpleLineSymbol, {SimpleLineSymbolProperties} from '@arcgis/core/symbols/SimpleLineSymbol';
+import SimpleFillSymbol, {SimpleFillSymbolProperties} from '@arcgis/core/symbols/SimpleFillSymbol';
+import TextSymbol, {TextSymbolProperties} from '@arcgis/core/symbols/TextSymbol';
 import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
 import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
-import {SymbolUnion} from '@arcgis/core/unionTypes';
+import {SymbolUnion} from '@arcgis/core/symbols/types';
 import {UnsupportedSymbolizationType} from '../errors/esri.errors';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import PictureFillSymbol from '@arcgis/core/symbols/PictureFillSymbol';

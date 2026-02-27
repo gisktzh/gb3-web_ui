@@ -17,14 +17,17 @@ import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 import {Observable} from 'rxjs';
 import {selectAllItems} from 'src/app/state/map/selectors/active-map-items.selector';
 import {selectDrawings} from 'src/app/state/map/reducers/drawing.reducer';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import Layer from '@arcgis/core/layers/Layer';
+import MapView from '@arcgis/core/views/MapView';
 
-function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: __esri.Layer) {
+function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
   expect(actualEsriLayer.opacity).toBe(expectedMapItem.opacity);
   expect(actualEsriLayer.title).toBe(expectedMapItem.title);
   expect(actualEsriLayer.visible).toBe(expectedMapItem.visible);
 
-  const actualEsriWmsLayer = actualEsriLayer as __esri.WMSLayer;
+  const actualEsriWmsLayer = actualEsriLayer as WMSLayer;
   expect(actualEsriWmsLayer.url).toBe(expectedMapItem.settings.url);
   expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.settings.layers.length);
   expectedMapItem.settings.layers.forEach((expectedLayer) => {
@@ -88,7 +91,7 @@ describe('EsriMapService', () => {
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
     mapMock = new EsriMapMock(internalLayers);
     mapViewService = TestBed.inject(EsriMapViewService);
-    mapViewService.mapView = {map: mapMock} as __esri.MapView;
+    mapViewService.mapView = {map: mapMock} as MapView;
     store = TestBed.inject(MockStore);
   });
 
@@ -259,7 +262,7 @@ describe('EsriMapService', () => {
     const mapItem = createGb2WmsMapItemMock('topic', 3);
 
     service.addGb2WmsLayer(mapItem, 0);
-    const wmsLayer = mapMock.layers.getItemAt(0) as __esri.WMSLayer;
+    const wmsLayer = mapMock.layers.getItemAt(0) as WMSLayer;
     // order: layer2, layer1, layer0
 
     // index <> position; position 0 should be the highest index for Esri.
@@ -293,7 +296,7 @@ describe('EsriMapService', () => {
 
         expect(internalLayer).toBeDefined();
 
-        const internalLayerSpy = spyOn(internalLayer as __esri.GraphicsLayer, 'removeAll').and.callThrough();
+        const internalLayerSpy = spyOn(internalLayer as GraphicsLayer, 'removeAll').and.callThrough();
         service.clearInternalDrawingLayer(internalDrawingLayer);
 
         expect(internalLayerSpy).toHaveBeenCalledTimes(1);

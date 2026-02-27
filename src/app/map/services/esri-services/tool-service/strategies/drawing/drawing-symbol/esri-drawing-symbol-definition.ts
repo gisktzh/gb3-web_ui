@@ -1,4 +1,4 @@
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
+import WebStyleSymbol, {WebStyleSymbolProperties} from '@arcgis/core/symbols/WebStyleSymbol';
 import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 import {EsriDrawingSymbolDescriptor} from './esri-drawing-symbol-descriptor';
 import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
@@ -11,7 +11,7 @@ export class EsriDrawingSymbolDefinition extends WebStyleSymbol implements Drawi
   public size: number = -1;
   public rotation: number = -1;
 
-  constructor(properties?: __esri.WebStyleSymbolProperties) {
+  constructor(properties?: WebStyleSymbolProperties) {
     super(properties);
   }
 

@@ -8,6 +8,7 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriPolygonDrawingStrategy} from './esri-polygon-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 class EsriPolygonDrawingStrategyWrapper extends EsriPolygonDrawingStrategy {
   public get svm() {
@@ -45,7 +46,7 @@ describe('EsriPolygonDrawingStrategy', () => {
       const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
+      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
 
       expect(callbackSpy).not.toHaveBeenCalled();
     });
@@ -69,7 +70,7 @@ describe('EsriPolygonDrawingStrategy', () => {
       });
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       expect(callbackSpy).toHaveBeenCalled();
     });
@@ -91,7 +92,7 @@ describe('EsriPolygonDrawingStrategy', () => {
       });
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'complete'});
+      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
 
       expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
     });

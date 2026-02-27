@@ -4,15 +4,18 @@ import Point from '@arcgis/core/geometry/Point';
 import {NumberUtils} from '../../../../../../shared/utils/number.utils';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import {SupportedEsriTool} from '../supported-esri-tool.type';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import MapView from '@arcgis/core/views/MapView';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrategy<Point, 'completeMeasurement'> {
   protected readonly tool: SupportedEsriTool = 'point';
   private readonly labelSymbolization: TextSymbol;
 
   constructor(
-    layer: __esri.GraphicsLayer,
-    mapView: __esri.MapView,
-    pointSymbol: __esri.SimpleMarkerSymbol,
-    labelSymbolization: __esri.TextSymbol,
+    layer: GraphicsLayer,
+    mapView: MapView,
+    pointSymbol: SimpleMarkerSymbol,
+    labelSymbolization: TextSymbol,
     completeDrawingCallbackHandler: DrawingCallbackHandler<'completeMeasurement'>,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
@@ -31,7 +34,7 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
     return geometry;
   }
 
-  private getCoordinateString(geometry: __esri.Point) {
+  private getCoordinateString(geometry: Point) {
     return `${NumberUtils.roundToDecimals(geometry.x, 2)}/${NumberUtils.roundToDecimals(geometry.y, 2)}`;
   }
 }

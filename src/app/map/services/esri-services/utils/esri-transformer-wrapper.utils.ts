@@ -1,8 +1,8 @@
 import {arcgisToGeoJSON} from '@terraformer/arcgis';
 import {GeometryObject} from 'geojson';
-import {GeometryUnion} from '@arcgis/core/unionTypes';
 import {SRSMissing} from '../errors/esri.errors';
 import {isNullish} from '../type-guards/esri-nullish.type-guard';
+import {GeometryUnion} from '@arcgis/core/geometry/types';
 
 const WARNING_TO_IGNORE_STARTS_WITH = 'Object converted in non-standard crs';
 
@@ -53,7 +53,7 @@ export const silentArcgisToGeoJSON = (arcgis: GeometryUnion, idAttribute?: strin
       throw new SRSMissing();
     }
 
-    transformedGeometry = arcgisToGeoJSON(arcgis as GeometryUnion & {spatialReference: {wkid: number}}, idAttribute);
+    transformedGeometry = arcgisToGeoJSON(arcgis as unknown as Parameters<typeof arcgisToGeoJSON>[0], idAttribute);
   } finally {
     console.warn = originalConsoleWarn;
   }

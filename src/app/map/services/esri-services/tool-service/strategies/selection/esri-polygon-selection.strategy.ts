@@ -10,6 +10,7 @@ import {SupportedSrs} from '../../../../../../shared/types/supported-srs.type';
 import Graphic from '@arcgis/core/Graphic';
 import {SupportedEsriPolygonTool, SupportedEsriTool} from '../supported-esri-tool.type';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
+import {CreateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy<DrawingCallbackHandlerArgsSelection> {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
@@ -38,7 +39,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     reactiveUtils.on(
       () => this.sketchViewModel,
       'create',
-      ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
+      ({state, graphic}: CreateEvent) => {
         switch (state) {
           case 'start':
             this.layer.removeAll();
@@ -47,7 +48,9 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
           case 'cancel':
             break; // currently, these events do not trigger any action
           case 'complete':
-            this.complete(graphic);
+            if (graphic) {
+              this.complete(graphic);
+            }
             break;
         }
       },

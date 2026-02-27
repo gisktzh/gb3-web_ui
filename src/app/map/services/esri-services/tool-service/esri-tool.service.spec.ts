@@ -52,7 +52,7 @@ import Layer from '@arcgis/core/layers/Layer';
 import {EsriDefaultStrategy} from './strategies/esri-default.strategy';
 import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawable-tool.strategy';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {Point} from '@arcgis/core/geometry';
+import Point from '@arcgis/core/geometry/Point';
 import {EsriSymbolDrawingStrategy} from './strategies/drawing/esri-symbol-drawing.strategy';
 import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
 import {PointWithSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
@@ -61,6 +61,7 @@ import {EsriMapDrawingSymbol} from '../types/esri-map-drawing-symbol.type';
 import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal-drawing-representation-to-esri-graphic.utils';
 import MapView from '@arcgis/core/views/MapView';
 import EsriMap from '@arcgis/core/Map';
+import {GoToOptions2D, GoToTarget2D} from '@arcgis/core/views/types';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -76,7 +77,7 @@ describe('EsriToolService', () => {
       this.container = container;
     }
 
-    public override goTo(_1: __esri.GoToTarget2D, _2?: __esri.GoToOptions2D): Promise<any> {
+    public override goTo(_1: GoToTarget2D, _2?: GoToOptions2D): Promise<any> {
       return Promise.resolve();
     }
   }
@@ -922,7 +923,7 @@ describe('EsriToolService', () => {
       const labelText = 'some Text';
       spyOn(EsriTextDrawingStrategy.prototype, 'edit').and.stub();
       const updateInternalsSpy = spyOn(EsriTextDrawingStrategy.prototype, 'updateInternals').and.stub();
-      const layer = new Layer();
+      const layer = {} as Layer;
       layer.id = 'yes_drawings_please';
 
       const graphic = new Graphic();
@@ -956,7 +957,7 @@ describe('EsriToolService', () => {
     });
     it('should throw an error if the given graphic has no geometry', () => {
       const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
-      const layer = new Layer();
+      const layer = {} as Layer;
       layer.id = 'yes_drawings_please';
 
       const graphic = new Graphic();
@@ -972,7 +973,7 @@ describe('EsriToolService', () => {
     });
     it('should throw an error if the given graphic has no layer', () => {
       const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
-      const layer = new Layer();
+      const layer = {} as Layer;
       layer.id = 'yes_drawings_please';
 
       const graphic = new Graphic();
@@ -989,7 +990,7 @@ describe('EsriToolService', () => {
     });
     it('should select the correct drawing tool for circles', () => {
       const polygonStratEditSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'edit').and.stub();
-      const layer = new Layer();
+      const layer = {} as Layer;
       layer.id = 'yes_drawings_please';
 
       const graphic = new Graphic();
@@ -1007,7 +1008,7 @@ describe('EsriToolService', () => {
     });
     it('should select the correct drawing tool for rectangles', () => {
       const polygonStratEditSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'edit').and.stub();
-      const layer = new Layer();
+      const layer = {} as Layer;
       layer.id = 'yes_drawings_please';
 
       const graphic = new Graphic();
@@ -1025,7 +1026,7 @@ describe('EsriToolService', () => {
     });
     it('should select the correct drawing tool for symbols', () => {
       const polygonStratEditSpy = spyOn(EsriSymbolDrawingStrategy.prototype, 'edit').and.stub();
-      const layer = new Layer();
+      const layer = {} as Layer;
       layer.id = 'yes_drawings_please';
 
       const graphic = new Graphic();

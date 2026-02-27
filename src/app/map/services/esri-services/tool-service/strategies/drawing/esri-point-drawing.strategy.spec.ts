@@ -8,6 +8,7 @@ import Point from '@arcgis/core/geometry/Point';
 import {EsriPointDrawingStrategy} from './esri-point-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 class EsriPointDrawingStrategyWrapper extends EsriPointDrawingStrategy {
   public get svm() {
@@ -44,7 +45,7 @@ describe('EsriPointDrawingStrategy', () => {
       const strategy = new EsriPointDrawingStrategyWrapper(layer, mapView, pointSymbol, () => callbackHandler.handle());
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
+      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
 
       expect(callbackSpy).not.toHaveBeenCalled();
     });
@@ -57,7 +58,7 @@ describe('EsriPointDrawingStrategy', () => {
       const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       expect(callbackSpy).toHaveBeenCalled();
     });
@@ -68,7 +69,7 @@ describe('EsriPointDrawingStrategy', () => {
       const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'complete'});
+      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
 
       expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
     });

@@ -15,6 +15,7 @@ import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 class EsriTextDrawingStrategyWrapper extends EsriTextDrawingStrategy {
   public get svm() {
@@ -62,7 +63,7 @@ describe('EsriTextDrawingStrategy', () => {
       const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
+      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
 
       expect(callbackSpy).not.toHaveBeenCalled();
     });
@@ -85,7 +86,7 @@ describe('EsriTextDrawingStrategy', () => {
       } as MatDialogRef<typeof TextDrawingToolInputComponent, string>);
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       expect(callbackSpy).toHaveBeenCalled();
     });
@@ -106,7 +107,7 @@ describe('EsriTextDrawingStrategy', () => {
       } as MatDialogRef<typeof TextDrawingToolInputComponent, string>);
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       expect((graphic.symbol as TextSymbol).text).toEqual(expectedText);
     });
@@ -125,7 +126,7 @@ describe('EsriTextDrawingStrategy', () => {
       });
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'complete'});
+      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
 
       expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
     });
