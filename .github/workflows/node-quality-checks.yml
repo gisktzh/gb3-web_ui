@@ -77,7 +77,7 @@ jobs:
           path: './coverage/gb3-frontend/lcov.info'
           key: ${{ inputs.cache_key }}
 
-      - name: Install dependencies and run tests
+      - name: Install dependencies and puppeteer's browsers
         run: |
           npm ci --ignore-scripts
           node ./node_modules/.bin/puppeteer browsers install
