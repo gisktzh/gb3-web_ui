@@ -81,6 +81,20 @@ jobs:
         run: |
           npm ci --ignore-scripts
           node ./node_modules/.bin/puppeteer browsers install
+
+      - name: Fix Chrome sandbox permissions
+        run: |
+          SANDBOX_PATH=$(find ~/.cache/puppeteer -name chrome_sandbox | head -n 1)
+
+          echo "Using sandbox at $SANDBOX_PATH"
+
+          sudo chown root:root "$SANDBOX_PATH"
+          sudo chmod 4755 "$SANDBOX_PATH"
+
+          echo "CHROME_DEVEL_SANDBOX=$SANDBOX_PATH" >> $GITHUB_ENV
+
+      - name: Run tests
+        run: |
           npm run test-ci
         env:
           # note: this is required with @arcgis/core >=4.32 due to increased memory usage for type checking
