@@ -63,7 +63,6 @@ import Basemap from '@arcgis/core/Basemap';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import MapView from '@arcgis/core/views/MapView';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
-import EsriMap from '@arcgis/core/Map';
 import {EsriLoadStatus} from './types/esri-load-status.type';
 import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOperator.js';
 import {MapViewWithMap} from './types/esri-mapview-with-map.type';
@@ -72,7 +71,7 @@ import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 import Layer from '@arcgis/core/layers/Layer';
 import {KMLSublayerProperties} from '@arcgis/core/layers/support/KMLSublayer';
 import {GraphicHit} from '@arcgis/core/views/types';
-import Map from '@arcgis/core/Map';
+import EsriMap from '@arcgis/core/Map';
 import LayerView from '@arcgis/core/views/layers/LayerView';
 import {RequestInterceptor} from '@arcgis/core/request/types';
 import {ResourceHandle} from '@arcgis/core/core/Handles';
@@ -827,7 +826,7 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private setMapView(mapInstance: Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
+  private setMapView(mapInstance: EsriMap, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
     const spatialReference = new SpatialReference({wkid: srsId});
     this.mapView = new MapView({
       map: mapInstance,
