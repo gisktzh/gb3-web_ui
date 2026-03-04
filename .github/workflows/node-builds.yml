@@ -19,6 +19,10 @@ on:
         options:
           - ubuntu-24.12
           - ubuntu-latest
+
+env:
+  NODE_VERSION: '24'
+
 jobs:
   run-builds:
     name: Test build for ${{ matrix.environment }}

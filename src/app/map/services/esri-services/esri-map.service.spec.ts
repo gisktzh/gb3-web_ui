@@ -1,5 +1,4 @@
-import {TestBed} from '@angular/core/testing';
-
+import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
 import {EsriMapService} from './esri-map.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
@@ -17,14 +16,23 @@ import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 import {Observable} from 'rxjs';
 import {selectAllItems} from 'src/app/state/map/selectors/active-map-items.selector';
 import {selectDrawings} from 'src/app/state/map/reducers/drawing.reducer';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import Layer from '@arcgis/core/layers/Layer';
+import MapView from '@arcgis/core/views/MapView';
+import {defaultMapConfig} from 'src/app/shared/configs/map.config';
+import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
+import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
+import {HasSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
+import {Point} from 'geojson';
+import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
 
-function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: __esri.Layer) {
+function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
   expect(actualEsriLayer.opacity).toBe(expectedMapItem.opacity);
   expect(actualEsriLayer.title).toBe(expectedMapItem.title);
   expect(actualEsriLayer.visible).toBe(expectedMapItem.visible);
 
-  const actualEsriWmsLayer = actualEsriLayer as __esri.WMSLayer;
+  const actualEsriWmsLayer = actualEsriLayer as WMSLayer;
   expect(actualEsriWmsLayer.url).toBe(expectedMapItem.settings.url);
   expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.settings.layers.length);
   expectedMapItem.settings.layers.forEach((expectedLayer) => {
@@ -61,11 +69,12 @@ function getExpectedNumberOfLayersWithInternalLayers(expectedNumber: number): nu
 describe('EsriMapService', () => {
   let service: EsriMapService;
   let mapMock: EsriMapMock;
+  let toolServiceSpy: EsriToolService;
   let mapViewService: EsriMapViewService = new EsriMapViewService();
   let store: MockStore;
 
   beforeEach(() => {
-    const toolServiceSpy = jasmine.createSpyObj<EsriToolService>(['initializeMeasurement']);
+    toolServiceSpy = jasmine.createSpyObj<EsriToolService>(['initializeMeasurement', 'addExistingDrawingsToLayer']);
 
     TestBed.configureTestingModule({
       imports: [AuthModule],
@@ -83,18 +92,83 @@ describe('EsriMapService', () => {
       ],
     });
     service = TestBed.inject(EsriMapService);
-    TestBed.inject(EsriToolService);
 
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
     mapMock = new EsriMapMock(internalLayers);
     mapViewService = TestBed.inject(EsriMapViewService);
-    mapViewService.mapView = {map: mapMock} as __esri.MapView;
+    mapViewService.mapView = {map: mapMock} as MapView;
     store = TestBed.inject(MockStore);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should initialize the map with config and add drawings on init', fakeAsync(() => {
+    store.overrideSelector(selectMapConfigState, {
+      ...defaultMapConfig,
+      isMapServiceInitialized: false,
+      center: {
+        x: 1408,
+        y: 1337,
+      },
+      scale: 12,
+      rotation: 34,
+      srsId: 2056,
+      ready: true,
+    });
+    store.overrideSelector(selectAllItems, [
+      new DrawingActiveMapItem('some-item', DrawingLayerPrefix.Drawing, UserDrawingLayer.Drawings, true, 1),
+    ]);
+
+    const mockUserDrawing: Gb3StyledInternalDrawingRepresentation = {
+      source: UserDrawingLayer.Drawings,
+      geometry: {
+        type: 'Point',
+        coordinates: [1, 2],
+        srs: 2056,
+      } as Point & HasSrs,
+      type: 'Feature',
+      properties: {
+        style: {
+          type: 'point',
+          strokeColor: '#ff6600',
+          strokeOpacity: 1,
+          strokeWidth: 12,
+          fillColor: '#ff6600',
+          fillOpacity: 0.5,
+          pointRadius: 34,
+        },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        __id: '',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        __belongsTo: undefined,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        __tool: 'point',
+      },
+    };
+
+    const mockSearchHighlightDrawing = {
+      ...mockUserDrawing,
+      source: InternalDrawingLayer.FeatureHighlight,
+    };
+
+    const mockDrawings: Gb3StyledInternalDrawingRepresentation[] = [mockUserDrawing, mockSearchHighlightDrawing];
+
+    store.overrideSelector(selectDrawings, mockDrawings);
+    store.overrideSelector(selectActiveTool, 'draw-point');
+    const dispatchSpy = spyOn(store, 'dispatch');
+
+    service.init();
+
+    flushMicrotasks();
+
+    expect(mapViewService.mapView.scale).toBe(12);
+    expect(mapViewService.mapView.center.x).toBe(1408);
+    expect(mapViewService.mapView.center.y).toBe(1337);
+    expect(toolServiceSpy.addExistingDrawingsToLayer).toHaveBeenCalledWith([mockUserDrawing], UserDrawingLayer.Drawings);
+    expect(dispatchSpy).toHaveBeenCalledWith(MapConfigActions.markMapServiceAsInitialized());
+  }));
 
   it('should not initialize twice', () => {
     const storeSelectSpy = spyOn(store, 'select').and.returnValue(new Observable());
@@ -259,7 +333,7 @@ describe('EsriMapService', () => {
     const mapItem = createGb2WmsMapItemMock('topic', 3);
 
     service.addGb2WmsLayer(mapItem, 0);
-    const wmsLayer = mapMock.layers.getItemAt(0) as __esri.WMSLayer;
+    const wmsLayer = mapMock.layers.getItemAt(0) as WMSLayer;
     // order: layer2, layer1, layer0
 
     // index <> position; position 0 should be the highest index for Esri.
@@ -293,7 +367,7 @@ describe('EsriMapService', () => {
 
         expect(internalLayer).toBeDefined();
 
-        const internalLayerSpy = spyOn(internalLayer as __esri.GraphicsLayer, 'removeAll').and.callThrough();
+        const internalLayerSpy = spyOn(internalLayer as GraphicsLayer, 'removeAll').and.callThrough();
         service.clearInternalDrawingLayer(internalDrawingLayer);
 
         expect(internalLayerSpy).toHaveBeenCalledTimes(1);

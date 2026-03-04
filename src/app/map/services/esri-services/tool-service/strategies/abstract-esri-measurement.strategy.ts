@@ -1,4 +1,4 @@
-import {DrawingCallbackHandlerArgsMeasurement} from './../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandlerArgsMeasurement} from '../interfaces/drawing-callback-handler.interface';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Polygon from '@arcgis/core/geometry/Polygon';
@@ -10,6 +10,7 @@ import {AbstractEsriDrawableToolStrategy} from './abstract-esri-drawable-tool.st
 import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
 import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 export type LabelConfiguration = {location: Point; symbolization: TextSymbol};
 
@@ -36,20 +37,22 @@ export abstract class AbstractEsriMeasurementStrategy<
     reactiveUtils.on(
       () => this.sketchViewModel,
       'create',
-      ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
+      ({state, graphic}: CreateEvent) => {
         switch (state) {
           case 'active':
           case 'start':
           case 'cancel':
             break; // currently, these events do not trigger any action
           case 'complete': {
-            const graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
-            const labelConfiguration: {label: Graphic; labelText: string} = this.createLabelForGeometry(
-              graphic.geometry as TGeometry,
-              graphicIdentifier,
-            );
-            this.layer.add(labelConfiguration.label);
-            this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
+            if (graphic) {
+              const graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
+              const labelConfiguration: {label: Graphic; labelText: string} = this.createLabelForGeometry(
+                graphic.geometry as TGeometry,
+                graphicIdentifier,
+              );
+              this.layer.add(labelConfiguration.label);
+              this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
+            }
             break;
           }
         }
@@ -57,13 +60,13 @@ export abstract class AbstractEsriMeasurementStrategy<
     );
   }
 
-  public edit(graphic: __esri.Graphic) {
+  public edit(graphic: Graphic) {
     void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
 
     reactiveUtils.on(
       () => this.sketchViewModel,
       'update',
-      ({state}: {state: __esri.SketchViewModelUpdateEvent['state']}) => {
+      ({state}: UpdateEvent) => {
         switch (state) {
           case 'start':
             this.removeLabelOnEdit(graphic);

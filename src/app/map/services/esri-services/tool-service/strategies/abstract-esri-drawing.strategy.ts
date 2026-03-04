@@ -10,6 +10,7 @@ import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import Graphic from '@arcgis/core/Graphic';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 export abstract class AbstractEsriDrawingStrategy<
   CallbackType extends DrawingCallbackHandlerArgsDrawing | DrawingCallbackHandlerArgsTextDrawing | DrawingCallbackHandlerArgsSymbolDrawing,
@@ -24,27 +25,29 @@ export abstract class AbstractEsriDrawingStrategy<
     reactiveUtils.on(
       () => this.sketchViewModel,
       'create',
-      async ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
+      async ({state, graphic}: CreateEvent) => {
         switch (state) {
           case 'active':
           case 'start':
           case 'cancel':
             break; // currently, these events do not trigger any action
           case 'complete':
-            this.handleComplete(graphic, 'add');
+            if (graphic) {
+              this.handleComplete(graphic, 'add');
+            }
             break;
         }
       },
     );
   }
 
-  public edit(graphic: __esri.Graphic) {
+  public edit(graphic: Graphic) {
     this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
 
     reactiveUtils.on(
       () => this.sketchViewModel,
       'update',
-      ({state}: {state: __esri.SketchViewModelUpdateEvent['state']}) => {
+      ({state}: UpdateEvent) => {
         switch (state) {
           case 'active':
           case 'start':

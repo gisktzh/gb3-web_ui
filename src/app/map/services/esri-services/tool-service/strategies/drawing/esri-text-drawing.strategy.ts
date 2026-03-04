@@ -8,6 +8,8 @@ import {TextDrawingToolInputComponent} from '../../../../../components/text-draw
 import {SupportedEsriTool} from '../supported-esri-tool.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
 import Graphic from '@arcgis/core/Graphic';
+import MapView from '@arcgis/core/views/MapView';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandlerArgsTextDrawing> {
   protected readonly tool: SupportedEsriTool = 'point';
@@ -15,9 +17,9 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
   private labelText: string | undefined;
 
   constructor(
-    layer: __esri.GraphicsLayer,
-    mapView: __esri.MapView,
-    textSymbol: __esri.TextSymbol,
+    layer: GraphicsLayer,
+    mapView: MapView,
+    textSymbol: TextSymbol,
     completeDrawingCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsTextDrawing>,
     dialogService: MatDialog,
   ) {

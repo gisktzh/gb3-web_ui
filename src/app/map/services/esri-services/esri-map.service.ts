@@ -49,26 +49,33 @@ import * as intl from '@arcgis/core/intl';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {TimeSliderService} from '../time-slider.service';
 import {ZoomExtentMissing} from './errors/esri.errors';
-import {SymbolUnion} from '@arcgis/core/unionTypes';
+import {SymbolUnion} from '@arcgis/core/symbols/types';
+import {GeometryUnion} from '@arcgis/core/geometry/types';
 import {hasNonNullishProperty} from './type-guards/esri-nullish.type-guard';
 import Transformation from '@arcgis/core/geometry/operators/support/Transformation';
 import KMLLayer from '@arcgis/core/layers/KMLLayer';
 import Point from '@arcgis/core/geometry/Point';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import WMSLayer, {WMSLayerFormatType} from '@arcgis/core/layers/WMSLayer';
 import Graphic from '@arcgis/core/Graphic';
-import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
+import WMSSublayer, {WMSSublayerProperties} from '@arcgis/core/layers/support/WMSSublayer';
 import Basemap from '@arcgis/core/Basemap';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import MapView from '@arcgis/core/views/MapView';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
-import EsriMap from '@arcgis/core/Map';
 import {EsriLoadStatus} from './types/esri-load-status.type';
 import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOperator.js';
-import GraphicHit = __esri.GraphicHit;
 import {MapViewWithMap} from './types/esri-mapview-with-map.type';
 import {TIME_SERVICE} from '../../../app.tokens';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
+import Layer from '@arcgis/core/layers/Layer';
+import {KMLSublayerProperties} from '@arcgis/core/layers/support/KMLSublayer';
+import {GraphicHit} from '@arcgis/core/views/types';
+import EsriMap from '@arcgis/core/Map';
+import LayerView from '@arcgis/core/views/layers/LayerView';
+import {RequestInterceptor} from '@arcgis/core/request/types';
+import {ResourceHandle} from '@arcgis/core/core/Handles';
+import {ClickEvent, LayerViewCreateEvent} from '@arcgis/core/views/input/types';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -104,14 +111,15 @@ export class EsriMapService implements MapService, OnDestroy {
   private effectiveMinScale = 0;
   private isEditModeActive = false;
   private isToolActive = false;
-  private readonly printPreviewHandle$: BehaviorSubject<IHandle | null> = new BehaviorSubject<IHandle | null>(null);
+  private readonly printPreviewHandle$: BehaviorSubject<ResourceHandle | null> = new BehaviorSubject<ResourceHandle | null>(null);
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly rotation$ = this.store.select(selectRotation);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-  private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
+  // starting with Arcgis v5, this cast is necessary since we also supply the mode, which is not exposed by config
+  private readonly wmsImageFormatMimeType: WMSLayerFormatType = this.configService.gb2Config.wmsFormatMimeType as WMSLayerFormatType;
   private mapInitialized = false;
 
   constructor() {
@@ -134,7 +142,7 @@ export class EsriMapService implements MapService, OnDestroy {
     return this.esriMapViewService.mapView;
   }
 
-  private set mapView(value: __esri.MapView) {
+  private set mapView(value: MapView) {
     this.esriMapViewService.mapView = value;
   }
 
@@ -273,20 +281,20 @@ export class EsriMapService implements MapService, OnDestroy {
       mapItem.visible,
       mapItem.opacity,
       mapItem.settings.layers,
-      mapItem.settings.imageFormat,
+      mapItem.settings.imageFormat as WMSLayerFormatType,
     );
     this.addLayer(esriLayer, position);
   }
 
   public addExternalKmlLayer(mapItem: ExternalKmlActiveMapItem, position: number) {
-    const esriLayer: __esri.Layer = new KMLLayer({
+    const esriLayer: Layer = new KMLLayer({
       id: mapItem.id,
       title: mapItem.title,
       url: mapItem.settings.url,
       visible: mapItem.visible,
       opacity: mapItem.opacity,
       sublayers: mapItem.settings.layers
-        .map((layer): __esri.KMLSublayerProperties => {
+        .map((layer): KMLSublayerProperties => {
           return {
             id: layer.id,
             title: layer.title,
@@ -436,7 +444,7 @@ export class EsriMapService implements MapService, OnDestroy {
     if (hasNonNullishProperty(esriGeometry, 'extent')) {
       return this.mapView.goTo(
         {
-          center: esriGeometry.extent.clone().expand(expandFactor),
+          center: esriGeometry.extent.clone().expand(expandFactor).center,
         },
         {duration},
       ) as never;
@@ -454,7 +462,7 @@ export class EsriMapService implements MapService, OnDestroy {
   public clearInternalDrawingLayer(internalDrawingLayer: InternalDrawingLayer) {
     const layer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
     if (layer) {
-      (layer as __esri.GraphicsLayer).removeAll();
+      (layer as GraphicsLayer).removeAll();
     }
   }
 
@@ -510,8 +518,8 @@ export class EsriMapService implements MapService, OnDestroy {
     visible: boolean,
     opacity: number,
     layers: ExternalWmsLayer[],
-    imageFormat: string | undefined,
-  ): __esri.WMSLayer {
+    imageFormat: WMSLayerFormatType | undefined,
+  ): WMSLayer {
     const esriLayer = new WMSLayer({
       id: id,
       title: title,
@@ -520,7 +528,7 @@ export class EsriMapService implements MapService, OnDestroy {
       opacity: opacity,
       imageFormat: imageFormat,
       sublayers: layers
-        .map((layer): __esri.WMSSublayerProperties => {
+        .map((layer): WMSSublayerProperties => {
           return {
             id: layer.id,
             name: layer.name,
@@ -534,7 +542,7 @@ export class EsriMapService implements MapService, OnDestroy {
     return esriLayer;
   }
 
-  private addLayer(esriLayer: __esri.Layer, position: number) {
+  private addLayer(esriLayer: Layer, position: number) {
     if (this.esriMapViewService.findEsriLayer(esriLayer.id)) {
       return;
     }
@@ -550,7 +558,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   private addEsriGeometryToDrawingLayer(
-    esriGeometry: __esri.Geometry,
+    esriGeometry: GeometryUnion,
     esriSymbolization: SymbolUnion,
     internalDrawingLayer: InternalDrawingLayer,
     id?: string,
@@ -562,7 +570,7 @@ export class EsriMapService implements MapService, OnDestroy {
     });
     const targetLayer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
     if (targetLayer) {
-      (targetLayer as __esri.GraphicsLayer).add(graphicItem);
+      (targetLayer as GraphicsLayer).add(graphicItem);
     }
   }
 
@@ -625,11 +633,11 @@ export class EsriMapService implements MapService, OnDestroy {
     return this.mapView.map.layers.length - this.numberOfDrawingLayers;
   }
 
-  private createGeoReferencedPoint({coordinates, srs}: PointWithSrs): __esri.Point {
+  private createGeoReferencedPoint({coordinates, srs}: PointWithSrs): Point {
     return new Point({spatialReference: {wkid: srs}, x: coordinates[0], y: coordinates[1]});
   }
 
-  private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem, esriLayer: __esri.Layer) {
+  private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem, esriLayer: Layer) {
     if (esriLayer instanceof WMSLayer && mapItem.settings.timeSliderConfiguration) {
       switch (mapItem.settings.timeSliderConfiguration.sourceType) {
         case 'parameter':
@@ -643,7 +651,7 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  private setEsriAttributeFilters(attributeFilterParameters: WmsFilterValue[], esriLayer: __esri.Layer) {
+  private setEsriAttributeFilters(attributeFilterParameters: WmsFilterValue[], esriLayer: Layer) {
     if (esriLayer instanceof WMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
       attributeFilterParameters.forEach((attributeFilterParameter) => {
@@ -661,7 +669,7 @@ export class EsriMapService implements MapService, OnDestroy {
    * Those parameters are defined in the corresponding time slider configuration sent by the source server.
    */
   private applyTimeSliderCustomParameters(
-    esriLayer: __esri.WMSLayer,
+    esriLayer: WMSLayer,
     timeSliderExtent: TimeExtent,
     timeSliderConfiguration: TimeSliderConfiguration,
   ) {
@@ -689,7 +697,7 @@ export class EsriMapService implements MapService, OnDestroy {
    * Therefore, first all time slider specific sub-layers are filtered. And from those only the ones which have a date inside the current
    * time extent are selected to be visible.
    */
-  private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
+  private synchronizeTimeSliderLayers(esriLayer: WMSLayer, timeSliderExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
     if (!mapItem.settings.timeSliderConfiguration) {
       return;
     }
@@ -712,7 +720,7 @@ export class EsriMapService implements MapService, OnDestroy {
               name: layer.layer,
               title: layer.title,
               visible: true,
-            } as __esri.WMSSublayerProperties),
+            } as WMSSublayerProperties),
         )
         .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
       // order of the WMS specifications
@@ -818,13 +826,10 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private setMapView(mapInstance: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
+  private setMapView(mapInstance: EsriMap, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
     const spatialReference = new SpatialReference({wkid: srsId});
     this.mapView = new MapView({
       map: mapInstance,
-      ui: {
-        components: ['attribution'],
-      },
       scale,
       center: new Point({x, y, spatialReference}),
       constraints: {
@@ -871,7 +876,7 @@ export class EsriMapService implements MapService, OnDestroy {
     reactiveUtils.on(
       () => this.mapView,
       'click',
-      async (event: __esri.ViewClickEvent) => {
+      async (event: ClickEvent) => {
         // Tool handles all clicks, and as long as a tool is active, but hasn't fully initialized yet, we don't want any interaction on the map.
         if (this.isToolActive) {
           return;
@@ -925,13 +930,13 @@ export class EsriMapService implements MapService, OnDestroy {
     reactiveUtils.on(
       () => this.mapView,
       'layerview-create',
-      (event: __esri.ViewLayerviewCreateEvent) => {
+      (event: LayerViewCreateEvent) => {
         this.attachLayerViewListeners(event.layerView);
       },
     );
   }
 
-  private attachLayerListeners(esriLayer: __esri.Layer) {
+  private attachLayerListeners(esriLayer: Layer) {
     // watch and initialize the loading state by observing the 'loadStatus' property
     reactiveUtils.watch(
       () => esriLayer.loadStatus,
@@ -942,7 +947,7 @@ export class EsriMapService implements MapService, OnDestroy {
     this.updateLoadingState(esriLayer.loadStatus, esriLayer.id);
   }
 
-  private attachLayerViewListeners(esriLayerView: __esri.LayerView) {
+  private attachLayerViewListeners(esriLayerView: LayerView) {
     // watch and initialize the view process state by observing the 'updating' property
     reactiveUtils.watch(
       () => esriLayerView.updating,
@@ -1024,7 +1029,7 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {
+  private getWmsOverrideInterceptor(accessToken?: string): RequestInterceptor {
     const wmsOverrideUrl = this.configService.overridesConfig.overrideWmsUrl;
     const {gb2Wms, gb2WmsCapabilities} = this.configService.apiConfig;
     return wmsAuthAndUrlOverrideInterceptorFactory([gb2Wms.baseUrl, gb2WmsCapabilities.baseUrl], wmsOverrideUrl, accessToken);

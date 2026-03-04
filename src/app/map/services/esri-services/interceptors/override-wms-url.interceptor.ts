@@ -1,6 +1,4 @@
-import RequestInterceptor = __esri.RequestInterceptor;
-import AfterInterceptorCallback = __esri.AfterInterceptorCallback;
-import RequestResponse = __esri.RequestResponse;
+import {AfterInterceptorCallback, RequestInterceptor, RequestResponse} from '@arcgis/core/request/types';
 
 /**
  * WMS URL that is hardcoded in the ZH WMS mapfiles. It can be either prefixed
@@ -18,10 +16,15 @@ const hardcodedWmsUrl = /http(s)?:\/\/(web\.)?wms\.zh\.ch/g;
  *
  * This is only an issue for those environments that use the above GetCapabilities request, but should not serve the layers from there (i.e.
  * local envs).
+ *
+ * Note: the _actual_ type parameter of RequestResponse is any, but we narrow it down to XMLDocument because we _know_ that GetCapabilities
+ * returns XML. Now, the proper solution would be to cast it and check for more stuff, so TBD :)
  */
 const callbackFactory: (overrideWmsUrl: string) => AfterInterceptorCallback = (overrideWmsUrl: string) => {
-  return (response: RequestResponse) => {
-    if (overrideWmsUrl && response.requestOptions?.query.REQUEST === 'GetCapabilities') {
+  return (response: RequestResponse<XMLDocument>) => {
+    // Since requests from the symbols part of @arcgis/core are also intercepted here, we need to explicitly check for
+    // the existence of the .get() method, since in these cases, .query is a simple value object.
+    if (overrideWmsUrl && response.requestOptions?.query?.get?.('REQUEST') === 'GetCapabilities') {
       try {
         /**
          * As per the docs (https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestResponse), the response
@@ -54,15 +57,15 @@ const wmsAuthAndUrlOverrideInterceptorFactory = (
   urlsToListenTo: string[],
   hasWmsOverride?: string,
   accessToken?: string,
-): __esri.RequestInterceptor => {
+): RequestInterceptor => {
   const baseInterceptor: RequestInterceptor = {
-    headers: {},
     urls: urlsToListenTo,
     after: hasWmsOverride ? callbackFactory(hasWmsOverride) : undefined,
   };
 
   if (accessToken) {
-    baseInterceptor.headers.Authorization = `Bearer ${accessToken}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Header convention
+    baseInterceptor.headers = {Authorization: `Bearer ${accessToken}`};
   }
 
   return baseInterceptor;

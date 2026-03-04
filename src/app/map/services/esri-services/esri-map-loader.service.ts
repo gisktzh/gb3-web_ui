@@ -13,6 +13,7 @@ import {hasNonNullishProperty, isNullish} from './type-guards/esri-nullish.type-
 import KMLLayer from '@arcgis/core/layers/KMLLayer';
 import EsriError from '@arcgis/core/core/Error';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import Layer from '@arcgis/core/layers/Layer';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,7 @@ export class EsriMapLoaderService implements MapLoaderService {
     }
   }
 
-  private loadService<T extends __esri.Layer>(layer: T): Observable<T> {
+  private loadService<T extends Layer>(layer: T): Observable<T> {
     return from(layer.load()).pipe(
       catchError((error: unknown) => {
         let message;

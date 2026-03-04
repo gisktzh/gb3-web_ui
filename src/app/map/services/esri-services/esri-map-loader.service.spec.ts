@@ -12,6 +12,10 @@ import {ExternalServiceHasNoLayers} from '../../../shared/errors/map-import.erro
 import EsriError from '@arcgis/core/core/Error';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import {MAP_SERVICE} from '../../../app.tokens';
+import Layer from '@arcgis/core/layers/Layer';
+import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
+import KMLSublayer from '@arcgis/core/layers/support/KMLSublayer';
+import KMLLayer from '@arcgis/core/layers/KMLLayer';
 
 describe('EsriMapLoaderService', () => {
   let service: EsriMapLoaderService;
@@ -32,7 +36,7 @@ describe('EsriMapLoaderService', () => {
     it('throws a `LayerCouldNotBeLoaded` error if something goes wrong during loading', (done: DoneFn) => {
       const originalMessage = 'oh no! anyway...';
       const originalError = new EsriError('error name', originalMessage);
-      const layer: __esri.Layer = new WMSLayer();
+      const layer: Layer = new WMSLayer();
       spyOn(layer, 'load').and.rejectWith(originalError);
 
       const expectedError = new LayerCouldNotBeLoaded(originalMessage);
@@ -77,7 +81,7 @@ describe('EsriMapLoaderService', () => {
           url,
           title,
           imageFormat,
-          sublayers: new Collection<__esri.WMSSublayer>([
+          sublayers: new Collection<Partial<WMSSublayer>>([
             {
               id: externalLayerOne.id,
               name: externalLayerOne.name,
@@ -91,7 +95,7 @@ describe('EsriMapLoaderService', () => {
               visible: externalLayerTwo.visible,
             },
           ]),
-        } as Partial<__esri.WMSLayer>),
+        } as Partial<WMSLayer>),
       );
 
       const expected = new ExternalWmsActiveMapItem(url, title, [externalLayerOne, externalLayerTwo], imageFormat);
@@ -110,8 +114,8 @@ describe('EsriMapLoaderService', () => {
           url,
           title,
           imageFormat,
-          sublayers: new Collection<__esri.WMSSublayer>([]),
-        } as Partial<__esri.WMSLayer>),
+          sublayers: new Collection<WMSSublayer>([]),
+        } as Partial<WMSLayer>),
       );
 
       const expectedError = new ExternalServiceHasNoLayers();
@@ -146,7 +150,7 @@ describe('EsriMapLoaderService', () => {
         of({
           url,
           title,
-          sublayers: new Collection<__esri.KMLSublayer>([
+          sublayers: new Collection<Partial<KMLSublayer>>([
             {
               id: externalLayerOne.id,
               title: externalLayerOne.title,
@@ -158,7 +162,7 @@ describe('EsriMapLoaderService', () => {
               visible: externalLayerTwo.visible,
             },
           ]),
-        } as Partial<__esri.KMLLayer>),
+        } as Partial<KMLLayer>),
       );
 
       const expected = new ExternalKmlActiveMapItem(url, title, [externalLayerOne, externalLayerTwo]);
@@ -175,8 +179,8 @@ describe('EsriMapLoaderService', () => {
         of({
           url,
           title,
-          sublayers: new Collection<__esri.KMLSublayer>([]),
-        } as Partial<__esri.KMLLayer>),
+          sublayers: new Collection<KMLSublayer>([]),
+        } as Partial<KMLLayer>),
       );
 
       const expectedError = new ExternalServiceHasNoLayers();

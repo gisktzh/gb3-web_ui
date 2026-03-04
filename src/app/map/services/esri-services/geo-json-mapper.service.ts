@@ -38,30 +38,30 @@ export class GeoJSONMapperService {
     }
   }
 
-  private geoJSONPointToEsriPoint(point: PointWithSrs): __esri.Point {
+  private geoJSONPointToEsriPoint(point: PointWithSrs): Point {
     return new Point({x: point.coordinates[0], y: point.coordinates[1], spatialReference: {wkid: point.srs}});
   }
 
-  private geoJSONMultiPointToEsriMultiPoint(multiPoint: MultiPointWithSrs): __esri.Multipoint {
+  private geoJSONMultiPointToEsriMultiPoint(multiPoint: MultiPointWithSrs): Multipoint {
     const points = multiPoint.coordinates.map((point) => [point[0], point[1]]);
     return new Multipoint({points: points, spatialReference: {wkid: multiPoint.srs}});
   }
 
-  private geoJSONPolygonToEsriPolygon(polygon: PolygonWithSrs): __esri.Polygon {
+  private geoJSONPolygonToEsriPolygon(polygon: PolygonWithSrs): Polygon {
     return new Polygon({rings: polygon.coordinates, spatialReference: {wkid: polygon.srs}});
   }
 
-  private geoJSONMultiPolygonToEsriPolygon(multiPolygon: MultiPolygonWithSrs): __esri.Polygon {
+  private geoJSONMultiPolygonToEsriPolygon(multiPolygon: MultiPolygonWithSrs): Polygon {
     // Esri does not deal with MultiPolygon, all polygons are treated one and the same. A MultiPolygon just extracts all
     // polygon coordinates as flat array and returns a Polygon
     return new Polygon({rings: multiPolygon.coordinates.flat(), spatialReference: {wkid: multiPolygon.srs}});
   }
 
-  private geoJSONLineStringToEsriPolyline(lineString: LineStringWithSrs): __esri.Polyline {
+  private geoJSONLineStringToEsriPolyline(lineString: LineStringWithSrs): Polyline {
     return new Polyline({paths: [lineString.coordinates], spatialReference: {wkid: lineString.srs}});
   }
 
-  private geoJSONMultiLineStringToEsriPolyline(multiLineString: MultiLineStringWithSrs): __esri.Polyline {
+  private geoJSONMultiLineStringToEsriPolyline(multiLineString: MultiLineStringWithSrs): Polyline {
     return new Polyline({paths: multiLineString.coordinates, spatialReference: {wkid: multiLineString.srs}});
   }
 }
