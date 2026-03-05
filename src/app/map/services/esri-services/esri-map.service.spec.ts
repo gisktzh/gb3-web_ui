@@ -377,16 +377,6 @@ describe('EsriMapService', () => {
     });
   });
 
-  /*
-    public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {
-      const layer = this.getInternalDrawingLayer(drawingLayer);
-      if (layer && layer instanceof GraphicsLayer) {
-        const graphicsToBeRemoved = layer.graphics.filter((graphic) => graphic.attributes[MapConstants.DRAWING_IDENTIFIER] === id).toArray();
-        layer.removeMany(graphicsToBeRemoved);
-      }
-    }
-  */
-
   describe('removeGeometryFromInternalDrawingLayer', () => {
     it('should remove a given geometry from an internal drawing layer', () => {
       const internalDrawingLayer: InternalDrawingLayer = InternalDrawingLayer.SearchResultHighlight;
