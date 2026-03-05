@@ -3,7 +3,7 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import * as areaOperator from '@arcgis/core/geometry/operators/areaOperator.js';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
 import {hasNonNullishProperty, isNullish} from '../type-guards/esri-nullish.type-guard';
-import GraphicHit = __esri.GraphicHit;
+import {GraphicHit} from '@arcgis/core/views/types';
 
 type HitWithArea = {hit: Graphic; area: number};
 

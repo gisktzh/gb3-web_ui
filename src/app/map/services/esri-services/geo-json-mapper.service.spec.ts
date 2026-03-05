@@ -1,7 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 
 import {GeoJSONMapperService} from './geo-json-mapper.service';
-import {Multipoint as EsriMultiPoint, Point as EsriPoint, Polygon as EsriPolygon, Polyline as EsriPolyline} from '@arcgis/core/geometry';
 import {
   LineStringWithSrs,
   MultiLineStringWithSrs,
@@ -12,6 +11,10 @@ import {
 } from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {SupportedSrs} from '../../../shared/types/supported-srs.type';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
+import EsriMultipoint from '@arcgis/core/geometry/Multipoint';
+import EsriPoint from '@arcgis/core/geometry/Point';
+import EsriPolygon from '@arcgis/core/geometry/Polygon';
+import EsriPolyline from '@arcgis/core/geometry/Polyline';
 
 describe('GeoJsonMapperService', () => {
   const defaultSrs: SupportedSrs = 4326;
@@ -41,10 +44,10 @@ describe('GeoJsonMapperService', () => {
 
       const esriMultiPoint = service.fromGeoJSONToEsri(minimalMultiPoint);
 
-      expect(esriMultiPoint).toBeInstanceOf(EsriMultiPoint);
-      expect((esriMultiPoint as EsriMultiPoint).points[0]).toEqual(minimalMultiPoint.coordinates[0]);
-      expect((esriMultiPoint as EsriMultiPoint).points[1]).toEqual(minimalMultiPoint.coordinates[1]);
-      expect((esriMultiPoint as EsriMultiPoint).spatialReference.wkid).toEqual(defaultSrs);
+      expect(esriMultiPoint).toBeInstanceOf(EsriMultipoint);
+      expect((esriMultiPoint as EsriMultipoint).points[0]).toEqual(minimalMultiPoint.coordinates[0]);
+      expect((esriMultiPoint as EsriMultipoint).points[1]).toEqual(minimalMultiPoint.coordinates[1]);
+      expect((esriMultiPoint as EsriMultipoint).spatialReference.wkid).toEqual(defaultSrs);
     });
   });
 

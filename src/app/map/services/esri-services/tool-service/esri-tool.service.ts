@@ -56,6 +56,7 @@ import {silentArcgisToGeoJSON} from '../utils/esri-transformer-wrapper.utils';
 import {EsriSymbolDrawingStrategy} from './strategies/drawing/esri-symbol-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from './strategies/abstract-esri-drawing.strategy';
 import {EsriMapDrawingSymbol} from '../types/esri-map-drawing-symbol.type';
+import Layer from '@arcgis/core/layers/Layer';
 
 export const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -663,7 +664,7 @@ export class EsriToolService implements ToolService, OnDestroy {
     }
   }
 
-  private isGraphicsLayer(drawingLayer: __esri.Layer | undefined): drawingLayer is GraphicsLayer {
+  private isGraphicsLayer(drawingLayer: Layer | undefined): drawingLayer is GraphicsLayer {
     return !!drawingLayer && !!(drawingLayer as GraphicsLayer).graphics;
   }
 }

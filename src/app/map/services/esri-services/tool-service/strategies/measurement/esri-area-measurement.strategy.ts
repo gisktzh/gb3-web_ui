@@ -44,7 +44,7 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     return {location: labelPosition, symbolization: this.labelSymbolization};
   }
 
-  private getLabelPosition(geometry: Polygon): Point | nullish {
+  private getLabelPosition(geometry: Polygon): Point | null | undefined {
     return geometry.centroid;
   }
 

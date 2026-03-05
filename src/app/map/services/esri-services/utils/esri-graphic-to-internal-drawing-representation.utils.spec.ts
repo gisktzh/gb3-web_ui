@@ -1,16 +1,14 @@
-import {EsriMapDrawingSymbol} from './../types/esri-map-drawing-symbol.type';
+import {EsriMapDrawingSymbol} from '../types/esri-map-drawing-symbol.type';
 import Graphic from '@arcgis/core/Graphic';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import Color from '@arcgis/core/Color';
-import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
+import SimpleFillSymbol, {SimpleFillSymbolProperties} from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {MapConstants} from '../../../../shared/constants/map.constants';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from './esri-graphic-to-internal-drawing-representation.utils';
 import {GeometryMissing, SymbolizationMissing, UnsupportedGeometryType} from '../errors/esri.errors';
 import Polyline from '@arcgis/core/geometry/Polyline';
-import LineSymbol from '@arcgis/core/symbols/LineSymbol';
-import SimpleFillSymbolProperties = __esri.SimpleFillSymbolProperties;
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 const fillColorHex = '#abcdef';
@@ -191,7 +189,7 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
   it('throws an error if the geometry type is not supported', () => {
     const graphic = new Graphic({
       geometry: new Polyline(),
-      symbol: new LineSymbol(),
+      symbol: {type: 'simple-line'},
     });
     expect(() => EsriGraphicToInternalDrawingRepresentationUtils.convert(graphic, 2056, UserDrawingLayer.Drawings)).toThrow(
       new UnsupportedGeometryType('MultiLineString'),

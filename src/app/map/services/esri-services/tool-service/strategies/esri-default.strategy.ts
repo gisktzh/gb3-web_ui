@@ -1,6 +1,7 @@
 import {EsriToolStrategy} from '../interfaces/strategy.interface';
 import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import {SilentError} from '../../../../../shared/errors/abstract.errors';
+import Graphic from '@arcgis/core/Graphic';
 
 /**
  * This is the default strategy which is assigned to the ToolService by default. It does not have any functionality and
@@ -13,7 +14,7 @@ export class EsriDefaultStrategy implements EsriToolStrategy {
     throw new EsriDefaultStrategyNotImplementedError();
   }
 
-  public edit(_: __esri.Graphic) {
+  public edit(_: Graphic) {
     throw new EsriDefaultStrategyNotImplementedError();
   }
 

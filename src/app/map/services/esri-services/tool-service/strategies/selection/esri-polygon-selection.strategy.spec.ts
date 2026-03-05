@@ -11,6 +11,7 @@ import {TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/esri-graphic-to-internal-drawing-representation.utils';
+import {CreateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 class EsriPolygonSelectionStrategyWrapper extends EsriPolygonSelectionStrategy {
   public get svm() {
@@ -60,7 +61,7 @@ describe('EsriPolygonSelectionStrategy', () => {
       );
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
+      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
 
       expect(callbackSpy).not.toHaveBeenCalled();
     });
@@ -80,7 +81,7 @@ describe('EsriPolygonSelectionStrategy', () => {
       );
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'start'});
+      strategy.svm.emit('create', {state: 'start'} as CreateEvent);
 
       // Called once by constructor and a second time during `start`.
       expect(layerRemoveAllSpy).toHaveBeenCalledTimes(2);
@@ -115,7 +116,7 @@ describe('EsriPolygonSelectionStrategy', () => {
       });
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic} as CreateEvent);
 
       expect(callbackSpy).toHaveBeenCalledOnceWith(jasmine.objectContaining({type: 'polygon'}));
       expect(converterSpy).toHaveBeenCalledWith(graphic, 2056, InternalDrawingLayer.Selection);

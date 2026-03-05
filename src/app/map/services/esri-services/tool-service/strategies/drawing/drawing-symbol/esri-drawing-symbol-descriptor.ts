@@ -1,4 +1,4 @@
-import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
+import CIMSymbol, {CIMSymbolProperties} from '@arcgis/core/symbols/CIMSymbol';
 import {applyCIMSymbolRotation, scaleCIMSymbolTo} from '@arcgis/core/symbols/support/cimSymbolUtils';
 import {DrawingSymbolDescriptor} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-descriptor.interface';
 import {subclass} from '@arcgis/core/core/accessorSupport/decorators';
@@ -8,7 +8,7 @@ import cimSymbolToSVG from '@gisktzh/cim-symbol-to-svg';
 // See https://developers.arcgis.com/javascript/latest/implementing-accessor/#create-a-simple-subclass
 @subclass('EsriDrawingSymbolDescriptor')
 export class EsriDrawingSymbolDescriptor extends CIMSymbol implements DrawingSymbolDescriptor {
-  constructor(properties?: __esri.CIMSymbolProperties) {
+  constructor(properties?: CIMSymbolProperties) {
     super(properties);
   }
 

@@ -17,12 +17,14 @@ import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.int
 import {EsriMapDrawingSymbol} from '../types/esri-map-drawing-symbol.type';
 import {DrawingSymbolDescriptorMatcher} from 'src/app/testing/matchers/drawing-symbol-descriptor.matcher';
 import {EsriDrawingSymbolDefinition} from '../tool-service/strategies/drawing/drawing-symbol/esri-drawing-symbol-definition';
+import {WebStyleSymbolProperties} from '@arcgis/core/symbols/WebStyleSymbol';
+import {CIMSymbolProperties} from '@arcgis/core/symbols/CIMSymbol';
 
 class MockDrawingSymbolDesciptor implements DrawingSymbolDescriptor {
-  protected setupProps: __esri.CIMSymbolProperties;
+  protected setupProps: CIMSymbolProperties;
   public type: string = 'mock_descr';
 
-  constructor(properties: __esri.CIMSymbolProperties) {
+  constructor(properties: CIMSymbolProperties) {
     this.setupProps = properties;
   }
 
@@ -48,10 +50,10 @@ class MockDrawingSymbolDefinition implements DrawingSymbolDefinition {
   public size: number = 10;
   public rotation: number = 10;
   public name: string;
-  protected setupProps: __esri.WebStyleSymbolProperties;
+  protected setupProps: WebStyleSymbolProperties;
   protected resultingDrawinSymbolDescriptor: MockDrawingSymbolDesciptor;
 
-  constructor(properties: __esri.WebStyleSymbolProperties, resultingDrawinSymbolDescriptor: MockDrawingSymbolDesciptor) {
+  constructor(properties: WebStyleSymbolProperties, resultingDrawinSymbolDescriptor: MockDrawingSymbolDesciptor) {
     this.setupProps = properties;
     this.resultingDrawinSymbolDescriptor = resultingDrawinSymbolDescriptor;
     this.name = properties.name || 'mock';

@@ -11,6 +11,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 class EsriAreaMeasurementStrategyWrapper extends EsriAreaMeasurementStrategy {
   public get svm() {
@@ -57,7 +58,7 @@ describe('EsriAreaMeasurementStrategy', () => {
       );
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
+      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
 
       expect(callbackSpy).not.toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(0);
@@ -89,7 +90,7 @@ describe('EsriAreaMeasurementStrategy', () => {
       });
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'start'});
+      strategy.svm.emit('update', {state: 'start'} as UpdateEvent);
 
       expect(removeLabelOnEditSpy).toHaveBeenCalledWith(graphic);
     });
@@ -120,7 +121,7 @@ describe('EsriAreaMeasurementStrategy', () => {
       });
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       expect(callbackSpy).toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(1);
@@ -148,7 +149,7 @@ describe('EsriAreaMeasurementStrategy', () => {
       const graphic = new Graphic({geometry: location});
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0);
       const expectedLocation = location.centroid!;
@@ -182,7 +183,7 @@ describe('EsriAreaMeasurementStrategy', () => {
 
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0);
       expect((addedGraphic?.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
@@ -213,7 +214,7 @@ describe('EsriAreaMeasurementStrategy', () => {
       });
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'complete'});
+      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
 
       expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
     });
@@ -245,7 +246,7 @@ describe('EsriAreaMeasurementStrategy', () => {
 
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0);
       const expectedArea = Math.pow(sideLength, 2);
@@ -277,7 +278,7 @@ describe('EsriAreaMeasurementStrategy', () => {
 
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const expected = (sideLength * sideLength).toFixed(2);
       const addedGraphic = layer.graphics.getItemAt(0);
@@ -309,7 +310,7 @@ describe('EsriAreaMeasurementStrategy', () => {
 
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0);
       const expextedLength = Math.round((sideLength * sideLength) / 1_000_000);

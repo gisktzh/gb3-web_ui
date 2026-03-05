@@ -4,7 +4,7 @@ import EsriMap from '@arcgis/core/Map';
 import Layer from '@arcgis/core/layers/Layer';
 
 export class EsriMapMock implements Partial<EsriMap> {
-  public readonly layers: __esri.Collection<Layer> = new Collection();
+  public readonly layers: Collection<Layer> = new Collection();
 
   constructor(fixedLayers: GraphicsLayer[]) {
     fixedLayers.forEach((fixedLayer) => this.add(fixedLayer));

@@ -10,6 +10,7 @@ import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
   public get svm() {
@@ -18,9 +19,10 @@ class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
 }
 
 /**
- * Note: The sketchViewModel handling is still a work in progress, as the start event (which adds a graphic) is currently not triggered.
- * As such, we only test for the labels, which are also our custom logic and should be tested. This is why we e.g. assert for a length
- * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
+ * Note: The sketchViewModel handling is still a work in progress, as the start event (which adds a graphic) is
+ * currently not triggered. As such, we only test for the labels, which are also our custom logic and should be tested.
+ * This is why we e.g. assert for a length of 0 on the graphics layer, even though in reality, it should be 2 (when
+ * Esri properly adds the graphic).
  */
 describe('EsriPointMeasurementStrategy', () => {
   let mapView: MapViewWithMap;
@@ -49,7 +51,7 @@ describe('EsriPointMeasurementStrategy', () => {
       const strategy = new EsriPointMeasurementStrategyWrapper(layer, mapView, pointSymbol, textSymbol, () => callbackHandler.handle());
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
+      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
 
       expect(callbackSpy).not.toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(0);
@@ -63,7 +65,7 @@ describe('EsriPointMeasurementStrategy', () => {
       const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'start'});
+      strategy.svm.emit('update', {state: 'start'} as UpdateEvent);
 
       expect(removeLabelOnEditSpy).toHaveBeenCalledWith(graphic);
     });
@@ -76,7 +78,7 @@ describe('EsriPointMeasurementStrategy', () => {
       const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       expect(callbackSpy).toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(1);
@@ -88,7 +90,7 @@ describe('EsriPointMeasurementStrategy', () => {
       const graphic = new Graphic({geometry: location});
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0)!;
       expect(addedGraphic.geometry?.type).toEqual('point');
@@ -103,7 +105,7 @@ describe('EsriPointMeasurementStrategy', () => {
       const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0)!;
       expect((addedGraphic.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
@@ -118,7 +120,7 @@ describe('EsriPointMeasurementStrategy', () => {
 
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0)!;
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${location.x}/${location.y}`);
@@ -129,7 +131,7 @@ describe('EsriPointMeasurementStrategy', () => {
       const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'complete'});
+      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
 
       expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
     });

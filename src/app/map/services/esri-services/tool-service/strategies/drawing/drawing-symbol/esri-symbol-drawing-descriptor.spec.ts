@@ -1,9 +1,9 @@
-import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
+import CIMSymbol, {CIMSymbolProperties} from '@arcgis/core/symbols/CIMSymbol';
 import {EsriDrawingSymbolDescriptor} from './esri-drawing-symbol-descriptor';
 import {applyCIMSymbolRotation, scaleCIMSymbolTo} from '@arcgis/core/symbols/support/cimSymbolUtils';
 import cimSymbolToSVG from '@gisktzh/cim-symbol-to-svg';
 
-const json: __esri.CIMSymbolProperties = {
+const json: CIMSymbolProperties = {
   data: {
     type: 'CIMSymbolReference',
     symbol: {
