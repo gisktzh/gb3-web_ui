@@ -3,8 +3,8 @@ import {
   Gb3StyledInternalDrawingRepresentation,
   Gb3StyleRepresentation,
 } from '../../../shared/interfaces/internal-drawing-representation.interface';
-import {DrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
+import {DrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
 
 export const DrawingActions = createActionGroup({
   source: 'Drawing',
@@ -12,7 +12,7 @@ export const DrawingActions = createActionGroup({
     'Add Drawing': props<{drawing: Gb3StyledInternalDrawingRepresentation}>(),
     'Add Drawings': props<{drawings: Gb3StyledInternalDrawingRepresentation[]}>(),
     'Clear Drawings': emptyProps(),
-    'Clear Drawing Layer': props<{layer: UserDrawingLayer}>(),
+    'Clear Drawing Layer': props<{layer: DrawingLayer}>(),
     'Select Drawing': props<{drawingId: string}>(),
     'Cancel Edit Mode': emptyProps(),
     'Delete Drawing': props<{drawingId: string}>(),

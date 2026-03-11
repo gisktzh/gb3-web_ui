@@ -2,7 +2,7 @@ import {initialState, reducer} from './search.reducer';
 import {SearchState} from '../states/search.state';
 import {SearchFilterGroup} from '../../../shared/interfaces/search-filter-group.interface';
 import {
-  GeometrySearchApiResultMatch,
+  GeometryWithSrsSearchApiResultMatch,
   SearchApiResultMatch,
 } from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {SearchActions} from '../actions/search.actions';
@@ -59,7 +59,7 @@ describe('search Reducer', () => {
     },
   ];
 
-  const selectedSearchResultMock: GeometrySearchApiResultMatch = {
+  const selectedSearchResultMock: GeometryWithSrsSearchApiResultMatch = {
     indexType: 'places',
     displayString: 'Mein Lieblingsort',
     score: 100,

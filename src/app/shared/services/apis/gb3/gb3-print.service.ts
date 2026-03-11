@@ -267,7 +267,7 @@ export class Gb3PrintService extends Gb3ApiService {
     mapScale: number,
     reportSizing: {width: number; height: number},
   ): PrintMapItem {
-    const drawingsToDraw = drawings.filter((drawing) => drawing.source === drawingSettings.userDrawingLayer);
+    const drawingsToDraw = drawings.filter((drawing) => drawing.source === drawingSettings.drawingLayer);
 
     return this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(
       drawingsToDraw,

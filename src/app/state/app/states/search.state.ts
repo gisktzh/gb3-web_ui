@@ -1,5 +1,5 @@
 import {
-  GeometrySearchApiResultMatch,
+  GeometryWithSrsSearchApiResultMatch,
   SearchApiResultMatch,
 } from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
@@ -10,5 +10,5 @@ export interface SearchState {
   searchApiLoadingState: LoadingState;
   searchApiResultMatches: SearchApiResultMatch[];
   filterGroups: SearchFilterGroup[];
-  selectedSearchResult: GeometrySearchApiResultMatch | undefined;
+  selectedSearchResult: GeometryWithSrsSearchApiResultMatch | undefined;
 }

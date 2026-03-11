@@ -98,4 +98,8 @@ export class MapServiceStub implements MapService {
   public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {}
 
   public cancelEditMode(): void {}
+
+  public getInternalDrawingLayerGraphics(drawingLayer: InternalDrawingLayer): Gb3StyledInternalDrawingRepresentation[] {
+    return [];
+  }
 }

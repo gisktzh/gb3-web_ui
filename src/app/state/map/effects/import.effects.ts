@@ -6,7 +6,7 @@ import {ImportActions} from '../actions/import.actions';
 import {Gb3ImportService} from '../../../shared/services/apis/gb3/gb3-import.service';
 import {FileImportError, FileValidationError} from '../../../shared/errors/file-upload.errors';
 import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
-import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayer, DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {MapService} from '../../../map/interfaces/map.service';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
@@ -40,11 +40,11 @@ export class ImportEffects {
       ),
       map((drawingsToAdd) => {
         const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
-        const drawingLayersToOverride: UserDrawingLayer[] = [];
+        const drawingLayersToOverride: DrawingLayer[] = [];
         this.mapService.removeMapItem(activeMapItem.id);
         activeMapItem.addToMap(this.mapService, 0);
         this.mapService.getToolService().addExistingDrawingsToLayer(drawingsToAdd, UserDrawingLayer.Drawings);
-        drawingLayersToOverride.push(activeMapItem.settings.userDrawingLayer);
+        drawingLayersToOverride.push(activeMapItem.settings.drawingLayer);
 
         return ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd});
       }),

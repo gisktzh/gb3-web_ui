@@ -25,6 +25,7 @@ import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/
 import {HasSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
 import {Point} from 'geojson';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
+import Graphic from '@arcgis/core/Graphic';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -51,11 +52,12 @@ const mockAuthService = jasmine.createSpyObj<AuthService>({
 });
 
 const internalLayerPrefix = DrawingLayerPrefix.Internal;
-const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) => {
-  return new GraphicsLayer({
-    id: `${internalLayerPrefix}${drawingLayer}`,
-  });
-});
+const internalLayers = Object.values(InternalDrawingLayer).map(
+  (drawingLayer) =>
+    new GraphicsLayer({
+      id: `${internalLayerPrefix}${drawingLayer}`,
+    }),
+);
 
 /**
  * Helper function that wraps the expected number of layers with the fixed layers. This helps to test the logic that
@@ -372,6 +374,29 @@ describe('EsriMapService', () => {
 
         expect(internalLayerSpy).toHaveBeenCalledTimes(1);
       }
+    });
+  });
+
+  describe('removeGeometryFromInternalDrawingLayer', () => {
+    it('should remove a given geometry from an internal drawing layer', () => {
+      const internalDrawingLayer: InternalDrawingLayer = InternalDrawingLayer.SearchResultHighlight;
+      const internalLayer = internalLayers.find((layer) => layer.id === `${internalLayerPrefix}${internalDrawingLayer}`);
+
+      expect(internalLayer).toBeDefined();
+
+      const graphic = new Graphic({
+        attributes: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          __id: 'asdf',
+        },
+      });
+
+      internalLayer!.add(graphic);
+
+      const internalLayerSpy = spyOn(internalLayer as GraphicsLayer, 'removeMany').and.callThrough();
+
+      service.removeGeometryFromInternalDrawingLayer(InternalDrawingLayer.SearchResultHighlight, 'asdf');
+      expect(internalLayerSpy).toHaveBeenCalledWith([graphic]);
     });
   });
 });

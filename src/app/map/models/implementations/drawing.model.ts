@@ -1,14 +1,14 @@
 import {AbstractActiveMapItemSettings, ActiveMapItem} from '../active-map-item.model';
 import {AddToMapVisitor} from '../../interfaces/add-to-map.visitor';
-import {DrawingLayer, DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayer, DrawingLayerPrefix} from '../../../shared/enums/drawing-layer.enum';
 
 export class DrawingLayerSettings extends AbstractActiveMapItemSettings {
   public readonly type = 'drawing';
-  public readonly userDrawingLayer: UserDrawingLayer;
+  public readonly drawingLayer: DrawingLayer;
 
-  constructor(userDrawingLayer: UserDrawingLayer) {
+  constructor(userDrawingLayer: DrawingLayer) {
     super();
-    this.userDrawingLayer = userDrawingLayer;
+    this.drawingLayer = userDrawingLayer;
   }
 }
 
@@ -20,7 +20,7 @@ export class DrawingActiveMapItem extends ActiveMapItem {
   public readonly isSingleLayer: boolean = true;
   public readonly geometadataUuid = null;
 
-  constructor(title: string, prefix: DrawingLayerPrefix, userDrawingLayer: UserDrawingLayer, visible?: boolean, opacity?: number) {
+  constructor(title: string, prefix: DrawingLayerPrefix, userDrawingLayer: DrawingLayer, visible?: boolean, opacity?: number) {
     super(visible, opacity);
 
     this.id = DrawingActiveMapItem.getFullLayerIdentifier(prefix, userDrawingLayer);

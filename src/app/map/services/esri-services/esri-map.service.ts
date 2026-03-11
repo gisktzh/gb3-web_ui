@@ -68,6 +68,8 @@ import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOpera
 import {MapViewWithMap} from './types/esri-mapview-with-map.type';
 import {TIME_SERVICE} from '../../../app.tokens';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
+import {EsriGraphicToInternalDrawingRepresentationUtils} from './utils/esri-graphic-to-internal-drawing-representation.utils';
+import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 import Layer from '@arcgis/core/layers/Layer';
 import {KMLSublayerProperties} from '@arcgis/core/layers/support/KMLSublayer';
 import {GraphicHit} from '@arcgis/core/views/types';
@@ -147,7 +149,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {
-    const layer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(drawingLayer));
+    const layer = this.getInternalDrawingLayer(drawingLayer);
     if (layer && layer instanceof GraphicsLayer) {
       const graphicsToBeRemoved = layer.graphics.filter((graphic) => graphic.attributes[MapConstants.DRAWING_IDENTIFIER] === id).toArray();
       layer.removeMany(graphicsToBeRemoved);
@@ -213,8 +215,8 @@ export class EsriMapService implements MapService, OnDestroy {
               mapItem.addToMap(this, position);
 
               if (mapItem instanceof DrawingActiveMapItem) {
-                const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.userDrawingLayer);
-                return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.userDrawingLayer);
+                const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.drawingLayer);
+                return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.drawingLayer);
               }
             }),
           );
@@ -460,10 +462,26 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public clearInternalDrawingLayer(internalDrawingLayer: InternalDrawingLayer) {
-    const layer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
+    const layer = this.getInternalDrawingLayer(internalDrawingLayer);
     if (layer) {
       (layer as GraphicsLayer).removeAll();
     }
+  }
+
+  public getInternalDrawingLayer(internalDrawingLayer: InternalDrawingLayer) {
+    return this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
+  }
+
+  public getInternalDrawingLayerGraphics(drawingLayer: InternalDrawingLayer): Gb3StyledInternalDrawingRepresentation[] {
+    let graphics: Gb3StyledInternalDrawingRepresentation[] = [];
+    const internalLayer = this.getInternalDrawingLayer(drawingLayer);
+    if (internalLayer) {
+      graphics = (internalLayer as GraphicsLayer).graphics
+        .toArray()
+        .map((g) => EsriGraphicToInternalDrawingRepresentationUtils.convert(g, 2056, InternalDrawingLayer.SearchResultHighlight));
+    }
+
+    return graphics;
   }
 
   public getToolService(): EsriToolService {
@@ -568,7 +586,7 @@ export class EsriMapService implements MapService, OnDestroy {
       symbol: esriSymbolization,
       attributes: {[MapConstants.DRAWING_IDENTIFIER]: id},
     });
-    const targetLayer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
+    const targetLayer = this.getInternalDrawingLayer(internalDrawingLayer);
     if (targetLayer) {
       (targetLayer as GraphicsLayer).add(graphicItem);
     }

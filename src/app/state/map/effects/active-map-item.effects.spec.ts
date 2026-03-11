@@ -37,6 +37,7 @@ import {SearchActions} from '../../app/actions/search.actions';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -456,7 +457,9 @@ describe('ActiveMapItemEffects', () => {
       const expectedFavouriteActiveMapItems: ActiveMapItem[] = [
         createGb2WmsMapItemMock('favouriteOne'),
         createGb2WmsMapItemMock('favouriteTwo'),
+        createDrawingMapItemMock(UserDrawingLayer.Drawings, true, 0.5),
       ];
+      // const expectedDrawing = ;
       const expectedCenter: PointWithSrs = {
         type: 'Point',
         srs: MapConstants.DEFAULT_SRS,
@@ -466,6 +469,30 @@ describe('ActiveMapItemEffects', () => {
         scale: 1_500_000,
         center: {x: expectedCenter.coordinates[0], y: expectedCenter.coordinates[1]},
         basemap: "I have come here to chew bubblegum and kick ass. And I'm all out of bubblegum.",
+      };
+      const expectedDrawing: Gb3StyledInternalDrawingRepresentation = {
+        type: 'Feature',
+        source: UserDrawingLayer.Drawings,
+        geometry: {
+          coordinates: [1, 2],
+          srs: 2056,
+          type: 'Point',
+        },
+        properties: {
+          style: {
+            type: 'point',
+            strokeColor: '#f60',
+            strokeOpacity: 1,
+            strokeWidth: 1,
+            fillColor: '#f60',
+            fillOpacity: 0.5,
+            pointRadius: 12,
+          },
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          __id: 'yes',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          __tool: 'point',
+        },
       };
       const activeMapItemSpies: {spy: jasmine.Spy; expectedPosition: number}[] = expectedFavouriteActiveMapItems.map((item, index) => ({
         spy: spyOn(item, 'addToMap').and.callThrough(),
@@ -477,7 +504,7 @@ describe('ActiveMapItemEffects', () => {
         ActiveMapItemActions.addFavourite({
           activeMapItems: expectedFavouriteActiveMapItems,
           baseConfig: expectedFavouriteBaseConfig,
-          drawingsToAdd: [],
+          drawingsToAdd: [expectedDrawing],
         }),
       );
       effects.addFavourite$.subscribe((action) => {
@@ -488,7 +515,12 @@ describe('ActiveMapItemEffects', () => {
         expectedFavouriteActiveMapItems.forEach((item) => {
           expect(mapServiceRemoveMapItemSpy).toHaveBeenCalledWith(item.id);
         });
-        expect(action).toEqual(DrawingActions.overwriteDrawingLayersWithDrawings({layersToOverride: [], drawingsToAdd: []}));
+        expect(action).toEqual(
+          DrawingActions.overwriteDrawingLayersWithDrawings({
+            layersToOverride: [UserDrawingLayer.Drawings],
+            drawingsToAdd: [expectedDrawing],
+          }),
+        );
         done();
       });
     });
