@@ -2,21 +2,12 @@ swagger: '2.0'
 info:
   version: '1.0.0'
   title: 'GB3 Frontend'
-parameters:
-  devMode:
-    name: 'devMode'
-    in: 'query'
-    description: 'This is a boolean parameter that, when set to true, activates the development mode. The development mode can provide additional debugging information. This parameter will be removed after loading the page. You can only exit development mode by reloading the page.'
-    required: false
-    default: false
-    type: 'boolean'
 paths:
   /maps:
     get:
       summary: 'Get map details'
       description: 'The main page of the application displaying the map with all its features'
       parameters:
-        - $ref: '#/parameters/devMode'
         - name: 'x'
           in: 'query'
           description: 'This is the x-coordinate in the Swiss coordinate system LV95 (EPSG:2056). It represents the easting value or horizontal position. This value will be updated if the x-coordinate of the center of the map changes. If provided more than once, last value will be used.'

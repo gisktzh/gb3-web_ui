@@ -17,14 +17,12 @@ import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-l
 import {selectUrlState} from './state/app/reducers/url.reducer';
 import {selectMapUiState} from './state/map/reducers/map-ui.reducer';
 import {MapUiState} from './state/map/states/map-ui.state';
-import {selectDevMode} from './state/app/reducers/app.reducer';
 import {SkipLink} from './shared/types/skip-link.type';
 import {SkipLinkConstants} from './shared/constants/skip-link.constants';
 import {SkipLinkTemplateVariable} from './shared/enums/skip-link-template-variable.enum';
 import {SkipLinkComponent} from './shared/components/skip-link/skip-link.component';
 import {NavbarMobileComponent} from './shared/components/navbar-mobile/navbar-mobile.component';
 import {NavbarComponent} from './shared/components/navbar/navbar.component';
-import {DevModeBannerComponent} from './shared/components/dev-mode-banner/dev-mode-banner.component';
 import {NgClass} from '@angular/common';
 import {RouterOutlet} from '@angular/router';
 import {MainFooterComponent} from './shared/components/footer/main-footer.component';
@@ -38,7 +36,6 @@ import {ScrollbarWidthCalculationComponent} from './shared/components/scrollbar-
     SkipLinkComponent,
     NavbarMobileComponent,
     NavbarComponent,
-    DevModeBannerComponent,
     NgClass,
     RouterOutlet,
     MainFooterComponent,
@@ -61,7 +58,6 @@ export class AppComponent implements OnInit, OnDestroy {
   protected isHeadlessPage: boolean = false;
   protected isSimplifiedPage: boolean = false;
   protected scrollbarWidth?: number;
-  protected isDevModeActive: boolean = false;
   protected readonly skipLinks: SkipLink[] = SkipLinkConstants.skipLinks;
   protected readonly templateVariable = SkipLinkTemplateVariable;
 
@@ -70,7 +66,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
-  private readonly devMode$ = this.store.select(selectDevMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor() {
@@ -165,7 +160,6 @@ export class AppComponent implements OnInit, OnDestroy {
         .subscribe(),
     );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(this.devMode$.pipe(tap((devMode) => (this.isDevModeActive = devMode))).subscribe());
   }
 
   private closePageNotificationSnackBar() {
