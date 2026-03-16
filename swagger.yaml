@@ -48,6 +48,7 @@ paths:
             - 'aredtmbackgroundzh'
             - 'areorthobackgroundzh'
             - 'arewildbackgroundzh'
+            - 'arelkbackgroundswzh'
             - 'arelkbackgroundzh'
         - name: 'initialMapIds'
           in: 'query'
