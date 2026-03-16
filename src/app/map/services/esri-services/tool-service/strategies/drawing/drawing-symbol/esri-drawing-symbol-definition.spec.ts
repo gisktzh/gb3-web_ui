@@ -26,7 +26,7 @@ describe('EsriDrawingSymbolDefinition', () => {
     const cimSymbol = new CIMSymbol(cimJson);
 
     // Method comes from WebStyleSymbol
-    const fetchSymbolSpy = spyOn(esriDrawingSymbolDefiniton, 'fetchSymbol').and.resolveTo(cimSymbol);
+    const fetchSymbolSpy = vi.spyOn(esriDrawingSymbolDefiniton, 'fetchSymbol').mockResolvedValue(cimSymbol);
 
     const esriDrawingSymbolDescriptor = await esriDrawingSymbolDefiniton.fetchDrawingSymbolDescriptor();
 
@@ -40,7 +40,7 @@ describe('EsriDrawingSymbolDefinition', () => {
     const cimSymbol = new CIMSymbol(cimJson);
 
     // Method comes from WebStyleSymbol
-    spyOn(esriDrawingSymbolDefiniton, 'fetchSymbol').and.resolveTo(cimSymbol);
+    vi.spyOn(esriDrawingSymbolDefiniton, 'fetchSymbol').mockResolvedValue(cimSymbol);
 
     const esriDrawingSymbolDescriptor = await esriDrawingSymbolDefiniton.fetchDrawingSymbolDescriptor(10, 20);
 
@@ -59,7 +59,7 @@ describe('EsriDrawingSymbolDefinition', () => {
   it('should determine if it belongs to a given collection correctly', () => {
     const esriDrawingSymbolDefiniton = new EsriDrawingSymbolDefinition(webStyleJson);
 
-    expect(esriDrawingSymbolDefiniton.belongsToCollection('asdf')).toBeFalse();
-    expect(esriDrawingSymbolDefiniton.belongsToCollection('some_collection_id')).toBeTrue();
+    expect(esriDrawingSymbolDefiniton.belongsToCollection('asdf')).toBe(false);
+    expect(esriDrawingSymbolDefiniton.belongsToCollection('some_collection_id')).toBe(true);
   });
 });

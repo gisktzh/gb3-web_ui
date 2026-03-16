@@ -71,10 +71,10 @@ describe('GeoshopApiService', () => {
       download_url: `https://www.example.com/download`,
     };
 
-    it('should transform and send (direct) order jobs', (done: DoneFn) => {
+    it('should transform and send (direct) order jobs', () => {
       const configService = TestBed.inject(ConfigService);
       const httpClient = TestBed.inject(HttpClient);
-      const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of(apiOrderResponseMock));
+      const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(apiOrderResponseMock));
 
       const expectedDirectApiOrder: ApiOrder = {
         perimeter_type: 'DIRECT',
@@ -94,17 +94,17 @@ describe('GeoshopApiService', () => {
         expect(response.timestampDateString).toBe(apiOrderResponseMock.timestamp);
         expect(response.statusUrl).toBe(apiOrderResponseMock.status_url);
         expect(response.downloadUrl).toBe(apiOrderResponseMock.download_url);
-        expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.geoshopApi.baseUrl}/orders`, expectedDirectApiOrder, {
+        expect(postCallSpy).toHaveBeenCalledTimes(1);
+        expect(postCallSpy).toHaveBeenCalledWith(`${configService.apiConfig.geoshopApi.baseUrl}/orders`, expectedDirectApiOrder, {
           headers: undefined,
         });
-        done();
       });
     });
 
-    it('should transform and send (indirect) order jobs', (done: DoneFn) => {
+    it('should transform and send (indirect) order jobs', () => {
       const configService = TestBed.inject(ConfigService);
       const httpClient = TestBed.inject(HttpClient);
-      const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of(apiOrderResponseMock));
+      const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(apiOrderResponseMock));
 
       const expectedIndirectApiOrder: ApiOrder = {
         perimeter_type: 'INDIRECT',
@@ -128,16 +128,16 @@ describe('GeoshopApiService', () => {
         expect(response.timestampDateString).toBe(apiOrderResponseMock.timestamp);
         expect(response.statusUrl).toBe(apiOrderResponseMock.status_url);
         expect(response.downloadUrl).toBe(apiOrderResponseMock.download_url);
-        expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.geoshopApi.baseUrl}/orders`, expectedIndirectApiOrder, {
+        expect(postCallSpy).toHaveBeenCalledTimes(1);
+        expect(postCallSpy).toHaveBeenCalledWith(`${configService.apiConfig.geoshopApi.baseUrl}/orders`, expectedIndirectApiOrder, {
           headers: undefined,
         });
-        done();
       });
     });
   });
 
   describe('checkOrderStatus', () => {
-    it('should check the order status and transform the response', (done: DoneFn) => {
+    it('should check the order status and transform the response', () => {
       const apiOrderStatusMock: ApiOrderStatus = {
         order_id: 'balance restored',
         status: 'WORKING: in process',
@@ -155,7 +155,7 @@ describe('GeoshopApiService', () => {
       const orderId = 'balance restored';
       const configService = TestBed.inject(ConfigService);
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(apiOrderStatusMock));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(apiOrderStatusMock));
 
       const expectedOrderStatus: OrderStatus = {
         orderId: 'balance restored',
@@ -170,8 +170,8 @@ describe('GeoshopApiService', () => {
 
       service.checkOrderStatus(orderId).subscribe((response) => {
         expect(response).toEqual(expectedOrderStatus);
-        expect(getCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.geoshopApi.baseUrl}/orders/${orderId}`);
-        done();
+        expect(getCallSpy).toHaveBeenCalledTimes(1);
+        expect(getCallSpy).toHaveBeenCalledWith(`${configService.apiConfig.geoshopApi.baseUrl}/orders/${orderId}`);
       });
     });
   });

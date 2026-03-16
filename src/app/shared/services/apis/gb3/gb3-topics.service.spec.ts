@@ -32,7 +32,7 @@ describe('Gb3TopicsService', () => {
   });
 
   describe('loadTopics', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const data: TopicsListData = {
         categories: [
           {
@@ -137,7 +137,7 @@ describe('Gb3TopicsService', () => {
           },
         ],
       };
-      const httpGetSpy = spyOn(httpClient, 'get').and.returnValue(of(data));
+      const httpGetSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(data));
 
       const expectedUrl = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/topics`;
       const expected: TopicsResponse = {
@@ -258,13 +258,13 @@ describe('Gb3TopicsService', () => {
       };
 
       service.loadTopics().subscribe((actual) => {
-        expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl);
+        expect(httpGetSpy).toHaveBeenCalledTimes(1);
+        expect(httpGetSpy).toHaveBeenCalledWith(expectedUrl);
         expect(actual).toEqual(expected);
-        done();
       });
     });
 
-    it('should sort topics alphabetically ascending by title', (done: DoneFn) => {
+    it('should sort topics alphabetically ascending by title', () => {
       const randomOrder = ['B-2', 'B-3', 'A-1', 'AA 2', 'AA 1', '-1'];
       const data: TopicsListData = {
         categories: [
@@ -309,19 +309,18 @@ describe('Gb3TopicsService', () => {
         ],
       };
 
-      spyOn(httpClient, 'get').and.returnValue(of(data));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(data));
 
       const expectedOrder = ['-1', 'A-1', 'AA 1', 'AA 2', 'B-2', 'B-3'];
       service.loadTopics().subscribe((actual) => {
         const actualTitles = actual.topics.map((topic) => topic.maps.map((map) => map.title)).flat();
         expect(actualTitles).toEqual(expectedOrder);
-        done();
       });
     });
   });
 
   describe('loadLegends', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const data: TopicsLegendDetailData = {
         legend: {
           topic: 'Lageklassen2003ZH',
@@ -409,7 +408,7 @@ describe('Gb3TopicsService', () => {
           ],
         },
       };
-      const httpGetSpy = spyOn(httpClient, 'get').and.returnValue(of(data));
+      const httpGetSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(data));
       const queryTopics: QueryTopic[] = [
         {
           topic: 'Lageklassen2003ZH',
@@ -516,15 +515,15 @@ describe('Gb3TopicsService', () => {
       ];
 
       service.loadLegends(queryTopics).subscribe((actual) => {
-        expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl);
+        expect(httpGetSpy).toHaveBeenCalledTimes(1);
+        expect(httpGetSpy).toHaveBeenCalledWith(expectedUrl);
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });
 
   describe('loadFeatureInfos', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const data: TopicsFeatureInfoDetailData = {
         feature_info: {
           query_position: {
@@ -712,7 +711,7 @@ describe('Gb3TopicsService', () => {
           },
         },
       };
-      const httpGetSpy = spyOn(httpClient, 'get').and.returnValue(of(data));
+      const httpGetSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(data));
       const x = 1337;
       const y = 42.666;
       const scale = 1408;
@@ -902,9 +901,9 @@ describe('Gb3TopicsService', () => {
       ];
 
       service.loadFeatureInfos(x, y, scale, queryTopics).subscribe((actual) => {
-        expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl);
+        expect(httpGetSpy).toHaveBeenCalledTimes(1);
+        expect(httpGetSpy).toHaveBeenCalledWith(expectedUrl);
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });

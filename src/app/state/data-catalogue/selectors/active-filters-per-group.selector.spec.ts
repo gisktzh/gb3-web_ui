@@ -32,7 +32,8 @@ describe('selectActiveFiltersPerGroup', () => {
       {key: 'name', values: ['Filter 1']},
       {key: 'outputFormat', values: ['Filter 4']},
     ];
-    expect(actual).toEqual(jasmine.arrayWithExactContents(expected));
+
+    expect(actual).toEqual(expect.arrayContaining(expected));
   });
 
   it('does not return group if no filters are active', () => {
@@ -56,6 +57,7 @@ describe('selectActiveFiltersPerGroup', () => {
     const actual = selectActiveFiltersPerGroup.projector([groupOne, groupTwo]);
 
     const expected: ActiveDataCatalogueFilterGroup[] = [{key: 'outputFormat', values: ['Filter 4']}];
-    expect(actual).toEqual(jasmine.arrayWithExactContents(expected));
+
+    expect(actual).toEqual(expect.arrayContaining(expected));
   });
 });

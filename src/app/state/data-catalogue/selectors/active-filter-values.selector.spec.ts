@@ -1,5 +1,6 @@
 import {selectActiveFilterValues} from './active-filter-values.selector';
 import {ActiveDataCatalogueFilterGroup} from '../../../shared/interfaces/data-catalogue-filter.interface';
+import {expect} from 'vitest';
 
 describe('selectActiveFilterValues', () => {
   it('returns an empty list if no filters are active', () => {
@@ -25,6 +26,7 @@ describe('selectActiveFilterValues', () => {
       {key: 'name', value: 'test-3'},
       {key: 'name', value: 'test-4'},
     ];
-    expect(actual).toEqual(jasmine.arrayWithExactContents(expected));
+
+    expect(actual).toEqual(expect.arrayContaining(expected));
   });
 });

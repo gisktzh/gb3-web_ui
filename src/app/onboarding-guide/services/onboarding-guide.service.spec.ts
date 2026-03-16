@@ -20,6 +20,8 @@ const mockTour: OnboardingGuideConfig = {
   ],
 };
 
+let store: Record<string, string> = {};
+
 describe('OnboardingGuideService', () => {
   let service: OnboardingGuideService;
 
@@ -29,12 +31,25 @@ describe('OnboardingGuideService', () => {
     });
     service = TestBed.inject(OnboardingGuideService);
 
-    localStorage.clear();
+    store = {};
+
+    vi.spyOn(localStorage, 'getItem').mockImplementation((key: string): string | null => {
+      return store[key] || null;
+    });
+    vi.spyOn(localStorage, 'removeItem').mockImplementation((key: string): void => {
+      delete store[key];
+    });
+    vi.spyOn(localStorage, 'setItem').mockImplementation((key: string, value: string) => {
+      store[key] = value;
+    });
+    vi.spyOn(localStorage, 'clear').mockImplementation(() => {
+      store = {};
+    });
   });
 
   describe('autoStart', () => {
     it('starts the tour if localStorage does not contain the tour id', () => {
-      const startSpy = spyOn(service, 'start');
+      const startSpy = vi.spyOn(service, 'start');
 
       service.autoStart();
 
@@ -43,7 +58,7 @@ describe('OnboardingGuideService', () => {
 
     it('does not start the tour if localStorage contains the tour id', () => {
       localStorage.setItem('onboardingGuidesViewed', JSON.stringify([mockTour.id]));
-      const startSpy = spyOn(service, 'start');
+      const startSpy = vi.spyOn(service, 'start');
 
       service.autoStart();
 

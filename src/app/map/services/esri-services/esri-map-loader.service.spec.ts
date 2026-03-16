@@ -16,6 +16,7 @@ import Layer from '@arcgis/core/layers/Layer';
 import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
 import KMLSublayer from '@arcgis/core/layers/support/KMLSublayer';
 import KMLLayer from '@arcgis/core/layers/KMLLayer';
+import {vi} from 'vitest';
 
 describe('EsriMapLoaderService', () => {
   let service: EsriMapLoaderService;
@@ -25,7 +26,7 @@ describe('EsriMapLoaderService', () => {
       providers: [{provide: MAP_SERVICE, useClass: EsriMapService}],
     });
     service = TestBed.inject(EsriMapLoaderService);
-    spyOn(UuidUtils, 'createUuid').and.returnValue('not-a-real-uuid');
+    vi.spyOn(UuidUtils, 'createUuid').mockReturnValue('not-a-real-uuid');
   });
 
   it('should be created', () => {
@@ -33,11 +34,11 @@ describe('EsriMapLoaderService', () => {
   });
 
   describe('loadService', () => {
-    it('throws a `LayerCouldNotBeLoaded` error if something goes wrong during loading', (done: DoneFn) => {
+    it('throws a `LayerCouldNotBeLoaded` error if something goes wrong during loading', () => {
       const originalMessage = 'oh no! anyway...';
       const originalError = new EsriError('error name', originalMessage);
       const layer: Layer = new WMSLayer();
-      spyOn(layer, 'load').and.rejectWith(originalError);
+      vi.spyOn(layer, 'load').mockRejectedValue(originalError);
 
       const expectedError = new LayerCouldNotBeLoaded(originalMessage);
 
@@ -47,7 +48,6 @@ describe('EsriMapLoaderService', () => {
         .pipe(
           catchError((actual: unknown) => {
             expect(actual).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -59,7 +59,7 @@ describe('EsriMapLoaderService', () => {
     const url = 'www.example.com';
     const title = 'test title';
 
-    it('loads a WMS service and return a ExternalWmsActiveMapItem', (done) => {
+    it('loads a WMS service and return a ExternalWmsActiveMapItem', () => {
       const externalLayerOne: ExternalWmsLayer = {
         type: 'wms',
         id: 1337,
@@ -76,7 +76,7 @@ describe('EsriMapLoaderService', () => {
       };
       const imageFormat = 'image/png';
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      spyOn<any>(service, 'loadService').and.returnValue(
+      vi.spyOn(service as any, 'loadService').mockReturnValue(
         of({
           url,
           title,
@@ -102,14 +102,13 @@ describe('EsriMapLoaderService', () => {
 
       service.loadExternalService(url, 'wms').subscribe((actual) => {
         expect(actual).toEqual(expected);
-        done();
       });
     });
 
-    it('throws an `ExternalServiceHasNoLayers` error if the loaded ExternalWmsActiveMapItem contains no layer', (done) => {
+    it('throws an `ExternalServiceHasNoLayers` error if the loaded ExternalWmsActiveMapItem contains no layer', () => {
       const imageFormat = 'image/png';
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      spyOn<any>(service, 'loadService').and.returnValue(
+      vi.spyOn(service as any, 'loadService').mockReturnValue(
         of({
           url,
           title,
@@ -125,14 +124,13 @@ describe('EsriMapLoaderService', () => {
         .pipe(
           catchError((actual: unknown) => {
             expect(actual).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
         .subscribe();
     });
 
-    it('loads a KML service and return a ExternalKmlActiveMapItem', (done) => {
+    it('loads a KML service and return a ExternalKmlActiveMapItem', () => {
       const externalLayerOne: ExternalKmlLayer = {
         type: 'kml',
         id: 1337,
@@ -146,7 +144,7 @@ describe('EsriMapLoaderService', () => {
         visible: false,
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      spyOn<any>(service, 'loadService').and.returnValue(
+      vi.spyOn(service as any, 'loadService').mockReturnValue(
         of({
           url,
           title,
@@ -169,13 +167,12 @@ describe('EsriMapLoaderService', () => {
 
       service.loadExternalService(url, 'kml').subscribe((actual) => {
         expect(actual).toEqual(expected);
-        done();
       });
     });
 
-    it('throws an `ExternalServiceHasNoLayers` error if the loaded ExternalKmlActiveMapItem contains no layer', (done) => {
+    it('throws an `ExternalServiceHasNoLayers` error if the loaded ExternalKmlActiveMapItem contains no layer', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      spyOn<any>(service, 'loadService').and.returnValue(
+      vi.spyOn(service as any, 'loadService').mockReturnValue(
         of({
           url,
           title,
@@ -190,7 +187,6 @@ describe('EsriMapLoaderService', () => {
         .pipe(
           catchError((actual: unknown) => {
             expect(actual).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )

@@ -24,7 +24,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
   });
 
   describe('convertInternalToExternalRepresentation', () => {
-    it('maps all features into the geojson features array and returns a Gb3VectorLayer', async () => {
+    it('maps all features into the geojson features array and returns a Gb3VectorLayer', () => {
       const drawingsMock: Gb3StyledInternalDrawingRepresentation[] = [
         {
           type: 'Feature',
@@ -86,7 +86,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         },
       ];
 
-      const mapDrawingSymbolFromJSONSpy = spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').and.returnValue(mockSVGString);
+      const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
       const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
         width: 100,
@@ -128,7 +128,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         },
       ];
 
-      const mapDrawingSymbolFromJSONSpy = spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').and.returnValue(mockSVGString);
+      const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
       const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
         width: 100,
@@ -170,7 +170,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         },
       ];
 
-      const mapDrawingSymbolFromJSONSpy = spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').and.returnValue(mockSVGString);
+      const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
       const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
         width: 100,
@@ -212,7 +212,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         },
       ];
 
-      const mapDrawingSymbolFromJSONSpy = spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').and.returnValue(mockSVGString);
+      const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
       const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
         width: 100,
@@ -309,9 +309,9 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         drawingSymbolDescripton: new EsriDrawingSymbolDescriptor(),
       };
 
-      const mapDrawingSymbolFromJSONSpy = spyOn(DrawingSymbolServiceStub.prototype, 'mapDrawingSymbolFromJSON').and.resolveTo(
-        mockMapDrawingSymbol,
-      );
+      const mapDrawingSymbolFromJSONSpy = vi
+        .spyOn(DrawingSymbolServiceStub.prototype, 'mapDrawingSymbolFromJSON')
+        .mockResolvedValue(mockMapDrawingSymbol);
 
       const actual = await utils.convertExternalToInternalRepresentation(mockVectorLayer, mockedSource);
 

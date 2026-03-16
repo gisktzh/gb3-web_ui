@@ -2,7 +2,7 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {LayerCatalogEffects} from './layer-catalog.effects';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {selectMaps} from '../selectors/maps.selector';
@@ -67,7 +67,7 @@ describe('LayerCatalogEffects', () => {
       ];
       store.overrideSelector(selectItems, []);
       const expectedAction = LayerCatalogActions.setLayerCatalog({items: mockItems});
-      const spy = spyOn(gb3TopicsService, 'loadTopics').and.returnValue(of({topics: mockItems}));
+      const spy = vi.spyOn(gb3TopicsService, 'loadTopics').mockReturnValue(of({topics: mockItems}));
       actions$ = of(LayerCatalogActions.loadLayerCatalog());
       effects.requestLayerCatalog$.subscribe((action) => {
         expect(spy).toHaveBeenCalledTimes(1);
@@ -75,24 +75,23 @@ describe('LayerCatalogEffects', () => {
       });
     });
 
-    it('throws a TopicsCouldNotBeLoaded error if the Topicservice fails', (done: DoneFn) => {
+    it('throws a TopicsCouldNotBeLoaded error if the Topicservice fails', () => {
       store.overrideSelector(selectItems, []);
       const originalError = new Error('oh no! butterfingers');
-      const expectedError = new TopicsCouldNotBeLoaded();
-      const spy = spyOn(gb3TopicsService, 'loadTopics').and.returnValue(throwError(() => originalError));
+      const spy = vi.spyOn(gb3TopicsService, 'loadTopics').mockReturnValue(throwError(() => originalError));
       actions$ = of(LayerCatalogActions.loadLayerCatalog());
       effects.requestLayerCatalog$.subscribe({
         error: (error: unknown) => {
           expect(spy).toHaveBeenCalledTimes(1);
-          expect(error).toEqual(expectedError);
-          done();
+          expect(error).toBeInstanceOf(TopicsCouldNotBeLoaded);
+          expect((error as TopicsCouldNotBeLoaded).originalError).toEqual(originalError);
         },
       });
     });
   });
 
   describe('handleInitialMapLoad', () => {
-    it('dispatches ActiveMapItemActions.addInitialMapItems with the correct initial Maps', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.addInitialMapItems with the correct initial Maps', () => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
@@ -105,11 +104,10 @@ describe('LayerCatalogEffects', () => {
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.handleInitialMapLoad.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches LayerCatalogActions.setInitialMapsError if a map is not found', (done: DoneFn) => {
+    it('dispatches LayerCatalogActions.setInitialMapsError if a map is not found', () => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
@@ -122,11 +120,10 @@ describe('LayerCatalogEffects', () => {
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.handleInitialMapLoad.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('also reacts on MapConfigActions.setInitialMapConfig', (done: DoneFn) => {
+    it('also reacts on MapConfigActions.setInitialMapConfig', () => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
@@ -141,11 +138,12 @@ describe('LayerCatalogEffects', () => {
       );
       effects.handleInitialMapLoad.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('filters when availableMaps is empty', fakeAsync(() => {
+    it('filters when availableMaps is empty', async () => {
+      vi.useFakeTimers();
+
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
@@ -155,11 +153,15 @@ describe('LayerCatalogEffects', () => {
       let actualAction;
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.handleInitialMapLoad.subscribe((action) => (actualAction = action));
-      flush();
+      await vi.runAllTimersAsync();
       expect(actualAction).toBeUndefined();
-    }));
 
-    it('filters when initialMaps is empty', fakeAsync(() => {
+      vi.useRealTimers();
+    });
+
+    it('filters when initialMaps is empty', async () => {
+      vi.useFakeTimers();
+
       const mapConfigStateMock: MapConfigState = {
         initialMaps: [] as string[],
       } as MapConfigState;
@@ -170,13 +172,15 @@ describe('LayerCatalogEffects', () => {
       let actualAction;
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.handleInitialMapLoad.subscribe((action) => (actualAction = action));
-      flush();
+      await vi.runAllTimersAsync();
       expect(actualAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('setErrorForInvalidInitialMapIds$', () => {
-    it('throws an InitialMapsCouldNotBeLoaded error', (done: DoneFn) => {
+    it('throws an InitialMapsCouldNotBeLoaded error', () => {
       store.overrideSelector(selectIsAuthenticated, true);
       const originalError = new Error('error');
       actions$ = of(LayerCatalogActions.setInitialMapsError({error: originalError}));
@@ -185,7 +189,6 @@ describe('LayerCatalogEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new InitialMapsCouldNotBeLoaded(true, originalError);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )

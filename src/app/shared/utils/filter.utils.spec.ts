@@ -22,7 +22,7 @@ describe('FilterUtils', () => {
       ];
 
       const actual = FilterUtils.isSearchFilterActive(filterGroups, 'unknown');
-      expect(actual).toBeTrue();
+      expect(actual).toBe(true);
     });
 
     it('returns true if a given searchType is active', () => {
@@ -44,7 +44,7 @@ describe('FilterUtils', () => {
       ];
 
       const actual = FilterUtils.isSearchFilterActive(filterGroups, 'maps');
-      expect(actual).toBeTrue();
+      expect(actual).toBe(true);
     });
 
     it('returns false if a given searchType is inactive and others are active', () => {
@@ -66,7 +66,7 @@ describe('FilterUtils', () => {
       ];
 
       const actual = FilterUtils.isSearchFilterActive(filterGroups, 'places');
-      expect(actual).toBeFalse();
+      expect(actual).toBe(false);
     });
 
     it('returns false if a given searchType cannot be found while filters are active', () => {
@@ -88,7 +88,7 @@ describe('FilterUtils', () => {
       ];
 
       const actual = FilterUtils.isSearchFilterActive(filterGroups, 'metadata-maps');
-      expect(actual).toBeFalse();
+      expect(actual).toBe(false);
     });
   });
 });

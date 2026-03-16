@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -38,7 +38,7 @@ describe('MapImportEffects', () => {
     });
     effects = TestBed.inject(MapImportEffects);
     store = TestBed.inject(MockStore);
-    spyOn(UuidUtils, 'createUuid').and.returnValue('not-a-real-uuid');
+    vi.spyOn(UuidUtils, 'createUuid').mockReturnValue('not-a-real-uuid');
   });
 
   afterEach(() => {
@@ -46,7 +46,7 @@ describe('MapImportEffects', () => {
   });
 
   describe('clearMapImportStateAfterAddingExternalMapItem$', () => {
-    it('dispatches MapImportActions.clearAll() after adding external map items to the active maps', (done: DoneFn) => {
+    it('dispatches MapImportActions.clearAll() after adding external map items to the active maps', () => {
       const activeMapItem = createExternalWmsMapItemMock('url', 'test', []);
 
       const expectedAction = MapImportActions.clearAll();
@@ -54,37 +54,34 @@ describe('MapImportEffects', () => {
       actions$ = of(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
       effects.clearMapImportStateAfterAddingExternalMapItem$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('clearExternalMapItemLoadingStateAfterChangingServiceType$', () => {
-    it('dispatches ExternalMapItemActions.clearLoadingState() after setting a service type', (done: DoneFn) => {
+    it('dispatches ExternalMapItemActions.clearLoadingState() after setting a service type', () => {
       const expectedAction = ExternalMapItemActions.clearLoadingState();
 
       actions$ = of(MapImportActions.setServiceType({serviceType: 'wms'}));
       effects.clearExternalMapItemLoadingStateAfterChangingServiceType$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('clearExternalMapItemLoadingStateAfterClearingAll$', () => {
-    it('dispatches ExternalMapItemActions.clearLoadingState() after clearing the map import state', (done: DoneFn) => {
+    it('dispatches ExternalMapItemActions.clearLoadingState() after clearing the map import state', () => {
       const expectedAction = ExternalMapItemActions.clearLoadingState();
 
       actions$ = of(MapImportActions.clearAll());
       effects.clearExternalMapItemLoadingStateAfterClearingAll$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('loadExternalMapItemAfterSettingUrl$', () => {
-    it('dispatches ExternalMapItemActions.loadItem() after setting an URL and only if the service type is set', (done: DoneFn) => {
+    it('dispatches ExternalMapItemActions.loadItem() after setting an URL and only if the service type is set', () => {
       const url = 'test-url';
       const serviceType: MapServiceType = 'wms';
       store.overrideSelector(selectServiceType, serviceType);
@@ -94,25 +91,28 @@ describe('MapImportEffects', () => {
       actions$ = of(MapImportActions.setUrl({url}));
       effects.loadExternalMapItemAfterSettingUrl$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches nothing if the service type is not set', fakeAsync(() => {
+    it('dispatches nothing if the service type is not set', async () => {
+      vi.useFakeTimers();
+
       const url = 'test-url';
       store.overrideSelector(selectServiceType, undefined);
 
       let newAction;
       actions$ = of(MapImportActions.setUrl({url}));
       effects.loadExternalMapItemAfterSettingUrl$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('addExternalMapItemToMap$', () => {
-    it('dispatches ActiveMapItemActions.addActiveMapItem() after importing an external WMS item', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.addActiveMapItem() after importing an external WMS item', () => {
       const mapImportState: MapImportState = {
         serviceType: 'wms',
         url: 'wms-url',
@@ -140,11 +140,10 @@ describe('MapImportEffects', () => {
       actions$ = of(MapImportActions.importExternalMapItem());
       effects.addExternalMapItemToMap$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches ActiveMapItemActions.addActiveMapItem() after importing an external KML item', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.addActiveMapItem() after importing an external KML item', () => {
       const mapImportState: MapImportState = {
         serviceType: 'kml',
         url: 'kml-url',
@@ -171,11 +170,12 @@ describe('MapImportEffects', () => {
       actions$ = of(MapImportActions.importExternalMapItem());
       effects.addExternalMapItemToMap$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches nothing if the service type is not set', fakeAsync(() => {
+    it('dispatches nothing if the service type is not set', async () => {
+      vi.useFakeTimers();
+
       const mapImportState: MapImportState = {
         serviceType: undefined,
         url: 'kml-url',
@@ -189,12 +189,16 @@ describe('MapImportEffects', () => {
       let newAction;
       actions$ = of(MapImportActions.importExternalMapItem());
       effects.addExternalMapItemToMap$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
-    }));
 
-    it('dispatches nothing if the url is not set', fakeAsync(() => {
+      vi.useRealTimers();
+    });
+
+    it('dispatches nothing if the url is not set', async () => {
+      vi.useFakeTimers();
+
       const mapImportState: MapImportState = {
         serviceType: 'kml',
         url: undefined,
@@ -208,12 +212,16 @@ describe('MapImportEffects', () => {
       let newAction;
       actions$ = of(MapImportActions.importExternalMapItem());
       effects.addExternalMapItemToMap$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
-    }));
 
-    it('dispatches nothing if the title is not set', fakeAsync(() => {
+      vi.useRealTimers();
+    });
+
+    it('dispatches nothing if the title is not set', async () => {
+      vi.useFakeTimers();
+
       const mapImportState: MapImportState = {
         serviceType: 'kml',
         url: 'kml-url',
@@ -227,9 +235,11 @@ describe('MapImportEffects', () => {
       let newAction;
       actions$ = of(MapImportActions.importExternalMapItem());
       effects.addExternalMapItemToMap$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 });

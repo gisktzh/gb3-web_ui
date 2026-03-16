@@ -22,7 +22,10 @@ import {UuidUtils} from 'src/app/shared/utils/uuid.utils';
 describe('ExportEffects', () => {
   const mockUuid = '4fce85dd-3e65-4b9d-851c-6a4b4d1db154'; // Chosen by fair dice roll
 
-  const mockDrawings: {drawings: Gb3StyledInternalDrawingRepresentation[]; measurements: Gb3StyledInternalDrawingRepresentation[]} = {
+  const mockDrawings: {
+    drawings: Gb3StyledInternalDrawingRepresentation[];
+    measurements: Gb3StyledInternalDrawingRepresentation[];
+  } = {
     drawings: [
       {
         source: UserDrawingLayer.Drawings,
@@ -180,37 +183,37 @@ describe('ExportEffects', () => {
   });
 
   describe('requestExportDrawings$', () => {
-    it('dispatches ExportActions.setExportDrawingsRequestResponse()', (done: DoneFn) => {
+    it('dispatches ExportActions.setExportDrawingsRequestResponse()', () => {
       const expectedFormat: ExportFormat = ExportFormat.Geojson;
-      const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(of(new Blob()));
-      spyOn(UuidUtils, 'createUuid').and.returnValue(mockUuid);
+      const gb3ExportServiceSpy = vi.spyOn(gb3ExportService, 'exportDrawing').mockReturnValue(of(new Blob()));
+      vi.spyOn(UuidUtils, 'createUuid').mockReturnValue(mockUuid);
 
       store.overrideSelector(selectUserDrawingsVectorLayers, mockDrawings);
       actions$ = of(ExportActions.requestDrawingsExport({exportFormat: expectedFormat}));
       effects.requestExportDrawings$.subscribe((action) => {
-        expect(gb3ExportServiceSpy).toHaveBeenCalledOnceWith(expectedFormat, mockUserDrawingsVectorLayer.drawings);
+        expect(gb3ExportServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3ExportServiceSpy).toHaveBeenCalledWith(expectedFormat, mockUserDrawingsVectorLayer.drawings);
         expect(action).toEqual(ExportActions.setDrawingsExportRequestResponse());
-        done();
       });
     });
 
-    it('dispatches ExportActions.setExportDrawingsRequestError() on error', (done: DoneFn) => {
+    it('dispatches ExportActions.setExportDrawingsRequestError() on error', () => {
       const expectedFormat: ExportFormat = ExportFormat.Geojson;
       const expectedError = new Error('oh no! butterfingers');
-      const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(throwError(() => expectedError));
-      spyOn(UuidUtils, 'createUuid').and.returnValue(mockUuid);
+      const gb3ExportServiceSpy = vi.spyOn(gb3ExportService, 'exportDrawing').mockReturnValue(throwError(() => expectedError));
+      vi.spyOn(UuidUtils, 'createUuid').mockReturnValue(mockUuid);
 
       store.overrideSelector(selectUserDrawingsVectorLayers, mockDrawings);
       actions$ = of(ExportActions.requestDrawingsExport({exportFormat: expectedFormat}));
       effects.requestExportDrawings$.subscribe((action) => {
-        expect(gb3ExportServiceSpy).toHaveBeenCalledOnceWith(expectedFormat, mockUserDrawingsVectorLayer.drawings);
+        expect(gb3ExportServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3ExportServiceSpy).toHaveBeenCalledWith(expectedFormat, mockUserDrawingsVectorLayer.drawings);
         expect(action).toEqual(ExportActions.setDrawingsExportRequestError({error: expectedError}));
-        done();
       });
     });
   });
   describe('throwExportDrawingsRequestError$', () => {
-    it('throws a DrawingCouldNotBeExported error', (done: DoneFn) => {
+    it('throws a DrawingCouldNotBeExported error', () => {
       const expectedOriginalError = new Error('oh no! butterfingers');
 
       actions$ = of(ExportActions.setDrawingsExportRequestError({error: expectedOriginalError}));
@@ -219,7 +222,6 @@ describe('ExportEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new DrawingCouldNotBeExported(expectedOriginalError);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )

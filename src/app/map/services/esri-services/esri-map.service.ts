@@ -46,7 +46,6 @@ import {InitialMapExtentService} from '../initial-map-extent.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {HitTestSelectionUtils} from './utils/hit-test-selection.utils';
 import * as intl from '@arcgis/core/intl';
-import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {TimeSliderService} from '../time-slider.service';
 import {ZoomExtentMissing} from './errors/esri.errors';
 import {SymbolUnion} from '@arcgis/core/symbols/types';
@@ -106,7 +105,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly gb3TopicsService = inject(Gb3TopicsService);
   private readonly initialMapExtentService = inject(InitialMapExtentService);
   private readonly timeSliderService = inject(TimeSliderService);
-  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+  private readonly timeService = inject(TIME_SERVICE);
 
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;

@@ -23,28 +23,28 @@ describe('SearchResultIdentifierDirective', () => {
   });
 
   it('should emit addResultFromArrowNavigation when addTemporaryMap is called and isMapResult is true', () => {
-    spyOn(directive.addResultFromArrowNavigation, 'emit');
+    vi.spyOn(directive.addResultFromArrowNavigation, 'emit');
     directive.isMapResult = true;
     directive.addTemporaryMap();
     expect(directive.addResultFromArrowNavigation.emit).toHaveBeenCalled();
   });
 
   it('should not emit addResultFromArrowNavigation when addTemporaryMap is called and isMapResult is false', () => {
-    spyOn(directive.addResultFromArrowNavigation, 'emit');
+    vi.spyOn(directive.addResultFromArrowNavigation, 'emit');
     directive.isMapResult = false;
     directive.addTemporaryMap();
     expect(directive.addResultFromArrowNavigation.emit).not.toHaveBeenCalled();
   });
 
   it('should emit removeResultFromArrowNavigation when removeTemporaryMap is called and isMapResult is true', () => {
-    spyOn(directive.removeResultFromArrowNavigation, 'emit');
+    vi.spyOn(directive.removeResultFromArrowNavigation, 'emit');
     directive.isMapResult = true;
     directive.removeTemporaryMap();
     expect(directive.removeResultFromArrowNavigation.emit).toHaveBeenCalled();
   });
 
   it('should not emit removeResultFromArrowNavigation when removeTemporaryMap is called and isMapResult is false', () => {
-    spyOn(directive.removeResultFromArrowNavigation, 'emit');
+    vi.spyOn(directive.removeResultFromArrowNavigation, 'emit');
     directive.isMapResult = false;
     directive.removeTemporaryMap();
     expect(directive.removeResultFromArrowNavigation.emit).not.toHaveBeenCalled();

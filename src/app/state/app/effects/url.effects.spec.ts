@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -22,23 +22,18 @@ describe('UrlEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: UrlEffects;
-  let initialMapExtentServiceMock: jasmine.SpyObj<InitialMapExtentService>;
+  let initialMapExtentServiceMock: InitialMapExtentService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    initialMapExtentServiceMock = jasmine.createSpyObj<InitialMapExtentService>(['calculateInitialExtent']);
-
     TestBed.configureTestingModule({
       imports: [RouterModule.forRoot([])],
-      providers: [
-        UrlEffects,
-        provideMockActions(() => actions$),
-        provideMockStore(),
-        {provide: InitialMapExtentService, useValue: initialMapExtentServiceMock},
-      ],
+      providers: [UrlEffects, provideMockActions(() => actions$), provideMockStore()],
     });
     effects = TestBed.inject(UrlEffects);
     store = TestBed.inject(MockStore);
+    initialMapExtentServiceMock = TestBed.inject(InitialMapExtentService);
+    vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockImplementation(vi.fn());
   });
 
   afterEach(() => {
@@ -46,7 +41,7 @@ describe('UrlEffects', () => {
   });
 
   describe('extractMainPageFromUrl$', () => {
-    it('dispatches UrlActions.setPage() if the navigation ended (successfully or not)', (done: DoneFn) => {
+    it('dispatches UrlActions.setPage() if the navigation ended (successfully or not)', () => {
       const mainPage = MainPage.Data;
 
       const expectedAction = UrlActions.setPage({isSimplifiedPage: false, isHeadlessPage: false, mainPage: MainPage.Data});
@@ -61,13 +56,12 @@ describe('UrlEffects', () => {
       );
       effects.extractMainPageFromUrl$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('setAppParameters$', () => {
-    it('dispatches UrlActions.setAppParams() after setting a page', (done: DoneFn) => {
+    it('dispatches UrlActions.setAppParams() after setting a page', () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', devMode: 'true'};
       store.overrideSelector(selectQueryParams, params);
 
@@ -76,47 +70,50 @@ describe('UrlEffects', () => {
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
       effects.setAppParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('removeTemporaryAppParameters$', () => {
-    it('navigates to a new URL where all temporary parameters are set to `null`', (done: DoneFn) => {
+    it('navigates to a new URL where all temporary parameters are set to `null`', () => {
       const params = {scale: 789, [RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS[0]]: 'temp', basemap: 'Dust II'};
       const router = TestBed.inject(Router);
-      const routerSpy = spyOn(router, 'navigate').and.callThrough();
+      const routerSpy = vi.spyOn(router, 'navigate');
 
       const expectedParams: Params = {[RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS[0]]: null};
 
       actions$ = of(UrlActions.setAppParams({params}));
       effects.removeTemporaryAppParameters$.subscribe(() => {
-        expect(routerSpy).toHaveBeenCalledOnceWith(
+        expect(routerSpy).toHaveBeenCalledTimes(1);
+        expect(routerSpy).toHaveBeenCalledWith(
           [],
-          jasmine.objectContaining({
+          expect.objectContaining({
             queryParams: expectedParams,
             queryParamsHandling: 'merge',
           }),
         );
-        done();
       });
     });
 
-    it('does not navigate to a new URL if there are no temporary parameters', fakeAsync(() => {
+    it('does not navigate to a new URL if there are no temporary parameters', async () => {
+      vi.useFakeTimers();
+
       const params = {scale: 789, basemap: 'Dust II'};
       const router = TestBed.inject(Router);
-      const routerSpy = spyOn(router, 'navigate').and.callThrough();
+      const routerSpy = vi.spyOn(router, 'navigate');
 
       actions$ = of(UrlActions.setAppParams({params}));
       effects.removeTemporaryAppParameters$.subscribe();
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(routerSpy).not.toHaveBeenCalled();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('handleInitialMapPageParameters$', () => {
-    it('dispatches UrlActions.setMapPageParams() if current query params are not containing any map config parameters', (done: DoneFn) => {
+    it('dispatches UrlActions.setMapPageParams() if current query params are not containing any map config parameters', () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       store.overrideSelector(selectQueryParams, {});
       store.overrideSelector(selectMapConfigParams, params);
@@ -126,14 +123,13 @@ describe('UrlEffects', () => {
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
       effects.handleInitialMapPageParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches MapConfigActions.setInitialMapConfig() if current query params are containing any map config parameters', (done: DoneFn) => {
+    it('dispatches MapConfigActions.setInitialMapConfig() if current query params are containing any map config parameters', () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
-      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
       store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
 
@@ -148,17 +144,16 @@ describe('UrlEffects', () => {
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
       effects.handleInitialMapPageParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches MapConfigActions.setInitialMapConfig() if current query params contain basemap or initalMaps', (done: DoneFn) => {
+    it('dispatches MapConfigActions.setInitialMapConfig() if current query params contain basemap or initalMaps', () => {
       const params = {basemap: 'Dust II', initialMapIds: 'one,two'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
-      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
       store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
-      const extent = initialMapExtentServiceMock.calculateInitialExtent.and.returnValue({x: 11, y: 22, scale: 33})();
+      const extent = vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33})();
 
       const expectedAction = MapConfigActions.setInitialMapConfig({
         ...extent,
@@ -169,14 +164,13 @@ describe('UrlEffects', () => {
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
       effects.handleInitialMapPageParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchTerm', (done: DoneFn) => {
+    it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchTerm', () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchTerm: 'search'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
-      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
       store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
 
@@ -190,14 +184,13 @@ describe('UrlEffects', () => {
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
       effects.handleInitialMapPageParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchIndex', (done: DoneFn) => {
+    it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchIndex', () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchIndex: 'index'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
-      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
       store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
 
@@ -211,15 +204,14 @@ describe('UrlEffects', () => {
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
       effects.handleInitialMapPageParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('setMapPageParameters$', () => {
-    it('navigates to the adjusted params if they are different to the current ones, no further action dispatch', (done: DoneFn) => {
+    it('navigates to the adjusted params if they are different to the current ones, no further action dispatch', () => {
       const router = TestBed.inject(Router);
-      const routerSpy = spyOn(router, 'navigate').and.callThrough();
+      const routerSpy = vi.spyOn(router, 'navigate');
       store.overrideSelector(selectMainPage, MainPage.Maps);
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       const existingParams = {x: 1, y: 2, scale: 3, basemap: '4'};
@@ -230,14 +222,14 @@ describe('UrlEffects', () => {
 
       actions$ = of(UrlActions.setMapPageParams({params}));
       effects.setMapPageParameters$.subscribe(() => {
-        expect(routerSpy).toHaveBeenCalledOnceWith([], jasmine.objectContaining({queryParams: expectedParams}));
-        done();
+        expect(routerSpy).toHaveBeenCalledTimes(1);
+        expect(routerSpy).toHaveBeenCalledWith([], expect.objectContaining({queryParams: expectedParams}));
       });
     });
 
-    it('removes all temporary parameters even if all other params are identical, no further action dispatch', (done: DoneFn) => {
+    it('removes all temporary parameters even if all other params are identical, no further action dispatch', () => {
       const router = TestBed.inject(Router);
-      const routerSpy = spyOn(router, 'navigate').and.callThrough();
+      const routerSpy = vi.spyOn(router, 'navigate');
       store.overrideSelector(selectMainPage, MainPage.Maps);
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       const existingParams = {...params, initialMapIds: 'one,two', searchTerm: 'search', searchIndex: 'index'};
@@ -248,14 +240,16 @@ describe('UrlEffects', () => {
 
       actions$ = of(UrlActions.setMapPageParams({params}));
       effects.setMapPageParameters$.subscribe(() => {
-        expect(routerSpy).toHaveBeenCalledOnceWith([], jasmine.objectContaining({queryParams: expectedParams}));
-        done();
+        expect(routerSpy).toHaveBeenCalledTimes(1);
+        expect(routerSpy).toHaveBeenCalledWith([], expect.objectContaining({queryParams: expectedParams}));
       });
     });
 
-    it('does not navigate to the new params if they are not different to the current ones, no further action dispatch', fakeAsync(() => {
+    it('does not navigate to the new params if they are not different to the current ones, no further action dispatch', async () => {
+      vi.useFakeTimers();
+
       const router = TestBed.inject(Router);
-      const routerSpy = spyOn(router, 'navigate').and.callThrough();
+      const routerSpy = vi.spyOn(router, 'navigate');
       store.overrideSelector(selectMainPage, MainPage.Maps);
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       const existingParams = params;
@@ -264,10 +258,12 @@ describe('UrlEffects', () => {
 
       actions$ = of(UrlActions.setMapPageParams({params}));
       effects.setMapPageParameters$.subscribe();
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(routerSpy).not.toHaveBeenCalled();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('keepTemporaryUrlParameters$', () => {

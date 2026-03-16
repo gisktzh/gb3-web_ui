@@ -216,7 +216,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
       },
     } as unknown as Gb3StyledInternalDrawingRepresentation;
 
-    await expectAsync(InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation)).toBeRejectedWith(
+    await expect(InternalDrawingRepresentationToEsriGraphicUtils.convert(internalDrawingRepresentation)).rejects.toEqual(
       new UnsupportedGeometryType('GeometryCollection'),
     );
   });

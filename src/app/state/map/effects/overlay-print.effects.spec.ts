@@ -1,5 +1,6 @@
+import type {Mock} from 'vitest';
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -53,114 +54,124 @@ describe('OverlayPrintEffects', () => {
   });
 
   describe('requestLegendPrint$', () => {
-    let gb3PrintServiceSpy: jasmine.Spy;
+    let gb3PrintServiceSpy: Mock;
     let mockPrintItems: PrintableOverlayItem[];
 
     beforeEach(() => {
-      gb3PrintServiceSpy = spyOn(gb3PrintService, 'printLegend').and.returnValue(of(creationResponseMock));
+      gb3PrintServiceSpy = vi.spyOn(gb3PrintService, 'printLegend').mockReturnValue(of(creationResponseMock));
       mockPrintItems = [{topic: 'test', layers: ['a', 'b']}];
       store.overrideSelector(selectPrintLegendItems, mockPrintItems);
     });
 
-    it('dispatches OverlayPrintActions.setPrintRequestResponse() with the service response on success', (done: DoneFn) => {
+    it('dispatches OverlayPrintActions.setPrintRequestResponse() with the service response on success', () => {
       actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'legend'}));
       effects.requestLegendPrint$.subscribe((action) => {
-        expect(gb3PrintServiceSpy).toHaveBeenCalledOnceWith(mockPrintItems);
+        expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3PrintServiceSpy).toHaveBeenCalledWith(mockPrintItems);
         expect(action).toEqual(OverlayPrintActions.setPrintRequestResponse({overlay: 'legend', creationResponse: creationResponseMock}));
-        done();
       });
     });
 
-    it('does nothing if print request is for feature info', fakeAsync(async () => {
+    it('does nothing if print request is for feature info', async () => {
+      vi.useFakeTimers();
+
       actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
       effects.requestLegendPrint$.subscribe();
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(gb3PrintServiceSpy).not.toHaveBeenCalled();
-    }));
 
-    it('dispatches OverlayPrintActions.setPrintRequestError() with the error on failure', (done: DoneFn) => {
+      vi.useRealTimers();
+    });
+
+    it('dispatches OverlayPrintActions.setPrintRequestError() with the error on failure', () => {
       const expectedError = new Error('oh no! butterfingers');
-      gb3PrintServiceSpy.and.returnValue(throwError(() => expectedError));
+      gb3PrintServiceSpy.mockReturnValue(throwError(() => expectedError));
 
       actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'legend'}));
       effects.requestLegendPrint$.subscribe((action) => {
         expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(OverlayPrintActions.setPrintRequestError({overlay: 'legend', error: expectedError}));
-        done();
       });
     });
   });
 
   describe('requestFeatureInfoPrint$', () => {
-    let gb3PrintServiceSpy: jasmine.Spy;
+    let gb3PrintServiceSpy: Mock;
     let mockPrintConfiguration: FeatureInfoPrintConfiguration;
 
     beforeEach(() => {
-      gb3PrintServiceSpy = spyOn(gb3PrintService, 'printFeatureInfo').and.returnValue(of(creationResponseMock));
+      gb3PrintServiceSpy = vi.spyOn(gb3PrintService, 'printFeatureInfo').mockReturnValue(of(creationResponseMock));
       mockPrintConfiguration = {items: [{topic: 'test', layers: ['a', 'b']}], x: 25, y: 65};
       store.overrideSelector(selectPrintFeatureInfoItems, mockPrintConfiguration);
     });
 
-    it('dispatches OverlayPrintActions.setPrintRequestResponse() with the service response on success', (done: DoneFn) => {
+    it('dispatches OverlayPrintActions.setPrintRequestResponse() with the service response on success', () => {
       actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
       effects.requestFeatureInfoPrint$.subscribe((action) => {
-        expect(gb3PrintServiceSpy).toHaveBeenCalledOnceWith(
-          mockPrintConfiguration.items,
-          mockPrintConfiguration.x,
-          mockPrintConfiguration.y,
-        );
+        expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3PrintServiceSpy).toHaveBeenCalledWith(mockPrintConfiguration.items, mockPrintConfiguration.x, mockPrintConfiguration.y);
         expect(action).toEqual(
           OverlayPrintActions.setPrintRequestResponse({
             overlay: 'featureInfo',
             creationResponse: creationResponseMock,
           }),
         );
-        done();
       });
     });
 
-    it('does nothing if print request is for legend', fakeAsync(async () => {
+    it('does nothing if print request is for legend', async () => {
+      vi.useFakeTimers();
+
       actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'legend'}));
       effects.requestFeatureInfoPrint$.subscribe();
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(0);
-    }));
 
-    it('does nothing if x is undefined', fakeAsync(async () => {
+      vi.useRealTimers();
+    });
+
+    it('does nothing if x is undefined', async () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectPrintFeatureInfoItems, {items: [], y: 5});
       actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
       effects.requestFeatureInfoPrint$.subscribe();
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(0);
-    }));
 
-    it('does nothing if y is undefined', fakeAsync(async () => {
+      vi.useRealTimers();
+    });
+
+    it('does nothing if y is undefined', async () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectPrintFeatureInfoItems, {items: [], x: 5});
       actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
       effects.requestFeatureInfoPrint$.subscribe();
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(0);
-    }));
 
-    it('dispatches OverlayPrintActions.setPrintRequestError() with the error on failure', (done: DoneFn) => {
+      vi.useRealTimers();
+    });
+
+    it('dispatches OverlayPrintActions.setPrintRequestError() with the error on failure', () => {
       const expectedError = new Error('oh no! butterfingers');
-      gb3PrintServiceSpy.and.returnValue(throwError(() => expectedError));
+      gb3PrintServiceSpy.mockReturnValue(throwError(() => expectedError));
 
       actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
       effects.requestFeatureInfoPrint$.subscribe((action) => {
         expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(OverlayPrintActions.setPrintRequestError({overlay: 'featureInfo', error: expectedError}));
-        done();
       });
     });
   });
 
   describe('throwPrintRequestError$', () => {
-    it('throws a PrintRequestCouldNotBeHandled error', (done: DoneFn) => {
+    it('throws a PrintRequestCouldNotBeHandled error', () => {
       const expectedOriginalError = 'oh no! butterfingers';
 
       actions$ = of(OverlayPrintActions.setPrintRequestError({overlay: 'legend', error: expectedOriginalError}));
@@ -169,14 +180,13 @@ describe('OverlayPrintEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new PrintRequestCouldNotBeHandled(expectedOriginalError);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
         .subscribe();
     });
 
-    it('throws a PrintRequestCouldNotBeHandled error with translated original errors', (done: DoneFn) => {
+    it('throws a PrintRequestCouldNotBeHandled error with translated original errors', () => {
       const originalErrors = {
         error: {
           errors: ['Invalid report name', 'Missing attributes', 'Invalid DPI for report Hello World'],
@@ -192,7 +202,6 @@ describe('OverlayPrintEffects', () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any -- has to be `any` to allow for `.message`. Type `unknown` doesn't do that.
           catchError((error: any) => {
             expect(error.message).toEqual(expectedTranslatedError);
-            done();
             return EMPTY;
           }),
         )
@@ -201,19 +210,19 @@ describe('OverlayPrintEffects', () => {
   });
 
   describe('downloadPrintDocument$', () => {
-    it('opens a print document in a new tab, no further dispatch', (done: DoneFn) => {
+    it('opens a print document in a new tab, no further dispatch', () => {
       const expectedCreationResponse = creationResponseMock;
-      const fileDownloadServiceSpy = spyOn(fileDownloadService, 'downloadFileFromUrl');
+      const fileDownloadServiceSpy = vi.spyOn(fileDownloadService, 'downloadFileFromUrl');
       const expectedAction = OverlayPrintActions.setPrintRequestResponse({overlay: 'legend', creationResponse: expectedCreationResponse});
 
       actions$ = of(expectedAction);
       effects.downloadPrintDocument$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        expect(fileDownloadServiceSpy).toHaveBeenCalledOnceWith(
+        expect(fileDownloadServiceSpy).toHaveBeenCalledTimes(1);
+        expect(fileDownloadServiceSpy).toHaveBeenCalledWith(
           expectedCreationResponse.reportUrl,
           expectedCreationResponse.reportUrl.split('/').pop(),
         );
-        done();
       });
     });
   });

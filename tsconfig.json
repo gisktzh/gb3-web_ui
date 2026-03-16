@@ -23,7 +23,8 @@
       // used for compatibility reasons in ng-charts only -> https://github.com/valor-software/ng2-charts/issues/1991
       // use ChartJsDeepPartial in MapModule if required
       "chart.js/dist/types/utils": ["node_modules/chart.js/dist/types/utils.d.ts"]
-    }
+    },
+    "types": ["vitest/globals", "vitest/importMeta"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

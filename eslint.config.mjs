@@ -140,6 +140,7 @@ export default tseslint.config(
       semi: 'error',
       'prefer-template': 'warn',
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
+      '@typescript-eslint/require-await': 'error',
 
       'no-console': [
         'error',

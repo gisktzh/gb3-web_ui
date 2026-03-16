@@ -3,7 +3,6 @@ import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration} from '../../../shared/interfaces/topic.interface';
 import {TimeSliderService} from '../../services/time-slider.service';
 import {MatDatepicker, MatDatepickerInput} from '@angular/material/datepicker';
-import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {DateUnit} from '../../../shared/types/date-unit.type';
 import {TIME_SERVICE} from '../../../app.tokens';
 import {SliderWrapperComponent} from '../../../shared/components/slider-wrapper/slider-wrapper.component';
@@ -44,7 +43,7 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
 })
 export class TimeSliderComponent implements OnInit, OnChanges {
   private readonly timeSliderService = inject(TimeSliderService);
-  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+  private readonly timeService = inject(TIME_SERVICE);
 
   @Output() public readonly changeTimeExtentEvent = new EventEmitter<TimeExtent>();
 

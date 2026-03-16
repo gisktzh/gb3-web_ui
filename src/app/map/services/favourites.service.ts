@@ -28,7 +28,6 @@ import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeSliderService} from './time-slider.service';
-import {TimeService} from '../../shared/interfaces/time-service.interface';
 
 import {TIME_SERVICE} from '../../app.tokens';
 
@@ -39,7 +38,7 @@ export class FavouritesService implements OnDestroy {
   private readonly store = inject(Store);
   private readonly gb3FavouritesService = inject(Gb3FavouritesService);
   private readonly timeSliderService = inject(TimeSliderService);
-  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+  private readonly timeService = inject(TIME_SERVICE);
 
   private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
   private availableMaps: Map[] = [];
