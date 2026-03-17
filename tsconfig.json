@@ -4,6 +4,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "lib": ["esnext", "dom"],
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
@@ -24,7 +25,8 @@
       // use ChartJsDeepPartial in MapModule if required
       "chart.js/dist/types/utils": ["node_modules/chart.js/dist/types/utils.d.ts"]
     },
-    "types": ["vitest/globals", "vitest/importMeta"]
+    // Necessary, because otherwise vscode won't properly use globals from Vitest.
+    "types": ["vitest", "vitest/globals", "vitest/importMeta"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
