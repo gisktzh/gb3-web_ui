@@ -35,7 +35,7 @@ import {UuidUtils} from 'src/app/shared/utils/uuid.utils';
 import {ToolService} from 'src/app/map/interfaces/tool.service';
 
 const mockUuid = '32b50136-2190-4faa-8fef-b9d07319c749'; // Chosen by fair dice roll.
-const mockOAuthService = {
+const mockOAuthService: Partial<AuthService> = {
   login: vi.fn(),
   logout: vi.fn(),
 };

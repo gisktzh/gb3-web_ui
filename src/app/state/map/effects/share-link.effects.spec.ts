@@ -53,7 +53,7 @@ describe('ShareLinkEffects', () => {
   let store: MockStore;
   let effects: ShareLinkEffects;
   let gb3ShareLinkService: Gb3ShareLinkService;
-  const authServiceMock = {
+  const authServiceMock: Partial<AuthService> = {
     login: vi.fn(),
   };
   const favouriteServiceMock = {

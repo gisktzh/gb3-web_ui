@@ -84,7 +84,7 @@ export class AuthService {
    */
   private registerIsAuthenticatedCheckIntervalHandler() {
     this.isAuthenticatedCheckInterval$.add(
-      interval(environment.auth.authenticatedPingInterval) // 5000ms
+      interval(environment.auth.authenticatedPingInterval)
         .pipe(
           tap((_) => {
             if (!this.oauthService.hasValidAccessToken()) {

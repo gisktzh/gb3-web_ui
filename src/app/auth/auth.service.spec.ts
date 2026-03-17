@@ -16,31 +16,32 @@ import {Procedure} from '@vitest/spy';
 type OAuthEventSubscribeCallback = (event: OAuthEvent) => void;
 
 type MockOAuthService = {
-  configure: Mock<Procedure>;
-  hasValidAccessToken: Mock<Procedure>;
-  loadDiscoveryDocument: Mock<Procedure>;
-  loadDiscoveryDocumentAndLogin: Mock<Procedure>;
-  loadDiscoveryDocumentAndTryLogin: Mock<Procedure>;
+  configure: Mock;
+  hasValidAccessToken: Mock;
+  loadDiscoveryDocument: Mock;
+  loadDiscoveryDocumentAndLogin: Mock;
+  loadDiscoveryDocumentAndTryLogin: Mock;
   loadUserProfile: Mock<Procedure>;
-  restartSessionChecksIfStillLoggedIn: Mock<Procedure>;
-  setupAutomaticSilentRefresh: Mock<Procedure>;
-  silentRefresh: Mock<Procedure>;
-  stopAutomaticRefresh: Mock<Procedure>;
-  tryLogin: Mock<Procedure>;
-  tryLoginCodeFlow: Mock<Procedure>;
-  tryLoginImplicitFlow: Mock<Procedure>;
-  logOut: Mock<Procedure>;
-  getAccessToken: Mock<Procedure>;
-  initCodeFlow: Mock<Procedure>;
+  restartSessionChecksIfStillLoggedIn: Mock;
+  setupAutomaticSilentRefresh: Mock;
+  silentRefresh: Mock;
+  stopAutomaticRefresh: Mock;
+  tryLogin: Mock;
+  tryLoginCodeFlow: Mock;
+  tryLoginImplicitFlow: Mock;
+  logOut: Mock;
+  getAccessToken: Mock;
+  initCodeFlow: Mock;
   events: Observable<OAuthEvent>;
   state: string;
 };
 
-const mockAuthNotificationService = {
+const mockAuthNotificationService: Partial<AuthNotificationService> = {
   showImpendingLogoutDialog: vi.fn().mockReturnValue(void 0),
   showForcedLogoutDialog: vi.fn().mockReturnValue(void 0),
   showProgrammaticLogoutDialog: vi.fn().mockReturnValue(void 0),
 };
+
 describe('AuthService', () => {
   let service: AuthService;
   let store: MockStore;

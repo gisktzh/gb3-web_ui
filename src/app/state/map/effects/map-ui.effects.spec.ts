@@ -61,7 +61,7 @@ describe('MapUiEffects', () => {
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    const spyDialogService = {
+    const spyDialogService: Partial<MatDialog> = {
       open: vi.fn().mockName('MatDialog.open'),
     };
 

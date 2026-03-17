@@ -46,7 +46,7 @@ function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualE
   });
 }
 
-const mockAuthService = {
+const mockAuthService: Partial<AuthService> = {
   logout: vi.fn().mockReturnValue(void 0),
   getAccessToken: vi.fn().mockReturnValue(void 0),
   login: vi.fn().mockReturnValue(void 0),
