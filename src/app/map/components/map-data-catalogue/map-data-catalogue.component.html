@@ -23,7 +23,7 @@
         placeholderText="Karten und Layer filtern"
       ></search-input>
     }
-    <loading-and-process-bar [loadingState]="catalogueLoadingState"></loading-and-process-bar>
+    <loading-and-process-bar [loadingState]="catalogueLoadingState$ | async"></loading-and-process-bar>
     @if (catalogueLoadingState === 'loaded') {
       <mat-accordion
         [ngClass]="{
