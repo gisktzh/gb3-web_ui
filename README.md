@@ -451,8 +451,7 @@ in the error handler:
 - `FatalError`: This error will raise an error that prevents the current screen from being used by redirecting to our
   fatal error page.
 - `RecoverableError`: This error will pop an error notification, but will not prevent the app from being used.
-- `SilentError`: This error will do nothing, except (in dev mode) log itself to the console. Useful for errors that
-  should not be communicated to the user.
+- `SilentError`: This error will do nothing. Useful for errors that should not be communicated to the user.
 
 Of course, all other errors that might be thrown in the code and that are not caught (e.g.
 simple `throw new Error('Fail!')`) will be handled as well; and currently, they are treated as `FatalError` because we
