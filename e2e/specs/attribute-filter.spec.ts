@@ -26,14 +26,14 @@ test.describe('Attribute filters', () => {
     await expect(page.getByRole('heading', {name: 'Gebäudealter'})).toBeVisible();
 
     await Promise.all([
-      page.waitForResponse((response) => response.url().includes('https://wms.zh.ch/StatGebAlterZH') && response.status() === 200, {
+      page.waitForResponse((response) => response.url().startsWith('https://wms.zh.ch/StatGebAlterZH') && response.status() === 200, {
         timeout: 0,
       }),
       page.getByText('Gewerbe und Verwaltung').click(),
     ]);
 
     await Promise.all([
-      page.waitForResponse((response) => response.url().includes('https://wms.zh.ch/StatGebAlterZH') && response.status() === 200, {
+      page.waitForResponse((response) => response.url().startsWith('https://wms.zh.ch/StatGebAlterZH') && response.status() === 200, {
         timeout: 0,
       }),
       page.getByText('Andere').click(),
