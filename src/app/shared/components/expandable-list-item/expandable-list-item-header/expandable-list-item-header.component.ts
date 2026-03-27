@@ -15,6 +15,6 @@ export class ExpandableListItemHeaderComponent {
   @Input() public title!: string;
   @Input() public isExpanded: boolean = true;
   @Input() public loadingState: LoadingState;
-  @Input() public numberOfItems: number = 0;
+  @Input() public numberOfItems: number | undefined = 0;
   @Input() public showBadge: boolean = false;
 }

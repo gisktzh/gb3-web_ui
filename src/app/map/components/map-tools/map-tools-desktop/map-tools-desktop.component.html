@@ -2,7 +2,7 @@
   <div class="map-tools-desktop__list" typedTourAnchor="map.tools">
     <button
       (click)="toggleToolMenu('measurement')"
-      [ngClass]="{'map-tools-desktop__list__button--active': toolMenuVisibility === 'measurement'}"
+      [ngClass]="{'map-tools-desktop__list__button--active': toolMenuVisibility() === 'measurement'}"
       class="map-tools-desktop__list__button"
       color="accent"
       data-test-id="map-ruler"
@@ -16,7 +16,7 @@
     <mat-divider class="map-tools-desktop__list__divider"></mat-divider>
     <button
       (click)="toggleToolMenu('drawing')"
-      [ngClass]="{'map-tools-desktop__list__button--active': toolMenuVisibility === 'drawing'}"
+      [ngClass]="{'map-tools-desktop__list__button--active': toolMenuVisibility() === 'drawing'}"
       class="map-tools-desktop__list__button"
       color="accent"
       data-test-id="map-drawing"
@@ -30,7 +30,7 @@
     <mat-divider class="map-tools-desktop__list__divider"></mat-divider>
     <button
       (click)="toggleToolMenu('data-download')"
-      [ngClass]="{'map-tools-desktop__list__button--active': toolMenuVisibility === 'data-download'}"
+      [ngClass]="{'map-tools-desktop__list__button--active': toolMenuVisibility() === 'data-download'}"
       class="map-tools-desktop__list__button"
       color="accent"
       data-test-id="map-data-download"
@@ -78,14 +78,14 @@
     </button>
   </div>
   @if (toolMenuVisibility !== undefined) {
-    <div class="map-tools-desktop__list" [attr.data-tool]="activeTool">
-      @if (toolMenuVisibility === 'measurement') {
+    <div class="map-tools-desktop__list" [attr.data-tool]="activeTool()">
+      @if (toolMenuVisibility() === 'measurement') {
         <measurement-tools></measurement-tools>
       }
-      @if (toolMenuVisibility === 'drawing') {
+      @if (toolMenuVisibility() === 'drawing') {
         <drawing-tools></drawing-tools>
       }
-      @if (toolMenuVisibility === 'data-download') {
+      @if (toolMenuVisibility() === 'data-download') {
         <data-download-selection-tools></data-download-selection-tools>
       }
     </div>

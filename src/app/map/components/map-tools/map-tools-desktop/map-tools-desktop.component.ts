@@ -1,6 +1,6 @@
-import {Component, HostListener, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, HostListener, computed, inject} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
 import {ToolMenuVisibility} from '../../../../shared/types/tool-menu-visibility.type';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {selectToolMenuVisibility} from '../../../../state/map/reducers/map-ui.reducer';
@@ -14,7 +14,6 @@ import {MatDivider} from '@angular/material/divider';
 import {MeasurementToolsComponent} from '../measurement-tools/measurement-tools.component';
 import {DrawingToolsComponent} from '../drawing-tools/drawing-tools.component';
 import {DataDownloadSelectionToolsComponent} from '../data-download-selection-tools/data-download-selection-tools.component';
-import {ToolType} from 'src/app/shared/types/tool.type';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 
 const TOOLTIP_TEXT = {
@@ -42,30 +41,22 @@ const TOOLTIP_TEXT = {
     DataDownloadSelectionToolsComponent,
   ],
 })
-export class MapToolsDesktopComponent implements OnInit, OnDestroy {
+export class MapToolsDesktopComponent {
   private readonly store = inject(Store);
 
-  public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
-  public isMapReady: boolean = true;
+  // public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
+  public toolMenuVisibility = toSignal(this.store.select(selectToolMenuVisibility), {initialValue: undefined});
+  public isMapReady = toSignal(this.store.select(selectReady), {initialValue: false});
+  public activeTool = toSignal(this.store.select(selectActiveTool), {initialValue: undefined});
 
   public tooltipText = TOOLTIP_TEXT;
 
-  private readonly toolMenuVisibility$ = this.store.select(selectToolMenuVisibility);
-  private readonly isMapReady$ = this.store.select(selectReady);
-  private readonly activeTool$ = this.store.select(selectActiveTool);
-  private readonly subscriptions: Subscription = new Subscription();
-  public activeTool: ToolType | undefined = undefined;
-
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+  public getVisibilityClassFor(tool: string) {
+    return computed(() => (this.toolMenuVisibility() === tool ? 'map-tools-desktop__list__button--active' : ''));
   }
 
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
-    const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility === toolToToggle ? undefined : toolToToggle;
+    const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility() === toolToToggle ? undefined : toolToToggle;
     this.store.dispatch(MapUiActions.toggleToolMenu({tool: tool}));
   }
 
@@ -84,13 +75,5 @@ export class MapToolsDesktopComponent implements OnInit, OnDestroy {
 
   public showMapImportDialog() {
     this.store.dispatch(MapUiActions.showMapImportDialog());
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.toolMenuVisibility$.pipe(tap((toolMenuVisibility) => (this.toolMenuVisibility = toolMenuVisibility))).subscribe(),
-    );
-    this.subscriptions.add(this.isMapReady$.pipe(tap((ready) => (this.isMapReady = ready))).subscribe());
-    this.subscriptions.add(this.activeTool$.pipe(tap((activeTool) => (this.activeTool = activeTool))).subscribe());
   }
 }

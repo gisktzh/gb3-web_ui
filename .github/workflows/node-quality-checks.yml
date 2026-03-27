@@ -87,3 +87,27 @@ jobs:
         env:
           # note: this is required with @arcgis/core >=4.32 due to increased memory usage for type checking
           NODE_OPTIONS: '--max-old-space-size=8192'
+
+  e2e:
+    name: Run end-to-end tests
+    runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies and playwright browsers
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install --with-deps
+
+      - name: Run tests
+        run: |
+          npm run e2e-ci

@@ -1,10 +1,10 @@
 <map-overlay
   (closeEvent)="close()"
   (printButtonEvent)="print()"
-  [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded' && featureInfoData.length > 0"
-  [printLoadingState]="printLoadingState"
+  [isPrintButtonEnabled]="showInteractiveElements && loadingState() === 'loaded' && featureInfoData().length > 0"
+  [printLoadingState]="printLoadingState()"
   [showPrintButton]="showInteractiveElements"
-  [isVisible]="isVisible"
+  [isVisible]="isVisible()"
   overlayTitle="Info"
   location="right"
 >

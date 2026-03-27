@@ -20,7 +20,8 @@
     "format-all": "prettier --write ./src",
     "generate-gb3-api": "npx swagger-typescript-api generate -p https://maps.zh.ch/api-docs/gb3/v4/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body --extract-request-body --extract-request-body && node ./remove-generated-api-version-references.js ./src/app/shared/models/gb3-api-generated.interfaces.ts",
     "lint": "eslint",
-    "knip": "knip"
+    "knip": "knip",
+    "e2e": "ng e2e"
   },
   "private": true,
   "engines": {
@@ -51,7 +52,6 @@
     "@terraformer/arcgis": "^2.1.2",
     "@types/file-saver": "^2.0.7",
     "@types/geojson": "^7946.0.10",
-    "@types/node": "^24",
     "@types/terraformer__arcgis": "^2.0.2",
     "@types/twitter-for-web": "^0.0.6",
     "angular-oauth2-oidc": "^20.0.0",
@@ -73,6 +73,9 @@
     "@eslint/js": "^9.19.0",
     "@ngrx/eslint-plugin": "^20.0.0",
     "@ngrx/schematics": "^21.0.0",
+    "@playwright/test": "latest",
+    "@types/har-format": "^1.2.16",
+    "@types/node": "^25.5.0",
     "@vitest/coverage-v8": "^4.1.0",
     "@vitest/spy": "^4.1.0",
     "angular-eslint": "^21.0.0",
@@ -85,6 +88,8 @@
     "jsdom": "^28.1.0",
     "knip": "^5.85.0",
     "lint-staged": "^16.0.0",
+    "playwright-advanced-har": "^1.4.1",
+    "playwright-ng-schematics": "^21.0.5",
     "prettier": "^3.3.3",
     "typescript": "~5.9.0",
     "typescript-eslint": "^8.20.0",

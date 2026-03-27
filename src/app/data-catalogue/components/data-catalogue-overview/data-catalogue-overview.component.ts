@@ -14,7 +14,6 @@ import {ActiveDataCatalogueFilter} from '../../../shared/interfaces/data-catalog
 import {selectActiveFilterValues} from '../../../state/data-catalogue/selectors/active-filter-values.selector';
 import {SearchActions} from '../../../state/app/actions/search.actions';
 import {ConfigService} from '../../../shared/services/config.service';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
 import {PageSectionComponent} from '../../../shared/components/page-section/page-section.component';
@@ -26,6 +25,7 @@ import {MatChipRow, MatChipRemove} from '@angular/material/chips';
 import {MatIcon} from '@angular/material/icon';
 import {CdkTable, CdkColumnDef, CdkCellDef, CdkCell, CdkRowDef, CdkRow} from '@angular/cdk/table';
 import {OverviewSearchResultItemComponent} from '../../../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 const GEO_DATA_CATALOGUE_SUMMARY =
   'Im Geodatenkatalog finden Sie detaillierte Informationen zu allen verfügbaren Geodaten des Kantons Zürich: Woher sie stammen, wie aktuell und genau sie sind, wie Sie sie beziehen können und welche Nutzungsregeln gelten.';
@@ -81,17 +81,15 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   private readonly dialogService = inject(MatDialog);
   private readonly configService = inject(ConfigService);
 
-  public loadingState: LoadingState;
+  public loadingState = toSignal(this.store.select(selectLoadingState));
   public dataCatalogueItems: MatTableDataSource<OverviewSearchResultDisplayItem> = new MatTableDataSource<OverviewSearchResultDisplayItem>(
     [],
   );
-  public activeFilters: ActiveDataCatalogueFilter[] = [];
-  public screenMode: ScreenMode = 'regular';
+  public activeFilters = toSignal(this.store.select(selectActiveFilterValues), {initialValue: []});
+  public screenMode = toSignal(this.store.select(selectScreenMode), {initialValue: 'regular'});
   public heroText = GEO_DATA_CATALOGUE_SUMMARY;
 
-  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly searchConfig = this.configService.searchConfig.dataCatalogPage;
-  private readonly activeFilters$: Observable<ActiveDataCatalogueFilter[]> = this.store.select(selectActiveFilterValues);
   private readonly dataCatalogueItems$: Observable<OverviewSearchResultDisplayItem[]> = this.store.select(selectDataCatalogueItems);
   private readonly dataCatalogueLoadingState$: Observable<LoadingState> = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
@@ -145,9 +143,6 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(this.dataCatalogueLoadingState$.pipe(tap((loadingState) => (this.loadingState = loadingState))).subscribe());
     this.subscriptions.add(this.dataCatalogueItems$.pipe(tap((items) => (this.dataCatalogueItems.data = items))).subscribe());
-    this.subscriptions.add(this.activeFilters$.pipe(tap((activeFilters) => (this.activeFilters = activeFilters))).subscribe());
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

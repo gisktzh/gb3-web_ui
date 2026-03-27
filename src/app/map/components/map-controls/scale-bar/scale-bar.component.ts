@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject, signal} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {delay, filter, Subscription, tap} from 'rxjs';
 import {NgClass} from '@angular/common';
@@ -14,10 +14,10 @@ import {ScaleBarConfig} from '../../../../shared/interfaces/scale-bar-config.int
 export class ScaleBarComponent implements AfterViewInit, OnDestroy {
   private readonly store = inject(Store);
 
-  protected scaleBarLabel: string | undefined;
+  protected scaleBarLabel = signal('');
   @ViewChild('scaleBar', {static: true}) private scaleBar!: ElementRef;
   private readonly subscriptions: Subscription = new Subscription();
-  private readonly scaleBarConfig$ = this.store.select(selectScaleBarConfig);
+  protected readonly scaleBarConfig$ = this.store.select(selectScaleBarConfig);
 
   public ngAfterViewInit() {
     this.subscriptions.add(
@@ -27,7 +27,7 @@ export class ScaleBarComponent implements AfterViewInit, OnDestroy {
           filter((scaleBarConfig): scaleBarConfig is ScaleBarConfig => scaleBarConfig !== undefined),
           tap(({scaleBarWidthInPx, value, unit}) => {
             this.scaleBar.nativeElement.style.width = `${scaleBarWidthInPx}px`;
-            this.scaleBarLabel = `${value} ${unit}`;
+            this.scaleBarLabel.set(`${value} ${unit}`);
           }),
         )
         .subscribe(),

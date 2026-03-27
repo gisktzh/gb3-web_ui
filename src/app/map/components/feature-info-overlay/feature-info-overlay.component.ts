@@ -1,8 +1,5 @@
-import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, Input, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
-import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
-import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectIsFeatureInfoOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {selectFeatureInfoQueryLoadingState} from '../../../state/map/selectors/feature-info-query-loading-state.selector';
@@ -11,6 +8,7 @@ import {selectFeatureInfoPrintState} from '../../../state/map/reducers/overlay-p
 import {OverlayPrintActions} from '../../../state/map/actions/overlay-print-actions';
 import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
 import {FeatureInfoComponent} from './feature-info/feature-info.component';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'feature-info-overlay',
@@ -18,30 +16,16 @@ import {FeatureInfoComponent} from './feature-info/feature-info.component';
   styleUrls: ['./feature-info-overlay.component.scss'],
   imports: [MapOverlayComponent, FeatureInfoComponent],
 })
-export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
+export class FeatureInfoOverlayComponent {
   private readonly store = inject(Store);
 
-  /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
+  // Indicates whether interactive elements (like buttons) should be shown.
   @Input() public showInteractiveElements: boolean = true;
 
-  public isVisible: boolean = false;
-  public featureInfoData: FeatureInfoResultDisplay[] = [];
-  public loadingState: LoadingState;
-  public printLoadingState: LoadingState;
-
-  private readonly isFeatureInfoOverlayVisible$ = this.store.select(selectIsFeatureInfoOverlayVisible);
-  private readonly loadingState$ = this.store.select(selectFeatureInfoQueryLoadingState);
-  private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
-  private readonly printLoadingState$ = this.store.select(selectFeatureInfoPrintState);
-  private readonly subscriptions = new Subscription();
-
-  public ngOnInit(): void {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
+  public isVisible = toSignal(this.store.select(selectIsFeatureInfoOverlayVisible), {initialValue: false});
+  public featureInfoData = toSignal(this.store.select(selectFeatureInfosForDisplay), {initialValue: []});
+  public loadingState = toSignal(this.store.select(selectFeatureInfoQueryLoadingState));
+  public printLoadingState = toSignal(this.store.select(selectFeatureInfoPrintState));
 
   public close() {
     this.store.dispatch(MapUiActions.setFeatureInfoVisibility({isVisible: false}));
@@ -49,12 +33,5 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
 
   public print() {
     this.store.dispatch(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.loadingState$.pipe(tap((value) => (this.loadingState = value))).subscribe());
-    this.subscriptions.add(this.featureInfoData$.pipe(tap((value) => (this.featureInfoData = value))).subscribe());
-    this.subscriptions.add(this.isFeatureInfoOverlayVisible$.pipe(tap((isVisible) => (this.isVisible = isVisible))).subscribe());
-    this.subscriptions.add(this.printLoadingState$.pipe(tap((loadingState) => (this.printLoadingState = loadingState))).subscribe());
   }
 }

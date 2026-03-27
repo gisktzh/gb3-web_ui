@@ -23,8 +23,8 @@
         placeholderText="Karten und Layer filtern"
       ></search-input>
     }
-    <loading-and-process-bar [loadingState]="catalogueLoadingState$ | async"></loading-and-process-bar>
-    @if (catalogueLoadingState === 'loaded') {
+    <loading-and-process-bar [loadingState]="catalogueLoadingState()"></loading-and-process-bar>
+    @if (catalogueLoadingState() === 'loaded') {
       <mat-accordion
         [ngClass]="{
           'map-data-catalogue__content__items--hidden': filterString && topics.length === 0 && filteredFavourites.length === 0,
@@ -41,10 +41,10 @@
               [header]="'Favoriten'"
               [expanded]="!!filterString"
               [filterString]="filterString"
-              [loadingState]="favouritesLoadingState"
-              [numberOfItems]="filteredFavourites.length"
-              [disabled]="favouritesLoadingState === 'loading' || favouritesLoadingState === 'error'"
-              [showBadge]="!!filterString && favouritesLoadingState !== 'loading'"
+              [loadingState]="favouritesLoadingState()"
+              [numberOfItems]="(filteredFavourites$ | async)?.length"
+              [disabled]="favouritesLoadingState() === 'loading' || favouritesLoadingState() === 'error'"
+              [showBadge]="!!filterString && favouritesLoadingState() !== 'loading'"
             >
               @defer {
                 <!-- 'Favourite' content -->
@@ -57,7 +57,7 @@
                     (deleteEvent)="deleteFavourite(favourite)"
                     [filterString]="filterString"
                     [invalid]="favourite.invalid"
-                    [loadingState]="favouritesLoadingState"
+                    [loadingState]="favouritesLoadingState()"
                     [title]="favourite.title"
                   ></map-data-item-favourite>
                 }
@@ -72,7 +72,7 @@
             [header]="topic.title"
             [filterString]="filterString"
             [expanded]="!!filterString"
-            [loadingState]="catalogueLoadingState"
+            [loadingState]="catalogueLoadingState()"
             [showBadge]="!!filterString"
           >
             @defer {

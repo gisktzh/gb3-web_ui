@@ -11,6 +11,7 @@ import {
   ViewChild,
   ViewChildren,
   inject,
+  signal,
 } from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
@@ -127,8 +128,8 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   public readonly tableRows: TableRows = new Map<string, TableCell[]>();
   public readonly tableHeaders: TableHeader[] = [];
   public readonly minTableHeaderWidth: number = MIN_TABLE_HEADER_WIDTH;
-  public maxTableHeaderWidth: number = DEFAULT_TABLE_HEADER_WIDTH;
-  public tableHeaderWidth: string = `${DEFAULT_TABLE_HEADER_WIDTH}px`;
+  public maxTableHeaderWidth = signal(DEFAULT_TABLE_HEADER_WIDTH);
+  public tableHeaderWidth = signal(`${DEFAULT_TABLE_HEADER_WIDTH}px`);
 
   private resizeObserver!: ResizeObserver;
   private readonly featureGeometries: Map<number, GeometryWithSrs | undefined> = new Map();
@@ -143,7 +144,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   }
 
   public resize(style: StyleExpression) {
-    this.tableHeaderWidth = style['width'] ?? `${DEFAULT_TABLE_HEADER_WIDTH}px`;
+    this.tableHeaderWidth.set(style['width'] ?? `${DEFAULT_TABLE_HEADER_WIDTH}px`);
   }
 
   public ngOnInit() {
@@ -214,11 +215,11 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const maxWidth = entry.contentRect.width * 0.8;
-        if (this.maxTableHeaderWidth > maxWidth && maxWidth > 0) {
+        if (this.maxTableHeaderWidth() > maxWidth && maxWidth > 0) {
           this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
           this.changeDetectorRef.detectChanges();
         }
-        this.maxTableHeaderWidth = maxWidth;
+        this.maxTableHeaderWidth.set(maxWidth);
       }
     });
 

@@ -16,7 +16,7 @@ export class ExpandableListItemComponent {
   @Input() public filterString: string | undefined = undefined;
   @Input() public disabled: boolean = false;
   @Input() public loadingState: LoadingState = undefined;
-  @Input() public numberOfItems: number = 0;
+  @Input() public numberOfItems: number | undefined = 0;
   @Input() public showBadge: boolean = false;
   @Input() public noPadding: boolean = false;
   @Input() public allowTabFocus: boolean = true;

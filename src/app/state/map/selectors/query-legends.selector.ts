@@ -23,3 +23,5 @@ export const selectQueryLegends = createSelector(selectItems, selectScale, selec
 
   return queryTopics.filter((queryTopic) => queryTopic.layersToQuery !== '');
 });
+
+export const selectNumberOfQueryLegends = createSelector(selectQueryLegends, (currentActiveMapItems) => currentActiveMapItems.length);
