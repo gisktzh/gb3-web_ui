@@ -645,7 +645,7 @@ There are the following branches:
 
 ## Release management
 
-This process describes how to tag a release so the team at ARE-GEO-GIS can release the correct version of the application. A more detailed internal version can be found [here](https://confluence-geo.zh.ch/spaces/GIZ/pages/193167588/GB3-Release+Workflow+Dokumentation).
+This process describes how to tag a release so the team at ARE-GEO-GIS can release the correct version of the application. A more detailed internal version can be found [here](https://are-zh.atlassian.net/wiki/spaces/GIZ/pages/28384668/GB3-Release+Workflow+Dokumentation).
 
 - Create a new PR called `Release` from `develop` into `main` for all repos that have had changes since the last release.
 - After merging, create a new tag for the release. This can be done by clicking on `Releases` on the overview page on GitHub and then clicking on `Draft a new release`.
