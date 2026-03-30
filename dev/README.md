@@ -1,3 +1,3 @@
 # INTERNE DOKUMENTATION
 
-https://confluence-geo.zh.ch/display/GIZ/Lokal+gb3_web-ui
+https://are-zh.atlassian.net/wiki/spaces/GIZ/pages/28379756/WSL+2+Entwicklungsumgebung+einrichten
