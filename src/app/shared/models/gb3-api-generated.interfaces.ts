@@ -1005,11 +1005,11 @@ export interface GeojsonFeature {
     /**
      * UUID of the given feature
      */
-    id: string; // todo: specify API interface to expect these properties; see https://jira-geo.zh.ch/browse/GB3-825
+    id: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
     /**
      * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
      */
-    belongsTo?: string; // todo: specify API interface to expect these properties; see https://jira-geo.zh.ch/browse/GB3-825
+    belongsTo?: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
     /**
      * Reference to style ID in 'styles'
      * @example "a"
@@ -1024,7 +1024,7 @@ export interface GeojsonFeature {
      * The tool used to draw the feature
      * @example "polygon"
      */
-    tool: SupportedEsriTool; // todo: specify API interface to expect these properties; see https://jira-geo.zh.ch/browse/GB3-825
+    tool: SupportedEsriTool; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
   };
   /** GeoJSON geometry object */
   geometry: Geometry;
