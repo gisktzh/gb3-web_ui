@@ -331,7 +331,7 @@ describe('ActiveMapItem Reducer', () => {
         ?.settings.layers;
       expect(actualLayers).toBeDefined();
       expect(actualLayers!.length).toBe(activeMapItem.settings.layers.length);
-      expect(actualLayers!).toEqual(expect.arrayContaining(activeMapItem.settings.layers));
+      expect(actualLayers).toEqual(expect.arrayContaining(activeMapItem.settings.layers));
       expect(actualLayers![currentPosition]).toEqual(activeMapItem.settings.layers[previousPosition]);
     });
   });
