@@ -890,7 +890,7 @@ export interface Dataset {
     /** Layer GIS-ZH-Nummer */
     giszhnr: string;
     /** Beschreibung des Layers */
-    beschreibung: string;
+    beschreibung: string | null;
     /** Geometrietyp */
     geometrietyp: string;
     /** Pfad\Filename */

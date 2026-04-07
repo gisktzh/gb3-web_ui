@@ -3,7 +3,7 @@ import {LayerAttributes} from './layer-attributes.interface';
 export interface DatasetLayer {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   dataProcurementType: string;
   path: string | null;
   geometryType: string;
