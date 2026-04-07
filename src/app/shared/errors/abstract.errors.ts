@@ -19,6 +19,6 @@ export abstract class RecoverableError extends Gb3RuntimeError {}
 export abstract class FatalError extends Gb3RuntimeError {}
 
 /**
- * A silent error is logged in dev mode, but does not trigger any visual indication to the user.
+ * A silent error does not trigger any visual indication to the user and is not logged.
  */
 export abstract class SilentError extends Gb3RuntimeError {}
