@@ -110,4 +110,4 @@ jobs:
 
       - name: Run tests
         run: |
-          npm run e2e-ci
+          npm run e2e
