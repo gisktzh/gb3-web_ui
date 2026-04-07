@@ -22,7 +22,7 @@ import {selectCenterReadable, selectRoundedScale} from 'src/app/state/map/select
  * change the field's value if it is still focused.
  *
  * Also note: We cannot use a number field for the scale input because it is a hard requirement to be able to pass e.g. "10'000", which does
- * not work natively in Firefox. See https://jira-geo.zh.ch/browse/GB3-1120 for more info.
+ * not work natively in Firefox. See https://are-zh.atlassian.net/browse/GB3-1120 for more info.
  */
 @Component({
   selector: 'coordinate-scale-inputs',

@@ -89,7 +89,7 @@ describe('AuthStatusEffects', () => {
         timeService.createUTCDateFromString('2020'),
       );
 
-      const expectedShareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+      const expectedShareLinkItem = ShareLinkItemTestUtils.createShareLinkItemJsonString(
         timeService.createUTCDateFromString('1000'),
         timeService.createUTCDateFromString('2020'),
         mockUuid,
@@ -110,7 +110,7 @@ describe('AuthStatusEffects', () => {
 
         expect(passedArgs).toBeDefined();
         expect(passedArgs![0]).toBe('shareLinkItem');
-        expect(JSON.parse(passedArgs![1])).toEqual(JSON.parse(JSON.stringify(expectedShareLinkItem)));
+        expect(JSON.parse(passedArgs![1])).toEqual(JSON.parse(expectedShareLinkItem));
       });
     });
   });
@@ -122,7 +122,7 @@ describe('AuthStatusEffects', () => {
         timeService.createUTCDateFromString('2020'),
       );
 
-      const expectedShareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+      const expectedShareLinkItem = ShareLinkItemTestUtils.createShareLinkItemJsonString(
         timeService.createUTCDateFromString('1000'),
         timeService.createUTCDateFromString('2020'),
         mockUuid,
@@ -143,7 +143,7 @@ describe('AuthStatusEffects', () => {
 
         expect(passedArgs).toBeDefined();
         expect(passedArgs![0]).toBe('shareLinkItem');
-        expect(JSON.parse(passedArgs![1])).toEqual(JSON.parse(JSON.stringify(expectedShareLinkItem)));
+        expect(JSON.parse(passedArgs![1])).toEqual(JSON.parse(expectedShareLinkItem));
       });
     });
   });

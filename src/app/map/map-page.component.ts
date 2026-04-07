@@ -7,7 +7,6 @@ import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {selectNumberOfQueryLegends} from '../state/map/selectors/query-legends.selector';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {initialState as initialMapConfigState, selectMapConfigState, selectRotation} from '../state/map/reducers/map-config.reducer';
-import {selectDevMode} from '../state/app/reducers/app.reducer';
 import {InitialMapExtentService} from './services/initial-map-extent.service';
 import {MapConfigActions} from '../state/map/actions/map-config.actions';
 import {DisableOverscrollBehaviourComponent} from './components/disable-overscroll-behaviour/disable-overscroll-behaviour.component';
@@ -91,7 +90,6 @@ export class MapPageComponent implements AfterViewInit, OnInit {
     this.store.select(selectRotation).pipe(delayWhen((rotation) => (rotation === 0 ? interval(2000) : interval(0)))),
     {initialValue: 0},
   );
-  public isDevModeActive = toSignal(this.store.select(selectDevMode), {initialValue: false});
 
   public ngOnInit() {
     if (!this.mapConfigState().predefinedInitialExtent) {

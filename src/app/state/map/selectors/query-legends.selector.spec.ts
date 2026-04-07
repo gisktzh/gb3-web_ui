@@ -33,7 +33,7 @@ describe('selectQueryLegends', () => {
   });
 
   it('returns all visible topic IDs with all visible and queryable sublayer IDs (joined with ,) as QueryTopic list', () => {
-    const actual = selectQueryLegends.projector(mockItems, mockScale, false);
+    const actual = selectQueryLegends.projector(mockItems, mockScale);
 
     const expected: QueryTopic[] = [
       {topic: mockItems[0].id, layersToQuery: mockItems[0].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
@@ -45,7 +45,7 @@ describe('selectQueryLegends', () => {
   it('does not return an invisible topic regardless of sublayer state', () => {
     mockItems[0].visible = false;
 
-    const actual = selectQueryLegends.projector(mockItems, mockScale, false);
+    const actual = selectQueryLegends.projector(mockItems, mockScale);
 
     const expected: QueryTopic[] = [
       {
@@ -60,7 +60,7 @@ describe('selectQueryLegends', () => {
   it('does not return an invisible sublayer', () => {
     mockItems[0].settings.layers[0].visible = false;
 
-    const actual = selectQueryLegends.projector(mockItems, mockScale, false);
+    const actual = selectQueryLegends.projector(mockItems, mockScale);
 
     const expected: QueryTopic[] = [
       {topic: mockItems[0].id, layersToQuery: mockItems[0].settings.layers[1].layer, isSingleLayer: false},
@@ -73,7 +73,7 @@ describe('selectQueryLegends', () => {
     mockItems[0].settings.layers[0].visible = false;
     mockItems[0].settings.layers[1].visible = false;
 
-    const actual = selectQueryLegends.projector(mockItems, mockScale, false);
+    const actual = selectQueryLegends.projector(mockItems, mockScale);
 
     const expected: QueryTopic[] = [
       {topic: mockItems[1].id, layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
@@ -85,7 +85,7 @@ describe('selectQueryLegends', () => {
     const drawingLayer = new DrawingActiveMapItem('', DrawingLayerPrefix.Drawing, UserDrawingLayer.Drawings);
     (mockItems as ActiveMapItem[]).push(drawingLayer);
 
-    const actual = selectQueryLegends.projector(mockItems, mockScale, false);
+    const actual = selectQueryLegends.projector(mockItems, mockScale);
 
     const expected: QueryTopic[] = [
       {topic: mockItems[0].id, layersToQuery: mockItems[0].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
@@ -99,7 +99,7 @@ describe('selectQueryLegends', () => {
   it('does not return layers if the current scale is smaller than the minScale of the layer', () => {
     mockScale = 99;
 
-    const actual = selectQueryLegends.projector(mockItems, mockScale, false);
+    const actual = selectQueryLegends.projector(mockItems, mockScale);
 
     const expected: QueryTopic[] = [
       {topic: mockItems[0].id, layersToQuery: mockItems[0].settings.layers[0].layer, isSingleLayer: false},
@@ -115,7 +115,7 @@ describe('selectQueryLegends', () => {
   it('does not return layers if the current scale is larger than the maxScale of the layer', () => {
     mockScale = 10001;
 
-    const actual = selectQueryLegends.projector(mockItems, mockScale, false);
+    const actual = selectQueryLegends.projector(mockItems, mockScale);
 
     const expected: QueryTopic[] = [
       {topic: mockItems[0].id, layersToQuery: mockItems[0].settings.layers[1].layer, isSingleLayer: false},
@@ -131,7 +131,7 @@ describe('selectQueryLegends', () => {
   it('does not return a topic if all sublayers are not visible due to small scale', () => {
     mockScale = 49;
 
-    const actual = selectQueryLegends.projector(mockItems, mockScale, false);
+    const actual = selectQueryLegends.projector(mockItems, mockScale);
 
     const expected: QueryTopic[] = [
       {
@@ -146,27 +146,9 @@ describe('selectQueryLegends', () => {
   it('does not return a topic if all sublayers are not visible due to large scale', () => {
     mockScale = 11001;
 
-    const actual = selectQueryLegends.projector(mockItems, mockScale, false);
+    const actual = selectQueryLegends.projector(mockItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {
-        topic: mockItems[1].id,
-        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
-        isSingleLayer: false,
-      },
-    ];
-    expect(actual).toEqual(expected);
-  });
-
-  it('returns all layers and sublayers independent from the scale or visibility if the `devMode` is true', () => {
-    const actual = selectQueryLegends.projector(mockItems, mockScale, true);
-
-    const expected: QueryTopic[] = [
-      {
-        topic: mockItems[0].id,
-        layersToQuery: mockItems[0].settings.layers.map((l) => l.layer).join(','),
-        isSingleLayer: false,
-      },
       {
         topic: mockItems[1].id,
         layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),

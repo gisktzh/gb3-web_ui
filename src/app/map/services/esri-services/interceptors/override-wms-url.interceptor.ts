@@ -24,7 +24,11 @@ const callbackFactory: (overrideWmsUrl: string) => AfterInterceptorCallback = (o
   return (response: RequestResponse<XMLDocument>) => {
     // Since requests from the symbols part of @arcgis/core are also intercepted here, we need to explicitly check for
     // the existence of the .get() method, since in these cases, .query is a simple value object.
-    if (overrideWmsUrl && response.requestOptions?.query?.get?.('REQUEST') === 'GetCapabilities') {
+    const query = response.requestOptions?.query;
+
+    const requestType = query instanceof URLSearchParams ? query.get('REQUEST') : query?.['REQUEST'];
+
+    if (overrideWmsUrl && requestType === 'GetCapabilities') {
       try {
         /**
          * As per the docs (https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestResponse), the response
