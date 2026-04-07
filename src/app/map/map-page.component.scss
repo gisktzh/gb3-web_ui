@@ -28,22 +28,10 @@
     height: calc(100dvh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
   }
 
-  &--dev-mode {
-    height: calc(100vh - #{map-layout-variables.$navbar-height} - #{map-layout-variables.$dev-mode-banner-height});
-
-    @supports (height: 100dvh) {
-      height: calc(100dvh - #{map-layout-variables.$navbar-height} - #{map-layout-variables.$dev-mode-banner-height});
-    }
-  }
-
   &--mobile {
     position: absolute;
     height: 100%;
     width: 100%;
-
-    &.map-container--dev-mode {
-      height: calc(100% - #{map-layout-variables.$dev-mode-banner-height});
-    }
   }
 
   .map-container__map-element--hidden {

@@ -2,7 +2,6 @@ import {DynamicInternalUrlsConfiguration} from '../../../shared/types/dynamic-in
 import {AccessMode} from '../../../shared/types/access-mode.type';
 
 export interface AppState {
-  devMode: boolean;
   dynamicInternalUrlsConfiguration: DynamicInternalUrlsConfiguration;
   accessMode: AccessMode;
 }
