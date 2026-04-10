@@ -54,6 +54,23 @@ describe('EsriDrawingSymbolsService', () => {
   let service: EsriDrawingSymbolsService;
   let httpTestingController: HttpTestingController;
 
+  const drawingSymbolDefinitionMockClass = vi.fn(
+    class extends EsriDrawingSymbolDefinition {
+      public override fetchDrawingSymbolDescriptor = vi.fn();
+      public override toJSON = vi.fn();
+      public override belongsToCollection = vi.fn();
+    },
+  );
+
+  const drawingSymbolDescriptorMockClass = vi.fn(
+    class extends EsriDrawingSymbolDescriptor {
+      public override resize = vi.fn();
+      public override rotate = vi.fn();
+      public override toJSON = vi.fn();
+      public override toSVG = vi.fn();
+    },
+  );
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -80,20 +97,18 @@ describe('EsriDrawingSymbolsService', () => {
     const symbolB = new EsriDrawingSymbolDefinition({styleUrl: 'b'});
     const symbolC = new EsriDrawingSymbolDefinition({styleUrl: 'a'});
 
-    expect(service.isSameSymbol(symbolA, symbolB)).toBeFalse();
-    expect(service.isSameSymbol(symbolA, symbolC)).toBeTrue();
-    expect(service.isSameSymbol(symbolB, symbolC)).toBeFalse();
+    expect(service.isSameSymbol(symbolA, symbolB)).toBe(false);
+    expect(service.isSameSymbol(symbolA, symbolC)).toBe(true);
+    expect(service.isSameSymbol(symbolB, symbolC)).toBe(false);
   });
 
   it('should create a drawing symbol definition and descriptor from JSON', async () => {
-    const drawingSymbolDefinitionMock = jasmine.createSpyObj<EsriDrawingSymbolDefinition>('EsriDrawingSymbolDefinition', [
-      'fetchDrawingSymbolDescriptor',
-    ]);
-    const drawingSymbolDescriptorMock = jasmine.createSpyObj<EsriDrawingSymbolDescriptor>('EsriDrawingSymbolDescriptor', ['toSVG']);
+    const drawingSymbolDefinitionMock = new drawingSymbolDefinitionMockClass();
+    const drawingSymbolDescriptorMock = new drawingSymbolDescriptorMockClass();
 
-    const fromJsonSpy = spyOn(EsriDrawingSymbolDefinition, 'fromJSON').and.returnValue(drawingSymbolDefinitionMock);
+    const fromJsonSpy = vi.spyOn(EsriDrawingSymbolDefinition, 'fromJSON').mockReturnValue(drawingSymbolDefinitionMock);
     const fetchDrawingSymbolDescriptorSpy =
-      drawingSymbolDefinitionMock.fetchDrawingSymbolDescriptor.and.resolveTo(drawingSymbolDescriptorMock);
+      drawingSymbolDefinitionMock.fetchDrawingSymbolDescriptor.mockResolvedValue(drawingSymbolDescriptorMock);
 
     const actual = await service.mapDrawingSymbolFromJSON('some json');
 
@@ -104,14 +119,14 @@ describe('EsriDrawingSymbolsService', () => {
   });
 
   it('should convert a given symbol definition to a map drawing symbol correctly', async () => {
-    const drawingSymbolDefinitionMock = jasmine.createSpyObj<EsriDrawingSymbolDefinition>('EsriDrawingSymbolDefinition', [
-      'fetchDrawingSymbolDescriptor',
-    ]);
-    const drawingSymbolDescriptorMock = jasmine.createSpyObj<EsriDrawingSymbolDescriptor>('EsriDrawingSymbolDescriptor', ['toSVG']);
+    const drawingSymbolDefinitionMock = new drawingSymbolDefinitionMockClass();
+    const drawingSymbolDescriptorMock = {
+      toSVG: vi.fn().mockName('EsriDrawingSymbolDescriptor.toSVG'),
+    };
 
-    const fromJsonSpy = spyOn(EsriDrawingSymbolDefinition, 'fromJSON').and.returnValue(drawingSymbolDefinitionMock);
+    const fromJsonSpy = vi.spyOn(EsriDrawingSymbolDefinition, 'fromJSON').mockReturnValue(drawingSymbolDefinitionMock);
     const fetchDrawingSymbolDescriptorSpy =
-      drawingSymbolDefinitionMock.fetchDrawingSymbolDescriptor.and.resolveTo(drawingSymbolDescriptorMock);
+      drawingSymbolDefinitionMock.fetchDrawingSymbolDescriptor.mockResolvedValue(drawingSymbolDescriptorMock);
 
     const actual = await service.convertToMapDrawingSymbol(drawingSymbolDefinitionMock, 10, 12);
 
@@ -123,8 +138,8 @@ describe('EsriDrawingSymbolsService', () => {
 
   it('should convert a given drawing symbol descriptor to SVG correctly', () => {
     const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    const drawingSymbolDescriptorMock = jasmine.createSpyObj<EsriDrawingSymbolDescriptor>('EsriDrawingSymbolDescriptor', ['toSVG']);
-    drawingSymbolDescriptorMock.toSVG.and.returnValue(svgEl);
+    const drawingSymbolDescriptorMock = new drawingSymbolDescriptorMockClass();
+    drawingSymbolDescriptorMock.toSVG.mockReturnValue(svgEl);
 
     const actual = service.getSVGString(drawingSymbolDescriptorMock, 123);
 
@@ -132,15 +147,15 @@ describe('EsriDrawingSymbolsService', () => {
   });
 
   it('should should throw an error if SVG conversion failed for whatever reason', () => {
-    const drawingSymbolDescriptorMock = jasmine.createSpyObj<EsriDrawingSymbolDescriptor>('EsriDrawingSymbolDescriptor', ['toSVG']);
-    drawingSymbolDescriptorMock.toSVG.and.returnValue(undefined);
+    const drawingSymbolDescriptorMock = new drawingSymbolDescriptorMockClass();
+    drawingSymbolDescriptorMock.toSVG.mockReturnValue(undefined);
 
     expect(() => service.getSVGString(drawingSymbolDescriptorMock, 10)).toThrow(new EsriSymbolDescriptorToSVGFailed());
   });
 
   it('should make a request to get a collection and cache the result', () => {
     const httpClient = TestBed.inject(HttpClient);
-    const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(testData));
+    const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(testData));
     service.getCollection('806df898e9c04516a704a9f93e2a0a5e').subscribe((actual) => {
       expect(actual.length).toBe(2);
       expect(actual[0].thumbnail).toEqual('https://www.example.com/thumbnail_A.png');
@@ -158,8 +173,10 @@ describe('EsriDrawingSymbolsService', () => {
   });
 
   it('should catch any HTTP error and throw an appropriate error when trying to fetch a collection', () => {
+    vi.spyOn(console, 'error').mockImplementation(vi.fn());
+
     service.getCollection('806df898e9c04516a704a9f93e2a0a5e').subscribe({
-      next: () => fail('next should not be called'),
+      next: () => expect.fail('next should not be called'),
       error: (err: unknown) => {
         expect((err as Error).message).toBe(new EsriSymbolDescriptorFetchingFailed().message);
       },

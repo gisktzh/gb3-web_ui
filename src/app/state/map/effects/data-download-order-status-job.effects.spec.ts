@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {discardPeriodicTasks, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, Subscription, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -77,10 +77,12 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       pollingInterval: 1000,
     };
 
-    it('dispatches DataDownloadOrderStatusJobActions.setOrderStatusResponse() at least once without an error after requesting an order status', fakeAsync(() => {
+    it('dispatches DataDownloadOrderStatusJobActions.setOrderStatusResponse() at least once without an error after requesting an order status', () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectStatusJobs, []);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(of(orderStatus));
+      vi.spyOn(configService, 'dataDownloadConfig', 'get').mockReturnValue(dataDownloadConfig);
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'checkOrderStatus').mockReturnValue(of(orderStatus));
       const subscription = new Subscription();
 
       const expectedAction = DataDownloadOrderStatusJobActions.setOrderStatusResponse({orderStatus});
@@ -88,19 +90,26 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       let newAction: Action | undefined;
       actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       subscription.add(effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action)));
-      tick();
+      vi.advanceTimersByTime(1);
 
-      expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(orderId);
+      expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(geoshopApiServiceSpy).toHaveBeenCalledWith(orderId);
       expect(newAction).toBeDefined();
       expect(newAction).toEqual(expectedAction);
       subscription.unsubscribe();
-    }));
 
-    it('dispatches DataDownloadOrderStatusJobActions.setOrderStatusError() at least once with an error after requesting an order status', fakeAsync(() => {
+      vi.clearAllTimers();
+      vi.useRealTimers();
+    });
+
+    it('dispatches DataDownloadOrderStatusJobActions.setOrderStatusError() at least once with an error after requesting an order status', () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectStatusJobs, []);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
+      vi.spyOn(configService, 'dataDownloadConfig', 'get').mockReturnValue(dataDownloadConfig);
       const error = new Error('noooooooooooooo!!!');
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(throwError(() => error));
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'checkOrderStatus').mockReturnValue(throwError(() => error));
       const subscription = new Subscription();
 
       const expectedAction = DataDownloadOrderStatusJobActions.setOrderStatusError({
@@ -112,93 +121,108 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       let newAction: Action | undefined;
       actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       subscription.add(effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action)));
-      tick();
+      vi.advanceTimersByTime(1);
 
-      expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(orderId);
+      expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(geoshopApiServiceSpy).toHaveBeenCalledWith(orderId);
       expect(newAction).toBeDefined();
       expect(newAction).toEqual(expectedAction);
       subscription.unsubscribe();
-    }));
 
-    it('dispatches nothing if the status job has the status type success', fakeAsync(() => {
+      vi.clearAllTimers();
+      vi.useRealTimers();
+    });
+
+    it('dispatches nothing if the status job has the status type success', async () => {
+      vi.useFakeTimers();
+
       const orderStatusJobWithStatusSuccess: OrderStatusJob = {
         ...orderStatusJob,
         status: {...orderStatus, status: {type: 'success'}},
       };
       store.overrideSelector(selectStatusJobs, [orderStatusJobWithStatusSuccess]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
+      vi.spyOn(configService, 'dataDownloadConfig', 'get').mockReturnValue(dataDownloadConfig);
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'checkOrderStatus');
 
       let newAction;
       actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
-      discardPeriodicTasks();
-    }));
+      vi.clearAllTimers();
+      vi.useRealTimers();
+    });
 
-    it('dispatches nothing if the status job has the status type failure', fakeAsync(() => {
+    it('dispatches nothing if the status job has the status type failure', async () => {
+      vi.useFakeTimers();
+
       const orderStatusJobWithStatusFailure: OrderStatusJob = {
         ...orderStatusJob,
         status: {...orderStatus, status: {type: 'failure'}},
       };
       store.overrideSelector(selectStatusJobs, [orderStatusJobWithStatusFailure]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
+      vi.spyOn(configService, 'dataDownloadConfig', 'get').mockReturnValue(dataDownloadConfig);
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'checkOrderStatus');
 
       let newAction;
       actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
-      discardPeriodicTasks();
-    }));
+      vi.clearAllTimers();
+      vi.useRealTimers();
+    });
 
-    it('dispatches nothing if the status job was aborted', fakeAsync(() => {
+    it('dispatches nothing if the status job was aborted', async () => {
+      vi.useFakeTimers();
       const abortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
         isAborted: true,
       };
       store.overrideSelector(selectStatusJobs, [abortedOrderStatusJob]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
+      vi.spyOn(configService, 'dataDownloadConfig', 'get').mockReturnValue(dataDownloadConfig);
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'checkOrderStatus');
 
       let newAction;
       actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
-      discardPeriodicTasks();
-    }));
+      vi.clearAllTimers();
+      vi.useRealTimers();
+    });
 
-    it('dispatches nothing if the status job was cancelled', fakeAsync(() => {
+    it('dispatches nothing if the status job was cancelled', async () => {
+      vi.useFakeTimers();
       const cancelledOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
         isCancelled: true,
       };
       store.overrideSelector(selectStatusJobs, [cancelledOrderStatusJob]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
+      vi.spyOn(configService, 'dataDownloadConfig', 'get').mockReturnValue(dataDownloadConfig);
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'checkOrderStatus');
 
       let newAction;
       actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
-      discardPeriodicTasks();
-    }));
+      vi.clearAllTimers();
+      vi.useRealTimers();
+    });
   });
 
   describe('throwOrderStatusError$', () => {
-    it('throws a OrderStatusCouldNotBeSent error after setting an order status error', (done: DoneFn) => {
+    it('throws a OrderStatusCouldNotBeSent error after setting an order status error', () => {
       const originalError = new Error('noooooooooooooo!!!');
       store.overrideSelector(selectStatusJobs, []);
 
@@ -215,7 +239,6 @@ describe('DataDownloadOrderStatusJobEffects', () => {
         .pipe(
           catchError((error: unknown) => {
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -246,7 +269,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       status: orderStatus,
     };
 
-    it('throws a OrderStatusWasAborted error after setting an order status error where isAborted is true', (done: DoneFn) => {
+    it('throws a OrderStatusWasAborted error after setting an order status error where isAborted is true', () => {
       const originalError = new Error('noooooooooooooo!!!');
       const abortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
@@ -267,14 +290,15 @@ describe('DataDownloadOrderStatusJobEffects', () => {
         .pipe(
           catchError((error: unknown) => {
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
         .subscribe();
     });
 
-    it('dispatches nothing if the order is not aborted', fakeAsync(() => {
+    it('dispatches nothing if the order is not aborted', async () => {
+      vi.useFakeTimers();
+
       const error = new Error('noooooooooooooo!!!');
       const notAbortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
@@ -285,9 +309,11 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       let newAction;
       actions$ = of(DataDownloadOrderStatusJobActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
       effects.throwOrderStatusRefreshAbortError$.subscribe((action) => (newAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 });

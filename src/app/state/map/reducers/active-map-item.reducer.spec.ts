@@ -74,7 +74,7 @@ describe('ActiveMapItem Reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.items.length).toBe(existingState.items.length);
-      expect(state.items[0].isTemporary).toBeFalse();
+      expect(state.items[0].isTemporary).toBe(false);
     });
   });
 
@@ -311,7 +311,7 @@ describe('ActiveMapItem Reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.items.length).toBe(existingState.items.length);
-      expect(state.items).toEqual(jasmine.arrayWithExactContents(existingState.items));
+      expect(state.items).toEqual(expect.arrayContaining(existingState.items));
       expect(state.items[currentPosition]).toEqual(existingState.items[previousPosition]);
     });
   });
@@ -331,7 +331,7 @@ describe('ActiveMapItem Reducer', () => {
         ?.settings.layers;
       expect(actualLayers).toBeDefined();
       expect(actualLayers!.length).toBe(activeMapItem.settings.layers.length);
-      expect(actualLayers).toEqual(jasmine.arrayWithExactContents(activeMapItem.settings.layers));
+      expect(actualLayers).toEqual(expect.arrayContaining(activeMapItem.settings.layers));
       expect(actualLayers![currentPosition]).toEqual(activeMapItem.settings.layers[previousPosition]);
     });
   });
@@ -394,7 +394,7 @@ describe('ActiveMapItem Reducer', () => {
         createGb2WmsMapItemMock('favouriteMapItem'), // completely new item
       ];
       const baseConfig: FavouriteBaseConfig = {
-        scale: 1_155_581,
+        scale: 1155581,
         center: {x: 1336, y: 9000},
         basemap: "It's-A-Me, Zelda!",
       };
@@ -428,11 +428,11 @@ describe('ActiveMapItem Reducer', () => {
     it('marks all notices from GB2WMS items as read', () => {
       expect(
         existingState.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).some((item) => item.settings.isNoticeMarkedAsRead),
-      ).toBeFalse();
+      ).toBe(false);
       const action = ActiveMapItemActions.markAllActiveMapItemNoticeAsRead();
       const state = reducer(existingState, action);
 
-      expect(state.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).every((item) => item.settings.isNoticeMarkedAsRead)).toBeTrue();
+      expect(state.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).every((item) => item.settings.isNoticeMarkedAsRead)).toBe(true);
     });
   });
 

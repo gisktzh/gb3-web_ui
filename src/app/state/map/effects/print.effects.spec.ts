@@ -33,7 +33,7 @@ describe('PrintEffects', () => {
     map: {
       dpi: 9001,
       rotation: 42,
-      scale: 123_456_789,
+      scale: 123456789,
       center: [12.3, 45.6],
       mapItems: [
         {
@@ -89,35 +89,35 @@ describe('PrintEffects', () => {
   });
 
   describe('setPrintCreationAfterSuccessfullyLoading$', () => {
-    it('dispatches PrintActions.setPrintRequestResponse() with the service response on success', (done: DoneFn) => {
+    it('dispatches PrintActions.setPrintRequestResponse() with the service response on success', () => {
       const expectedCreation = creationMock;
       const expectedCreationResponse = creationResponseMock;
-      const gb3PrintServiceSpy = spyOn(gb3PrintService, 'createPrintJob').and.returnValue(of(expectedCreationResponse));
+      const gb3PrintServiceSpy = vi.spyOn(gb3PrintService, 'createPrintJob').mockReturnValue(of(expectedCreationResponse));
 
       actions$ = of(PrintActions.requestPrintCreation({creation: expectedCreation}));
       effects.requestPrintCreation$.subscribe((action) => {
-        expect(gb3PrintServiceSpy).toHaveBeenCalledOnceWith(expectedCreation);
+        expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3PrintServiceSpy).toHaveBeenCalledWith(expectedCreation);
         expect(action).toEqual(PrintActions.setPrintRequestResponse({creationResponse: expectedCreationResponse}));
-        done();
       });
     });
 
-    it('dispatches PrintActions.setPrintRequestError() with the error on failure', (done: DoneFn) => {
+    it('dispatches PrintActions.setPrintRequestError() with the error on failure', () => {
       const expectedCreation = creationMock;
       const expectedError = new Error('oh no! butterfingers');
-      const gb3PrintServiceSpy = spyOn(gb3PrintService, 'createPrintJob').and.returnValue(throwError(() => expectedError));
+      const gb3PrintServiceSpy = vi.spyOn(gb3PrintService, 'createPrintJob').mockReturnValue(throwError(() => expectedError));
 
       actions$ = of(PrintActions.requestPrintCreation({creation: expectedCreation}));
       effects.requestPrintCreation$.subscribe((action) => {
-        expect(gb3PrintServiceSpy).toHaveBeenCalledOnceWith(expectedCreation);
+        expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3PrintServiceSpy).toHaveBeenCalledWith(expectedCreation);
         expect(action).toEqual(PrintActions.setPrintRequestError({error: expectedError}));
-        done();
       });
     });
   });
 
   describe('throwPrintRequestError$', () => {
-    it('throws a PrintRequestCouldNotBeHandled error', (done: DoneFn) => {
+    it('throws a PrintRequestCouldNotBeHandled error', () => {
       const expectedOriginalError = 'oh no! butterfingers';
 
       actions$ = of(PrintActions.setPrintRequestError({error: expectedOriginalError}));
@@ -126,14 +126,13 @@ describe('PrintEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new PrintRequestCouldNotBeHandled(expectedOriginalError);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
         .subscribe();
     });
 
-    it('throws a PrintRequestCouldNotBeHandled error with translated original errors', (done: DoneFn) => {
+    it('throws a PrintRequestCouldNotBeHandled error with translated original errors', () => {
       const originalErrors = {
         error: {
           errors: ['Invalid report name', 'Missing attributes', 'Invalid DPI for report Hello World'],
@@ -149,7 +148,6 @@ describe('PrintEffects', () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any -- has to be `any` to allow for `.message`. Type `unknown` doesn't do that.
           catchError((error: any) => {
             expect(error.message).toEqual(expectedTranslatedError);
-            done();
             return EMPTY;
           }),
         )
@@ -158,57 +156,54 @@ describe('PrintEffects', () => {
   });
 
   describe('downloadPrintDocument$', () => {
-    it('opens a print document in a new tab and dispatches a clearPrintRequest action', (done: DoneFn) => {
+    it('opens a print document in a new tab and dispatches a clearPrintRequest action', () => {
       const expectedCreationResponse = creationResponseMock;
-      const fileDownloadServiceSpy = spyOn(fileDownloadService, 'downloadFileFromUrl');
+      const fileDownloadServiceSpy = vi.spyOn(fileDownloadService, 'downloadFileFromUrl');
 
       actions$ = of(PrintActions.setPrintRequestResponse({creationResponse: expectedCreationResponse}));
       effects.downloadPrintDocument$.subscribe((action) => {
-        expect(fileDownloadServiceSpy).toHaveBeenCalledOnceWith(
+        expect(fileDownloadServiceSpy).toHaveBeenCalledTimes(1);
+        expect(fileDownloadServiceSpy).toHaveBeenCalledWith(
           expectedCreationResponse.reportUrl,
           expectedCreationResponse.reportUrl.split('/').pop(),
         );
         expect(action).toEqual(PrintActions.clearPrintRequest());
-        done();
       });
     });
   });
 
   describe('startDrawPrintPreview$', () => {
-    it('starts drawing the print preview (no further actions are called)', (done: DoneFn) => {
+    it('starts drawing the print preview (no further actions are called)', () => {
       const printPreviewParametersMock = {height: 1, width: 2, scale: 3, rotation: 4};
       const mapDrawingService = TestBed.inject(MapDrawingService);
-      const mapDrawingServiceSpy = spyOn(mapDrawingService, 'startDrawPrintPreview').and.callThrough();
+      const mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'startDrawPrintPreview');
 
       actions$ = of(PrintActions.showPrintPreview(printPreviewParametersMock));
       effects.startDrawPrintPreview$.subscribe(() => {
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
-        done();
       });
     });
   });
 
   describe('removePrintPreview$', () => {
-    it('stops drawing the print preview (no further actions are called)', (done: DoneFn) => {
+    it('stops drawing the print preview (no further actions are called)', () => {
       const mapDrawingService = TestBed.inject(MapDrawingService);
-      const mapDrawingServiceSpy = spyOn(mapDrawingService, 'stopDrawPrintPreview').and.callThrough();
+      const mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'stopDrawPrintPreview');
 
       actions$ = of(PrintActions.removePrintPreview());
       effects.removePrintPreview$.subscribe(() => {
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
-        done();
       });
     });
   });
 
   describe('removePrintPreviewAfterClosingSideDrawer$', () => {
-    it('dispatches PrintActions.setPrintRequestError() after closing the side drawer', (done: DoneFn) => {
+    it('dispatches PrintActions.setPrintRequestError() after closing the side drawer', () => {
       const expected = PrintActions.removePrintPreview();
 
       actions$ = of(MapUiActions.hideMapSideDrawerContent());
       effects.removePrintPreviewAfterClosingSideDrawer$.subscribe((action) => {
         expect(action).toEqual(expected);
-        done();
       });
     });
   });

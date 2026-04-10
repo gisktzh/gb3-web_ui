@@ -25,6 +25,7 @@ export class AuthService {
       // no token => the current user is definitely not logged in
       this.store.dispatch(AuthStatusActions.setInitialDataLoaded());
     }
+
     this.oauthService.events.subscribe((event) => {
       this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated: this.oauthService.hasValidAccessToken()}));
 

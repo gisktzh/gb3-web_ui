@@ -1,3 +1,4 @@
+import type {MockedObject} from 'vitest';
 import {TestBed} from '@angular/core/testing';
 
 import {ErrorHandlerService} from './error-handler.service';
@@ -26,12 +27,16 @@ class TestFatalError extends FatalError {
 
 describe('ErrorHandlerService', () => {
   let service: ErrorHandlerService;
-  let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  let snackBarSpy: MockedObject<MatSnackBar>;
+  let routerSpy: MockedObject<Router>;
 
   beforeEach(() => {
-    const snackBarSpyObj = jasmine.createSpyObj<MatSnackBar>(['openFromComponent']);
-    const routerSpyObj = jasmine.createSpyObj<Router>(['navigate']);
+    const snackBarSpyObj = {
+      openFromComponent: vi.fn(),
+    };
+    const routerSpyObj = {
+      navigate: vi.fn(),
+    };
     TestBed.configureTestingModule({
       providers: [
         {provide: MatSnackBar, useValue: snackBarSpyObj},
@@ -39,10 +44,10 @@ describe('ErrorHandlerService', () => {
       ],
     });
     service = TestBed.inject(ErrorHandlerService);
-    snackBarSpy = TestBed.inject(MatSnackBar) as jasmine.SpyObj<MatSnackBar>;
-    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    spyOn(console, 'warn').and.stub();
-    spyOn(console, 'error').and.stub();
+    snackBarSpy = TestBed.inject(MatSnackBar) as MockedObject<MatSnackBar>;
+    routerSpy = TestBed.inject(Router) as MockedObject<Router>;
+    vi.spyOn(console, 'warn').mockImplementation(vi.fn());
+    vi.spyOn(console, 'error').mockImplementation(vi.fn());
   });
 
   it('should be created', () => {
@@ -65,7 +70,9 @@ describe('ErrorHandlerService', () => {
 
     service.handleError(testError);
 
-    expect(snackBarSpy.openFromComponent).toHaveBeenCalledOnceWith(jasmine.any(Function), {
+    expect(snackBarSpy.openFromComponent).toHaveBeenCalledTimes(1);
+
+    expect(snackBarSpy.openFromComponent).toHaveBeenCalledWith(expect.any(Function), {
       data: {
         error: testErrorMessage,
         duration: 10000,
@@ -82,7 +89,9 @@ describe('ErrorHandlerService', () => {
 
     service.handleError(testError);
 
-    expect(routerSpy.navigate).toHaveBeenCalledOnceWith([MainPage.Error], {
+    expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith([MainPage.Error], {
       queryParams: {error: testErrorMessage},
       skipLocationChange: true,
     });
@@ -95,7 +104,9 @@ describe('ErrorHandlerService', () => {
 
     service.handleError(testError);
 
-    expect(routerSpy.navigate).toHaveBeenCalledOnceWith([MainPage.Error], {
+    expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith([MainPage.Error], {
       queryParams: {error: testErrorMessage},
       skipLocationChange: true,
     });
@@ -120,7 +131,8 @@ describe('ErrorHandlerService', () => {
       service.handleError(testError);
 
       expect(console.warn).not.toHaveBeenCalled();
-      expect(console.error).toHaveBeenCalledOnceWith(testError);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(testError);
     });
 
     it('logs a Gb3RuntimeError to the console if it has no wrapped error', () => {
@@ -130,7 +142,8 @@ describe('ErrorHandlerService', () => {
       service.handleError(testError);
 
       expect(console.warn).not.toHaveBeenCalled();
-      expect(console.error).toHaveBeenCalledOnceWith(testError);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(testError);
     });
 
     it('logs a Gb3RuntimeError to the console and also logs a wrapped error', () => {

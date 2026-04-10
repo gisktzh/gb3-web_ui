@@ -52,7 +52,7 @@ describe('TypedTourAnchorDirective', () => {
   });
 
   it('should call super.ngOnInit()', () => {
-    const superNgOnInitSpy = spyOn(TourAnchorMatMenuDirective.prototype, 'ngOnInit');
+    const superNgOnInitSpy = vi.spyOn(TourAnchorMatMenuDirective.prototype, 'ngOnInit');
     fixture.detectChanges();
 
     expect(superNgOnInitSpy).toHaveBeenCalled();

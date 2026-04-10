@@ -26,7 +26,10 @@ describe('SearchService', () => {
     {indexName: 'And now for something completely different', label: 'Unknown', active: true, indexType: 'unknown'},
   ];
 
-  const mockData: {index: string; matches: any[]}[] = [
+  const mockData: {
+    index: string;
+    matches: any[];
+  }[] = [
     {
       index: 'fme-addresses',
       matches: [
@@ -436,12 +439,12 @@ describe('SearchService', () => {
     searchIndexes.forEach((index) => {
       expect(request.url.includes(index.indexName)).toBe(index.indexType !== 'unknown');
     });
-    expect(request.url.includes(searchTerm)).toBeTrue();
+    expect(request.url.includes(searchTerm)).toBe(true);
   });
 
-  it('should receive search results and transform them', (done: DoneFn) => {
+  it('should receive search results and transform them', () => {
     const httpClient = TestBed.inject(HttpClient);
-    spyOn(httpClient, 'get').and.returnValue(of(mockData));
+    vi.spyOn(httpClient, 'get').mockReturnValue(of(mockData));
 
     const searchTerm = '1';
     service.searchIndexes(searchTerm, searchIndexes).subscribe((resultMatches) => {
@@ -512,11 +515,10 @@ describe('SearchService', () => {
             break;
         }
       });
-      done();
     });
   });
 
-  it('should return an empty result array and not send any search requests for empty search terms', (done: DoneFn) => {
+  it('should return an empty result array and not send any search requests for empty search terms', () => {
     const configService = TestBed.inject(ConfigService);
     const httpTestingController = TestBed.inject(HttpTestingController);
     const searchTerm = ' ';
@@ -525,7 +527,6 @@ describe('SearchService', () => {
         req.url.includes(`${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/search`),
       );
       expect(searchApiResultMatches).toEqual([]);
-      done();
     });
   });
 });

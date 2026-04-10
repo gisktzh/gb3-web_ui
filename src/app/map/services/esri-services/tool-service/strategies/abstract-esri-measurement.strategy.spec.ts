@@ -42,11 +42,10 @@ describe('AbstractEsriMeasurementStrategy', () => {
     });
     it('should call completeDrawingCallbackHandler with the correct arguments if the graphic does not exist', () => {
       const graphic = new Graphic();
-      const handleCompleteSpy = spyOn<any>(strategy, 'completeDrawingCallbackHandler');
-      const checkGraphicSpy = spyOn(
-        Object.getPrototypeOf(AbstractEsriMeasurementStrategy.prototype),
-        'checkIfGraphicExistsOnLayer',
-      ).and.returnValue(false);
+      const handleCompleteSpy = vi.spyOn(strategy as any, 'completeDrawingCallbackHandler');
+      const checkGraphicSpy = vi
+        .spyOn(Object.getPrototypeOf(AbstractEsriMeasurementStrategy.prototype), 'checkIfGraphicExistsOnLayer')
+        .mockReturnValue(false);
       strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, graphic, '', 'delete');
@@ -58,11 +57,10 @@ describe('AbstractEsriMeasurementStrategy', () => {
       const belongsToGraphic = new Graphic();
       belongsToGraphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, '123');
       layer.add(belongsToGraphic);
-      const handleCompleteSpy = spyOn<any>(strategy, 'completeDrawingCallbackHandler');
-      const checkGraphicSpy = spyOn(
-        Object.getPrototypeOf(AbstractEsriMeasurementStrategy.prototype),
-        'checkIfGraphicExistsOnLayer',
-      ).and.returnValue(true);
+      const handleCompleteSpy = vi.spyOn(strategy as any, 'completeDrawingCallbackHandler');
+      const checkGraphicSpy = vi
+        .spyOn(Object.getPrototypeOf(AbstractEsriMeasurementStrategy.prototype), 'checkIfGraphicExistsOnLayer')
+        .mockReturnValue(true);
       strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(handleCompleteSpy).toHaveBeenCalledWith(belongsToGraphic, graphic, 'test', 'edit');
@@ -71,15 +69,14 @@ describe('AbstractEsriMeasurementStrategy', () => {
       const graphic = new Graphic();
 
       const labelGraphic = new Graphic();
-      const createLabelSpy = spyOn<any>(strategy, 'createLabelForGeometry').and.returnValue({
+      const createLabelSpy = vi.spyOn(strategy as any, 'createLabelForGeometry').mockReturnValue({
         label: labelGraphic,
         labelText: 'test',
       });
-      const handleCompleteSpy = spyOn<any>(strategy, 'completeDrawingCallbackHandler');
-      const checkGraphicSpy = spyOn(
-        Object.getPrototypeOf(AbstractEsriMeasurementStrategy.prototype),
-        'checkIfGraphicExistsOnLayer',
-      ).and.returnValue(true);
+      const handleCompleteSpy = vi.spyOn(strategy as any, 'completeDrawingCallbackHandler');
+      const checkGraphicSpy = vi
+        .spyOn(Object.getPrototypeOf(AbstractEsriMeasurementStrategy.prototype), 'checkIfGraphicExistsOnLayer')
+        .mockReturnValue(true);
       strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(createLabelSpy).toHaveBeenCalled();

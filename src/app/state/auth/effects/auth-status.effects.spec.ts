@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -26,20 +26,19 @@ import {MapConstants} from '../../../shared/constants/map.constants';
 import {DrawingActions} from '../../map/actions/drawing.actions';
 import {selectItems} from '../../map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../map/reducers/drawing.reducer';
-import {ToolService} from '../../../map/interfaces/tool.service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {DRAWING_SYMBOLS_SERVICE, MAP_SERVICE, TIME_SERVICE} from '../../../app.tokens';
 import {InternalShareLinkItem} from 'src/app/shared/interfaces/internal-share-link.interface';
 import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 import {UuidUtils} from 'src/app/shared/utils/uuid.utils';
+import {ToolService} from 'src/app/map/interfaces/tool.service';
 
 const mockUuid = '32b50136-2190-4faa-8fef-b9d07319c749'; // Chosen by fair dice roll.
-
-const mockOAuthService = jasmine.createSpyObj<AuthService>({
-  logout: void 0,
-  login: void 0,
-});
+const mockOAuthService: Partial<AuthService> = {
+  login: vi.fn(),
+  logout: vi.fn(),
+};
 
 describe('AuthStatusEffects', () => {
   let actions$: Observable<Action>;
@@ -56,10 +55,10 @@ describe('AuthStatusEffects', () => {
       providers: [
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: AuthService, useValue: mockOAuthService},
         AuthStatusEffects,
         {provide: MAP_SERVICE, useClass: MapServiceStub},
         {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
+        {provide: AuthService, useValue: mockOAuthService},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -76,7 +75,7 @@ describe('AuthStatusEffects', () => {
     });
     effects = TestBed.inject(AuthStatusEffects);
 
-    spyOn(UuidUtils, 'createUuid').and.returnValue(mockUuid);
+    vi.spyOn(UuidUtils, 'createUuid').mockReturnValue(mockUuid);
   });
 
   afterEach(() => {
@@ -84,13 +83,13 @@ describe('AuthStatusEffects', () => {
   });
 
   describe('login$', () => {
-    it('logins using the AuthService and stores the current map state into a share link item; dispatches no further actions', (done: DoneFn) => {
+    it('logins using the AuthService and stores the current map state into a share link item; dispatches no further actions', () => {
       const internalShareLinkItem: InternalShareLinkItem = ShareLinkItemTestUtils.createInternalShareLinkItem(
         timeService.createUTCDateFromString('1000'),
         timeService.createUTCDateFromString('2020'),
       );
 
-      const expectedShareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+      const expectedShareLinkItem = ShareLinkItemTestUtils.createShareLinkItemJsonString(
         timeService.createUTCDateFromString('1000'),
         timeService.createUTCDateFromString('2020'),
         mockUuid,
@@ -98,53 +97,53 @@ describe('AuthStatusEffects', () => {
 
       store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
 
-      const storageServiceSpy = spyOn(storageService, 'set');
+      const storageServiceSpy = vi.spyOn(storageService, 'set');
 
       const expectedAction = AuthStatusActions.performLogin();
       actions$ = of(expectedAction);
       effects.login$.subscribe(() => {
-        expect(mockOAuthService.login).toHaveBeenCalledOnceWith();
+        expect(mockOAuthService.login).toHaveBeenCalledTimes(1);
+        expect(mockOAuthService.login).toHaveBeenCalledWith();
         expect(storageServiceSpy).toHaveBeenCalledTimes(1);
 
-        const passedArgs = storageServiceSpy.calls.mostRecent().args;
+        const passedArgs = vi.mocked(storageServiceSpy).mock.lastCall;
 
-        expect(passedArgs[0]).toBe('shareLinkItem');
-        expect(JSON.parse(passedArgs[1])).toEqual(JSON.parse(JSON.stringify(expectedShareLinkItem)));
-
-        done();
+        expect(passedArgs).toBeDefined();
+        expect(passedArgs![0]).toBe('shareLinkItem');
+        expect(JSON.parse(passedArgs![1])).toEqual(JSON.parse(expectedShareLinkItem));
       });
     });
   });
 
   describe('logout$', () => {
-    it('logouts using the AuthService and stores the current map state into a share link item; dispatches no further actions', (done: DoneFn) => {
+    it('logouts using the AuthService and stores the current map state into a share link item; dispatches no further actions', () => {
       const internalShareLinkItem: InternalShareLinkItem = ShareLinkItemTestUtils.createInternalShareLinkItem(
         timeService.createUTCDateFromString('1000'),
         timeService.createUTCDateFromString('2020'),
       );
 
-      const expectedShareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+      const expectedShareLinkItem = ShareLinkItemTestUtils.createShareLinkItemJsonString(
         timeService.createUTCDateFromString('1000'),
         timeService.createUTCDateFromString('2020'),
         mockUuid,
       );
 
-      const storageServiceSpy = spyOn(storageService, 'set');
+      const storageServiceSpy = vi.spyOn(storageService, 'set');
       store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
       const isForced = true;
 
       const expectedAction = AuthStatusActions.performLogout({isForced});
       actions$ = of(expectedAction);
       effects.logout$.subscribe(() => {
-        expect(mockOAuthService.logout).toHaveBeenCalledOnceWith(isForced);
+        expect(mockOAuthService.logout).toHaveBeenCalledTimes(1);
+        expect(mockOAuthService.logout).toHaveBeenCalledWith(isForced);
         expect(storageServiceSpy).toHaveBeenCalledTimes(1);
 
-        const passedArgs = storageServiceSpy.calls.mostRecent().args;
+        const passedArgs = vi.mocked(storageServiceSpy).mock.lastCall;
 
-        expect(passedArgs[0]).toBe('shareLinkItem');
-        expect(JSON.parse(passedArgs[1])).toEqual(JSON.parse(JSON.stringify(expectedShareLinkItem)));
-
-        done();
+        expect(passedArgs).toBeDefined();
+        expect(passedArgs![0]).toBe('shareLinkItem');
+        expect(JSON.parse(passedArgs![1])).toEqual(JSON.parse(expectedShareLinkItem));
       });
     });
   });
@@ -153,15 +152,15 @@ describe('AuthStatusEffects', () => {
     it(
       'dispatches AuthStatusActions.completeRestoreApplication after setting the layer catalog' +
         'and loading an existing share link item from the session storage.',
-      (done: DoneFn) => {
+      () => {
         const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
           timeService.createUTCDateFromString('1000'),
           timeService.createUTCDateFromString('2020'),
           mockUuid,
         );
         const shareLinkItemString = JSON.stringify(shareLinkItem);
-        const storageServiceGetSpy = spyOn(storageService, 'get').and.returnValue(shareLinkItemString);
-        const storageServiceRemoveSpy = spyOn(storageService, 'remove').and.stub();
+        const storageServiceGetSpy = vi.spyOn(storageService, 'get').mockReturnValue(shareLinkItemString);
+        const storageServiceRemoveSpy = vi.spyOn(storageService, 'remove').mockImplementation(vi.fn());
         const shareLinkService = TestBed.inject(Gb3ShareLinkService);
         const mapRestoreItem: MapRestoreItem = {
           activeMapItems: [],
@@ -171,41 +170,47 @@ describe('AuthStatusEffects', () => {
           drawings: [],
           basemapId: 'to be or not to be',
         };
-        const shareLinkServiceSpy = spyOn(shareLinkService, 'createMapRestoreItem').and.returnValue(Promise.resolve(mapRestoreItem));
+        const shareLinkServiceSpy = vi.spyOn(shareLinkService, 'createMapRestoreItem').mockReturnValue(Promise.resolve(mapRestoreItem));
 
         const expectedAction = AuthStatusActions.completeRestoreApplication({mapRestoreItem});
 
         actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
         effects.restoreApplicationAfterRedirectOrRefresh$.subscribe((action) => {
           expect(action).toEqual(expectedAction);
-          expect(storageServiceGetSpy).toHaveBeenCalledOnceWith('shareLinkItem');
-          expect(storageServiceRemoveSpy).toHaveBeenCalledOnceWith('shareLinkItem');
-          expect(shareLinkServiceSpy).toHaveBeenCalledOnceWith(shareLinkItem, true);
-          done();
+          expect(storageServiceGetSpy).toHaveBeenCalledTimes(1);
+          expect(storageServiceGetSpy).toHaveBeenCalledWith('shareLinkItem');
+          expect(storageServiceRemoveSpy).toHaveBeenCalledTimes(1);
+          expect(storageServiceRemoveSpy).toHaveBeenCalledWith('shareLinkItem');
+          expect(shareLinkServiceSpy).toHaveBeenCalledTimes(1);
+          expect(shareLinkServiceSpy).toHaveBeenCalledWith(shareLinkItem, true);
         });
       },
     );
 
-    it('dispatches nothing without any share link item from the session storage.', fakeAsync(() => {
-      const storageServiceGetSpy = spyOn(storageService, 'get').and.returnValue(null);
-      const storageServiceRemoveSpy = spyOn(storageService, 'remove');
+    it('dispatches nothing without any share link item from the session storage.', async () => {
+      vi.useFakeTimers();
+      const storageServiceGetSpy = vi.spyOn(storageService, 'get').mockReturnValue(null);
+      const storageServiceRemoveSpy = vi.spyOn(storageService, 'remove');
       const shareLinkService = TestBed.inject(Gb3ShareLinkService);
-      const shareLinkServiceSpy = spyOn(shareLinkService, 'createMapRestoreItem');
+      const shareLinkServiceSpy = vi.spyOn(shareLinkService, 'createMapRestoreItem');
 
       let newAction;
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.restoreApplicationAfterRedirectOrRefresh$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
-      expect(storageServiceGetSpy).toHaveBeenCalledOnceWith('shareLinkItem');
-      expect(storageServiceRemoveSpy).toHaveBeenCalledOnceWith('shareLinkItem');
+      expect(storageServiceGetSpy).toHaveBeenCalledTimes(1);
+      expect(storageServiceGetSpy).toHaveBeenCalledWith('shareLinkItem');
+      expect(storageServiceRemoveSpy).toHaveBeenCalledTimes(1);
+      expect(storageServiceRemoveSpy).toHaveBeenCalledWith('shareLinkItem');
       expect(shareLinkServiceSpy).not.toHaveBeenCalled();
-    }));
+      vi.useRealTimers();
+    });
   });
 
   describe('setActiveMapItemsAfterApplicationRestore$', () => {
-    it('dispatches ActiveMapItemActions.addInitialMapItems after completing to restore the application.', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.addInitialMapItems after completing to restore the application.', () => {
       const mapRestoreItem: MapRestoreItem = {
         activeMapItems: [createGb2WmsMapItemMock('one'), createDrawingMapItemMock(UserDrawingLayer.Drawings)],
         x: 13.37,
@@ -220,13 +225,12 @@ describe('AuthStatusEffects', () => {
       actions$ = of(AuthStatusActions.completeRestoreApplication({mapRestoreItem}));
       effects.setActiveMapItemsAfterApplicationRestore$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('setInitialDrawingsAfterApplicationRestore$', () => {
-    it('dispatches ActiveMapItemActions.addInitialMapItems after completing to restore the application.', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.addInitialMapItems after completing to restore the application.', () => {
       const mapRestoreItem: MapRestoreItem = {
         activeMapItems: [],
         x: 13.37,
@@ -272,13 +276,12 @@ describe('AuthStatusEffects', () => {
       actions$ = of(AuthStatusActions.completeRestoreApplication({mapRestoreItem}));
       effects.setInitialDrawingsAfterApplicationRestore$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('addInitialDrawingsToMapAfterApplicationRestore$', () => {
-    it('adds the initial drawings using the tool service; dispatches no further actions', (done: DoneFn) => {
+    it('adds the initial drawings using the tool service; dispatches no further actions', () => {
       const mapRestoreItem: MapRestoreItem = {
         activeMapItems: [createGb2WmsMapItemMock('one'), createDrawingMapItemMock(UserDrawingLayer.Drawings)],
         x: 13.37,
@@ -321,22 +324,33 @@ describe('AuthStatusEffects', () => {
       store.overrideSelector(selectItems, mapRestoreItem.activeMapItems);
       store.overrideSelector(selectDrawings, mapRestoreItem.drawings);
       const mapService = TestBed.inject(MAP_SERVICE);
-      const mapToolServiceSpy = jasmine.createSpyObj<ToolService>({
-        addExistingDrawingsToLayer: void 0,
-      });
-      const mapServiceSpy = spyOn(mapService, 'getToolService').and.returnValue(mapToolServiceSpy);
+      const mapToolServiceMock = vi.fn(
+        class implements ToolService {
+          public initializeMeasurement = vi.fn();
+          public initializeElevationProfileMeasurement = vi.fn();
+          public initializeDrawing = vi.fn();
+          public initializeDataDownloadSelection = vi.fn();
+          public addExistingDrawingsToLayer = vi.fn();
+          public updateDrawingStyles = vi.fn();
+          public cancelTool = vi.fn();
+        },
+      );
+      const mapToolServiceSpy = new mapToolServiceMock();
+
+      const mapServiceSpy = vi.spyOn(mapService, 'getToolService').mockReturnValue(mapToolServiceSpy);
 
       const expectedAction = AuthStatusActions.completeRestoreApplication({mapRestoreItem});
       actions$ = of(expectedAction);
       effects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe(([action, _]) => {
         expect(action).toEqual(expectedAction);
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith();
-        expect(mapToolServiceSpy.addExistingDrawingsToLayer).toHaveBeenCalledOnceWith(mapRestoreItem.drawings, UserDrawingLayer.Drawings);
-        done();
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith();
+        expect(mapToolServiceSpy.addExistingDrawingsToLayer).toHaveBeenCalledTimes(1);
+        expect(mapToolServiceSpy.addExistingDrawingsToLayer).toHaveBeenCalledWith(mapRestoreItem.drawings, UserDrawingLayer.Drawings);
       });
     });
 
-    it('adds nothing without any drawings.', (done: DoneFn) => {
+    it('adds nothing without any drawings.', () => {
       const mapRestoreItem: MapRestoreItem = {
         activeMapItems: [createGb2WmsMapItemMock('one')],
         x: 13.37,
@@ -348,18 +362,19 @@ describe('AuthStatusEffects', () => {
       store.overrideSelector(selectItems, mapRestoreItem.activeMapItems);
       store.overrideSelector(selectDrawings, mapRestoreItem.drawings);
       const mapService = TestBed.inject(MAP_SERVICE);
-      const mapServiceSpy = spyOn(mapService, 'getToolService');
+      const mapServiceSpy = vi.spyOn(mapService, 'getToolService');
 
       const expectedAction = AuthStatusActions.completeRestoreApplication({mapRestoreItem});
       actions$ = of(expectedAction);
       effects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe(([action, _]) => {
         expect(action).toEqual(expectedAction);
         expect(mapServiceSpy).not.toHaveBeenCalled();
-        done();
       });
     });
 
-    it('does not continue until the drawings are loaded.', fakeAsync(() => {
+    it('does not continue until the drawings are loaded.', async () => {
+      vi.useFakeTimers();
+
       const mapRestoreItem: MapRestoreItem = {
         activeMapItems: [createGb2WmsMapItemMock('one'), createDrawingMapItemMock(UserDrawingLayer.Drawings)],
         x: 13.37,
@@ -402,18 +417,20 @@ describe('AuthStatusEffects', () => {
       store.overrideSelector(selectItems, mapRestoreItem.activeMapItems);
       store.overrideSelector(selectDrawings, []);
       const mapService = TestBed.inject(MAP_SERVICE);
-      const mapServiceSpy = spyOn(mapService, 'getToolService');
+      const mapServiceSpy = vi.spyOn(mapService, 'getToolService');
 
       let newAction;
       actions$ = of(AuthStatusActions.completeRestoreApplication({mapRestoreItem}));
       effects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
       expect(mapServiceSpy).not.toHaveBeenCalled();
-    }));
+      vi.useRealTimers();
+    });
 
-    it('does not continue until the active map items are loaded.', fakeAsync(() => {
+    it('does not continue until the active map items are loaded.', async () => {
+      vi.useFakeTimers();
       const mapRestoreItem: MapRestoreItem = {
         activeMapItems: [createGb2WmsMapItemMock('one'), createDrawingMapItemMock(UserDrawingLayer.Drawings)],
         x: 13.37,
@@ -456,15 +473,16 @@ describe('AuthStatusEffects', () => {
       store.overrideSelector(selectItems, []);
       store.overrideSelector(selectDrawings, mapRestoreItem.drawings);
       const mapService = TestBed.inject(MAP_SERVICE);
-      const mapServiceSpy = spyOn(mapService, 'getToolService');
+      const mapServiceSpy = vi.spyOn(mapService, 'getToolService');
 
       let newAction;
       actions$ = of(AuthStatusActions.completeRestoreApplication({mapRestoreItem}));
       effects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
       expect(mapServiceSpy).not.toHaveBeenCalled();
-    }));
+      vi.useRealTimers();
+    });
   });
 });

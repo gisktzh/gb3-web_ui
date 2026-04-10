@@ -10,6 +10,6 @@ import {MatProgressBar} from '@angular/material/progress-bar';
   imports: [MatProgressBar],
 })
 export class LoadingAndProcessBarComponent {
-  @Input() public loadingState: LoadingState;
+  @Input() public loadingState: LoadingState | null;
   @Input() public viewProcessState: ViewProcessState;
 }

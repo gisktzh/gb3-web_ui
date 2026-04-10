@@ -398,11 +398,11 @@ describe('TimeSliderService', () => {
           it('should create the correct stops', () => {
             const stops = service.createStops(timeSliderConfig);
             /*
-              Difference between min/max date: 425d
-              Duration: 1 month (~30.4d) and 10 days => Total: 40.4d
-              425d / 40.4d ~ 10.5 => round down => 10 stops between
-              10 stops + starting point + end point = 12 stops
-             */
+             Difference between min/max date: 425d
+             Duration: 1 month (~30.4d) and 10 days => Total: 40.4d
+             425d / 40.4d ~ 10.5 => round down => 10 stops between
+             10 stops + starting point + end point = 12 stops
+            */
             const expectedNumberOfStops = 12;
             expect(stops.length).toBe(expectedNumberOfStops);
             expect(timeService.calculateDifferenceBetweenDates(stops[0], minimumDate)).toBe(0);
@@ -430,10 +430,10 @@ describe('TimeSliderService', () => {
           it('should create the correct stops', () => {
             const stops = service.createStops(timeSliderConfig);
             /*
-              Difference between min/max date: 15 months
-              Duration: 1 month (as the smallest time unit is a month)
-              => 15 stops
-             */
+                          Difference between min/max date: 15 months
+                          Duration: 1 month (as the smallest time unit is a month)
+                          => 15 stops
+                         */
             const expectedNumberOfStops = 15;
             expect(stops.length).toBe(expectedNumberOfStops);
 

@@ -64,30 +64,30 @@ describe('FavouritesService', () => {
   });
 
   describe('createFavourite', () => {
-    it('calls the Gb3FavouritesService.createFavourite using the given title and returns the result', (done: DoneFn) => {
+    it('calls the Gb3FavouritesService.createFavourite using the given title and returns the result', () => {
       const title = 'test title';
       const createFavouriteResult = {id: 'a'} as SharedFavorite;
-      const gb3FavouritesServiceSpy = spyOn(gb3FavouritesService, 'createFavourite').and.returnValue(of(createFavouriteResult));
+      const gb3FavouritesServiceSpy = vi.spyOn(gb3FavouritesService, 'createFavourite').mockReturnValue(of(createFavouriteResult));
 
-      const expectedServiceCallObject = jasmine.objectContaining<CreateFavourite>({title});
+      const expectedServiceCallObject = expect.objectContaining<CreateFavourite>({title} as CreateFavourite);
 
       service.createFavourite(title).subscribe((actual) => {
-        expect(gb3FavouritesServiceSpy).toHaveBeenCalledOnceWith(expectedServiceCallObject);
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledWith(expectedServiceCallObject);
         expect(actual).toEqual(createFavouriteResult);
-        done();
       });
     });
   });
 
   describe('loadFavourites', () => {
-    it('calls the Gb3FavouritesService.loadFavourites and returns the result', (done: DoneFn) => {
+    it('calls the Gb3FavouritesService.loadFavourites and returns the result', () => {
       const favouriteResponse = [] as FavouritesResponse;
-      const gb3FavouritesServiceSpy = spyOn(gb3FavouritesService, 'loadFavourites').and.returnValue(of(favouriteResponse));
+      const gb3FavouritesServiceSpy = vi.spyOn(gb3FavouritesService, 'loadFavourites').mockReturnValue(of(favouriteResponse));
 
       service.loadFavourites().subscribe((actual) => {
-        expect(gb3FavouritesServiceSpy).toHaveBeenCalledOnceWith();
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledWith();
         expect(actual).toEqual(favouriteResponse);
-        done();
       });
     });
   });
@@ -2438,13 +2438,13 @@ describe('FavouritesService', () => {
   });
 
   describe('deleteFavourite', () => {
-    it('calls the Gb3FavouritesService.deleteFavourite using the given favourite', (done: DoneFn) => {
+    it('calls the Gb3FavouritesService.deleteFavourite using the given favourite', () => {
       const favourite = {id: 'a'} as Favourite;
-      const gb3FavouritesServiceSpy = spyOn(gb3FavouritesService, 'deleteFavourite').and.returnValue(of(void 0));
+      const gb3FavouritesServiceSpy = vi.spyOn(gb3FavouritesService, 'deleteFavourite').mockReturnValue(of(void 0));
 
       service.deleteFavourite(favourite).subscribe(() => {
-        expect(gb3FavouritesServiceSpy).toHaveBeenCalledOnceWith(favourite);
-        done();
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledWith(favourite);
       });
     });
   });
@@ -2606,18 +2606,21 @@ describe('FavouritesService', () => {
           ],
         },
       };
-      const converterSpy = spyOn(symbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.callFake(
-        (gb3VectorLayer: Gb3VectorLayer, source: UserDrawingLayer) => {
+      const converterSpy = vi
+        .spyOn(symbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation')
+        .mockImplementation((gb3VectorLayer: Gb3VectorLayer, source: UserDrawingLayer) => {
           return Promise.resolve([
             {
               id: `id_${gb3VectorLayer.geojson.features.length}_${source}`,
             } as Gb3StyledInternalDrawingRepresentation,
           ]);
-        },
-      );
+        });
 
       const actual = await service.getDrawingsForFavourite(drawings, measurements);
-      const expected: {drawingsToAdd: Gb3StyledInternalDrawingRepresentation[]; drawingActiveMapItems: DrawingActiveMapItem[]} = {
+      const expected: {
+        drawingsToAdd: Gb3StyledInternalDrawingRepresentation[];
+        drawingActiveMapItems: DrawingActiveMapItem[];
+      } = {
         drawingsToAdd: [
           {id: 'id_2_measurements'} as Gb3StyledInternalDrawingRepresentation,
           {id: 'id_4_drawings'} as Gb3StyledInternalDrawingRepresentation,

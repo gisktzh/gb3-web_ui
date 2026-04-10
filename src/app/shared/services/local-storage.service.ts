@@ -1,7 +1,6 @@
 import {Injectable, inject} from '@angular/core';
 import {LocalStorageKey} from '../types/local-storage-key.type';
 import {AbstractStorageService} from './abstract-storage.service';
-import {TimeService} from '../interfaces/time-service.interface';
 import {TIME_SERVICE} from '../../app.tokens';
 
 @Injectable({
@@ -9,7 +8,7 @@ import {TIME_SERVICE} from '../../app.tokens';
 })
 export class LocalStorageService extends AbstractStorageService<LocalStorageKey> {
   constructor() {
-    const timeService = inject<TimeService>(TIME_SERVICE);
+    const timeService = inject(TIME_SERVICE);
 
     super(timeService);
   }

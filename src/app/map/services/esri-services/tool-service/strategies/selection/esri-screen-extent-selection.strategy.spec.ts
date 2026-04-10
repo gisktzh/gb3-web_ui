@@ -26,10 +26,10 @@ describe('EsriScreenExtentSelectionStrategy', () => {
 
   describe('cancellation', () => {
     it('does clear the layer and does not dispatch anything', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const extent = new Extent();
       const strategy = new EsriScreenExtentSelectionStrategy(layer, fillSymbol, (selection) => callbackHandler.handle(selection), extent);
-      const layerSpy = spyOn(layer, 'removeAll');
+      const layerSpy = vi.spyOn(layer, 'removeAll');
 
       strategy.cancel();
       expect(layerSpy).toHaveBeenCalledTimes(1);
@@ -39,12 +39,12 @@ describe('EsriScreenExtentSelectionStrategy', () => {
 
   describe('completion', () => {
     it('dispatches a new selection', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const extent = new Extent();
       const strategy = new EsriScreenExtentSelectionStrategy(layer, fillSymbol, (selection) => callbackHandler.handle(selection), extent);
 
       strategy.start();
-      expect(callbackSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'polygon'}));
+      expect(callbackSpy).toHaveBeenCalledWith(expect.objectContaining({type: 'polygon'}));
     });
   });
 });

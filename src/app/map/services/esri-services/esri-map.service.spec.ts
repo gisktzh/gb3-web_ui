@@ -1,4 +1,5 @@
-import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
+/* eslint-disable @typescript-eslint/dot-notation */
+import {TestBed} from '@angular/core/testing';
 import {EsriMapService} from './esri-map.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
@@ -45,11 +46,11 @@ function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualE
   });
 }
 
-const mockAuthService = jasmine.createSpyObj<AuthService>({
-  logout: void 0,
-  getAccessToken: void 0,
-  login: void 0,
-});
+const mockAuthService: Partial<AuthService> = {
+  logout: vi.fn().mockReturnValue(void 0),
+  getAccessToken: vi.fn().mockReturnValue(void 0),
+  login: vi.fn().mockReturnValue(void 0),
+};
 
 const internalLayerPrefix = DrawingLayerPrefix.Internal;
 const internalLayers = Object.values(InternalDrawingLayer).map(
@@ -76,20 +77,20 @@ describe('EsriMapService', () => {
   let store: MockStore;
 
   beforeEach(() => {
-    toolServiceSpy = jasmine.createSpyObj<EsriToolService>(['initializeMeasurement', 'addExistingDrawingsToLayer']);
-
     TestBed.configureTestingModule({
       imports: [AuthModule],
       providers: [
-        provideMockStore({}),
+        provideMockStore({
+          initialState: {
+            activeMapItem: {
+              items: [],
+            },
+          },
+        }),
         {provide: AuthService, useValue: mockAuthService},
         {
           provide: EsriMapViewService,
           useValue: mapViewService,
-        },
-        {
-          provide: EsriToolService,
-          useValue: toolServiceSpy,
         },
       ],
     });
@@ -100,28 +101,17 @@ describe('EsriMapService', () => {
     mapViewService = TestBed.inject(EsriMapViewService);
     mapViewService.mapView = {map: mapMock} as MapView;
     store = TestBed.inject(MockStore);
+    toolServiceSpy = TestBed.inject(EsriToolService);
+    vi.spyOn(toolServiceSpy, 'initializeMeasurement').mockImplementation(vi.fn());
+    vi.spyOn(toolServiceSpy, 'addExistingDrawingsToLayer').mockImplementation(vi.fn());
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should initialize the map with config and add drawings on init', fakeAsync(() => {
-    store.overrideSelector(selectMapConfigState, {
-      ...defaultMapConfig,
-      isMapServiceInitialized: false,
-      center: {
-        x: 1408,
-        y: 1337,
-      },
-      scale: 12,
-      rotation: 34,
-      srsId: 2056,
-      ready: true,
-    });
-    store.overrideSelector(selectAllItems, [
-      new DrawingActiveMapItem('some-item', DrawingLayerPrefix.Drawing, UserDrawingLayer.Drawings, true, 1),
-    ]);
+  it('should initialize the map with config and add drawings on init', async () => {
+    vi.useFakeTimers();
 
     const mockUserDrawing: Gb3StyledInternalDrawingRepresentation = {
       source: UserDrawingLayer.Drawings,
@@ -159,21 +149,39 @@ describe('EsriMapService', () => {
 
     store.overrideSelector(selectDrawings, mockDrawings);
     store.overrideSelector(selectActiveTool, 'draw-point');
-    const dispatchSpy = spyOn(store, 'dispatch');
+    store.overrideSelector(selectMapConfigState, {
+      ...defaultMapConfig,
+      isMapServiceInitialized: false,
+      center: {
+        x: 1408,
+        y: 1337,
+      },
+      scale: 12,
+      rotation: 34,
+      srsId: 2056,
+      ready: true,
+    });
+    store.overrideSelector(selectAllItems, [
+      new DrawingActiveMapItem('some-item', DrawingLayerPrefix.Drawing, UserDrawingLayer.Drawings, true, 1),
+    ]);
+
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     service.init();
 
-    flushMicrotasks();
+    await vi.runAllTimersAsync();
 
-    expect(mapViewService.mapView.scale).toBe(12);
-    expect(mapViewService.mapView.center.x).toBe(1408);
-    expect(mapViewService.mapView.center.y).toBe(1337);
+    expect(service['mapView'].scale).toBe(12);
+    expect(service['mapView'].center.x).toBe(1408);
+    expect(service['mapView'].center.y).toBe(1337);
     expect(toolServiceSpy.addExistingDrawingsToLayer).toHaveBeenCalledWith([mockUserDrawing], UserDrawingLayer.Drawings);
     expect(dispatchSpy).toHaveBeenCalledWith(MapConfigActions.markMapServiceAsInitialized());
-  }));
+
+    vi.useRealTimers();
+  });
 
   it('should not initialize twice', () => {
-    const storeSelectSpy = spyOn(store, 'select').and.returnValue(new Observable());
+    const storeSelectSpy = vi.spyOn(store, 'select').mockReturnValue(new Observable());
 
     service.init();
 
@@ -183,7 +191,7 @@ describe('EsriMapService', () => {
     expect(storeSelectSpy).toHaveBeenCalledWith(selectDrawings);
     expect(storeSelectSpy).toHaveBeenCalledWith(selectActiveTool);
 
-    storeSelectSpy.calls.reset();
+    storeSelectSpy.mockClear();
 
     service.init();
 
@@ -264,11 +272,11 @@ describe('EsriMapService', () => {
     service.removeMapItem(mapItem2.id);
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(2));
-    expect(mapMock.layers.some((l) => l.id === mapItem1.id)).toBeTrue();
-    expect(mapMock.layers.some((l) => l.id === mapItem2.id)).toBeFalse();
-    expect(mapMock.layers.some((l) => l.id === mapItem3.id)).toBeTrue();
+    expect(mapMock.layers.some((l) => l.id === mapItem1.id)).toBe(true);
+    expect(mapMock.layers.some((l) => l.id === mapItem2.id)).toBe(false);
+    expect(mapMock.layers.some((l) => l.id === mapItem3.id)).toBe(true);
     internalLayers.forEach((fixedLayer) => {
-      expect(mapMock.layers.some((l) => l.id === fixedLayer.id)).toBeTrue();
+      expect(mapMock.layers.some((l) => l.id === fixedLayer.id)).toBe(true);
     });
   });
 
@@ -283,7 +291,7 @@ describe('EsriMapService', () => {
 
     const userDrawingLayerIds = Object.values(UserDrawingLayer).map((drawingLayer) => createDrawingMapItemMock(drawingLayer).id);
     mapMock.layers.addMany(userDrawingLayerIds.map((id) => new GraphicsLayer({id})));
-    const internalLayerSpies = internalLayers.map((internalLayer) => spyOn(internalLayer, 'removeAll').and.callThrough());
+    const internalLayerSpies = internalLayers.map((internalLayer) => vi.spyOn(internalLayer, 'removeAll'));
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3 + userDrawingLayerIds.length));
 
@@ -291,7 +299,7 @@ describe('EsriMapService', () => {
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
     internalLayers.forEach((internalLayer) => {
-      expect(mapMock.layers.some((l) => l.id === internalLayer.id)).toBeTrue();
+      expect(mapMock.layers.some((l) => l.id === internalLayer.id)).toBe(true);
     });
     internalLayerSpies.forEach((internalLayerSpy) => {
       expect(internalLayerSpy).toHaveBeenCalledTimes(1);
@@ -369,7 +377,7 @@ describe('EsriMapService', () => {
 
         expect(internalLayer).toBeDefined();
 
-        const internalLayerSpy = spyOn(internalLayer as GraphicsLayer, 'removeAll').and.callThrough();
+        const internalLayerSpy = vi.spyOn(internalLayer as GraphicsLayer, 'removeAll');
         service.clearInternalDrawingLayer(internalDrawingLayer);
 
         expect(internalLayerSpy).toHaveBeenCalledTimes(1);
@@ -393,7 +401,7 @@ describe('EsriMapService', () => {
 
       internalLayer!.add(graphic);
 
-      const internalLayerSpy = spyOn(internalLayer as GraphicsLayer, 'removeMany').and.callThrough();
+      const internalLayerSpy = vi.spyOn(internalLayer as GraphicsLayer, 'removeMany');
 
       service.removeGeometryFromInternalDrawingLayer(InternalDrawingLayer.SearchResultHighlight, 'asdf');
       expect(internalLayerSpy).toHaveBeenCalledWith([graphic]);

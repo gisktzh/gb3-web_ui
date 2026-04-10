@@ -1,12 +1,8 @@
-import {DrawingSymbolDescriptor} from './../../shared/interfaces/drawing-symbol/drawing-symbol-descriptor.interface';
+import {DrawingSymbolDescriptor} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-descriptor.interface';
+import 'vitest';
 
-declare global {
-  namespace jasmine {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Necessary from outer interface, but not needed in our case.
-    interface Matchers<T> {
-      toEqualSymbolDescriptor(actual: DrawingSymbolDescriptor): boolean;
-    }
+declare module 'vitest' {
+  interface Assertion {
+    toEqualSymbolDescriptor(expected: DrawingSymbolDescriptor): void;
   }
 }
-
-export {};

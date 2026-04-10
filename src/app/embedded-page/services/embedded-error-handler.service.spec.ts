@@ -19,8 +19,8 @@ describe('EmbeddedErrorHandlerService', () => {
 
   describe('logging', () => {
     beforeEach(() => {
-      spyOn(console, 'warn');
-      spyOn(console, 'error');
+      vi.spyOn(console, 'warn').mockImplementation(vi.fn());
+      vi.spyOn(console, 'error').mockImplementation(vi.fn());
     });
     it('does not log if environment === production', () => {
       environment.production = true;
@@ -39,7 +39,8 @@ describe('EmbeddedErrorHandlerService', () => {
       service.handleError(testError);
 
       expect(console.warn).not.toHaveBeenCalled();
-      expect(console.error).toHaveBeenCalledOnceWith(testError);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(testError);
     });
 
     it('logs a Gb3RuntimeError to the console if it has no wrapped error', () => {
@@ -49,7 +50,8 @@ describe('EmbeddedErrorHandlerService', () => {
       service.handleError(testError);
 
       expect(console.warn).not.toHaveBeenCalled();
-      expect(console.error).toHaveBeenCalledOnceWith(testError);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(testError);
     });
 
     it('logs a Gb3RuntimeError to the console and also logs a wrapped error', () => {

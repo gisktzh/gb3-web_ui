@@ -20,6 +20,8 @@ describe('UrlUtils', () => {
   });
 
   it('should extract the correct URL segment', () => {
+    vi.spyOn(console, 'error').mockImplementation(vi.fn());
+
     const router = TestBed.inject(Router);
     expect(UrlUtils.extractFirstUrlSegmentPath(createSegmentsFromUrl(router, ''))).toBe('');
     expect(UrlUtils.extractFirstUrlSegmentPath(createSegmentsFromUrl(router, '?argument=value'))).toBe('');
@@ -58,29 +60,29 @@ describe('UrlUtils', () => {
   });
 
   it('should compare two segment path arrays for equality', () => {
-    expect(UrlUtils.areSegmentPathsEqual([], [])).toBeTrue();
-    expect(UrlUtils.areSegmentPathsEqual(['path01'], ['path01'])).toBeTrue();
-    expect(UrlUtils.areSegmentPathsEqual(['path01', 'path02'], ['path01', 'path02'])).toBeTrue();
+    expect(UrlUtils.areSegmentPathsEqual([], [])).toBe(true);
+    expect(UrlUtils.areSegmentPathsEqual(['path01'], ['path01'])).toBe(true);
+    expect(UrlUtils.areSegmentPathsEqual(['path01', 'path02'], ['path01', 'path02'])).toBe(true);
 
-    expect(UrlUtils.areSegmentPathsEqual(['path01'], [])).toBeFalse();
-    expect(UrlUtils.areSegmentPathsEqual([], ['path01'])).toBeFalse();
-    expect(UrlUtils.areSegmentPathsEqual(['path01'], ['path02'])).toBeFalse();
-    expect(UrlUtils.areSegmentPathsEqual(['path01', 'path02'], ['path01'])).toBeFalse();
-    expect(UrlUtils.areSegmentPathsEqual(['path01'], ['path01', 'path02'])).toBeFalse();
-    expect(UrlUtils.areSegmentPathsEqual(['path02', 'path01'], ['path01', 'path02'])).toBeFalse();
+    expect(UrlUtils.areSegmentPathsEqual(['path01'], [])).toBe(false);
+    expect(UrlUtils.areSegmentPathsEqual([], ['path01'])).toBe(false);
+    expect(UrlUtils.areSegmentPathsEqual(['path01'], ['path02'])).toBe(false);
+    expect(UrlUtils.areSegmentPathsEqual(['path01', 'path02'], ['path01'])).toBe(false);
+    expect(UrlUtils.areSegmentPathsEqual(['path01'], ['path01', 'path02'])).toBe(false);
+    expect(UrlUtils.areSegmentPathsEqual(['path02', 'path01'], ['path01', 'path02'])).toBe(false);
   });
 
   it('should compare two segment path arrays to check if the first is contained in the second', () => {
-    expect(UrlUtils.containsSegmentPaths([], [])).toBeTrue();
-    expect(UrlUtils.containsSegmentPaths([], ['path01'])).toBeTrue();
-    expect(UrlUtils.containsSegmentPaths(['path01'], ['path01'])).toBeTrue();
-    expect(UrlUtils.containsSegmentPaths(['path01', 'path02'], ['path01', 'path02'])).toBeTrue();
-    expect(UrlUtils.containsSegmentPaths(['path01'], ['path01', 'path02'])).toBeTrue();
+    expect(UrlUtils.containsSegmentPaths([], [])).toBe(true);
+    expect(UrlUtils.containsSegmentPaths([], ['path01'])).toBe(true);
+    expect(UrlUtils.containsSegmentPaths(['path01'], ['path01'])).toBe(true);
+    expect(UrlUtils.containsSegmentPaths(['path01', 'path02'], ['path01', 'path02'])).toBe(true);
+    expect(UrlUtils.containsSegmentPaths(['path01'], ['path01', 'path02'])).toBe(true);
 
-    expect(UrlUtils.containsSegmentPaths(['path01'], [])).toBeFalse();
-    expect(UrlUtils.containsSegmentPaths(['path01'], ['path02'])).toBeFalse();
-    expect(UrlUtils.containsSegmentPaths(['path01', 'path02'], ['path01'])).toBeFalse();
-    expect(UrlUtils.containsSegmentPaths(['path02', 'path01'], ['path01', 'path02'])).toBeFalse();
+    expect(UrlUtils.containsSegmentPaths(['path01'], [])).toBe(false);
+    expect(UrlUtils.containsSegmentPaths(['path01'], ['path02'])).toBe(false);
+    expect(UrlUtils.containsSegmentPaths(['path01', 'path02'], ['path01'])).toBe(false);
+    expect(UrlUtils.containsSegmentPaths(['path02', 'path01'], ['path01', 'path02'])).toBe(false);
   });
 
   describe('areParamsEqual', () => {
@@ -98,7 +100,7 @@ describe('UrlUtils', () => {
         x: '1234',
       };
 
-      expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBeTrue();
+      expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBe(true);
     });
 
     it('should compare two param objects with the different content length and return false', () => {
@@ -114,7 +116,7 @@ describe('UrlUtils', () => {
         scale: true,
       };
 
-      expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBeFalse();
+      expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBe(false);
     });
 
     it('should compare two param objects with the different content and return false', () => {
@@ -131,7 +133,7 @@ describe('UrlUtils', () => {
         basemap: 'undefined',
       };
 
-      expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBeFalse();
+      expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBe(false);
     });
   });
 });

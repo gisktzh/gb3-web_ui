@@ -22,7 +22,7 @@ import {MapCouldNotBeFound} from '../../../shared/errors/map.errors';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MatCard, MatCardHeader} from '@angular/material/card';
 import {TypedTourAnchorDirective} from '../../../shared/directives/typed-tour-anchor.directive';
-import {NgClass} from '@angular/common';
+import {AsyncPipe, NgClass} from '@angular/common';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
@@ -38,6 +38,7 @@ import {MatDivider} from '@angular/material/divider';
   templateUrl: './map-data-catalogue.component.html',
   styleUrls: ['./map-data-catalogue.component.scss'],
   imports: [
+    AsyncPipe,
     MatCard,
     TypedTourAnchorDirective,
     NgClass,
@@ -70,7 +71,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
 
   private originalMaps: Map[] = [];
   private readonly filterString$ = this.store.select(selectFilterString);
-  private readonly catalogueLoadingState$ = this.store.select(selectCatalogueLoadingState);
+  protected readonly catalogueLoadingState$ = this.store.select(selectCatalogueLoadingState);
   private readonly favouritesLoadingState$ = this.store.select(selectFavouritesLoadingState);
   private readonly filteredFavourites$ = this.store.select(selectFilteredFavouriteList);
   private readonly topics$ = this.store.select(selectFilteredLayerCatalog);

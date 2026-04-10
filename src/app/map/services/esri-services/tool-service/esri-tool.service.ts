@@ -102,6 +102,10 @@ export class EsriToolService implements ToolService, OnDestroy {
     this.toolStrategy.cancel();
   }
 
+  public getToolStrategy() {
+    return this.toolStrategy;
+  }
+
   public editDrawing(graphic: Graphic) {
     if (!hasNonNullishProperty(graphic, 'layer')) {
       throw new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.');
@@ -411,7 +415,7 @@ export class EsriToolService implements ToolService, OnDestroy {
     }
   }
 
-  private setToolStrategyForEditingFeature(graphic: Graphic) {
+  public setToolStrategyForEditingFeature(graphic: Graphic) {
     if (!hasNonNullishProperty(graphic, 'geometry')) {
       throw new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten');
     }

@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -8,7 +8,6 @@ import {ShareLinkEffects} from './share-link.effects';
 import {Gb3ShareLinkService} from '../../../shared/services/apis/gb3/gb3-share-link.service';
 import {ShareLinkActions} from '../actions/share-link.actions';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
-import {AuthService} from '../../../auth/auth.service';
 import {FavouritesService} from '../../../map/services/favourites.service';
 import {catchError} from 'rxjs';
 import {
@@ -36,8 +35,8 @@ import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../au
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
-
 import {TIME_SERVICE} from '../../../app.tokens';
+import {AuthService} from 'src/app/auth/auth.service';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -54,26 +53,28 @@ describe('ShareLinkEffects', () => {
   let store: MockStore;
   let effects: ShareLinkEffects;
   let gb3ShareLinkService: Gb3ShareLinkService;
-  let authServiceMock: jasmine.SpyObj<AuthService>;
-  let favouriteServiceMock: jasmine.SpyObj<FavouritesService>;
+  const authServiceMock: Partial<AuthService> = {
+    login: vi.fn(),
+  };
+  const favouriteServiceMock = {
+    getActiveMapItemsForFavourite: vi.fn(),
+    getDrawingsForFavourite: vi.fn(),
+  };
   let timeService: TimeService;
   let shareLinkItemMock: ShareLinkItem;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['getActiveMapItemsForFavourite', 'getDrawingsForFavourite']);
-    authServiceMock = jasmine.createSpyObj<AuthService>(['login']);
-
     TestBed.configureTestingModule({
       imports: [],
       providers: [
         ShareLinkEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: FavouritesService, useValue: favouriteServiceMock},
-        {provide: AuthService, useValue: authServiceMock},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        {provide: FavouritesService, useValue: favouriteServiceMock},
+        {provide: AuthService, useValue: authServiceMock},
       ],
     });
     effects = TestBed.inject(ShareLinkEffects);
@@ -164,35 +165,35 @@ describe('ShareLinkEffects', () => {
   });
 
   describe('loadShareLinkItem$', () => {
-    it('dispatches ShareLinkActions.setItem() with the service response on success', (done: DoneFn) => {
+    it('dispatches ShareLinkActions.setItem() with the service response on success', () => {
       const expectedItem = shareLinkItemMock;
       const expectedId = 'abcd-efgh-ijkl-mnop';
-      const gb3ShareLinkServiceSpy = spyOn(gb3ShareLinkService, 'loadShareLink').and.returnValue(of(expectedItem));
+      const gb3ShareLinkServiceSpy = vi.spyOn(gb3ShareLinkService, 'loadShareLink').mockReturnValue(of(expectedItem));
 
       actions$ = of(ShareLinkActions.loadItem({id: expectedId}));
       effects.loadShareLinkItem$.subscribe((action) => {
-        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledOnceWith(expectedId);
+        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledWith(expectedId);
         expect(action).toEqual(ShareLinkActions.setItem({item: expectedItem}));
-        done();
       });
     });
 
-    it('dispatches ShareLinkActions.setLoadingError() with the error on failure', (done: DoneFn) => {
+    it('dispatches ShareLinkActions.setLoadingError() with the error on failure', () => {
       const expectedId = 'abcd-efgh-ijkl-mnop';
       const expectedError = new Error('oh no! butterfingers');
-      const gb3ShareLinkServiceSpy = spyOn(gb3ShareLinkService, 'loadShareLink').and.returnValue(throwError(() => expectedError));
+      const gb3ShareLinkServiceSpy = vi.spyOn(gb3ShareLinkService, 'loadShareLink').mockReturnValue(throwError(() => expectedError));
 
       actions$ = of(ShareLinkActions.loadItem({id: expectedId}));
       effects.loadShareLinkItem$.subscribe((action) => {
-        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledOnceWith(expectedId);
+        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledWith(expectedId);
         expect(action).toEqual(ShareLinkActions.setLoadingError({error: expectedError}));
-        done();
       });
     });
   });
 
   describe('throwLoadingError$', () => {
-    it('throws a ShareLinkCouldNotBeLoaded error', (done: DoneFn) => {
+    it('throws a ShareLinkCouldNotBeLoaded error', () => {
       const expectedOriginalError = new Error('oh no! butterfingers');
 
       actions$ = of(ShareLinkActions.setLoadingError({error: expectedOriginalError}));
@@ -201,7 +202,6 @@ describe('ShareLinkEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new ShareLinkCouldNotBeLoaded(expectedOriginalError);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -210,35 +210,35 @@ describe('ShareLinkEffects', () => {
   });
 
   describe('createShareLinkRequest$', () => {
-    it('dispatches ShareLinkActions.setItemId() with the service response on success', (done: DoneFn) => {
+    it('dispatches ShareLinkActions.setItemId() with the service response on success', () => {
       const expectedItem = shareLinkItemMock;
       const expectedId = 'abcd-efgh-ijkl-mnop';
-      const gb3ShareLinkServiceSpy = spyOn(gb3ShareLinkService, 'createShareLink').and.returnValue(of(expectedId));
+      const gb3ShareLinkServiceSpy = vi.spyOn(gb3ShareLinkService, 'createShareLink').mockReturnValue(of(expectedId));
 
       actions$ = of(ShareLinkActions.createItem({item: expectedItem}));
       effects.createShareLinkRequest$.subscribe((action) => {
-        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledOnceWith(expectedItem);
+        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledWith(expectedItem);
         expect(action).toEqual(ShareLinkActions.setItemId({id: expectedId}));
-        done();
       });
     });
 
-    it('dispatches ShareLinkActions.setCreationError() with the error on failure', (done: DoneFn) => {
+    it('dispatches ShareLinkActions.setCreationError() with the error on failure', () => {
       const expectedItem = shareLinkItemMock;
       const expectedError = new Error('oh no! butterfingers');
-      const gb3ShareLinkServiceSpy = spyOn(gb3ShareLinkService, 'createShareLink').and.returnValue(throwError(() => expectedError));
+      const gb3ShareLinkServiceSpy = vi.spyOn(gb3ShareLinkService, 'createShareLink').mockReturnValue(throwError(() => expectedError));
 
       actions$ = of(ShareLinkActions.createItem({item: expectedItem}));
       effects.createShareLinkRequest$.subscribe((action) => {
-        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledOnceWith(expectedItem);
+        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3ShareLinkServiceSpy).toHaveBeenCalledWith(expectedItem);
         expect(action).toEqual(ShareLinkActions.setCreationError({error: expectedError}));
-        done();
       });
     });
   });
 
   describe('throwCreationError$', () => {
-    it('throws a ShareLinkItemCouldNotBeCreated error', (done: DoneFn) => {
+    it('throws a ShareLinkItemCouldNotBeCreated error', () => {
       const expectedOriginalError = new Error('oh no! butterfingers');
 
       actions$ = of(ShareLinkActions.setCreationError({error: expectedOriginalError}));
@@ -247,7 +247,6 @@ describe('ShareLinkEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new ShareLinkItemCouldNotBeCreated(expectedOriginalError);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -279,20 +278,25 @@ describe('ShareLinkEffects', () => {
 
     describe('Action: Initialize Application Based On Id', () => {
       describe('waitForAuthenticationStatusToBeLoaded$', () => {
-        it('does not dispatch ShareLinkActions.authenticationInitialized() as long as the initialData is not loaded', fakeAsync(async () => {
+        it('does not dispatch ShareLinkActions.authenticationInitialized() as long as the initialData is not loaded', async () => {
+          vi.useFakeTimers();
+
           actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
           store.overrideSelector(selectIsAuthenticationInitialized, false);
           let newAction: Action | undefined;
           effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => (newAction = action));
-          flush();
+
+          await vi.runAllTimersAsync();
+
           expect(newAction).toBeUndefined();
-        }));
-        it('dispatches ShareLinkActions.authenticationInitialized() when the initialData is loaded', (done: DoneFn) => {
+
+          vi.useRealTimers();
+        });
+        it('dispatches ShareLinkActions.authenticationInitialized() when the initialData is loaded', () => {
           actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
           store.overrideSelector(selectIsAuthenticationInitialized, true);
           effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.completedAuthenticationInitialization({id: expectedId}));
-            done();
           });
         });
       });
@@ -304,30 +308,27 @@ describe('ShareLinkEffects', () => {
       });
 
       describe('initializeApplicationByLoadingShareLinkItem$', () => {
-        it('dispatches ShareLinkActions.loadItem() with the service response on success', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.loadItem() with the service response on success', () => {
           effects.initializeApplicationByLoadingShareLinkItem$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.loadItem({id: expectedId}));
-            done();
           });
         });
       });
 
       describe('initializeApplicationByLoadingTopics$', () => {
-        it('dispatches LayerCatalogActions.loadLayerCatalog() with the service response on success', (done: DoneFn) => {
+        it('dispatches LayerCatalogActions.loadLayerCatalog() with the service response on success', () => {
           effects.initializeApplicationByLoadingTopics$.subscribe((action) => {
             expect(action).toEqual(LayerCatalogActions.loadLayerCatalog());
-            done();
           });
         });
       });
 
       describe('initializeApplicationByVerifyingSharedItem$', () => {
-        it('dispatches ShareLinkActions.validateItem() after both - the ShareLinkItem and the LayerCatalog - was loaded successfully', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.validateItem() after both - the ShareLinkItem and the LayerCatalog - was loaded successfully', () => {
           store.overrideSelector(selectLoadedLayerCatalogueAndShareItem, {shareLinkItem: expectedItem, topics: expectedTopics});
 
           effects.initializeApplicationByVerifyingSharedItem$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.validateItem({item: expectedItem}));
-            done();
           });
         });
       });
@@ -336,14 +337,14 @@ describe('ShareLinkEffects', () => {
     describe('Action: validateItem', () => {
       describe('validateShareLinkItem$', () => {
         beforeEach(() => {
-          favouriteServiceMock.getActiveMapItemsForFavourite.and.callFake((activeMapItemConfigurations: ActiveMapItemConfiguration[]) =>
-            createActiveMapItemsFromConfigs(activeMapItemConfigurations),
+          favouriteServiceMock.getActiveMapItemsForFavourite.mockImplementation(
+            (activeMapItemConfigurations: ActiveMapItemConfiguration[]) => createActiveMapItemsFromConfigs(activeMapItemConfigurations),
           );
         });
 
-        it('dispatches ShareLinkActions.completeValidation() with the service response on success with no drawings', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.completeValidation() with the service response on success with no drawings', () => {
           actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
-          favouriteServiceMock.getDrawingsForFavourite.and.returnValue(
+          favouriteServiceMock.getDrawingsForFavourite.mockReturnValue(
             Promise.resolve({
               drawingsToAdd: [],
               drawingActiveMapItems: [],
@@ -353,22 +354,23 @@ describe('ShareLinkEffects', () => {
           const expectedAction = ShareLinkActions.completeValidation({mapRestoreItem: {...expectedCompleteItem, drawings: []}});
 
           effects.validateShareLinkItem$.subscribe((action) => {
-            expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledOnceWith(expectedItem.content, false);
-            expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledOnceWith(expectedItem.drawings, expectedItem.measurements);
+            expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledTimes(1);
+            expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledWith(expectedItem.content, false);
+            expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledTimes(1);
+            expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledWith(expectedItem.drawings, expectedItem.measurements);
             expect(action).toEqual(expectedAction);
-            done();
           });
         });
 
         it(
           'dispatches ShareLinkActions.completeValidation() with the service response on success with drawings added on top of the' +
             ' active map items',
-          (done: DoneFn) => {
+          () => {
             actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
             const drawingActiveMapItems = expectedCompleteItem.drawings.map(() =>
               ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing),
             );
-            favouriteServiceMock.getDrawingsForFavourite.and.returnValue(
+            favouriteServiceMock.getDrawingsForFavourite.mockReturnValue(
               Promise.resolve({
                 drawingsToAdd: expectedCompleteItem.drawings,
                 drawingActiveMapItems: drawingActiveMapItems,
@@ -383,18 +385,16 @@ describe('ShareLinkEffects', () => {
             });
 
             effects.validateShareLinkItem$.subscribe((action) => {
-              expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledOnceWith(expectedItem.content, false);
-              expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledOnceWith(
-                expectedItem.drawings,
-                expectedItem.measurements,
-              );
+              expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledTimes(1);
+              expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledWith(expectedItem.content, false);
+              expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledTimes(1);
+              expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledWith(expectedItem.drawings, expectedItem.measurements);
               expect(action).toEqual(expectedAction);
-              done();
             });
           },
         );
 
-        it('dispatches ShareLinkActions.setValidationError() with the error on basemap validation failure', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.setValidationError() with the error on basemap validation failure', () => {
           const faultyItem: ShareLinkItem = {
             ...shareLinkItemMock,
             basemapId: 'there-is-no-map',
@@ -404,11 +404,10 @@ describe('ShareLinkEffects', () => {
 
           effects.validateShareLinkItem$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.setValidationError({error: expectedError}));
-            done();
           });
         });
 
-        it('dispatches ShareLinkActions.setValidationError() with the error on scale validation failure', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.setValidationError() with the error on scale validation failure', () => {
           const faultyItem: ShareLinkItem = {
             ...shareLinkItemMock,
             scale: -1337,
@@ -418,18 +417,19 @@ describe('ShareLinkEffects', () => {
 
           effects.validateShareLinkItem$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.setValidationError({error: expectedError}));
-            done();
           });
         });
 
-        it('dispatches ShareLinkActions.setValidationError() with the error on active map items validation failure', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.setValidationError() with the error on active map items validation failure', () => {
           actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
-          const favouriteServiceMockSpy = favouriteServiceMock.getActiveMapItemsForFavourite.and.throwError(expectedOriginalError);
+          const favouriteServiceMockSpy = favouriteServiceMock.getActiveMapItemsForFavourite.mockImplementation(() => {
+            throw expectedOriginalError;
+          });
 
           effects.validateShareLinkItem$.subscribe((action) => {
-            expect(favouriteServiceMockSpy).toHaveBeenCalledOnceWith(expectedItem.content, false);
+            expect(favouriteServiceMockSpy).toHaveBeenCalledTimes(1);
+            expect(favouriteServiceMockSpy).toHaveBeenCalledWith(expectedItem.content, false);
             expect(action).toEqual(ShareLinkActions.setValidationError({error: expectedOriginalError}));
-            done();
           });
         });
       });
@@ -437,13 +437,12 @@ describe('ShareLinkEffects', () => {
 
     describe('Action: setValidationError', () => {
       describe('handleValidationError$', () => {
-        it('dispatches ShareLinkActions.setInitializationError() with the error on failure', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.setInitializationError() with the error on failure', () => {
           const expectedAction = ShareLinkActions.setInitializationError({error: expectedOriginalError});
 
           actions$ = of(ShareLinkActions.setValidationError({error: expectedOriginalError}));
           effects.handleValidationError$.subscribe((action) => {
             expect(action).toEqual(expectedAction);
-            done();
           });
         });
       });
@@ -451,7 +450,7 @@ describe('ShareLinkEffects', () => {
 
     describe('Action: setInitializationError', () => {
       describe('throwInitializationError$', () => {
-        it('throws a ShareLinkCouldNotBeValidated error with the login reminder and dispatches ShareLinkActions.setInitializationError() with the error on failure', (done: DoneFn) => {
+        it('throws a ShareLinkCouldNotBeValidated error with the login reminder and dispatches ShareLinkActions.setInitializationError() with the error on failure', () => {
           const isAuthenticated = true;
           store.overrideSelector(selectIsAuthenticated, isAuthenticated);
 
@@ -464,14 +463,13 @@ describe('ShareLinkEffects', () => {
                 expect(error).toEqual(expectedError);
                 expect(error).toBeInstanceOf(ShareLinkCouldNotBeValidated);
                 expect((error as ShareLinkCouldNotBeValidated).message).not.toContain('Möglicherweise hilft es, wenn Sie sich einloggen.');
-                done();
                 return EMPTY;
               }),
             )
             .subscribe();
         });
 
-        it('throws a ShareLinkCouldNotBeValidated error without the login reminder and dispatches ShareLinkActions.setInitializationError() with the error on failure', (done: DoneFn) => {
+        it('throws a ShareLinkCouldNotBeValidated error without the login reminder and dispatches ShareLinkActions.setInitializationError() with the error on failure', () => {
           const isAuthenticated = false;
           store.overrideSelector(selectIsAuthenticated, isAuthenticated);
 
@@ -484,7 +482,6 @@ describe('ShareLinkEffects', () => {
                 expect(error).toEqual(expectedError);
                 expect(error).toBeInstanceOf(ShareLinkCouldNotBeValidated);
                 expect((error as ShareLinkCouldNotBeValidated).message).toContain('Möglicherweise hilft es, wenn Sie sich einloggen.');
-                done();
                 return EMPTY;
               }),
             )
@@ -499,7 +496,7 @@ describe('ShareLinkEffects', () => {
       });
 
       describe('setMapConfigAfterValidation$', () => {
-        it('dispatches MapConfigActions.setInitialMapConfig() with the service response on success', (done: DoneFn) => {
+        it('dispatches MapConfigActions.setInitialMapConfig() with the service response on success', () => {
           const expectedInitialMapConfig = {
             x: expectedCompleteItem.x,
             y: expectedCompleteItem.y,
@@ -510,13 +507,12 @@ describe('ShareLinkEffects', () => {
 
           effects.setMapConfigAfterValidation$.subscribe((action) => {
             expect(action).toEqual(MapConfigActions.setInitialMapConfig(expectedInitialMapConfig));
-            done();
           });
         });
       });
 
       describe('setActiveMapItemsAfterValidation$', () => {
-        it('dispatches ActiveMapItemActions.initializeActiveMapItems() with the service response on success', (done: DoneFn) => {
+        it('dispatches ActiveMapItemActions.initializeActiveMapItems() with the service response on success', () => {
           const expectedActiveMapItems = {
             initialMapItems: expectedCompleteItem.activeMapItems,
           };
@@ -524,32 +520,29 @@ describe('ShareLinkEffects', () => {
 
           effects.setActiveMapItemsAfterValidation$.subscribe((action) => {
             expect(action).toEqual(expectedAction);
-            done();
           });
         });
       });
 
       describe('setInitialDrawingsAfterValidation$', () => {
-        it('dispatches DrawingActions.addDrawings() with the correct drawings', (done: DoneFn) => {
+        it('dispatches DrawingActions.addDrawings() with the correct drawings', () => {
           const drawings = {
             drawings: expectedCompleteItem.drawings,
           };
 
           effects.setInitialDrawingsAfterValidation$.subscribe((action) => {
             expect(action).toEqual(DrawingActions.addDrawings(drawings));
-            done();
           });
         });
       });
 
       describe('completeInitialization$', () => {
-        it('dispatches ShareLinkActions.completeApplicationInitialization() after the ActiveMapItems and drawings have been set', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.completeApplicationInitialization() after the ActiveMapItems and drawings have been set', () => {
           store.overrideSelector(selectItems, expectedCompleteItem.activeMapItems);
           store.overrideSelector(selectDrawings, expectedCompleteItem.drawings);
 
           effects.completeInitialization$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.completeApplicationInitialization());
-            done();
           });
         });
       });
