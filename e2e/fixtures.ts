@@ -30,8 +30,10 @@ export const test = base.extend<Gb3Fixtures>({
     const fileName = path.basename(testInfo.file).split('.').at(0);
 
     await use(async () => {
-      // eslint-disable-next-line no-console
-      console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ./e2e/hars/${fileName}.har`);
+      if (!process.env['CI']) {
+        // eslint-disable-next-line no-console
+        console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ./e2e/hars/${fileName}.har`);
+      }
 
       await advancedRouteFromHAR(`./e2e/hars/${fileName}.har`, {
         url: HAR_TARGET_PATTERN,
