@@ -15,12 +15,13 @@ export default defineConfig({
     baseURL: 'http://localhost:4200',
     trace: 'on-first-retry',
     ignoreHTTPSErrors: true,
+    screenshot: 'only-on-failure',
 
     // DEBUGGING: The following options are left here for convenience. They're super useful for debugging.
     // headless: false,
-    // launchOptions: {
-    //   slowMo: 500,
-    // },
+    launchOptions: {
+      slowMo: 50,
+    },
   },
   // DEBUGGING: Specify the name of the test here
   testMatch: 'e2e/specs/*.spec.ts',
