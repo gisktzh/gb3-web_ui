@@ -1,12 +1,10 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {Component, computed, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {Subscription, filter, map, tap} from 'rxjs';
 import {MainPage} from 'src/app/shared/enums/main-page.enum';
 import {ConfigService} from 'src/app/shared/services/config.service';
-import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
-import {LoadingState} from '../../../shared/types/loading-state.type';
 import {selectId, selectSavingState} from '../../../state/map/reducers/share-link.reducer';
 import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
 import {MatFormField, MatLabel, MatInput, MatSuffix} from '@angular/material/input';
@@ -15,6 +13,7 @@ import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
 import {MatIcon} from '@angular/material/icon';
 import {FeatureFlagDirective} from '../../../shared/directives/feature-flag.directive';
 import {MapOverlayListItemComponent} from '../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
+import {HasSavingStateSingal} from 'src/app/shared/interfaces/has-saving-state-signal.interface';
 
 @Component({
   selector: 'share-link-dialog',
@@ -34,44 +33,30 @@ import {MapOverlayListItemComponent} from '../map-overlay/map-overlay-list-item/
     MatButton,
   ],
 })
-export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingState {
+export class ShareLinkDialogComponent implements HasSavingStateSingal {
   private readonly dialogRef = inject<MatDialogRef<ShareLinkDialogComponent>>(MatDialogRef);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly configService = inject(ConfigService);
 
-  public savingState: LoadingState = undefined;
-  public shareLinkUrl?: string;
-  public iframeCode?: string;
+  public savingState = toSignal(this.store.select(selectSavingState), {initialValue: undefined});
+  protected shareLinkId = toSignal(this.store.select(selectId), {initialValue: undefined});
+  public shareLinkUrl = computed(() => {
+    const id = this.shareLinkId();
+    if (!id) {
+      return 'Generiere Link...';
+    }
 
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly savingState$ = this.store.select(selectSavingState);
-  private readonly shareLinkId$ = this.store.select(selectId);
+    return this.createShareLinkUrl(id, window.location.origin);
+  });
+  public iframeCode = computed(() => {
+    const id = this.shareLinkId();
+    if (!id) {
+      return 'Generiere iframe Code zum einbetten...';
+    }
 
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  public initSubscriptions() {
-    this.subscriptions.add(this.savingState$.pipe(tap((savingState) => (this.savingState = savingState))).subscribe());
-    this.subscriptions.add(
-      this.shareLinkId$
-        .pipe(
-          filter((id) => id !== undefined),
-          map((id) => id!),
-          tap((id) => {
-            const baseUrl = window.location.origin;
-            this.shareLinkUrl = this.createShareLinkUrl(id, baseUrl);
-            this.iframeCode = this.createIFrameCode(id, baseUrl);
-          }),
-        )
-        .subscribe(),
-    );
-  }
+    return this.createIFrameCode(id, window.location.origin);
+  });
 
   public close(isAborted: boolean = false) {
     this.dialogRef.close(isAborted);

@@ -1,4 +1,4 @@
-<api-dialog-wrapper [savingState]="savingState" title="Aktive Karten als Favorit speichern" (closeEvent)="abort()">
+<api-dialog-wrapper [savingState]="savingState()" title="Aktive Karten als Favorit speichern" (closeEvent)="abort()">
   <ng-container content>
     <mat-form-field appearance="fill" class="favourite-dialog__form">
       <mat-label>Name des Favoriten</mat-label>
@@ -9,7 +9,7 @@
     </mat-form-field>
   </ng-container>
   <ng-container actions>
-    <button (click)="abort()" [disabled]="savingState === 'loading'" mat-button>Abbrechen</button>
-    <button (click)="save()" [disabled]="nameFormControl.status !== 'VALID' || savingState === 'loading'" mat-button>Speichern</button>
+    <button (click)="abort()" [disabled]="savingState() === 'loading'" mat-button>Abbrechen</button>
+    <button (click)="save()" [disabled]="nameFormControl.status !== 'VALID' || savingState() === 'loading'" mat-button>Speichern</button>
   </ng-container>
 </api-dialog-wrapper>

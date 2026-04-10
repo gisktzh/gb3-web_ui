@@ -1,5 +1,4 @@
-import {Component, OnDestroy, inject} from '@angular/core';
-import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
+import {Component, OnDestroy, inject, signal} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs';
@@ -8,10 +7,10 @@ import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {Store} from '@ngrx/store';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {LoadingState} from '../../../shared/types/loading-state.type';
-
 import {FavouriteCouldNotBeRemoved} from '../../../shared/errors/favourite.errors';
 import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
 import {MatButton} from '@angular/material/button';
+import {HasSavingStateSingal} from 'src/app/shared/interfaces/has-saving-state-signal.interface';
 
 @Component({
   selector: 'app-favourite-deletion-dialog',
@@ -19,7 +18,7 @@ import {MatButton} from '@angular/material/button';
   styleUrls: ['./favourite-deletion-dialog.component.scss'],
   imports: [ApiDialogWrapperComponent, MatButton],
 })
-export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestroy {
+export class FavouriteDeletionDialogComponent implements HasSavingStateSingal, OnDestroy {
   private readonly dialogRef = inject<MatDialogRef<FavouriteDeletionDialogComponent, boolean>>(MatDialogRef);
   private readonly favouritesService = inject(FavouritesService);
   private readonly data = inject<{
@@ -27,14 +26,12 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
   }>(MAT_DIALOG_DATA);
   private readonly store = inject(Store);
 
-  public savingState: LoadingState;
+  public savingState = signal<LoadingState>(undefined);
   public favourite: Favourite;
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor() {
-    const data = this.data;
-
-    this.favourite = data.favourite;
+    this.favourite = this.data.favourite;
   }
 
   public ngOnDestroy() {
@@ -46,7 +43,7 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
   }
 
   public delete() {
-    this.savingState = 'loading';
+    this.savingState.set('loading');
 
     this.subscriptions.add(
       this.favouritesService
@@ -57,7 +54,7 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
             this.close();
           }),
           catchError((err: unknown) => {
-            this.savingState = 'error';
+            this.savingState.set('error');
             throw new FavouriteCouldNotBeRemoved(err);
           }),
         )

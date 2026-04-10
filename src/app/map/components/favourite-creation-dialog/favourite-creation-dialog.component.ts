@@ -1,18 +1,17 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject, signal} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {FormControl, ValidatorFn, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FavouritesService} from '../../services/favourites.service';
 import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs';
-import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {Store} from '@ngrx/store';
 import {LoadingState} from '../../../shared/types/loading-state.type';
-
 import {FavouriteCouldNotBeCreated} from '../../../shared/errors/favourite.errors';
 import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
 import {MatFormField, MatLabel, MatInput, MatError} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
+import {HasSavingStateSingal} from 'src/app/shared/interfaces/has-saving-state-signal.interface';
 
 const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.required, Validators.pattern(/\S/)];
 
@@ -22,13 +21,13 @@ const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Vali
   styleUrls: ['./favourite-creation-dialog.component.scss'],
   imports: [ApiDialogWrapperComponent, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatError, MatButton],
 })
-export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasSavingState {
+export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasSavingStateSingal {
   private readonly dialogRef = inject<MatDialogRef<FavouriteCreationDialogComponent>>(MatDialogRef);
   private readonly favouritesService = inject(FavouritesService);
   private readonly store = inject(Store);
 
   public nameFormControl!: FormControl<string | null>;
-  public savingState: LoadingState;
+  public savingState = signal<LoadingState>(undefined);
   private readonly subscriptions: Subscription = new Subscription();
 
   public get name() {
@@ -49,7 +48,7 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
 
   public save() {
     if (this.name) {
-      this.savingState = 'loading';
+      this.savingState.set('loading');
 
       this.subscriptions.add(
         this.favouritesService
@@ -60,7 +59,7 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
               this.close();
             }),
             catchError((err: unknown) => {
-              this.savingState = 'error';
+              this.savingState.set('error');
               throw new FavouriteCouldNotBeCreated(err);
             }),
           )
