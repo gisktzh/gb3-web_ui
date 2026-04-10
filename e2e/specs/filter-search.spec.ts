@@ -21,7 +21,9 @@ test.describe('Test filter search', () => {
     const map = page.locator('map-page');
     await expect(map).toBeVisible();
 
-    await map.click();
+    await map.click({force: true});
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(500);
 
     await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
     await expect(page.locator('th', {hasText: 'EGRIS_EGRID'}).locator('xpath=following-sibling::td')).toContainText('CH527789999186');

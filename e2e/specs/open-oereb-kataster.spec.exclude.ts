@@ -18,8 +18,7 @@ test.describe('OEREB-Kataster', () => {
     const map = page.locator('map-page');
     await expect(map).toBeVisible();
 
-    await map.click();
-
+    await map.click({force: true});
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(500);
 

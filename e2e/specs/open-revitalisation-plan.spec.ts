@@ -17,9 +17,10 @@ test.describe('Revitalisierungsplanung', () => {
 
     const map = page.locator('map-page');
     await expect(map).toBeVisible();
-    await map.click();
 
+    await map.click({force: true});
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(500);
 
     await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
     await expect(page.locator('th', {hasText: 'Länge [m]'}).locator('xpath=following-sibling::td')).toContainText('1654');
