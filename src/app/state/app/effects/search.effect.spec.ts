@@ -7,7 +7,7 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {SearchEffects} from './search.effects';
 import {SearchActions} from '../actions/search.actions';
-import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {GeometryWithSrsSearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapUiActions} from '../../map/actions/map-ui.actions';
 import {selectUrlState} from '../reducers/url.reducer';
@@ -81,7 +81,7 @@ describe('SearchEffects', () => {
       const mapDrawingServiceSpy = spyOn(mapDrawingService, 'drawSearchResultHighlight').and.callThrough();
       store.overrideSelector(selectReady, true);
 
-      const searchResultsMock: GeometrySearchApiResultMatch = {
+      const searchResultsMock: GeometryWithSrsSearchApiResultMatch = {
         indexType: 'places',
         displayString: 'Some Place',
         score: 1,
@@ -235,7 +235,7 @@ describe('SearchEffects', () => {
         indexType: 'activeMapItems',
       };
       const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(
-        of([{indexType: 'index'} as unknown as GeometrySearchApiResultMatch]),
+        of([{indexType: 'index'} as unknown as GeometryWithSrsSearchApiResultMatch]),
       );
       const expectedAction = SearchActions.handleEmptyResultsFromUrlSearch({searchTerm});
       actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
@@ -259,7 +259,7 @@ describe('SearchEffects', () => {
         displayString: 'result',
         geometry: {} as GeometryWithSrs,
         score: 100,
-      } as GeometrySearchApiResultMatch;
+      } as GeometryWithSrsSearchApiResultMatch;
       const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(of([expectedResult]));
       const expectedAction = SearchActions.selectMapSearchResult({searchResult: expectedResult});
       actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));

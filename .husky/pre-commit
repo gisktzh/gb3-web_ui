@@ -4,9 +4,13 @@ echo "🚀 Running linter!"
 npx lint-staged
 echo ""
 
+echo "🚀 Checking for unnecessary deps!"
+npm run knip
+echo ""
+
 echo "🚀 Checking branchname!"
 local_branch_name=$(git rev-parse --abbrev-ref HEAD)
-valid_branch_regex='^(feature|hotfix|bugfix)/(gb3|ghub|ahd)-[0-9]+-[a-zA-Z0-9\-]+$'
+valid_branch_regex='^(feature|hotfix|bugfix|renovate)/((gb3|ghub|ahd)-[0-9]+-)?[a-zA-Z0-9\.\-]+$'
 
 if ! echo "$local_branch_name" | grep -Eq "$valid_branch_regex"; then
     printf "\033[31m⚠️ Branchname does not adhere to naming convention %s! \033[0m\n" "$valid_branch_regex"

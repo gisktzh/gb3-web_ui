@@ -1,15 +1,15 @@
-import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
+import CIMSymbol, {CIMSymbolProperties} from '@arcgis/core/symbols/CIMSymbol';
 import {EsriDrawingSymbolDefinition} from './esri-drawing-symbol-definition';
 import {applyCIMSymbolRotation, scaleCIMSymbolTo} from '@arcgis/core/symbols/support/cimSymbolUtils';
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
+import WebStyleSymbol, {WebStyleSymbolProperties} from '@arcgis/core/symbols/WebStyleSymbol';
 
-const webStyleJson: __esri.WebStyleSymbolProperties = {
+const webStyleJson: WebStyleSymbolProperties = {
   name: 'Yes',
   styleName: 'Style name',
   styleUrl: 'https://www.example.com/some_collection_id',
 };
 
-const cimJson: __esri.CIMSymbolProperties = {
+const cimJson: CIMSymbolProperties = {
   data: {
     type: 'CIMSymbolReference',
     symbol: {

@@ -15,6 +15,8 @@ import {Gb3SymbolStyle} from 'src/app/shared/interfaces/internal-drawing-represe
 import {EsriMapDrawingSymbol} from '../../../types/esri-map-drawing-symbol.type';
 import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.constants';
 import {EsriDrawingSymbolDefinition} from './drawing-symbol/esri-drawing-symbol-definition';
+import MapView from '@arcgis/core/views/MapView';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 export type SymbolDrawingInputComponentOutput = {
   drawingSymbolDefinition: EsriDrawingSymbolDefinition;
@@ -34,8 +36,8 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
   private readonly dialogService: MatDialog;
 
   constructor(
-    layer: __esri.GraphicsLayer,
-    mapView: __esri.MapView,
+    layer: GraphicsLayer,
+    mapView: MapView,
     completeDrawingCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsSymbolDrawing, EsriMapDrawingSymbol>,
     dialogService: MatDialog,
   ) {

@@ -8,6 +8,7 @@ import Polyline from '@arcgis/core/geometry/Polyline';
 import {EsriLineDrawingStrategy} from './esri-line-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 class EsriLineDrawingStrategyWrapper extends EsriLineDrawingStrategy {
   public get svm() {
@@ -44,7 +45,7 @@ describe('EsriLineDrawingStrategy', () => {
       const strategy = new EsriLineDrawingStrategyWrapper(layer, mapView, lineSymbol, () => callbackHandler.handle());
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
+      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
 
       expect(callbackSpy).not.toHaveBeenCalled();
     });
@@ -67,7 +68,7 @@ describe('EsriLineDrawingStrategy', () => {
       });
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       expect(callbackSpy).toHaveBeenCalled();
     });
@@ -88,7 +89,7 @@ describe('EsriLineDrawingStrategy', () => {
       });
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'complete'});
+      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
 
       expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
     });

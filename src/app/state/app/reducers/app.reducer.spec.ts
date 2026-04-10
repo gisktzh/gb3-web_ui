@@ -9,7 +9,6 @@ describe('App Reducer', () => {
   beforeEach(() => {
     existingState = {
       accessMode: 'internet',
-      devMode: false,
       dynamicInternalUrlsConfiguration: {
         geolion: {href: ''},
       },
@@ -25,17 +24,6 @@ describe('App Reducer', () => {
     });
   });
 
-  describe('activateDevMode', () => {
-    it('sets the devMode to `true`; keeps everything else', () => {
-      const action = AppActions.activateDevMode();
-      const state = reducer(existingState, action);
-
-      expect(state.devMode).toBe(true);
-      expect(state.dynamicInternalUrlsConfiguration).toEqual(existingState.dynamicInternalUrlsConfiguration);
-      expect(state.accessMode).toEqual(existingState.accessMode);
-    });
-  });
-
   describe('setDynamicInternalUrlConfiguration', () => {
     it('sets the dynamicInternalUrlsConfiguration to the supplied data; keeps everything else', () => {
       const dynamicInternalUrlsConfiguration: DynamicInternalUrlsConfiguration = {
@@ -45,7 +33,6 @@ describe('App Reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.dynamicInternalUrlsConfiguration).toEqual(dynamicInternalUrlsConfiguration);
-      expect(state.devMode).toBe(existingState.devMode);
       expect(state.accessMode).toBe(existingState.accessMode);
     });
   });
@@ -57,7 +44,6 @@ describe('App Reducer', () => {
 
       expect(state.accessMode).toEqual('intranet');
       expect(state.dynamicInternalUrlsConfiguration).toEqual(existingState.dynamicInternalUrlsConfiguration);
-      expect(state.devMode).toEqual(existingState.devMode);
     });
   });
 });

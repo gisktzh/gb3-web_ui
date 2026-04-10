@@ -32,7 +32,7 @@ export class DrawingEffects {
       ofType(ActiveMapItemActions.removeActiveMapItem),
       map((action) => action.activeMapItem),
       filter(isActiveMapItemOfType(DrawingActiveMapItem)),
-      map((drawingLayer) => DrawingActions.clearDrawingLayer({layer: drawingLayer.settings.userDrawingLayer})),
+      map((drawingLayer) => DrawingActions.clearDrawingLayer({layer: drawingLayer.settings.drawingLayer})),
     );
   });
 

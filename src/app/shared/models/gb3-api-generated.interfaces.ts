@@ -19,6 +19,28 @@ export interface BboxGeoshop {
   boundingbox: Geometry;
 }
 
+export interface CimSymbols {
+  items: {
+    /** Symbol name */
+    name: string;
+    /** Symbol title */
+    title: string;
+    /** Type of symbol for JS SDK */
+    itemType: string;
+    /** Dimensionality of the symbol */
+    dimensionality: string;
+    /** Available formats for this symbol, either web2d, cim or both */
+    formats: string[];
+    /** Absolute URL of the CIM ref */
+    cimRef: string;
+    /** Thumbnail of the symbol */
+    thumbnail: {
+      /** Absolute URL to the thumbnail */
+      href: string;
+    };
+  }[];
+}
+
 /**
  * Error objects provide additional information about problems encountered while performing an operation.
  * Error objects MUST be returned as an array keyed by errors in the top level of a JSON:API document.
@@ -370,11 +392,10 @@ export interface PrintCapabilities {
       format?: string;
     }[];
     /** List of valid print settings combinations */
-    valid_combinations_machine_readable?: [];
+    valid_combinations_machine_readable?: PrintCapabilitiesCombination[];
   };
 }
 
-// Manually adjusted to fit typing.
 export interface PrintCapabilitiesCombination {
   /** Standard or mapset */
   report_type: ReportType;
@@ -869,7 +890,7 @@ export interface Dataset {
     /** Layer GIS-ZH-Nummer */
     giszhnr: string;
     /** Beschreibung des Layers */
-    beschreibung: string;
+    beschreibung: string | null;
     /** Geometrietyp */
     geometrietyp: string;
     /** Pfad\Filename */
@@ -984,11 +1005,11 @@ export interface GeojsonFeature {
     /**
      * UUID of the given feature
      */
-    id: string; // todo: specify API interface to expect these properties; see https://jira-geo.zh.ch/browse/GB3-825
+    id: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
     /**
      * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
      */
-    belongsTo?: string; // todo: specify API interface to expect these properties; see https://jira-geo.zh.ch/browse/GB3-825
+    belongsTo?: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
     /**
      * Reference to style ID in 'styles'
      * @example "a"
@@ -1003,7 +1024,7 @@ export interface GeojsonFeature {
      * The tool used to draw the feature
      * @example "polygon"
      */
-    tool: SupportedEsriTool; // todo: specify API interface to expect these properties; see https://jira-geo.zh.ch/browse/GB3-825
+    tool: SupportedEsriTool; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
   };
   /** GeoJSON geometry object */
   geometry: Geometry;
@@ -1466,5 +1487,7 @@ export type FavoritesListData = SharedFavorite[];
 export type FavoritesCreateData = SharedFavorite;
 
 export type FavoritesDetailData = SharedFavorite;
+
+export type Gb3SymbolsCivilSignaturesDataListData = CimSymbols;
 
 export type TopicsListData = Topics;

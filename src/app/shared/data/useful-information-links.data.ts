@@ -9,6 +9,10 @@ export const usefulInformationLinks: AbstractLinksGroup[] = [
         title: 'API Dokumentation GIS-Browser 3, GIS-ZH Schnittstellen',
       },
       {
+        href: 'https://maps.zh.ch/api-docs/index.html?urls.primaryName=GB3%20Web%20UI%201.0.0',
+        title: 'API Dokumentation URL Parameter',
+      },
+      {
         relativeUrl: '/api',
         title: 'API Dokumentation Geodatenkatalog',
         baseUrlType: 'geolion',

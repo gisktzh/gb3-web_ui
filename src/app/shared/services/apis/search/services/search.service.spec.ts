@@ -19,6 +19,11 @@ describe('SearchService', () => {
     {indexName: 'parcels', label: 'Parzellen-Nr.', active: true, indexType: 'parcels'},
     {indexName: 'egrid', label: 'E-GRID', active: true, indexType: 'egrid'},
     {indexName: 'egid', label: 'EGID', active: true, indexType: 'egid'},
+    {indexName: 'metadata-maps', label: 'Metadata Maps', active: true, indexType: 'metadata-maps'},
+    {indexName: 'metadata-products', label: 'Metadata Products', active: true, indexType: 'metadata-products'},
+    {indexName: 'metadata-datasets', label: 'Metadata Datasets', active: true, indexType: 'metadata-datasets'},
+    {indexName: 'metadata-services', label: 'Metadata Services', active: true, indexType: 'metadata-services'},
+    {indexName: 'And now for something completely different', label: 'Unknown', active: true, indexType: 'unknown'},
   ];
 
   const mockData: {index: string; matches: any[]}[] = [
@@ -315,6 +320,96 @@ describe('SearchService', () => {
         },
       ],
     },
+    {
+      index: 'metadata-maps',
+      matches: [
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234',
+          score: 1,
+        },
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234-5678',
+          score: 2,
+        },
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234-5678-0912',
+          score: 3,
+        },
+      ],
+    },
+    {
+      index: 'metadata-products',
+      matches: [
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234',
+          score: 1,
+        },
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234-5678',
+          score: 2,
+        },
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234-5678-0912',
+          score: 3,
+        },
+      ],
+    },
+    {
+      index: 'metadata-datasets',
+      matches: [
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234',
+          score: 1,
+        },
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234-5678',
+          score: 2,
+        },
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234-5678-0912',
+          score: 3,
+        },
+      ],
+    },
+    {
+      index: 'metadata-services',
+      matches: [
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234',
+          score: 1,
+        },
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234-5678',
+          score: 2,
+        },
+        {
+          indexType: 'metadata-maps',
+          uuid: 'asdf-1234-5678-0912',
+          score: 3,
+        },
+      ],
+    },
+    {
+      index: 'something else',
+      matches: [
+        {
+          someField: 'someValue',
+          indexType: 'unknown',
+          score: 12,
+        },
+      ],
+    },
   ];
 
   beforeEach(() => {
@@ -339,7 +434,7 @@ describe('SearchService', () => {
       req.url.includes(`${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/search`),
     );
     searchIndexes.forEach((index) => {
-      expect(request.url.includes(index.indexName)).toBeTrue();
+      expect(request.url.includes(index.indexName)).toBe(index.indexType !== 'unknown');
     });
     expect(request.url.includes(searchTerm)).toBeTrue();
   });
@@ -395,11 +490,26 @@ describe('SearchService', () => {
             expect(match.displayString).not.toEqual('');
             break;
           case 'metadata-maps':
+            expect(match.uuid).toBeDefined();
+            expect(match.indexName).toBe('Metadata Maps');
+            break;
           case 'metadata-products':
+            expect(match.uuid).toBeDefined();
+            expect(match.indexName).toBe('Metadata Products');
+            break;
           case 'metadata-datasets':
+            expect(match.uuid).toBeDefined();
+            expect(match.indexName).toBe('Metadata Datasets');
+            break;
           case 'metadata-services':
+            expect(match.uuid).toBeDefined();
+            expect(match.indexName).toBe('Metadata Services');
+            break;
           case 'unknown':
-            fail('Unexpected index type');
+            expect(match['someField']).toEqual('someValue');
+            expect(match.indexName).toBe('something else');
+            expect(match.indexType).toBe('unknown');
+            break;
         }
       });
       done();

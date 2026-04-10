@@ -9,6 +9,7 @@ describe('auth status reducer', () => {
     existingState = {
       isAuthenticationInitialized: true,
       userName: 'Gandalf',
+      userEmail: 'olórin@valinor.aman',
       isAuthenticated: true,
     };
   });

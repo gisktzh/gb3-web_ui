@@ -11,6 +11,7 @@ import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
 import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 class EsriLineMeasurementStrategyWrapper extends EsriLineMeasurementStrategy {
   public get svm() {
@@ -50,7 +51,7 @@ describe('EsriLineMeasurementStrategy', () => {
       const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
+      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
 
       expect(callbackSpy).not.toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(0);
@@ -64,7 +65,7 @@ describe('EsriLineMeasurementStrategy', () => {
       const graphic = new Graphic();
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'start'});
+      strategy.svm.emit('update', {state: 'start'} as UpdateEvent);
 
       expect(removeLabelOnEditSpy).toHaveBeenCalledWith(graphic);
     });
@@ -87,7 +88,7 @@ describe('EsriLineMeasurementStrategy', () => {
       });
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       expect(callbackSpy).toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(1);
@@ -108,7 +109,7 @@ describe('EsriLineMeasurementStrategy', () => {
       const graphic = new Graphic({geometry: location});
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0)!;
       const numberOfVertices = location.paths[0].length;
@@ -134,7 +135,7 @@ describe('EsriLineMeasurementStrategy', () => {
 
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0)!;
       expect((addedGraphic.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
@@ -157,7 +158,7 @@ describe('EsriLineMeasurementStrategy', () => {
       });
 
       strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'complete'});
+      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
 
       expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
     });
@@ -180,7 +181,7 @@ describe('EsriLineMeasurementStrategy', () => {
 
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0)!;
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${lengthOfLine} m`);
@@ -205,7 +206,7 @@ describe('EsriLineMeasurementStrategy', () => {
 
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const expected = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)).toFixed(2);
       const addedGraphic = layer.graphics.getItemAt(0)!;
@@ -228,7 +229,7 @@ describe('EsriLineMeasurementStrategy', () => {
 
       strategy.start();
       strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
 
       const addedGraphic = layer.graphics.getItemAt(0)!;
       const expextedLength = Math.round(lengthOfLine / 1000);

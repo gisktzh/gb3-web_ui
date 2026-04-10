@@ -93,14 +93,13 @@ import {MapImportEffects} from './map/effects/map-import.effects';
 import {ExternalMapItemState} from './map/states/external-map-item.state';
 import {ExternalMapItemEffects} from './map/effects/external-map-item.effects';
 import {AppState} from './app/states/app.state';
-import {AppEffects} from './app/effects/app.effects';
 import {ExportEffects} from './map/effects/export.effects';
 import {ExportState} from './map/states/export.state';
 import {ImportEffects} from './map/effects/import.effects';
 import {ImportState} from './map/states/import.state';
 import {ExternalAppsState} from './external-apps/states/external-apps.state';
 
-export interface State {
+interface State {
   mapConfig: MapConfigState;
   legend: LegendState;
   featureInfo: FeatureInfoState;
@@ -207,7 +206,6 @@ export const effects = [
   ExternalMapItemEffects,
   ExportEffects,
   ImportEffects,
-  AppEffects,
 ];
 
 export const metaReducers: MetaReducer<State>[] = [];

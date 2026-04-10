@@ -14,12 +14,12 @@ import {HasOpacity} from '../interfaces/has-opacity.interface';
 
 type ActiveMapItemSettingsType = 'gb2Wms' | 'drawing' | 'externalService';
 
+type ActiveMapItemSettings = Gb2WmsSettings | DrawingLayerSettings | ExternalServiceSettings;
+
 export abstract class AbstractActiveMapItemSettings implements IsImmerable {
   public readonly [immerable] = true;
   public abstract readonly type: ActiveMapItemSettingsType;
 }
-
-export type ActiveMapItemSettings = Gb2WmsSettings | DrawingLayerSettings | ExternalServiceSettings;
 
 export abstract class ActiveMapItem implements HasLoadingState, HasOpacity, HasVisibility, HasViewProcessState, IsImmerable, IsSingleLayer {
   public abstract readonly id: string;

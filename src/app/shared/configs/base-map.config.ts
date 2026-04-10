@@ -164,6 +164,52 @@ export const defaultBasemaps: Basemap[] = [
     ],
   },
   {
+    id: 'arelkbackgroundswzh',
+    type: 'wms',
+    relativeImagePath: 'assets/images/basemaps/arelkbackgroundswzh.webp',
+    url: 'https://maps.zh.ch/wms/ARElkBackgroundSWZH',
+    title: 'Basiskarte schwarz-weiss',
+    srsId: 2056,
+    layers: [
+      {
+        name: 'wald',
+      },
+      {
+        name: 'seen',
+      },
+      {
+        name: 'kantonsgrenzen_sw',
+      },
+      {
+        name: 'grenzen',
+      },
+      {
+        name: 'gemeindegrenzen',
+      },
+      {
+        name: 'lk500',
+      },
+      {
+        name: 'lk200',
+      },
+      {
+        name: 'lk100',
+      },
+      {
+        name: 'lk50',
+      },
+      {
+        name: 'lk25',
+      },
+      {
+        name: 'up8',
+      },
+      {
+        name: 'up24',
+      },
+    ],
+  },
+  {
     id: 'arelkbackgroundzh',
     type: 'wms',
     relativeImagePath: 'assets/images/basemaps/arelkbackgroundzh.webp',
@@ -211,4 +257,4 @@ export const defaultBasemaps: Basemap[] = [
   },
 ];
 
-export const defaultBasemap = defaultBasemaps[6];
+export const defaultBasemap = defaultBasemaps[7];

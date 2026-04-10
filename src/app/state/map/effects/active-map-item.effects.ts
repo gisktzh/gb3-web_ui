@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {filter, first, map, switchMap, tap} from 'rxjs';
 import {MapService} from '../../../map/interfaces/map.service';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
-import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {ConfigService} from '../../../shared/services/config.service';
@@ -144,7 +144,7 @@ export class ActiveMapItemEffects {
             }
             // is there still a drawing item for the current active tool? if not => cancel tool
             return !activeMapItems.some(
-              (item) => item.settings.type === 'drawing' && item.settings.userDrawingLayer === activeUserDrawingLayer,
+              (item) => item.settings.type === 'drawing' && item.settings.drawingLayer === activeUserDrawingLayer,
             );
           case '[ActiveMapItem] Remove All Active Map Items':
             return true;
@@ -319,18 +319,18 @@ export class ActiveMapItemEffects {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.addFavourite),
       map(({activeMapItems, drawingsToAdd}) => {
-        const drawingLayersToOverride: UserDrawingLayer[] = [];
+        const drawingLayersToOverride: DrawingLayer[] = [];
         activeMapItems.forEach((activeMapItem, idx) => {
           this.mapService.removeMapItem(activeMapItem.id);
           activeMapItem.addToMap(this.mapService, idx);
 
           if (activeMapItem instanceof DrawingActiveMapItem) {
             this.mapService.getToolService().addExistingDrawingsToLayer(
-              drawingsToAdd.filter((drawing) => drawing.source === activeMapItem.settings.userDrawingLayer),
-              activeMapItem.settings.userDrawingLayer,
+              drawingsToAdd.filter((drawing) => drawing.source === activeMapItem.settings.drawingLayer),
+              activeMapItem.settings.drawingLayer,
             );
 
-            drawingLayersToOverride.push(activeMapItem.settings.userDrawingLayer);
+            drawingLayersToOverride.push(activeMapItem.settings.drawingLayer);
           }
         });
 

@@ -1,9 +1,4 @@
-import {RecoverableError, SilentError} from './abstract.errors';
-
-export class TwitterFeedCouldNotBeLoaded extends SilentError {
-  public override message = 'TwitterFeed konnte nicht geladen werden.';
-  public override name = 'TwitterFeedCouldNotBeLoaded';
-}
+import {RecoverableError} from './abstract.errors';
 
 export class NewsCouldNotBeLoaded extends RecoverableError {
   public override message = 'News konnten nicht geladen werden.';

@@ -1,7 +1,7 @@
 import {FilterConfiguration, Map, MapLayer} from '../interfaces/topic.interface';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
-import {DrawingLayerPrefix, UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {DrawingLayer, DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
@@ -43,7 +43,7 @@ export class ActiveMapItemFactory {
   }
 
   public static createDrawingMapItem(
-    id: UserDrawingLayer,
+    id: DrawingLayer,
     prefix: DrawingLayerPrefix,
     visible?: boolean,
     opacity?: number,
@@ -55,6 +55,27 @@ export class ActiveMapItemFactory {
         break;
       case UserDrawingLayer.Measurements:
         title = 'Messungen';
+        break;
+      case InternalDrawingLayer.FeatureHighlight:
+        title = 'Feature Highlight';
+        break;
+      case InternalDrawingLayer.FeatureQueryLocation:
+        title = 'Feature Query Location';
+        break;
+      case InternalDrawingLayer.LocatePosition:
+        title = 'Locate Position';
+        break;
+      case InternalDrawingLayer.PrintPreview:
+        title = 'Print Preview';
+        break;
+      case InternalDrawingLayer.Selection:
+        title = 'Selection';
+        break;
+      case InternalDrawingLayer.ElevationProfile:
+        title = 'Elevation Profiles';
+        break;
+      case InternalDrawingLayer.SearchResultHighlight:
+        title = 'Search Result Highlight';
         break;
     }
 

@@ -7,13 +7,12 @@ import {routerNavigatedAction} from '@ngrx/router-store';
 import {UrlEffects} from './url.effects';
 import {UrlActions} from '../actions/url.actions';
 import {MainPage} from '../../../shared/enums/main-page.enum';
-import {ActivatedRouteSnapshot, NavigationEnd, Params, Router, RouterModule} from '@angular/router';
+import {ActivatedRouteSnapshot, NavigationEnd, Router, RouterModule} from '@angular/router';
 import {BasemapConfigService} from '../../../map/services/basemap-config.service';
 import {selectQueryParams} from '../selectors/router.selector';
 import {selectMapConfigParams} from '../../map/selectors/map-config-params.selector';
 import {MapConfigActions} from '../../map/actions/map-config.actions';
 import {selectKeepTemporaryUrlParams, selectMainPage} from '../reducers/url.reducer';
-import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {SearchActions} from '../actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
@@ -68,7 +67,7 @@ describe('UrlEffects', () => {
 
   describe('setAppParameters$', () => {
     it('dispatches UrlActions.setAppParams() after setting a page', (done: DoneFn) => {
-      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', devMode: 'true'};
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       store.overrideSelector(selectQueryParams, params);
 
       const expectedAction = UrlActions.setAppParams({params});
@@ -79,40 +78,6 @@ describe('UrlEffects', () => {
         done();
       });
     });
-  });
-
-  describe('removeTemporaryAppParameters$', () => {
-    it('navigates to a new URL where all temporary parameters are set to `null`', (done: DoneFn) => {
-      const params = {scale: 789, [RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS[0]]: 'temp', basemap: 'Dust II'};
-      const router = TestBed.inject(Router);
-      const routerSpy = spyOn(router, 'navigate').and.callThrough();
-
-      const expectedParams: Params = {[RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS[0]]: null};
-
-      actions$ = of(UrlActions.setAppParams({params}));
-      effects.removeTemporaryAppParameters$.subscribe(() => {
-        expect(routerSpy).toHaveBeenCalledOnceWith(
-          [],
-          jasmine.objectContaining({
-            queryParams: expectedParams,
-            queryParamsHandling: 'merge',
-          }),
-        );
-        done();
-      });
-    });
-
-    it('does not navigate to a new URL if there are no temporary parameters', fakeAsync(() => {
-      const params = {scale: 789, basemap: 'Dust II'};
-      const router = TestBed.inject(Router);
-      const routerSpy = spyOn(router, 'navigate').and.callThrough();
-
-      actions$ = of(UrlActions.setAppParams({params}));
-      effects.removeTemporaryAppParameters$.subscribe();
-      flush();
-
-      expect(routerSpy).not.toHaveBeenCalled();
-    }));
   });
 
   describe('handleInitialMapPageParameters$', () => {

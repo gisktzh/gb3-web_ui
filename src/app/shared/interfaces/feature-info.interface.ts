@@ -5,24 +5,24 @@ import {LinkObject} from './link-object.interface';
 import {Image} from './image.interface';
 import {HasDownloadableReport} from './downloadable-report.interface';
 
-export type FeatureInfoResultFeatureFieldType = 'image' | 'link' | 'text';
+type FeatureInfoResultFeatureFieldType = 'image' | 'link' | 'text';
 
-export interface AbstractFeatureInfoResultFeatureField {
+interface AbstractFeatureInfoResultFeatureFieldInterface {
   label: string;
   type: FeatureInfoResultFeatureFieldType;
 }
 
-export interface FeatureInfoResultFeatureImageField extends AbstractFeatureInfoResultFeatureField {
+export interface FeatureInfoResultFeatureImageField extends AbstractFeatureInfoResultFeatureFieldInterface {
   value: Image | null;
   type: 'image';
 }
 
-export interface FeatureInfoResultFeatureLinkField extends AbstractFeatureInfoResultFeatureField {
+export interface FeatureInfoResultFeatureLinkField extends AbstractFeatureInfoResultFeatureFieldInterface {
   value: LinkObject | null;
   type: 'link';
 }
 
-export interface FeatureInfoResultFeatureTextField extends AbstractFeatureInfoResultFeatureField {
+export interface FeatureInfoResultFeatureTextField extends AbstractFeatureInfoResultFeatureFieldInterface {
   value: string | null;
   type: 'text';
 }

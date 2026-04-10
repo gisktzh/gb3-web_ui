@@ -11,15 +11,16 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {MapViewWithMap} from '../../types/esri-mapview-with-map.type';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 const MOCK_TOOL_NAME = 'point';
 
 class EsriPointDrawingStrategyWrapper extends EsriPointDrawingStrategy {
+  public override tool: SupportedEsriTool = MOCK_TOOL_NAME;
+
   public get svm() {
     return this.sketchViewModel;
   }
-
-  public override tool: SupportedEsriTool = MOCK_TOOL_NAME;
 }
 
 describe('AbstractEsriDrawingStrategy', () => {
@@ -52,10 +53,7 @@ describe('AbstractEsriDrawingStrategy', () => {
 
       strategy.start();
 
-      strategy.svm.emit('create', {
-        state: 'active',
-        graphic,
-      });
+      strategy.svm.emit('create', {state: 'active', graphic} as CreateEvent);
 
       expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
       expect(handleCompleteSpy).not.toHaveBeenCalled();
@@ -69,10 +67,7 @@ describe('AbstractEsriDrawingStrategy', () => {
 
       strategy.start();
 
-      strategy.svm.emit('create', {
-        state: 'start',
-        graphic,
-      });
+      strategy.svm.emit('create', {state: 'start', graphic} as CreateEvent);
 
       expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
       expect(handleCompleteSpy).not.toHaveBeenCalled();
@@ -86,11 +81,7 @@ describe('AbstractEsriDrawingStrategy', () => {
 
       strategy.start();
 
-      strategy.svm.emit('create', {
-        state: 'cancel',
-        graphic,
-      });
-
+      strategy.svm.emit('create', {state: 'cancel', graphic} as CreateEvent);
       expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
       expect(handleCompleteSpy).not.toHaveBeenCalled();
     });
@@ -103,10 +94,7 @@ describe('AbstractEsriDrawingStrategy', () => {
 
       strategy.start();
 
-      strategy.svm.emit('create', {
-        state: 'complete',
-        graphic,
-      });
+      strategy.svm.emit('create', {state: 'complete', graphic} as CreateEvent);
 
       expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
       expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, 'add');
@@ -122,9 +110,7 @@ describe('AbstractEsriDrawingStrategy', () => {
 
       strategy.edit(graphic);
 
-      strategy.svm.emit('update', {
-        state: 'active',
-      });
+      strategy.svm.emit('update', {state: 'active'} as UpdateEvent);
 
       expect(sketchViewModelSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
       expect(completeEditingSpy).not.toHaveBeenCalled();
@@ -138,9 +124,7 @@ describe('AbstractEsriDrawingStrategy', () => {
 
       strategy.edit(graphic);
 
-      strategy.svm.emit('update', {
-        state: 'start',
-      });
+      strategy.svm.emit('update', {state: 'start'} as UpdateEvent);
 
       expect(sketchViewModelSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
       expect(completeEditingSpy).not.toHaveBeenCalled();
@@ -154,9 +138,7 @@ describe('AbstractEsriDrawingStrategy', () => {
 
       strategy.edit(graphic);
 
-      strategy.svm.emit('update', {
-        state: 'complete',
-      });
+      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
 
       expect(sketchViewModelSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
       expect(completeEditingSpy).toHaveBeenCalledWith(graphic);

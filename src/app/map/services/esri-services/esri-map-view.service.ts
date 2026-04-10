@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
 import {MapViewNotInitialized} from './errors/esri.errors';
 import {MapViewWithMap} from './types/esri-mapview-with-map.type';
+import MapView from '@arcgis/core/views/MapView';
+import Layer from '@arcgis/core/layers/Layer';
 
-function isMapViewWithMap(view: __esri.MapView | undefined): view is MapViewWithMap {
+function isMapViewWithMap(view: MapView | undefined): view is MapViewWithMap {
   return !!view && !!view.map;
 }
 
 @Injectable({providedIn: 'root'})
 export class EsriMapViewService {
-  private _mapView: __esri.MapView | undefined;
+  private _mapView: MapView | undefined;
 
   /**
    * @throws MapViewNotInitialized
@@ -21,11 +23,11 @@ export class EsriMapViewService {
     return this._mapView;
   }
 
-  public set mapView(value: __esri.MapView) {
+  public set mapView(value: MapView) {
     this._mapView = value;
   }
 
-  public findEsriLayer(id: string): __esri.Layer | undefined {
+  public findEsriLayer(id: string): Layer | undefined {
     return this.mapView.map.layers.find((layer) => layer.id === id);
   }
 }

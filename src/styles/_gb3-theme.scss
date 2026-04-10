@@ -2,11 +2,12 @@
 @use '@angular/material' as mat;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-@include mat.elevation-classes();
-@include mat.app-background();
-
 /* Theme
 ========================== */
+
+body {
+  --mat-app-background-color: #fff;
+}
 
 // For usage, refer to: https://material.angular.io/guide/theming
 $zh-light-theme: mat.m2-define-light-theme(

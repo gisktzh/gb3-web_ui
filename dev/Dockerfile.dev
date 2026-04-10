@@ -22,6 +22,7 @@ WORKDIR /app
 
 # Copy the certificate to a temporary location and configure npm to use it
 RUN npm config set cafile /usr/local/share/ca-certificates/zscaler-root-ca.crt
+RUN npm config set strict-ssl false
 
 # Install project dependencies
 COPY --chown=node:node ../package*.json ./

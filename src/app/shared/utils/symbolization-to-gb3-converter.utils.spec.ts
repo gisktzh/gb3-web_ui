@@ -101,7 +101,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
       expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 100);
     });
 
-    it('should calculate the size of the icon correctly when rotating', () => {
+    it('should calculate the size of the icon correctly when rotating by 45deg', () => {
       const mockSymbolSize = 100;
       const mockSymbolRotation = 45; // Yields maximum size difference.
       const mockSymbolDescriptor = new EsriDrawingSymbolDescriptor();
@@ -139,8 +139,92 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       expect(actualStyle.externalGraphic).toEqual(mockSVGString);
       // This value has been pre-calculated.
-      expect(actualStyle.pointRadius).toBe(85.36335896384234);
-      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 85.36335896384234 * 2);
+      expect(actualStyle.pointRadius).toBe(70.71067811865476);
+      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 70.71067811865476 * 2);
+    });
+
+    it('should calculate the size of the icon correctly when rotating by 20deg', () => {
+      const mockSymbolSize = 100;
+      const mockSymbolRotation = 20; // Yields maximum size difference.
+      const mockSymbolDescriptor = new EsriDrawingSymbolDescriptor();
+      const mockSVGString = 'someSVG';
+
+      const drawingsMock: Gb3StyledInternalDrawingRepresentation[] = [
+        {
+          type: 'Feature',
+          geometry: {type: 'Point', srs: 2056, coordinates: []},
+          source: UserDrawingLayer.Drawings,
+          labelText: 'A',
+          properties: {
+            [MapConstants.DRAWING_IDENTIFIER]: 'a',
+            style: {
+              type: 'symbol',
+              symbolSize: mockSymbolSize,
+              symbolRotation: mockSymbolRotation,
+            },
+            [MapConstants.TOOL_IDENTIFIER]: 'point',
+          },
+          mapDrawingSymbol: {
+            drawingSymbolDescriptor: mockSymbolDescriptor,
+          },
+        },
+      ];
+
+      const mapDrawingSymbolFromJSONSpy = spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').and.returnValue(mockSVGString);
+
+      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
+        width: 100,
+        height: 100,
+      });
+
+      const actualStyle = actual.styles[actual.geojson.features[0].properties.style];
+
+      expect(actualStyle.externalGraphic).toEqual(mockSVGString);
+      // This value has been pre-calculated.
+      expect(actualStyle.pointRadius).toBe(64.08563820557886);
+      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 64.08563820557886 * 2);
+    });
+
+    it('should calculate the size of the icon correctly when over-rotating by 20 + n * 90deg', () => {
+      const mockSymbolSize = 100;
+      const mockSymbolRotation = 20 + 3 * 90; // Yields maximum size difference.
+      const mockSymbolDescriptor = new EsriDrawingSymbolDescriptor();
+      const mockSVGString = 'someSVG';
+
+      const drawingsMock: Gb3StyledInternalDrawingRepresentation[] = [
+        {
+          type: 'Feature',
+          geometry: {type: 'Point', srs: 2056, coordinates: []},
+          source: UserDrawingLayer.Drawings,
+          labelText: 'A',
+          properties: {
+            [MapConstants.DRAWING_IDENTIFIER]: 'a',
+            style: {
+              type: 'symbol',
+              symbolSize: mockSymbolSize,
+              symbolRotation: mockSymbolRotation,
+            },
+            [MapConstants.TOOL_IDENTIFIER]: 'point',
+          },
+          mapDrawingSymbol: {
+            drawingSymbolDescriptor: mockSymbolDescriptor,
+          },
+        },
+      ];
+
+      const mapDrawingSymbolFromJSONSpy = spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').and.returnValue(mockSVGString);
+
+      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
+        width: 100,
+        height: 100,
+      });
+
+      const actualStyle = actual.styles[actual.geojson.features[0].properties.style];
+
+      expect(actualStyle.externalGraphic).toEqual(mockSVGString);
+      // This value has been pre-calculated.
+      expect(actualStyle.pointRadius).toBe(64.08563820557886);
+      expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 64.08563820557886 * 2);
     });
   });
 

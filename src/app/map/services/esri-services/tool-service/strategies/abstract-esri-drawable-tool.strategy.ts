@@ -52,7 +52,7 @@ export abstract class AbstractEsriDrawableToolStrategy<
 
   public abstract start(): void;
 
-  public abstract edit(graphic: __esri.Graphic): void;
+  public abstract edit(graphic: Graphic): void;
 
   protected setAndGetIdentifierOnGraphic(graphic: Graphic): string {
     const identifier = UuidUtils.createUuid();
@@ -74,7 +74,7 @@ export abstract class AbstractEsriDrawableToolStrategy<
     graphic.setAttribute(MapConstants.DRAWING_LABEL_IDENTIFIER, text);
   }
 
-  protected setBelongsToAttributeOnGraphic(graphic: __esri.Graphic, belongsToGraphicUuid: string) {
+  protected setBelongsToAttributeOnGraphic(graphic: Graphic, belongsToGraphicUuid: string) {
     graphic.setAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName, belongsToGraphicUuid);
   }
 

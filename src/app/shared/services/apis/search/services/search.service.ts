@@ -5,6 +5,10 @@ import {BaseApiService} from '../../abstract-api.service';
 import {SearchApiResult} from '../interfaces/search-api-result.interface';
 import {SearchIndex} from '../interfaces/search-index.interface';
 import {map} from 'rxjs';
+import {
+  isGeometrySearchApiResultMatch,
+  isMetadataSearchApiResultMatch,
+} from 'src/app/shared/type-guards/search-api-result-match.type-guard';
 
 @Injectable({
   providedIn: 'root',
@@ -23,30 +27,36 @@ export class SearchService extends BaseApiService {
     const combinedResults: SearchApiResultMatch[] = [];
     searchResponse.forEach((searchResult) => {
       const indexType = indexes.find((index) => index.indexName === searchResult.index)?.indexType ?? 'unknown';
-      searchResult.matches.forEach((match) => {
-        match.indexName = this.getIndexTitle(searchResult.index, indexes);
-        match.indexType = indexType;
-        switch (match.indexType) {
-          case 'addresses':
-          case 'places':
-          case 'activeMapItems':
-          case 'gvz':
-          case 'egrid':
-          case 'egid':
-          case 'parcels':
-            match.geometry = {...match.geometry, srs: 4326}; // elastic search always delivers pure GeoJSON with 4326 coordinates
-            break;
-          case 'metadata-maps':
-          case 'metadata-products':
-          case 'metadata-datasets':
-          case 'metadata-services':
-          case 'unknown':
-            break;
-        }
-      });
-      combinedResults.push(...searchResult.matches);
+      combinedResults.push(
+        ...searchResult.matches.map((match): SearchApiResultMatch => {
+          const indexName = this.getIndexTitle(searchResult.index, indexes);
+          if (isGeometrySearchApiResultMatch(match)) {
+            return {
+              ...match,
+              indexType: indexType as 'addresses' | 'places' | 'activeMapItems' | 'gvz' | 'egrid' | 'egid' | 'parcels',
+              indexName,
+              geometry: {srs: 4326, ...match.geometry},
+            };
+          }
+
+          if (isMetadataSearchApiResultMatch(match)) {
+            return {
+              ...match,
+              indexType: indexType as 'metadata-maps' | 'metadata-products' | 'metadata-datasets' | 'metadata-services',
+              indexName,
+            };
+          }
+
+          return {
+            ...match,
+            indexType: indexType as 'unknown',
+            indexName,
+          };
+        }),
+      );
     });
     combinedResults.sort((a, b) => b.score - a.score);
+
     return combinedResults;
   }
 

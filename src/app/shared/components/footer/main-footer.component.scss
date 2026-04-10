@@ -2,7 +2,7 @@
 @use 'functions/helper.function' as functions;
 
 .main-footer {
-  background-color: functions.convert-hex-to-rgba(functions.get-color-from-palette(ktzh-variables.$zh-accent, 900), 0.8);
+  background-color: ktzh-variables.$zh-black80;
   color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 900);
   display: flex;
   justify-content: center;

@@ -14,9 +14,9 @@ export class TransformationService {
   private readonly configService = inject(ConfigService);
 
   public projectionOperatorLoaded: boolean = false;
-  private readonly defaultSrs: __esri.SpatialReference;
+  private readonly defaultSrs: SpatialReference;
   private readonly srs$ = this.store.select(selectSrsId);
-  private srs: __esri.SpatialReference | undefined;
+  private srs: SpatialReference | undefined;
 
   constructor() {
     this.defaultSrs = new SpatialReference({wkid: this.configService.mapConfig.defaultMapConfig.srsId});

@@ -126,23 +126,36 @@ export class SymbolizationToGb3ConverterUtils {
     );
   }
 
-  private getSvgSize(originalSize: number, rotation: number, mapScale: number, printScale: number, reportSizing: ReportSizing) {
+  private getSvgSize(originalSize: number, desiredRotation: number, mapScale: number, printScale: number, reportSizing: ReportSizing) {
     const scale = printScale / mapScale;
     let size = (originalSize / (reportSizing.width * scale)) * reportSizing.width;
 
-    if (rotation !== 0) {
-      // In this case, the given size is technically the hypothenuse. Since the icon is rotated, we need to calculate the _actual_ width and height of the bounding box.
-      // Otherwise, the size in the print is skewed.
+    const angle = Math.abs(desiredRotation) % 90;
+
+    if (angle !== 0) {
+      // In this case, the given size is technically the hypothenuse. Since the symbol is rotated,
+      // we need to calculate the _actual_ width and height of the bounding box. Otherwise, the
+      // size in the print is skewed and likely too small. The case we have can be roughly visualized
+      // like this:
+      //
+      //  ┌───────────┐ Bounding Box
+      //  │    ⟋⟍    │
+      //  │  ⟋    ⟍  │
+      //  │⟋ Symbol ⟍│
+      //  │⟍        ⟋│
+      //  │  ⟍    ⟋  │
+      //  │    ⟍⟋    │
+      //  └───────────┘
+      //
+      // All four resulting triangles are similar, so we can calculate one and add up the two catheti.
+      // The result is both the width and height of the bounding box, since symbols are always square.
 
       // Radians
-      const alpha = 90 * (Math.PI / 180);
-      const beta = Math.abs(rotation) * (Math.PI / 180);
-      const gamma = (90 - beta) * (Math.PI / 180);
+      const alpha = angle * (Math.PI / 180);
 
       // We know all angles and one side, so we can calculate the rest of the sides
-      const c = originalSize;
-      const a = (c * Math.sin(alpha)) / Math.sin(gamma);
-      const b = (a * Math.sin(beta)) / Math.sin(alpha);
+      const a = size * Math.sin(alpha);
+      const b = size * Math.cos(alpha);
 
       // Since there's always two similar triangles next to each other, we add both sides to get the full width of the encasing square.
       size = a + b;
