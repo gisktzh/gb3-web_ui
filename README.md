@@ -96,7 +96,7 @@ To enable "debug mode", do the following steps in order:
 1. Go to playwright.config.ts and comment in the debugging part (i.e. everything below `// DEBUGGING`)
 2. Execute `PWDEBUG=1 ng e2e`
 
-This will now start one window per specified .spec.ts file. An additional window is Playwrights own debugger window. From there, you can follow the official docs.
+This will now start one window per specified .spec.ts file. An additional window is Playwrights own debugger window. From there, you can follow the official docs. If you want to execute a single specific test, you can adjust `testMatch: 'e2e/specs/*.spec.ts',` to match the name of the test you want to execute.
 
 ### Further help
 

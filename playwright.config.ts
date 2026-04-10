@@ -22,6 +22,8 @@ export default defineConfig({
     //   slowMo: 500,
     // },
   },
+  // DEBUGGING: Specify the name of the test here
+  testMatch: 'e2e/specs/*.spec.ts',
   projects: [
     {
       name: 'chromium',
