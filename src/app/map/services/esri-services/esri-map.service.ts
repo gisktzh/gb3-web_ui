@@ -335,6 +335,10 @@ export class EsriMapService implements MapService, OnDestroy {
     this.mapView.container = container;
   }
 
+  public unassignMapElement() {
+    this.mapView.container = null;
+  }
+
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
     const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer) {

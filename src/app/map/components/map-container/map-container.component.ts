@@ -1,7 +1,6 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, inject} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, OnDestroy, ViewChild, inject} from '@angular/core';
 import {FeatureHighlightingService} from '../../services/feature-highlighting.service';
 import {MapService} from '../../interfaces/map.service';
-
 import {MAP_SERVICE} from '../../../app.tokens';
 
 @Component({
@@ -10,7 +9,7 @@ import {MAP_SERVICE} from '../../../app.tokens';
   styleUrls: ['./map-container.component.scss'],
   providers: [FeatureHighlightingService],
 })
-export class MapContainerComponent implements OnInit, AfterViewInit {
+export class MapContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly mapService = inject<MapService>(MAP_SERVICE);
   private readonly featureHighlightingService = inject(FeatureHighlightingService);
 
@@ -23,5 +22,9 @@ export class MapContainerComponent implements OnInit, AfterViewInit {
 
   public ngAfterViewInit() {
     this.mapService.assignMapElement(this.mainMapRef.nativeElement);
+  }
+
+  public ngOnDestroy() {
+    this.mapService.unassignMapElement();
   }
 }
