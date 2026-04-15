@@ -18,6 +18,9 @@ export interface MapService extends AddToMapVisitor {
   /** Assigns the map to an element on the HTML */
   assignMapElement(container: HTMLDivElement): void;
 
+  /** Removes the currently assigned map element. */
+  unassignMapElement(): void;
+
   /** Sets the scale of the whole map */
   setScale(scale: number): void;
 
