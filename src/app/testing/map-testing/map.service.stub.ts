@@ -47,6 +47,8 @@ export class MapServiceStub implements MapService {
 
   public assignMapElement(container: HTMLDivElement): void {}
 
+  public unassignMapElement(): void {}
+
   public handleZoom(zoomType: ZoomType): void {}
 
   public setMapCenter(center: PointWithSrs): void {}
