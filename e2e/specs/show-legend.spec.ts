@@ -1,8 +1,9 @@
 import {test, expect} from '../fixtures';
 
 test.describe('Legend', () => {
-  test('loads and shows the legend', async ({page, openUrlWithCoordinates, filterForLayer, clickMapInTheList, useHar}) => {
+  test('loads and shows the legend', async ({page, openUrlWithCoordinates, filterForLayer, clickMapInTheList, useHar, captureConsole}) => {
     await useHar();
+    captureConsole();
 
     await openUrlWithCoordinates('2702555', '1241686');
 

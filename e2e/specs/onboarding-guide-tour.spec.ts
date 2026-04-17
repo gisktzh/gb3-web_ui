@@ -1,7 +1,7 @@
 import {test, expect} from '../fixtures';
 
 test.describe('Onboarding guide tour', () => {
-  test('shows the onboarding guide', async ({page, useHar, openUrlWithCoordinates}) => {
+  test('shows the onboarding guide', async ({page, useHar, openUrlWithCoordinates, captureConsole}) => {
     async function assertStep(text: string, shouldGoBack: boolean = false, expectBackButton: boolean = true) {
       await expect(page.locator('mat-card-title', {hasText: text})).toBeVisible();
       const continueButton = page.locator('button', {hasText: 'Weiter'});
@@ -22,6 +22,7 @@ test.describe('Onboarding guide tour', () => {
     }
 
     await useHar();
+    captureConsole();
 
     await openUrlWithCoordinates('2702555', '1241686', false);
 

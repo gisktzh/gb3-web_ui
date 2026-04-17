@@ -1,8 +1,9 @@
 import {test, expect} from '../fixtures';
 
 test.describe('Filter layers', () => {
-  test('filters layers according to given search terms', async ({page, openUrlWithCoordinates, filterForLayer, useHar}) => {
+  test('filters layers according to given search terms', async ({page, openUrlWithCoordinates, filterForLayer, useHar, captureConsole}) => {
     await useHar();
+    captureConsole();
 
     await openUrlWithCoordinates('300', '300');
 

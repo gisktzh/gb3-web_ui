@@ -1,8 +1,9 @@
 import {test, expect} from '../fixtures';
 
 test.describe('Map operation', () => {
-  test('operates the map', async ({page, useHar, openUrlWithCoordinates}) => {
+  test('operates the map', async ({page, useHar, openUrlWithCoordinates, captureConsole}) => {
     await useHar();
+    captureConsole();
 
     await openUrlWithCoordinates('2702555', '1241686');
 

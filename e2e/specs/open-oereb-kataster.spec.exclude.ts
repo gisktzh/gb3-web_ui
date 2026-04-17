@@ -5,8 +5,10 @@ test.describe('OEREB-Kataster', () => {
     page,
     search,
     useHar,
+    captureConsole,
   }) => {
     await useHar();
+    captureConsole();
 
     await page.goto('/maps?initialMapIds=OerebKatasterZH');
     await page.waitForLoadState('networkidle');

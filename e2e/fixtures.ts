@@ -99,10 +99,12 @@ export const test = base.extend<Gb3Fixtures>({
   captureConsole: async ({page}, use) => {
     await use(() => {
       page.on('console', (msg) => {
-        const filtered = ['Animation Frame', 'prepare', 'preRender', 'render', 'postRender', 'update', 'finish'];
-        if (!filtered.includes(msg.text())) {
-          // eslint-disable-next-line no-console -- We explicitly want console output here.
-          console.log(msg.text());
+        if (process.env['CAPTURE_CONSOLE']) {
+          const filtered = ['Animation Frame', 'prepare', 'preRender', 'render', 'postRender', 'update', 'finish'];
+          if (!filtered.includes(msg.text())) {
+            // eslint-disable-next-line no-console -- We explicitly want console output here.
+            console.log('[browser console]', msg.text());
+          }
         }
       });
     });

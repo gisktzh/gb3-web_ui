@@ -2,7 +2,7 @@ import {Locator} from '@playwright/test';
 import {test, expect} from '../fixtures';
 
 test.describe('Map operation', () => {
-  test('changes base map when selecting', async ({page, openUrlWithCoordinates, useHar}) => {
+  test('changes base map when selecting', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
     async function assertBackgroundImage(locator: Locator, url: string) {
       const backgroundImage = await locator.evaluate((el) => {
         return window.getComputedStyle(el).getPropertyValue('background-image');
@@ -12,6 +12,7 @@ test.describe('Map operation', () => {
     }
 
     await useHar();
+    captureConsole();
 
     await openUrlWithCoordinates('2685889', '1250981');
 

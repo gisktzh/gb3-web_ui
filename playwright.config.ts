@@ -21,24 +21,25 @@ export default defineConfig({
     // headless: false,
     launchOptions: {
       slowMo: 50,
-      firefoxUserPrefs: {
-        'webgl.disabled': false,
-        'webgl.force-enabled': true,
-        'webgl.enable-webgl2': true,
-        'layers.acceleration.force-enabled': true,
-      },
+      firefoxUserPrefs: process.env['CI']
+        ? {
+            'webgl.disabled': false,
+            'webgl.force-enabled': true,
+            'webgl.enable-webgl2': true,
+            'layers.acceleration.force-enabled': true,
+          }
+        : {},
     },
   },
-  // DEBUGGING: Specify the name of the test here
   testMatch: 'e2e/specs/*.spec.ts',
   projects: [
-    // {
-    //   name: 'chromium',
-    //   use: {
-    //     ...devices['Desktop Chrome'],
-    //     viewport: {width: 1920, height: 1080},
-    //   },
-    // },
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: {width: 1920, height: 1080},
+      },
+    },
     {
       name: 'firefox',
       use: {
@@ -46,12 +47,12 @@ export default defineConfig({
         viewport: {width: 1920, height: 1080},
       },
     },
-    // {
-    //   name: 'webkit',
-    //   use: {
-    //     ...devices['Desktop Safari'],
-    //     viewport: {width: 1920, height: 1080},
-    //   },
-    // },
+    {
+      name: 'webkit',
+      use: {
+        ...devices['Desktop Safari'],
+        viewport: {width: 1920, height: 1080},
+      },
+    },
   ],
 });

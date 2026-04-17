@@ -1,8 +1,9 @@
 import {test, expect} from '../fixtures';
 
 test.describe('Overview page', () => {
-  test('shows the most important parts', async ({page, useHar}) => {
+  test('shows the most important parts', async ({page, useHar, captureConsole}) => {
     await useHar();
+    captureConsole();
 
     await page.goto('/');
     await page.waitForLoadState('networkidle');
