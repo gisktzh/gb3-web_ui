@@ -108,10 +108,9 @@ jobs:
           npm ci --ignore-scripts
           sudo apt-get update
           sudo apt-get install -y \
-            libgl1-mesa-dri \
-            libgl1-mesa-glx \
+            xvfb \
             mesa-utils \
-            xvfb
+            libgl1-mesa-dri
           npx playwright install --with-deps
 
       - name: Run tests
