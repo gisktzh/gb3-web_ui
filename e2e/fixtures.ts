@@ -98,8 +98,13 @@ export const test = base.extend<Gb3Fixtures>({
 
   captureConsole: async ({page}, use) => {
     await use(() => {
-      // eslint-disable-next-line no-console -- We explicitly want console output here.
-      page.on('console', (msg) => console.log(msg.text()));
+      page.on('console', (msg) => {
+        const filtered = ['Animation Frame', 'prepare', 'preRender', 'render', 'postRender', 'update', 'finish'];
+        if (!filtered.includes(msg.text())) {
+          // eslint-disable-next-line no-console -- We explicitly want console output here.
+          console.log(msg.text());
+        }
+      });
     });
   },
 
@@ -162,6 +167,7 @@ export const test = base.extend<Gb3Fixtures>({
             status: 200,
             contentType: 'text/html',
             body: `
+              <!DOCTYPE html>
               <html>
                 <body>
                   <h1>Mock Login</h1>
