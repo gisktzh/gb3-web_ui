@@ -4,11 +4,13 @@ test.describe('Attribute filters', () => {
   test('triggers new WMS requests when attribute filters are applied', async ({
     page,
     useHar,
+    captureConsole,
     openUrlWithCoordinates,
     selectTopic,
     clickMapInTheList,
   }) => {
     await useHar();
+    captureConsole();
 
     await openUrlWithCoordinates('2702604', '1241901');
 

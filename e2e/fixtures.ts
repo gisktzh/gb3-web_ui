@@ -11,6 +11,7 @@ const IS_WRITING_HAR = !!process.env['WRITE_HAR'];
 
 type Gb3Fixtures = {
   useHar: () => Promise<void>;
+  captureConsole: () => void;
   filterForLayer: (searchTerm: string) => Promise<void>;
   clickMapInTheList: (nameOfTheMap: string) => Promise<void>;
   clickByDataTestId: (testId: string) => Promise<void>;
@@ -92,6 +93,13 @@ export const test = base.extend<Gb3Fixtures>({
           }),
         },
       });
+    });
+  },
+
+  captureConsole: async ({page}, use) => {
+    await use(() => {
+      // eslint-disable-next-line no-console -- We explicitly want console output here.
+      page.on('console', (msg) => console.log(msg.text()));
     });
   },
 

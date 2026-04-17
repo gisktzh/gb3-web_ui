@@ -7,8 +7,10 @@ test.describe('Revitalisierungsplanung', () => {
     filterForLayer,
     clickMapInTheList,
     useHar,
+    captureConsole,
   }) => {
     await useHar();
+    captureConsole();
 
     await openUrlWithCoordinates('2685889', '1250981');
 

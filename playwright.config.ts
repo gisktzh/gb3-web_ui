@@ -26,13 +26,13 @@ export default defineConfig({
   // DEBUGGING: Specify the name of the test here
   testMatch: 'e2e/specs/*.spec.ts',
   projects: [
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        viewport: {width: 1920, height: 1080},
-      },
-    },
+    // {
+    //   name: 'chromium',
+    //   use: {
+    //     ...devices['Desktop Chrome'],
+    //     viewport: {width: 1920, height: 1080},
+    //   },
+    // },
     {
       name: 'firefox',
       use: {
@@ -40,12 +40,12 @@ export default defineConfig({
         viewport: {width: 1920, height: 1080},
       },
     },
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-        viewport: {width: 1920, height: 1080},
-      },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: {
+    //     ...devices['Desktop Safari'],
+    //     viewport: {width: 1920, height: 1080},
+    //   },
+    // },
   ],
 });

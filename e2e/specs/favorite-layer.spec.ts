@@ -8,7 +8,9 @@ test.describe('Favorites layers', () => {
     selectTopic,
     clickMapInTheList,
     useHar,
+    captureConsole,
   }) => {
+    captureConsole();
     await useHar();
 
     await openUrlWithCoordinates('2682260', '1248390');

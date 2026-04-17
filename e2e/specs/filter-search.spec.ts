@@ -8,8 +8,10 @@ test.describe('Test filter search', () => {
     clickMapInTheList,
     search,
     useHar,
+    captureConsole,
   }) => {
     await useHar();
+    captureConsole();
 
     await openUrlWithCoordinates('2702555', '1241686');
 
