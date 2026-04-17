@@ -12,7 +12,7 @@ import {LoadingAndProcessBarComponent} from '../../../../shared/components/loadi
 import {MatAccordion} from '@angular/material/expansion';
 import {NgClass} from '@angular/common';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {selectTerms} from 'src/app/state/app/selectors/search.reducer';
+import {selectTerms} from 'src/app/state/app/selectors/search-terms.selector';
 
 @Component({
   selector: 'result-groups',
