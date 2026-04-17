@@ -50,7 +50,9 @@ function redactUrl(url: string) {
   let redactedUrl = parsed.toString();
 
   if (!url.endsWith('/')) {
-    redactedUrl = redactedUrl.replace(/\/+$/, '');
+    while (redactedUrl.endsWith('/')) {
+      redactedUrl = redactedUrl.slice(0, -1);
+    }
   }
 
   if (url.includes('%20')) {
