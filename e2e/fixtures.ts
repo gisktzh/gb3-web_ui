@@ -1,9 +1,9 @@
 import {test as base, customMatcher} from 'playwright-advanced-har';
-import {expect} from '@playwright/test';
 import {findEntry as defaultFindEntry} from 'playwright-advanced-har/lib/utils/serveFromHar';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
-import path from 'path';
+import path from 'node:path';
+import {expect} from '@playwright/test';
 
 // URL pattern. If pattern matches,
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
@@ -57,7 +57,7 @@ export const test = base.extend<Gb3Fixtures>({
 
               const candidates = scoredEntries.filter((se) => se.score > 0).map((se) => se.entry);
               if (candidates.length === 1) {
-                return Promise.resolve(candidates[0]);
+                return candidates[0];
               }
 
               // We're dealing with several instances of the same request, so we need to figure out which one we actually want.
@@ -77,7 +77,7 @@ export const test = base.extend<Gb3Fixtures>({
                   .frame()
                   .evaluate(([key, index]) => sessionStorage.setItem(key, index), [requestKey, newRequestIndex.toString()]);
 
-                return Promise.resolve(entry);
+                return entry;
               }
             }
 
@@ -232,4 +232,4 @@ export const test = base.extend<Gb3Fixtures>({
   },
 });
 
-export {expect};
+export {expect} from '@playwright/test';

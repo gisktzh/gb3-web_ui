@@ -34,7 +34,7 @@ export function canonicalizeHar(har: Har): Har {
 
   for (const entry of har.log.entries) {
     if (Array.isArray(entry.request?.headers)) {
-      entry.request.headers = canonicalizeHeaders(entry.request.headers) as Header[];
+      entry.request.headers = canonicalizeHeaders(entry.request.headers);
     }
   }
 

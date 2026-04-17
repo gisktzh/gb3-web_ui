@@ -47,7 +47,6 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   private readonly scaleState$: Observable<number> = this.store.select(selectScale);
   private readonly centerState$: Observable<Coordinate> = this.store.select(selectCenter);
 
-  // TODO For migration to signals: Remove this change listener.
   public setScale(event: Event) {
     const input = (event.target as HTMLInputElement).value;
     const newScale = NumberUtils.parseNumberFromMixedString(input);
@@ -57,7 +56,6 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // TODO For migration to signals: Remove this change listener.
   public setMapCenterAndDrawHighlight(event: Event) {
     const input = event.target as HTMLInputElement;
     const center = this.coordinateParserService.parse(input.value);

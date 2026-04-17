@@ -11,7 +11,7 @@ import {canonicalizeHeaders, fromHeaders, toHeaders} from './canonicalize.utils'
  * redact the original request (i.e. the one the browser's doing), too.
  */
 export class CanonicalizedRedactedRequest implements Request {
-  private originalRequest!: Request;
+  private readonly originalRequest!: Request;
 
   constructor(originalRequest: Request) {
     this.originalRequest = originalRequest;
@@ -44,7 +44,7 @@ export class CanonicalizedRedactedRequest implements Request {
   public async headerValue(name: string): Promise<null | string> {
     const value = (await this.allHeaders())[name] as string | undefined;
 
-    return value === undefined ? null : value;
+    return value ?? null;
   }
 
   public isNavigationRequest(): boolean {

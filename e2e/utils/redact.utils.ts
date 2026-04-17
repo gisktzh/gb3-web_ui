@@ -3,7 +3,7 @@ import {Header} from 'har-format';
 /**
  * Keys to redact in either query strings, JSON stsructures, headers, etc.
  */
-const REDACTABLE_KEYS = [
+const REDACTABLE_KEYS = new Set([
   'code',
   'code_verifier',
   'access_token',
@@ -18,7 +18,7 @@ const REDACTABLE_KEYS = [
   'kid',
   'user-agent',
   'User-Agent',
-];
+]);
 
 /**
  * Value to replace the actual values with.
@@ -50,11 +50,11 @@ function redactUrl(url: string) {
   let redactedUrl = parsed.toString();
 
   if (!url.endsWith('/')) {
-    redactedUrl = redactedUrl.replace(/\/+$/, '');
+    redactedUrl = redactedUrl.replaceAll(/\/+$/, '');
   }
 
   if (url.includes('%20')) {
-    redactedUrl = redactedUrl.replace(/\+/g, '%20');
+    redactedUrl = redactedUrl.replaceAll(/\+/g, '%20');
   }
 
   return redactedUrl;
@@ -65,8 +65,8 @@ function redactUrl(url: string) {
  */
 function isJsonString(value: string) {
   try {
-    JSON.parse(value as string);
-  } catch (e) {
+    JSON.parse(value);
+  } catch (_) {
     return false;
   }
 
@@ -122,11 +122,11 @@ export function redactAny(v: any): any {
     }
 
     if (isJsonString(v)) {
-      return JSON.stringify(redactAny(JSON.parse(v as string)));
+      return JSON.stringify(redactAny(JSON.parse(v)));
     }
 
     if (isSearchParamsString(v)) {
-      return redactSearchParams(new URLSearchParams(v as string)).toString();
+      return redactSearchParams(new URLSearchParams(v)).toString();
     }
 
     return v;
@@ -139,7 +139,7 @@ export function redactAny(v: any): any {
   if (isHeadersList(v)) {
     return v.map(({name, value}) => ({
       name,
-      value: REDACTABLE_KEYS.includes(name) ? REDACTED_VALUE : redactAny(value),
+      value: REDACTABLE_KEYS.has(name) ? REDACTED_VALUE : redactAny(value),
     }));
   }
 
@@ -150,7 +150,7 @@ export function redactAny(v: any): any {
   // It's not an array, number, string, true, false, null, undefined, so it _has_ to be an object.
   return Object.fromEntries(
     Object.entries(v).map(([key, value]) => {
-      if (REDACTABLE_KEYS.includes(key)) {
+      if (REDACTABLE_KEYS.has(key)) {
         return [key, REDACTED_VALUE];
       }
 

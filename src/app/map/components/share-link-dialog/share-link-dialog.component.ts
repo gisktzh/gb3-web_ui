@@ -47,7 +47,7 @@ export class ShareLinkDialogComponent implements HasSavingStateSingal {
       return 'Generiere Link...';
     }
 
-    return this.createShareLinkUrl(id, window.location.origin);
+    return this.createShareLinkUrl(id, globalThis.location.origin);
   });
   public iframeCode = computed(() => {
     const id = this.shareLinkId();
@@ -55,7 +55,7 @@ export class ShareLinkDialogComponent implements HasSavingStateSingal {
       return 'Generiere iframe Code zum einbetten...';
     }
 
-    return this.createIFrameCode(id, window.location.origin);
+    return this.createIFrameCode(id, globalThis.location.origin);
   });
 
   public close(isAborted: boolean = false) {
