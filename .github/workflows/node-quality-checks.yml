@@ -106,11 +106,19 @@ jobs:
       - name: Install dependencies and playwright browsers
         run: |
           npm ci --ignore-scripts
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgl1-mesa-dri \
+            libgl1-mesa-glx \
+            mesa-utils \
+            xvfb
           npx playwright install --with-deps
 
       - name: Run tests
         run: |
-          npm run e2e
+          xvfb-run --auto-servernum npm run e2e
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

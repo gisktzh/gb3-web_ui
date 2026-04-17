@@ -21,6 +21,12 @@ export default defineConfig({
     // headless: false,
     launchOptions: {
       slowMo: 50,
+      firefoxUserPrefs: {
+        'webgl.disabled': false,
+        'webgl.force-enabled': true,
+        'webgl.enable-webgl2': true,
+        'layers.acceleration.force-enabled': true,
+      },
     },
   },
   // DEBUGGING: Specify the name of the test here
