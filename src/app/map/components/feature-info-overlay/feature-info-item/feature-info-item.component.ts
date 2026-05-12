@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-info.interface';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {MatIcon} from '@angular/material/icon';
@@ -20,6 +20,6 @@ import {FeatureInfoReportDownloadComponent} from '../feature-info-report-downloa
   ],
 })
 export class FeatureInfoItemComponent {
-  @Input() public featureInfo!: FeatureInfoResultDisplay;
-  @Input() public showInteractiveElements: boolean = true;
+  public featureInfo = input.required<FeatureInfoResultDisplay>();
+  public showInteractiveElements = input(true);
 }

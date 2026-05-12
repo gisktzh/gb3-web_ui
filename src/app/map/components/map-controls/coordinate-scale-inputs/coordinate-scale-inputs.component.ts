@@ -1,17 +1,15 @@
-import {Component, OnDestroy, OnInit, inject, signal} from '@angular/core';
-import {Observable, Subscription, tap} from 'rxjs';
+import {Component, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectCenter, selectRotation, selectScale} from '../../../../state/map/reducers/map-config.reducer';
+import {selectRotation} from '../../../../state/map/reducers/map-config.reducer';
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {CoordinateParserService} from '../../../services/coordinate-parser.service';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
-import {Coordinate} from '../../../../shared/interfaces/coordinate.interface';
 import {TypedTourAnchorDirective} from '../../../../shared/directives/typed-tour-anchor.directive';
 import {DataInputComponent} from '../data-input/data-input.component';
 import {FormsModule} from '@angular/forms';
 import {MapRotationButtonComponent} from '../map-rotation-button/map-rotation-button.component';
-import {toSignal} from '@angular/core/rxjs-interop';
+
 import {selectCenterReadable, selectRoundedScale} from 'src/app/state/map/selectors/map-config.selector';
 
 /**
@@ -30,22 +28,17 @@ import {selectCenterReadable, selectRoundedScale} from 'src/app/state/map/select
   styleUrls: ['./coordinate-scale-inputs.component.scss'],
   imports: [TypedTourAnchorDirective, DataInputComponent, FormsModule, MapRotationButtonComponent],
 })
-export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
+export class CoordinateScaleInputsComponent {
   private readonly coordinateParserService = inject(CoordinateParserService);
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
 
-  public scale = toSignal(this.store.select(selectRoundedScale), {initialValue: 0});
-  public scaleInput = signal('');
-  public mapCenter = toSignal(this.store.select(selectCenterReadable), {initialValue: ''});
-  public mapCenterInput = signal('');
-  public rotation = toSignal(this.store.select(selectRotation), {initialValue: 0});
+  public scale = this.store.selectSignal(selectRoundedScale);
+  public mapCenter = this.store.selectSignal(selectCenterReadable);
+  public rotation = this.store.selectSignal(selectRotation);
 
   public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
   public readonly minScale = this.configService.mapConfig.mapScaleConfig.minScale;
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly scaleState$: Observable<number> = this.store.select(selectScale);
-  private readonly centerState$: Observable<Coordinate> = this.store.select(selectCenter);
 
   public setScale(event: Event) {
     const input = (event.target as HTMLInputElement).value;
@@ -62,37 +55,6 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
 
     if (center) {
       this.store.dispatch(MapConfigActions.setMapCenterAndDrawHighlight({center}));
-    } else {
-      input.value = this.mapCenter();
     }
-  }
-
-  public ngOnInit(): void {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.scaleState$.pipe(tap(() => this.updateScaleValues())).subscribe());
-    this.subscriptions.add(
-      this.centerState$
-        .pipe(
-          tap(() => {
-            this.updateMapCenterValues();
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
-  private updateMapCenterValues() {
-    this.mapCenterInput.set(this.mapCenter());
-  }
-
-  private updateScaleValues() {
-    this.scaleInput.set(this.scale().toString());
   }
 }

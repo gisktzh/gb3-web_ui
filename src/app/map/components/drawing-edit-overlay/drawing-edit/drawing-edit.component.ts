@@ -1,10 +1,13 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
-import {filter, Subscription, tap} from 'rxjs';
+import {Component, computed, effect, inject, model} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectSelectedDrawing} from '../../../../state/map/reducers/drawing.reducer';
 import {
-  Gb3StyledInternalDrawingRepresentation,
+  Gb3LineStringStyle,
+  Gb3PointStyle,
+  Gb3PolygonStyle,
   Gb3StyleRepresentation,
+  Gb3SymbolStyle,
+  Gb3TextStyle,
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {PointEditComponent} from './point-edit/point-edit.component';
@@ -23,25 +26,41 @@ import {isGb3SymbolStyle} from 'src/app/shared/type-guards/gb3-symbol-style.type
   styleUrl: './drawing-edit.component.scss',
   imports: [PointEditComponent, LineEditComponent, PolygonEditComponent, TextEditComponent, SymbolEditComponent],
 })
-export class DrawingEditComponent implements OnInit, OnDestroy {
+export class DrawingEditComponent {
   private readonly store = inject(Store);
   private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
-  public selectedFeature?: Gb3StyledInternalDrawingRepresentation;
-  public style?: Gb3StyleRepresentation;
+  public selectedFeature = this.store.selectSignal(selectSelectedDrawing);
+  public style = model<Gb3StyleRepresentation | undefined>(this.selectedFeature()?.properties.style);
 
-  private readonly selectedFeature$ = this.store.select(selectSelectedDrawing);
-  private readonly subscriptions = new Subscription();
+  public isPointStyle = computed(() => {
+    return this.style()?.type === 'point' ? (this.style() as Gb3PointStyle) : null;
+  });
+  public isLineStyle = computed(() => {
+    return this.style()?.type === 'line' ? (this.style() as Gb3LineStringStyle) : null;
+  });
+  public isPolygonStyle = computed(() => {
+    return this.style()?.type === 'polygon' ? (this.style() as Gb3PolygonStyle) : null;
+  });
+  public isTextStyle = computed(() => {
+    return this.style()?.type === 'text' ? (this.style() as Gb3TextStyle) : null;
+  });
+  public isSymbolStyle = computed(() => {
+    return this.style()?.type === 'symbol' ? (this.style() as Gb3SymbolStyle) : null;
+  });
 
-  public ngOnInit(): void {
-    this.initSubscriptions();
+  constructor() {
+    effect(() => {
+      const selectedFeature = this.selectedFeature();
+      if (selectedFeature) {
+        queueMicrotask(() => {
+          this.style.set(selectedFeature.properties.style);
+        });
+      }
+    });
   }
 
-  public ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  public async updateStyle(style: Gb3StyleRepresentation, labelText?: string, drawingSymbolDefinition?: DrawingSymbolDefinition) {
+  public async updateStyle(style: Gb3StyleRepresentation, labelText?: string, drawingSymbolDefinition?: DrawingSymbolDefinition | null) {
     if (drawingSymbolDefinition && isGb3SymbolStyle(style)) {
       const mapDrawingSymbol = await this.drawingSymbolsService.convertToMapDrawingSymbol(
         drawingSymbolDefinition,
@@ -52,27 +71,13 @@ export class DrawingEditComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         DrawingActions.updateDrawingStyles({
           style,
-          drawing: this.selectedFeature!,
+          drawing: this.selectedFeature()!,
           labelText,
-          mapDrawingSymbol,
+          mapDrawingSymbol: mapDrawingSymbol === undefined ? null : mapDrawingSymbol,
         }),
       );
     } else {
-      this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: this.selectedFeature!, labelText}));
+      this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: this.selectedFeature()!, labelText}));
     }
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.selectedFeature$
-        .pipe(
-          filter((selectedFeature): selectedFeature is Gb3StyledInternalDrawingRepresentation => selectedFeature !== undefined),
-          tap((selectedFeature) => {
-            this.style = selectedFeature.properties.style;
-            this.selectedFeature = selectedFeature;
-          }),
-        )
-        .subscribe(),
-    );
   }
 }

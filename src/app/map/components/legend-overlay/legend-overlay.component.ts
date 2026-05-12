@@ -1,4 +1,4 @@
-import {Component, Input, inject} from '@angular/core';
+import {Component, inject, input} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
@@ -9,7 +9,6 @@ import {selectLegendPrintState} from '../../../state/map/reducers/overlay-print.
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
 import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
 import {LegendComponent} from './legend/legend.component';
-import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'legend-overlay',
@@ -20,14 +19,12 @@ import {toSignal} from '@angular/core/rxjs-interop';
 export class LegendOverlayComponent {
   private readonly store = inject(Store);
 
-  /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
-  @Input() public showInteractiveElements: boolean = true;
-
-  public isVisible = toSignal(this.store.select(selectIsLegendOverlayVisible), {initialValue: false});
-  public loadingState = toSignal(this.store.select(selectLoadingState));
-  public printLoadingState = toSignal(this.store.select(selectLegendPrintState));
-  public screenMode = toSignal(this.store.select(selectScreenMode), {initialValue: 'mobile'});
-  public legendItems = toSignal(this.store.select(selectLegendItemsForDisplay), {initialValue: []});
+  public showInteractiveElements = input(true);
+  public isVisible = this.store.selectSignal(selectIsLegendOverlayVisible);
+  public loadingState = this.store.selectSignal(selectLoadingState);
+  public printLoadingState = this.store.selectSignal(selectLegendPrintState);
+  public screenMode = this.store.selectSignal(selectScreenMode);
+  public legendItems = this.store.selectSignal(selectLegendItemsForDisplay);
 
   public close() {
     this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: false}));

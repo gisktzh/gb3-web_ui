@@ -1,7 +1,6 @@
-import {Component, OnDestroy, inject, signal} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {Subscription, tap} from 'rxjs';
-import {catchError} from 'rxjs';
+import {firstValueFrom} from 'rxjs';
 import {FavouritesService} from '../../services/favourites.service';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {Store} from '@ngrx/store';
@@ -18,51 +17,29 @@ import {HasSavingStateSingal} from 'src/app/shared/interfaces/has-saving-state-s
   styleUrls: ['./favourite-deletion-dialog.component.scss'],
   imports: [ApiDialogWrapperComponent, MatButton],
 })
-export class FavouriteDeletionDialogComponent implements HasSavingStateSingal, OnDestroy {
+export class FavouriteDeletionDialogComponent implements HasSavingStateSingal {
   private readonly dialogRef = inject<MatDialogRef<FavouriteDeletionDialogComponent, boolean>>(MatDialogRef);
   private readonly favouritesService = inject(FavouritesService);
-  private readonly data = inject<{
+  public readonly data = inject<{
     favourite: Favourite;
   }>(MAT_DIALOG_DATA);
   private readonly store = inject(Store);
-
   public savingState = signal<LoadingState>(undefined);
-  public favourite: Favourite;
-  private readonly subscriptions: Subscription = new Subscription();
 
-  constructor() {
-    this.favourite = this.data.favourite;
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  public abort() {
-    this.close();
-  }
-
-  public delete() {
+  public async delete() {
     this.savingState.set('loading');
 
-    this.subscriptions.add(
-      this.favouritesService
-        .deleteFavourite(this.favourite)
-        .pipe(
-          tap(() => {
-            this.store.dispatch(FavouriteListActions.removeFavourite({id: this.favourite.id}));
-            this.close();
-          }),
-          catchError((err: unknown) => {
-            this.savingState.set('error');
-            throw new FavouriteCouldNotBeRemoved(err);
-          }),
-        )
-        .subscribe(),
-    );
+    try {
+      await firstValueFrom(this.favouritesService.deleteFavourite(this.data.favourite));
+      this.store.dispatch(FavouriteListActions.removeFavourite({id: this.data.favourite.id}));
+      this.close();
+    } catch (err: unknown) {
+      this.savingState.set('error');
+      throw new FavouriteCouldNotBeRemoved(err);
+    }
   }
 
-  private close() {
+  public close() {
     this.dialogRef.close();
   }
 }

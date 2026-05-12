@@ -1,4 +1,4 @@
-import {Component, Input, inject} from '@angular/core';
+import {Component, inject, input} from '@angular/core';
 import {LegendDisplay} from '../../../../shared/interfaces/legend.interface';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
@@ -13,14 +13,7 @@ import {LegendContentComponent} from '../legend-content/legend-content.component
   imports: [MapOverlayListItemComponent, MatIcon, NgTemplateOutlet, LegendContentComponent, NgOptimizedImage],
 })
 export class LegendItemComponent {
-  private readonly configService = inject(ConfigService);
-
-  @Input() public legendItem!: LegendDisplay;
-  /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
-  @Input() public showInteractiveElements: boolean = true;
-  public readonly staticFilesBaseUrl: string;
-
-  constructor() {
-    this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
-  }
+  public legendItem = input.required<LegendDisplay>();
+  public showInteractiveElements = input(true);
+  public readonly staticFilesBaseUrl = inject(ConfigService).apiConfig.gb2StaticFiles.baseUrl;
 }

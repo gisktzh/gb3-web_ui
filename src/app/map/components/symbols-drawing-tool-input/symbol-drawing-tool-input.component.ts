@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatDialogRef, MatDialogClose} from '@angular/material/dialog';
 import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
@@ -15,23 +15,11 @@ import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/
 })
 export class SymbolDrawingToolInputComponent {
   private readonly dialogRef = inject<MatDialogRef<SymbolDrawingToolInputComponent, SymbolDrawingToolInputComponent>>(MatDialogRef);
-  public drawingSymbolDefinition: DrawingSymbolDefinition | undefined = undefined;
-  public size: number = SymbolStyleConstants.DEFAULT_SYMBOL_SIZE;
-  public rotation: number = SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION;
+  public drawingSymbolDefinition = signal<DrawingSymbolDefinition | null>(null);
+  public size = signal(SymbolStyleConstants.DEFAULT_SYMBOL_SIZE);
+  public rotation = signal(SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION);
 
   public close() {
     this.dialogRef.close();
-  }
-
-  public onSymbolChange(value: DrawingSymbolDefinition) {
-    this.drawingSymbolDefinition = value;
-  }
-
-  public onSizeChange(value: number) {
-    this.size = value;
-  }
-
-  public onRotationChange(value: number) {
-    this.rotation = value;
   }
 }

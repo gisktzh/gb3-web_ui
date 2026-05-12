@@ -1,4 +1,4 @@
-import {Component, Input, inject} from '@angular/core';
+import {Component, input, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectIsFeatureInfoOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
@@ -8,7 +8,6 @@ import {selectFeatureInfoPrintState} from '../../../state/map/reducers/overlay-p
 import {OverlayPrintActions} from '../../../state/map/actions/overlay-print-actions';
 import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
 import {FeatureInfoComponent} from './feature-info/feature-info.component';
-import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'feature-info-overlay',
@@ -19,13 +18,12 @@ import {toSignal} from '@angular/core/rxjs-interop';
 export class FeatureInfoOverlayComponent {
   private readonly store = inject(Store);
 
-  // Indicates whether interactive elements (like buttons) should be shown.
-  @Input() public showInteractiveElements: boolean = true;
+  public showInteractiveElements = input(true);
 
-  public isVisible = toSignal(this.store.select(selectIsFeatureInfoOverlayVisible), {initialValue: false});
-  public featureInfoData = toSignal(this.store.select(selectFeatureInfosForDisplay), {initialValue: []});
-  public loadingState = toSignal(this.store.select(selectFeatureInfoQueryLoadingState));
-  public printLoadingState = toSignal(this.store.select(selectFeatureInfoPrintState));
+  public isVisible = this.store.selectSignal(selectIsFeatureInfoOverlayVisible);
+  public featureInfoData = this.store.selectSignal(selectFeatureInfosForDisplay);
+  public loadingState = this.store.selectSignal(selectFeatureInfoQueryLoadingState);
+  public printLoadingState = this.store.selectSignal(selectFeatureInfoPrintState);
 
   public close() {
     this.store.dispatch(MapUiActions.setFeatureInfoVisibility({isVisible: false}));

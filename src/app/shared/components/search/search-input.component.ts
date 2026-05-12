@@ -1,11 +1,10 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, effect, inject, signal} from '@angular/core';
+import {Component, effect, ElementRef, inject, input, output, signal, untracked, viewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {SearchMode} from '../../types/search-mode.type';
-import {NgClass} from '@angular/common';
+
 import {MatIcon} from '@angular/material/icon';
 import {SharedModule} from '../../shared.module';
-import {toSignal} from '@angular/core/rxjs-interop';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
@@ -13,31 +12,31 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
   selector: 'search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
-  imports: [NgClass, MatIcon, SharedModule],
+  imports: [MatIcon, SharedModule],
 })
 export class SearchInputComponent {
   private readonly store = inject(Store);
 
-  @Input() public placeholderText!: string;
-  @Input() public showFilterButton: boolean = true;
-  @Input() public alwaysEnableClearButton: boolean = false;
-  @Input() public clearButtonLabel?: string;
-  @Input() public mode: SearchMode = 'normal';
-  @Input() public focusOnInit: boolean = false;
-  @Input() public disabled: boolean = false;
-  @Input() public isAnyFilterActive: boolean = false;
+  public placeholderText = input.required<string>();
+  public showFilterButton = input(true);
+  public alwaysEnableClearButton = input(false);
+  public clearButtonLabel = input<string>();
+  public mode = input<SearchMode>('normal');
+  public focusOnInit = input(false);
+  public disabled = input(false);
+  public isAnyFilterActive = input(false);
 
-  @Output() public readonly focusEvent = new EventEmitter<void>();
-  @Output() public readonly changeSearchTermEvent = new EventEmitter<string>();
-  @Output() public readonly clearSearchTermEvent = new EventEmitter<void>();
-  @Output() public readonly openFilterEvent = new EventEmitter<void>();
+  public readonly focusEvent = output();
+  public readonly changeSearchTermEvent = output<string>();
+  public readonly clearSearchTermEvent = output();
+  public readonly openFilterEvent = output();
 
-  @ViewChild('searchInput') public readonly inputRef!: ElementRef<HTMLInputElement>;
+  public inputRef = viewChild.required<ElementRef>('searchInput');
 
-  public screenMode = toSignal(this.store.select(selectScreenMode), {initialValue: 'regular'});
+  public screenMode = this.store.selectSignal(selectScreenMode);
 
-  private lastEmittedTerm = '';
-  private shouldEmitNext = true;
+  private lastEmittedTerm = signal('');
+  private shouldEmitNext = signal(true);
   public searchTerm = signal('');
 
   constructor() {
@@ -45,11 +44,11 @@ export class SearchInputComponent {
       const term = this.searchTerm();
 
       const timer = setTimeout(() => {
-        if (term !== this.lastEmittedTerm && this.shouldEmitNext) {
-          this.lastEmittedTerm = term;
+        if (term !== untracked(() => this.lastEmittedTerm()) && untracked(() => this.shouldEmitNext())) {
+          this.lastEmittedTerm.set(term);
           this.changeSearchTermEvent.emit(term);
         }
-        this.shouldEmitNext = true;
+        this.shouldEmitNext.set(true);
       }, SEARCH_TERM_INPUT_DEBOUNCE_IN_MS);
 
       onCleanup(() => clearTimeout(timer));
@@ -57,6 +56,7 @@ export class SearchInputComponent {
   }
 
   public clearInput() {
+    this.setTerm('', false);
     this.clearSearchTermEvent.emit();
   }
 
@@ -69,11 +69,11 @@ export class SearchInputComponent {
   }
 
   public setTerm(term: string, shouldEmit: boolean) {
-    this.shouldEmitNext = shouldEmit;
+    this.shouldEmitNext.set(shouldEmit);
     this.searchTerm.set(term);
   }
 
   public focus() {
-    this.inputRef.nativeElement.focus();
+    this.inputRef().nativeElement.focus();
   }
 }

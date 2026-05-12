@@ -1,4 +1,3 @@
-import {toSignal} from '@angular/core/rxjs-interop';
 import {Component, computed, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Router} from '@angular/router';
@@ -39,15 +38,16 @@ export class ShareLinkDialogComponent implements HasSavingStateSingal {
   private readonly router = inject(Router);
   private readonly configService = inject(ConfigService);
 
-  public savingState = toSignal(this.store.select(selectSavingState), {initialValue: undefined});
-  protected shareLinkId = toSignal(this.store.select(selectId), {initialValue: undefined});
+  public savingState = this.store.selectSignal(selectSavingState);
+  protected shareLinkId = this.store.selectSignal(selectId);
   public shareLinkUrl = computed(() => {
     const id = this.shareLinkId();
     if (!id) {
       return 'Generiere Link...';
     }
 
-    return this.createShareLinkUrl(id, globalThis.location.origin);
+    const relativeShareLinkUrl = this.router.createUrlTree([MainPage.ShareLink, id]).toString();
+    return new URL(relativeShareLinkUrl, globalThis.location.origin).toString();
   });
   public iframeCode = computed(() => {
     const id = this.shareLinkId();
@@ -55,25 +55,16 @@ export class ShareLinkDialogComponent implements HasSavingStateSingal {
       return 'Generiere iframe Code zum einbetten...';
     }
 
-    return this.createIFrameCode(id, globalThis.location.origin);
-  });
-
-  public close(isAborted: boolean = false) {
-    this.dialogRef.close(isAborted);
-  }
-
-  private createShareLinkUrl(id: string, baseUrl: string): string {
-    const relativeShareLinkUrl = this.router.createUrlTree([MainPage.ShareLink, id]).toString();
-    return new URL(relativeShareLinkUrl, baseUrl).toString();
-  }
-
-  private createIFrameCode(id: string, baseUrl: string): string {
     const relativeEmbeddedMapUrl = this.router.createUrlTree([MainPage.Embedded, id]).toString();
-    const embeddedMapUrl = new URL(relativeEmbeddedMapUrl, baseUrl).toString();
+    const embeddedMapUrl = new URL(relativeEmbeddedMapUrl, globalThis.location.origin).toString();
     const embeddedMapConfig = this.configService.embeddedMapConfig;
     return (
       `<iframe src='${embeddedMapUrl}' title="${embeddedMapConfig.title}" width='${embeddedMapConfig.width}'` +
       ` height='${embeddedMapConfig.height}' style='border:${embeddedMapConfig.borderSize}'></iframe>`
     );
+  });
+
+  public close(isAborted: boolean = false) {
+    this.dialogRef.close(isAborted);
   }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/dot-notation */
 import {TestBed} from '@angular/core/testing';
 import {EsriMapService} from './esri-map.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -14,12 +13,10 @@ import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testin
 import {FilterConfiguration} from '../../../shared/interfaces/topic.interface';
 import {selectMapConfigState} from 'src/app/state/map/reducers/map-config.reducer';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
-import {Observable} from 'rxjs';
 import {selectAllItems} from 'src/app/state/map/selectors/active-map-items.selector';
 import {selectDrawings} from 'src/app/state/map/reducers/drawing.reducer';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import Layer from '@arcgis/core/layers/Layer';
-import MapView from '@arcgis/core/views/MapView';
 import {defaultMapConfig} from 'src/app/shared/configs/map.config';
 import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
@@ -27,6 +24,7 @@ import {HasSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface
 import {Point} from 'geojson';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
 import Graphic from '@arcgis/core/Graphic';
+import {MapViewWithMap} from './types/esri-mapview-with-map.type';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -94,12 +92,11 @@ describe('EsriMapService', () => {
         },
       ],
     });
-    service = TestBed.inject(EsriMapService);
 
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
     mapMock = new EsriMapMock(internalLayers);
     mapViewService = TestBed.inject(EsriMapViewService);
-    mapViewService.mapView = {map: mapMock} as MapView;
+    mapViewService.mapView.set({map: mapMock} as MapViewWithMap);
     store = TestBed.inject(MockStore);
     toolServiceSpy = TestBed.inject(EsriToolService);
     vi.spyOn(toolServiceSpy, 'initializeMeasurement').mockImplementation(vi.fn());
@@ -107,6 +104,7 @@ describe('EsriMapService', () => {
   });
 
   it('should be created', () => {
+    service = TestBed.inject(EsriMapService);
     expect(service).toBeTruthy();
   });
 
@@ -164,38 +162,21 @@ describe('EsriMapService', () => {
     store.overrideSelector(selectAllItems, [
       new DrawingActiveMapItem('some-item', DrawingLayerPrefix.Drawing, UserDrawingLayer.Drawings, true, 1),
     ]);
+    store.refreshState();
+    service = TestBed.inject(EsriMapService);
+    service.assignMapElement(document.createElement('div'));
 
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-    service.init();
-
     await vi.runAllTimersAsync();
 
-    expect(service['mapView'].scale).toBe(12);
-    expect(service['mapView'].center.x).toBe(1408);
-    expect(service['mapView'].center.y).toBe(1337);
+    expect(service.getMapView().scale).toBe(12);
+    expect(service.getMapView().center.x).toBe(1408);
+    expect(service.getMapView().center.y).toBe(1337);
     expect(toolServiceSpy.addExistingDrawingsToLayer).toHaveBeenCalledWith([mockUserDrawing], UserDrawingLayer.Drawings);
     expect(dispatchSpy).toHaveBeenCalledWith(MapConfigActions.markMapServiceAsInitialized());
 
     vi.useRealTimers();
-  });
-
-  it('should not initialize twice', () => {
-    const storeSelectSpy = vi.spyOn(store, 'select').mockReturnValue(new Observable());
-
-    service.init();
-
-    expect(storeSelectSpy).toHaveBeenCalledTimes(4);
-    expect(storeSelectSpy).toHaveBeenCalledWith(selectMapConfigState);
-    expect(storeSelectSpy).toHaveBeenCalledWith(selectAllItems);
-    expect(storeSelectSpy).toHaveBeenCalledWith(selectDrawings);
-    expect(storeSelectSpy).toHaveBeenCalledWith(selectActiveTool);
-
-    storeSelectSpy.mockClear();
-
-    service.init();
-
-    expect(storeSelectSpy).not.toHaveBeenCalled();
   });
 
   it('should add new items to the desired position', () => {
@@ -230,7 +211,7 @@ describe('EsriMapService', () => {
     const mapItem3 = createGb2WmsMapItemMock('mapThree', 1, true, 1, '123', false, undefined, attributeFilters);
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
-
+    service = TestBed.inject(EsriMapService);
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
@@ -263,6 +244,7 @@ describe('EsriMapService', () => {
     const mapItem1 = createGb2WmsMapItemMock('mapOne');
     const mapItem2 = createGb2WmsMapItemMock('mapTwo');
     const mapItem3 = createGb2WmsMapItemMock('mapThree');
+    service = TestBed.inject(EsriMapService);
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
@@ -284,7 +266,7 @@ describe('EsriMapService', () => {
     const mapItem1 = createGb2WmsMapItemMock('mapOne');
     const mapItem2 = createGb2WmsMapItemMock('mapTwo');
     const mapItem3 = createGb2WmsMapItemMock('mapThree');
-
+    service = TestBed.inject(EsriMapService);
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
@@ -310,7 +292,7 @@ describe('EsriMapService', () => {
     const mapItem1 = createGb2WmsMapItemMock('mapOne');
     const mapItem2 = createGb2WmsMapItemMock('mapTwo');
     const mapItem3 = createGb2WmsMapItemMock('mapThree');
-
+    service = TestBed.inject(EsriMapService);
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
@@ -341,7 +323,7 @@ describe('EsriMapService', () => {
 
   it('should reorder sublayers from existing items to the desired position', () => {
     const mapItem = createGb2WmsMapItemMock('topic', 3);
-
+    service = TestBed.inject(EsriMapService);
     service.addGb2WmsLayer(mapItem, 0);
     const wmsLayer = mapMock.layers.getItemAt(0) as WMSLayer;
     // order: layer2, layer1, layer0
@@ -378,6 +360,7 @@ describe('EsriMapService', () => {
         expect(internalLayer).toBeDefined();
 
         const internalLayerSpy = vi.spyOn(internalLayer as GraphicsLayer, 'removeAll');
+        service = TestBed.inject(EsriMapService);
         service.clearInternalDrawingLayer(internalDrawingLayer);
 
         expect(internalLayerSpy).toHaveBeenCalledTimes(1);

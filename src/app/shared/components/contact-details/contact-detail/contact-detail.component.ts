@@ -1,4 +1,4 @@
-import {Component, Input, inject} from '@angular/core';
+import {Component, inject, input} from '@angular/core';
 import {Clipboard} from '@angular/cdk/clipboard';
 import {MatIcon} from '@angular/material/icon';
 import {NgTemplateOutlet} from '@angular/common';
@@ -12,16 +12,16 @@ import {NgTemplateOutlet} from '@angular/common';
 export class ContactDetailComponent {
   private readonly clipboard = inject(Clipboard);
 
-  @Input() public contactType!: 'address' | 'email' | 'link';
-  @Input() public street?: string;
-  @Input() public place?: string;
-  @Input() public email?: string;
-  @Input() public coordinates?: string;
-  @Input() public url?: string;
-  @Input() public title?: string;
+  public contactType = input.required<'address' | 'email' | 'link'>();
+  public street = input<string>();
+  public place = input<string>();
+  public email = input<string>();
+  public coordinates = input<string>();
+  public url = input<string>();
+  public title = input<string>();
 
   public copyToClipboard(event: Event) {
     event.preventDefault();
-    this.clipboard.copy(`${this.street}, ${this.place}`);
+    this.clipboard.copy(`${this.street()}, ${this.place()}`);
   }
 }

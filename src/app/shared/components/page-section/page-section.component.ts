@@ -1,9 +1,6 @@
-import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, inject, input} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {ScreenMode} from '../../types/screen-size.type';
-import {NgClass} from '@angular/common';
 
 export interface TitleLink {
   url: string;
@@ -14,26 +11,13 @@ export interface TitleLink {
   selector: 'page-section',
   templateUrl: './page-section.component.html',
   styleUrls: ['./page-section.component.scss'],
-  imports: [NgClass],
 })
-export class PageSectionComponent implements OnInit, OnDestroy {
+export class PageSectionComponent {
   private readonly store = inject(Store);
-
-  @Input() public background?: 'primary' | 'accent';
-  @Input() public sectionTitle?: string;
-  @Input() public titleLink?: TitleLink;
-  @Input() public hideBottomPadding: boolean = false;
-  @Input() public pageTitle: boolean = false;
-  public screenMode: ScreenMode = 'regular';
-
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+  public background = input<'primary' | 'accent'>();
+  public sectionTitle = input<string>();
+  public titleLink = input<TitleLink>();
+  public hideBottomPadding = input(false);
+  public pageTitle = input(false);
+  public screenMode = this.store.selectSignal(selectScreenMode);
 }
