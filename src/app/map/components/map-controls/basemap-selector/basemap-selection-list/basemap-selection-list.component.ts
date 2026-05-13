@@ -5,7 +5,6 @@ import {Basemap} from '../../../../../shared/interfaces/basemap.interface';
 import {MapConfigActions} from '../../../../../state/map/actions/map-config.actions';
 import {selectActiveBasemapId} from '../../../../../state/map/reducers/map-config.reducer';
 import {BasemapConfigService} from '../../../../services/basemap-config.service';
-import {NgOptimizedImage} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {BasemapImageLinkPipe} from '../../../../../shared/pipes/background-map-image-link.pipe';
 
@@ -13,7 +12,7 @@ import {BasemapImageLinkPipe} from '../../../../../shared/pipes/background-map-i
   selector: 'basemap-selection-list',
   templateUrl: './basemap-selection-list.component.html',
   styleUrls: ['./basemap-selection-list.component.scss'],
-  imports: [MatButton, NgOptimizedImage, BasemapImageLinkPipe],
+  imports: [MatButton, BasemapImageLinkPipe],
 })
 export class BasemapSelectionListComponent {
   private readonly store = inject(Store);

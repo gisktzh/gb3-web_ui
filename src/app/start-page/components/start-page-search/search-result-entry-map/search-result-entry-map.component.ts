@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
 import {MatRipple} from '@angular/material/core';
 import {MatTooltip} from '@angular/material/tooltip';
-import {NgTemplateOutlet, NgOptimizedImage} from '@angular/common';
+import {NgTemplateOutlet} from '@angular/common';
 import {RouterLink} from '@angular/router';
 import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
 import {MatIcon} from '@angular/material/icon';
@@ -21,7 +21,6 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
     MatTooltip,
     NgTemplateOutlet,
     RouterLink,
-    NgOptimizedImage,
     ShowTooltipIfTruncatedDirective,
     MatIcon,
     MatDivider,

@@ -12,7 +12,7 @@ export class SliderWrapperComponent<T> {
   /** The title of the slider wrapper */
   public title = input.required<string>();
   /** An optional description; will be shown as tooltip on top of an info icon */
-  public description = input<string>();
+  public description = input<string | null>();
   /** The current value */
   public value = input.required<T>();
   /** The maximum value */

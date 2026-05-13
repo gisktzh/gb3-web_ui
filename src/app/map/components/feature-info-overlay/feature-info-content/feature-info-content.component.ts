@@ -10,7 +10,7 @@ import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-
 import {MapService} from '../../../interfaces/map.service';
 import {StyleExpression} from '../../../../shared/types/style-expression.type';
 import {MAP_SERVICE} from '../../../../app.tokens';
-import {NgOptimizedImage, KeyValuePipe} from '@angular/common';
+import {KeyValuePipe} from '@angular/common';
 import {MatTooltip} from '@angular/material/tooltip';
 import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
@@ -86,7 +86,6 @@ const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
     MatRadioButton,
     MatTooltip,
     ShowTooltipIfTruncatedDirective,
-    NgOptimizedImage,
     ResizeHandlerComponent,
     KeyValuePipe,
   ],
