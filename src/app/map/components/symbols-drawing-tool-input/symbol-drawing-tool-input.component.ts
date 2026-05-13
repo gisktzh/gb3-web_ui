@@ -15,9 +15,9 @@ import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/
 })
 export class SymbolDrawingToolInputComponent {
   private readonly dialogRef = inject<MatDialogRef<SymbolDrawingToolInputComponent, SymbolDrawingToolInputComponent>>(MatDialogRef);
-  public drawingSymbolDefinition = signal<DrawingSymbolDefinition | null>(null);
-  public size = signal(SymbolStyleConstants.DEFAULT_SYMBOL_SIZE);
-  public rotation = signal(SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION);
+  public readonly drawingSymbolDefinition = signal<DrawingSymbolDefinition | null>(null);
+  public readonly size = signal(SymbolStyleConstants.DEFAULT_SYMBOL_SIZE);
+  public readonly rotation = signal(SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION);
 
   public close() {
     this.dialogRef.close();

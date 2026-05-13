@@ -24,7 +24,7 @@ export class FavouriteCreationDialogComponent implements HasSavingStateSingal {
   private readonly favouritesService = inject(FavouritesService);
   private readonly store = inject(Store);
 
-  public nameModel = signal<{name: string}>({name: ''});
+  public readonly nameModel = signal<{name: string}>({name: ''});
   public nameForm = form(this.nameModel, (fieldPath) => {
     required(fieldPath.name);
     minLength(fieldPath.name, 1);
@@ -32,7 +32,7 @@ export class FavouriteCreationDialogComponent implements HasSavingStateSingal {
   });
 
   public nameFormControl!: FormControl<string | null>;
-  public savingState = signal<LoadingState>(undefined);
+  public readonly savingState = signal<LoadingState>(undefined);
 
   public abort() {
     this.close(true);

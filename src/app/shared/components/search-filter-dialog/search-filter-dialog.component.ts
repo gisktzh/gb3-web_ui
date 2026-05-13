@@ -30,9 +30,9 @@ export class SearchFilterDialogComponent {
   private readonly store = inject(Store);
   private readonly dialogRef = inject<MatDialogRef<SearchFilterDialogComponent>>(MatDialogRef);
 
-  public filterGroups = this.store.selectSignal(selectFilterGroups);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public nonEmptyFilterGroups = computed(() => this.filterGroups().filter((group) => group.filters.length > 0));
+  public readonly filterGroups = this.store.selectSignal(selectFilterGroups);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly nonEmptyFilterGroups = computed(() => this.filterGroups().filter((group) => group.filters.length > 0));
 
   public toggleFilter(groupLabel: string, filterLabel: string, isActive: boolean) {
     this.store.dispatch(SearchActions.setFilterValue({groupLabel, filterLabel, isActive}));

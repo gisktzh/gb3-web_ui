@@ -9,5 +9,5 @@ import {MatIcon} from '@angular/material/icon';
   imports: [MatIcon],
 })
 export class LinkListItemComponent {
-  public links = input<LinkObject[]>([]);
+  public readonly links = input<LinkObject[]>([]);
 }

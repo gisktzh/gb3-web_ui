@@ -18,15 +18,15 @@ import {LoadingAndProcessBarComponent} from '../../../shared/components/loading-
 export class ShareLinkMobileComponent {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
-  public savingState = this.store.selectSignal(selectSavingState);
+  public readonly savingState = this.store.selectSignal(selectSavingState);
   private readonly shareLinkId = this.store.selectSignal(selectId);
-  public shareLinkUrl = computed(() => {
+  public readonly shareLinkUrl = computed(() => {
     const id = this.shareLinkId();
     if (!id) {
       return undefined;
     }
 
     const relativeShareLinkUrl = this.router.createUrlTree([MainPage.ShareLink, id]).toString();
-    return new URL(relativeShareLinkUrl, window.location.origin).toString();
+    return new URL(relativeShareLinkUrl, globalThis.location.origin).toString();
   });
 }

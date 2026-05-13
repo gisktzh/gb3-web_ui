@@ -19,9 +19,9 @@ export class ShareLinkRedirectComponent {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
 
-  public applicationInitializationLoadingState = this.store.selectSignal(selectApplicationInitializationLoadingState);
-  public shareLinkLoadingState = this.store.selectSignal(selectLoadingState);
-  public id = signal(this.route.snapshot.paramMap.get(RouteParamConstants.RESOURCE_IDENTIFIER));
+  public readonly applicationInitializationLoadingState = this.store.selectSignal(selectApplicationInitializationLoadingState);
+  public readonly shareLinkLoadingState = this.store.selectSignal(selectLoadingState);
+  public readonly id = signal(this.route.snapshot.paramMap.get(RouteParamConstants.RESOURCE_IDENTIFIER));
 
   protected readonly mainPageEnum = MainPage;
 

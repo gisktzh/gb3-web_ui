@@ -47,19 +47,19 @@ const FAVOURITE_HELPER_MESSAGES = {
 export class MapManagementMobileComponent implements OnDestroy {
   private readonly store = inject(Store);
 
-  public activeMapItems = this.store.selectSignal(selectItems);
-  public activeTab = signal<TabType>('mapsCatalogue');
-  public isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
-  public filterString = this.store.selectSignal(selectFilterString);
+  public readonly activeMapItems = this.store.selectSignal(selectItems);
+  public readonly activeTab = signal<TabType>('mapsCatalogue');
+  public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  public readonly filterString = this.store.selectSignal(selectFilterString);
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
-  public gb2ActiveMapItems = computed(() => {
+  public readonly gb2ActiveMapItems = computed(() => {
     return this.activeMapItems().filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
   });
-  public numberOfNotices = computed(() => {
+  public readonly numberOfNotices = computed(() => {
     return this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice).length;
   });
-  public numberOfUnreadNotices = computed(() => {
+  public readonly numberOfUnreadNotices = computed(() => {
     return this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice && !activeMapItem.settings.isNoticeMarkedAsRead)
       .length;
   });

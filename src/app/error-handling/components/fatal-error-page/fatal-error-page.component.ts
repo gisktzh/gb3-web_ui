@@ -12,8 +12,8 @@ import {toSignal} from '@angular/core/rxjs-interop';
 })
 export class FatalErrorPageComponent {
   private readonly route = inject(ActivatedRoute);
-  private queryParamMap = toSignal(this.route.queryParamMap);
-  public errorMessage = computed(() => this.queryParamMap()?.get('error'));
+  private readonly queryParamMap = toSignal(this.route.queryParamMap);
+  public readonly errorMessage = computed(() => this.queryParamMap()?.get('error'));
 
   public forceRefresh() {
     window.location.href = '/';

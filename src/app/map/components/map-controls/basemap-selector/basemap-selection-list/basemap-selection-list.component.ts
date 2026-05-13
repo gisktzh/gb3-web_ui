@@ -17,11 +17,11 @@ import {BasemapImageLinkPipe} from '../../../../../shared/pipes/background-map-i
 export class BasemapSelectionListComponent {
   private readonly store = inject(Store);
 
-  public basemapChangedEvent = output();
+  public readonly basemapChangedEvent = output();
 
   public availableBasemaps: Basemap[] = inject(BasemapConfigService).availableBasemaps;
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public activeBasemapId = this.store.selectSignal(selectActiveBasemapId);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly activeBasemapId = this.store.selectSignal(selectActiveBasemapId);
 
   public switchBasemap(toId: string) {
     this.store.dispatch(MapConfigActions.setBasemap({activeBasemapId: toId}));

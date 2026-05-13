@@ -19,12 +19,12 @@ import {LegendComponent} from './legend/legend.component';
 export class LegendOverlayComponent {
   private readonly store = inject(Store);
 
-  public showInteractiveElements = input(true);
-  public isVisible = this.store.selectSignal(selectIsLegendOverlayVisible);
-  public loadingState = this.store.selectSignal(selectLoadingState);
-  public printLoadingState = this.store.selectSignal(selectLegendPrintState);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public legendItems = this.store.selectSignal(selectLegendItemsForDisplay);
+  public readonly showInteractiveElements = input(true);
+  public readonly isVisible = this.store.selectSignal(selectIsLegendOverlayVisible);
+  public readonly loadingState = this.store.selectSignal(selectLoadingState);
+  public readonly printLoadingState = this.store.selectSignal(selectLegendPrintState);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly legendItems = this.store.selectSignal(selectLegendItemsForDisplay);
 
   public close() {
     this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: false}));

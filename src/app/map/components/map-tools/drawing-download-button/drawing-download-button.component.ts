@@ -17,8 +17,8 @@ import {MatDialog} from '@angular/material/dialog';
 export class DrawingDownloadButtonComponent {
   private readonly store = inject(Store);
   private readonly dialogService = inject(MatDialog);
-  public drawings = this.store.selectSignal(selectDrawings);
-  public hasDrawings = computed(() => this.drawings().length > 0);
+  public readonly drawings = this.store.selectSignal(selectDrawings);
+  public readonly hasDrawings = computed(() => this.drawings().length > 0);
 
   public openDownloadDialog() {
     this.dialogService.open(DrawingDownloadDialogComponent, {

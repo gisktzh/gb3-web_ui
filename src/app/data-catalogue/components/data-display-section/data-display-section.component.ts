@@ -6,5 +6,5 @@ import {Component, input} from '@angular/core';
   styleUrls: ['./data-display-section.component.scss'],
 })
 export class DataDisplaySectionComponent {
-  public sectionTitle = input('');
+  public readonly sectionTitle = input('');
 }

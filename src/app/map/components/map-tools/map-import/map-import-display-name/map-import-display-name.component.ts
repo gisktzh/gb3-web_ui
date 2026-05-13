@@ -16,8 +16,8 @@ import {form, minLength, required, pattern, FormField} from '@angular/forms/sign
 })
 export class MapImportDisplayNameComponent {
   private readonly store = inject(Store);
-  public title = this.store.selectSignal(selectTitle);
-  public nameModel = signal<{name: string}>({
+  public readonly title = this.store.selectSignal(selectTitle);
+  public readonly nameModel = signal<{name: string}>({
     name: '',
   });
   public nameForm = form(this.nameModel, (fieldPath) => {

@@ -11,8 +11,8 @@ import {selectScaleBarConfig} from '../../../../state/map/selectors/scale-bar-co
 export class ScaleBarComponent {
   private readonly store = inject(Store);
 
-  public scaleBarConfig = this.store.selectSignal(selectScaleBarConfig);
-  public scaleBarLabel = computed(() => {
+  public readonly scaleBarConfig = this.store.selectSignal(selectScaleBarConfig);
+  public readonly scaleBarLabel = computed(() => {
     const scaleBarConfig = this.scaleBarConfig();
     if (!scaleBarConfig) {
       return '';
@@ -21,7 +21,7 @@ export class ScaleBarComponent {
     return `${scaleBarConfig.value} ${scaleBarConfig.unit}`;
   });
 
-  public scaleBarStyle = computed(() => {
+  public readonly scaleBarStyle = computed(() => {
     const scaleBarConfig = this.scaleBarConfig();
     if (!scaleBarConfig) {
       return '';

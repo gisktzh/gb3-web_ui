@@ -11,9 +11,9 @@ import {Directive, ElementRef, inject, input, output} from '@angular/core';
 export class SearchResultIdentifierDirective {
   public readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  public isMapResult = input(false);
-  public isFocusable = input(false);
-  public text = input.required<string>();
+  public readonly isMapResult = input(false);
+  public readonly isFocusable = input(false);
+  public readonly text = input.required<string>();
   public readonly addResultFromArrowNavigation = output();
   public readonly removeResultFromArrowNavigation = output();
 

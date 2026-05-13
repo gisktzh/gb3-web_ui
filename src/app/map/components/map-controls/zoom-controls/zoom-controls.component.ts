@@ -36,12 +36,12 @@ export class ZoomControlsComponent {
 
   public tooltipText = TOOLTIP_TEXT;
 
-  public isMaxZoomedIn = this.store.selectSignal(selectIsMaxZoomedIn);
-  public isMaxZoomedOut = this.store.selectSignal(selectIsMaxZoomedOut);
-  public geolocationState = this.store.selectSignal(selectGeolocationState);
-  public mapUiState = this.store.selectSignal(selectMapUiState);
-  public screenHeight = this.store.selectSignal(selectScreenHeight);
-  public locationButtonTooltipText = computed(() => {
+  public readonly isMaxZoomedIn = this.store.selectSignal(selectIsMaxZoomedIn);
+  public readonly isMaxZoomedOut = this.store.selectSignal(selectIsMaxZoomedOut);
+  public readonly geolocationState = this.store.selectSignal(selectGeolocationState);
+  public readonly mapUiState = this.store.selectSignal(selectMapUiState);
+  public readonly screenHeight = this.store.selectSignal(selectScreenHeight);
+  public readonly locationButtonTooltipText = computed(() => {
     const geolocationState = this.geolocationState();
     if (geolocationState.loadingState === 'error') {
       return geolocationState.errorReason ?? 'Ein Fehler ist aufgetreten';

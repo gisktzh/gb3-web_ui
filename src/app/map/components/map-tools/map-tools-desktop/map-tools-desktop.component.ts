@@ -47,9 +47,9 @@ export class MapToolsDesktopComponent {
   private readonly store = inject(Store);
 
   // public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
-  public toolMenuVisibility = this.store.selectSignal(selectToolMenuVisibility);
-  public isMapReady = this.store.selectSignal(selectReady);
-  public activeTool = this.store.selectSignal(selectActiveTool);
+  public readonly toolMenuVisibility = this.store.selectSignal(selectToolMenuVisibility);
+  public readonly isMapReady = this.store.selectSignal(selectReady);
+  public readonly activeTool = this.store.selectSignal(selectActiveTool);
 
   public tooltipText = TOOLTIP_TEXT;
 

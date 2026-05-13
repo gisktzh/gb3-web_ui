@@ -7,7 +7,6 @@ import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import {EsriLineDrawingStrategy} from './esri-line-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 class EsriLineDrawingStrategyWrapper extends EsriLineDrawingStrategy {
@@ -25,7 +24,7 @@ const mockResourceHandle = {
  * As such, we do not test for the addition of the graphics which should be handled by the Esri framework any way.
  */
 describe('EsriLineDrawingStrategy', () => {
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let lineSymbol: SimpleLineSymbol;
   const callbackHandler = {
@@ -35,11 +34,11 @@ describe('EsriLineDrawingStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     lineSymbol = new SimpleLineSymbol();
   });
 

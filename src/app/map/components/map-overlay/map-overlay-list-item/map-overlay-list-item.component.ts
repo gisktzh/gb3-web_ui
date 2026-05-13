@@ -22,12 +22,12 @@ import {RouterLink} from '@angular/router';
   ],
 })
 export class MapOverlayListItemComponent {
-  public overlayTitle = input('');
-  public metaDataLink = input<string>();
-  public forceExpanded = input(false);
-  public disabled = input(false);
-  public toggleButtonPosition = input<ToggleButtonPosition>('start');
-  public removeContentIndent = input(false);
-  public hasBackgroundColor = input(true);
-  public showInteractiveElements = input(true);
+  public readonly overlayTitle = input('');
+  public readonly metaDataLink = input<string>();
+  public readonly forceExpanded = input(false);
+  public readonly disabled = input(false);
+  public readonly toggleButtonPosition = input<ToggleButtonPosition>('start');
+  public readonly removeContentIndent = input(false);
+  public readonly hasBackgroundColor = input(true);
+  public readonly showInteractiveElements = input(true);
 }

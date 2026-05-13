@@ -21,10 +21,10 @@ export class SearchWindowMobileComponent {
   private readonly dialogService = inject(MatDialog);
   private readonly configService = inject(ConfigService);
 
-  public focusOnInit = input(true);
-  public isAnySearchFilterActive = this.store.selectSignal(selectIsAnySearchFilterActiveSelector);
-  public selectedSearchResult = this.store.selectSignal(selectSelectedSearchResult);
-  public searchTerm = this.store.selectSignal(selectTerm);
+  public readonly focusOnInit = input(true);
+  public readonly isAnySearchFilterActive = this.store.selectSignal(selectIsAnySearchFilterActiveSelector);
+  public readonly selectedSearchResult = this.store.selectSignal(selectSelectedSearchResult);
+  public readonly searchTerm = this.store.selectSignal(selectTerm);
   private readonly searchComponent = viewChild.required<SearchInputComponent>(SearchInputComponent);
   private readonly searchConfig = this.configService.searchConfig.mapPage;
 

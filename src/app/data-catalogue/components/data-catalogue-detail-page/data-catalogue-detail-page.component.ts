@@ -19,8 +19,8 @@ import {FormatLineBreaksPipe} from '../../../shared/pipes/format-line-breaks.pip
 export class DataCatalogueDetailPageComponent {
   private readonly store = inject(Store);
 
-  public baseMetadataInformation = input.required<BaseMetadataInformation>();
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly baseMetadataInformation = input.required<BaseMetadataInformation>();
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
   protected readonly mainPageEnum = MainPage;
 }

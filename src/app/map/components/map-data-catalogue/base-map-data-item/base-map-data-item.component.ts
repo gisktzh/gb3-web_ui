@@ -39,34 +39,34 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
   ],
 })
 export class BaseMapDataItemComponent {
-  public title = input.required<string>();
-  public filterString = input<string | undefined>('');
+  public readonly title = input.required<string>();
+  public readonly filterString = input<string | undefined>('');
   /**
    * URL to gb2, if the given mapitem is not yet gb3-capable.
    */
-  public gb2Url: Signal<string | null> = signal(null);
-  public mapConfigState: Signal<MapConfigState | undefined> = signal(undefined);
-  public isAddItemDisabled: Signal<boolean> = signal(false);
+  public readonly gb2Url: Signal<string | null> = signal(null);
+  public readonly mapConfigState: Signal<MapConfigState | undefined> = signal(undefined);
+  public readonly isAddItemDisabled: Signal<boolean> = signal(false);
 
   public readonly addEvent = output();
   public readonly hoverStartEvent = output<MapLayer | undefined>();
   public readonly hoverEndEvent = output<MapLayer | undefined>();
 
-  public addLayerEvent = output<MapLayer>();
-  public deleteEvent = output();
+  public readonly addLayerEvent = output<MapLayer>();
+  public readonly deleteEvent = output();
 
-  public showExpandButton: Signal<boolean> = signal(true);
+  public readonly showExpandButton: Signal<boolean> = signal(true);
 
-  public loadingState: Signal<LoadingState> = signal('loaded');
-  public invalid: Signal<boolean | undefined> = signal(undefined);
+  public readonly loadingState: Signal<LoadingState> = signal('loaded');
+  public readonly invalid: Signal<boolean | undefined> = signal(undefined);
 
-  public layers: Signal<MapLayer[]> = signal([]);
-  public imageUrl: Signal<string | undefined> = signal(undefined);
+  public readonly layers: Signal<MapLayer[]> = signal([]);
+  public readonly imageUrl: Signal<string | undefined> = signal(undefined);
 
-  public isMapHovered: WritableSignal<boolean> = signal(false);
-  public hoveredLayer: WritableSignal<MapLayer | undefined> = signal(undefined);
+  public readonly isMapHovered: WritableSignal<boolean> = signal(false);
+  public readonly hoveredLayer: WritableSignal<MapLayer | undefined> = signal(undefined);
 
-  public filteredLayersCount = computed(() => {
+  public readonly filteredLayersCount = computed(() => {
     const filterString = this.filterString();
     if (!filterString) {
       return this.layers().length;

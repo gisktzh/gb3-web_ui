@@ -19,11 +19,11 @@ export class ElevationProfileChartComponent implements OnInit {
   private readonly elevationPlotConfigService = inject(ElevationPlotConfigService);
   private readonly store = inject(Store);
 
-  public elevationProfileData = input.required<ElevationProfileData>();
-  public lineChartData = signal<ElevationProfileChartJsDataConfiguration>({
+  public readonly elevationProfileData = input.required<ElevationProfileData>();
+  public readonly lineChartData = signal<ElevationProfileChartJsDataConfiguration>({
     datasets: [],
   });
-  public lineChartOptions = signal<ElevationProfileChartJsOptions>(this.elevationPlotConfigService.getElevationPlotChartOptions());
+  public readonly lineChartOptions = signal<ElevationProfileChartJsOptions>(this.elevationPlotConfigService.getElevationPlotChartOptions());
 
   constructor() {
     this.setupHoverEvent();

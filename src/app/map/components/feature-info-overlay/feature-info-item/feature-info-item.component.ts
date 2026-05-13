@@ -13,6 +13,6 @@ import {FeatureInfoReportDownloadComponent} from '../feature-info-report-downloa
   imports: [MapOverlayListItemComponent, MatIcon, NgTemplateOutlet, FeatureInfoContentComponent, FeatureInfoReportDownloadComponent],
 })
 export class FeatureInfoItemComponent {
-  public featureInfo = input.required<FeatureInfoResultDisplay>();
-  public showInteractiveElements = input(true);
+  public readonly featureInfo = input.required<FeatureInfoResultDisplay>();
+  public readonly showInteractiveElements = input(true);
 }

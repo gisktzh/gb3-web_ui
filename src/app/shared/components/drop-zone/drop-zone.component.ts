@@ -16,11 +16,11 @@ import {validateUploadedFileList} from '../../utils/validate-uploaded-file-list.
   styleUrl: './drop-zone.component.scss',
 })
 export class DropZoneComponent {
-  public addedFileEvent = output<Blob | File>();
-  public uploadErrorEvent = output<string>();
-  public fileUploadField = viewChild.required<ElementRef>('fileUploadField');
-  public acceptedFileTypes = FileUploadRestrictionsConfig.allowedFileTypes.join(', ');
-  protected isHovered = signal(false);
+  public readonly addedFileEvent = output<Blob | File>();
+  public readonly uploadErrorEvent = output<string>();
+  public readonly fileUploadField = viewChild.required<ElementRef>('fileUploadField');
+  public readonly acceptedFileTypes = FileUploadRestrictionsConfig.allowedFileTypes.join(', ');
+  protected readonly isHovered = signal(false);
 
   protected handleDragOver(e: DragEvent) {
     e.stopPropagation();

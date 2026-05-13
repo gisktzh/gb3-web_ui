@@ -16,8 +16,8 @@ import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-at
 export class MapAttributeFilterComponent {
   private readonly store = inject(Store);
 
-  public mapAttributeFiltersItem = this.store.selectSignal(selectMapAttributeFiltersItem);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly mapAttributeFiltersItem = this.store.selectSignal(selectMapAttributeFiltersItem);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
   constructor() {
     effect(() => {

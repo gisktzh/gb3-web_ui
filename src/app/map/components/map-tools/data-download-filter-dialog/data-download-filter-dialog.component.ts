@@ -29,7 +29,7 @@ export class DataDownloadFilterDialogComponent {
   private readonly dialogRef = inject<MatDialogRef<DataDownloadFilterDialogComponent>>(MatDialogRef);
   private readonly store = inject(Store);
 
-  public dataDownloadFilters = this.store.selectSignal(selectFilters);
+  public readonly dataDownloadFilters = this.store.selectSignal(selectFilters);
 
   public trackByFilterLabel(_: number, item: DataDownloadFilter) {
     return item.label;

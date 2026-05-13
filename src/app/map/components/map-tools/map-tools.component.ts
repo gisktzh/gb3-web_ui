@@ -16,5 +16,5 @@ import {MapToolsMobileComponent} from './map-tools-mobile/map-tools-mobile.compo
 })
 export class MapToolsComponent {
   private readonly store = inject(Store);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 }

@@ -25,10 +25,10 @@ import {CdkDragHandle} from '@angular/cdk/drag-drop';
 export class ActiveMapItemHeaderComponent {
   private readonly store = inject(Store);
 
-  public activeMapItem = input.required<ActiveMapItem>();
-  public activeMapItemExpansionPanel = input.required<MatExpansionPanel>();
-  public isDragAndDropDisabled = input(false);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly activeMapItem = input.required<ActiveMapItem>();
+  public readonly activeMapItemExpansionPanel = input.required<MatExpansionPanel>();
+  public readonly isDragAndDropDisabled = input(false);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
   protected readonly mainPageEnum = MainPage;
   protected readonly dataCataloguePageEnum = DataCataloguePage;

@@ -34,16 +34,16 @@ export class SearchResultGroupsComponent {
 
   public readonly overviewSearchResultItemComponents = viewChildren<SearchResultIdentifierDirective>(SearchResultIdentifierDirective);
 
-  public layerCatalogLoadingState = this.store.selectSignal(selectLayerCatalogLoadingState);
-  public filteredMaps = this.store.selectSignal(selectFilteredLayerCatalogMaps);
-  public filteredMetadataItems = this.store.selectSignal(selectFilteredMetadataItems);
-  public filteredFaqItems = this.store.selectSignal(selectFilteredFaqItems);
-  public filteredUsefulLinks = this.store.selectSignal(selectFilteredUsefulLinks);
-  public dataCatalogLoadingState = this.store.selectSignal(selectDataCatalogLoadingState);
-  public searchApiLoadingState = this.store.selectSignal(selectSearchApiLoadingState);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly layerCatalogLoadingState = this.store.selectSignal(selectLayerCatalogLoadingState);
+  public readonly filteredMaps = this.store.selectSignal(selectFilteredLayerCatalogMaps);
+  public readonly filteredMetadataItems = this.store.selectSignal(selectFilteredMetadataItems);
+  public readonly filteredFaqItems = this.store.selectSignal(selectFilteredFaqItems);
+  public readonly filteredUsefulLinks = this.store.selectSignal(selectFilteredUsefulLinks);
+  public readonly dataCatalogLoadingState = this.store.selectSignal(selectDataCatalogLoadingState);
+  public readonly searchApiLoadingState = this.store.selectSignal(selectSearchApiLoadingState);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
-  public combinedSearchAndDataCatalogLoadingState = computed<LoadingState>(() => {
+  public readonly combinedSearchAndDataCatalogLoadingState = computed<LoadingState>(() => {
     if (this.dataCatalogLoadingState() === 'error' || this.searchApiLoadingState() === 'error') {
       return 'error';
     }

@@ -12,8 +12,7 @@ import {MAP_SERVICE} from '../../../app.tokens';
 export class MapContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly mapService = inject<MapService>(MAP_SERVICE);
   private readonly featureHighlightingService = inject(FeatureHighlightingService);
-
-  private mainMapRef = viewChild.required<ElementRef>('mainMap');
+  private readonly mainMapRef = viewChild.required<ElementRef>('mainMap');
 
   public ngOnInit() {
     this.featureHighlightingService.init();

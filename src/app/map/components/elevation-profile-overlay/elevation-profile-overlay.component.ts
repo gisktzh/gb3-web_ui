@@ -30,10 +30,10 @@ export class ElevationProfileOverlayComponent {
   private readonly store = inject(Store);
   private readonly swisstopoApiService = inject(SwisstopoApiService);
 
-  public isVisible = this.store.selectSignal(selectIsElevationProfileOverlayVisible);
-  public elevationProfileData = this.store.selectSignal(selectData);
-  public loadingState = this.store.selectSignal(selectLoadingState);
-  public downloadCsvUrl = computed(() => {
+  public readonly isVisible = this.store.selectSignal(selectIsElevationProfileOverlayVisible);
+  public readonly elevationProfileData = this.store.selectSignal(selectData);
+  public readonly loadingState = this.store.selectSignal(selectLoadingState);
+  public readonly downloadCsvUrl = computed(() => {
     return this.swisstopoApiService.createDownloadLinkUrl(this.elevationProfileData());
   });
 

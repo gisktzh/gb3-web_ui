@@ -4,9 +4,9 @@ import {Directive, ElementRef, inject, input} from '@angular/core';
 export class TableColumnIdentifierDirective {
   public readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  public topicId = input.required<string>();
-  public layerId = input.required<string>();
-  public featureId = input.required<number>();
+  public readonly topicId = input.required<string>();
+  public readonly layerId = input.required<string>();
+  public readonly featureId = input.required<number>();
 
   public get uniqueIdentifier() {
     return TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId(), this.layerId(), this.featureId());

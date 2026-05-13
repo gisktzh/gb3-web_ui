@@ -24,16 +24,16 @@ export class DataDownloadEmailDialogComponent {
     orderEmail: string | undefined;
   }>(MAT_DIALOG_DATA);
 
-  public emailModel = signal<{email: string}>({
+  public readonly emailModel = signal<{email: string}>({
     email: '',
   });
   public emailForm = form(this.emailModel, (fieldPath) => {
     required(fieldPath.email);
     email(fieldPath.email);
   });
-  public userEmail = this.store.selectSignal(selectUserEmail);
-  public emailRequested = signal(false);
-  public isEmailActive = computed(() => {
+  public readonly userEmail = this.store.selectSignal(selectUserEmail);
+  public readonly emailRequested = signal(false);
+  public readonly isEmailActive = computed(() => {
     return this.data.orderEmail || !(this.data.orderEmail && this.userEmail());
   });
 

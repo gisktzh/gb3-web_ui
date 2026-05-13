@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject, signal, viewChild} from '@angular/core';
+import {Component, inject, signal, viewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Basemap} from '../../../../shared/interfaces/basemap.interface';
 import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
@@ -20,11 +20,10 @@ import {NgClickOutsideDirective} from 'ng-click-outside2';
 export class BasemapSelectorComponent {
   private readonly store = inject(Store);
 
-  private basemapSelectorButtonRef = viewChild<MatButton>('basemapSelectorButton');
-
-  public activeBasemapId = this.store.selectSignal(selectActiveBasemapId);
-  public isSelectionOpen = signal(false);
-  public availableBasemaps: Basemap[] = inject(BasemapConfigService).availableBasemaps;
+  private readonly basemapSelectorButtonRef = viewChild<MatButton>('basemapSelectorButton');
+  public readonly activeBasemapId = this.store.selectSignal(selectActiveBasemapId);
+  public readonly isSelectionOpen = signal(false);
+  public readonly availableBasemaps: Basemap[] = inject(BasemapConfigService).availableBasemaps;
 
   public toggleSelectionAndFocusBasemapSelectorButton() {
     this.toggleSelection();

@@ -19,9 +19,9 @@ import {LoadingAndProcessBarComponent} from '../../../../shared/components/loadi
 export class MapToolsMobileComponent {
   private readonly store = inject(Store);
 
-  public geolocationState = this.store.selectSignal(selectGeolocationState);
-  public currentActiveMapItems = this.store.selectSignal(selectQueryLegends);
-  public numberOfQueryLegends = computed(() => this.currentActiveMapItems().length);
+  public readonly geolocationState = this.store.selectSignal(selectGeolocationState);
+  public readonly currentActiveMapItems = this.store.selectSignal(selectQueryLegends);
+  public readonly numberOfQueryLegends = computed(() => this.currentActiveMapItems().length);
 
   public showShareLink() {
     this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));

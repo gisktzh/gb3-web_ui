@@ -41,14 +41,14 @@ export class ResultGroupComponent {
   private readonly store = inject(Store);
 
   public readonly searchResultElements = viewChildren<SearchResultIdentifierDirective>(SearchResultIdentifierDirective);
-  public searchResults = input<GeometryWithSrsSearchApiResultMatch[]>([]);
-  public filteredMaps = input<Map[]>([]);
-  public header = input('');
-  public searchTerms = input<string[]>([]);
-  public isExpanded = input(false);
+  public readonly searchResults = input<GeometryWithSrsSearchApiResultMatch[]>([]);
+  public readonly filteredMaps = input<Map[]>([]);
+  public readonly header = input('');
+  public readonly searchTerms = input<string[]>([]);
+  public readonly isExpanded = input(false);
 
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public mapConfigState = this.store.selectSignal(selectMapConfigState);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
   public readonly hoverDelay = MapConstants.TEMPORARY_PREVIEW_DELAY;
   public readonly toolTip: string =
     'Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link.';

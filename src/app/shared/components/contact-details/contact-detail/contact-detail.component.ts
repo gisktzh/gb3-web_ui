@@ -12,13 +12,13 @@ import {NgTemplateOutlet} from '@angular/common';
 export class ContactDetailComponent {
   private readonly clipboard = inject(Clipboard);
 
-  public contactType = input.required<'address' | 'email' | 'link'>();
-  public street = input<string>();
-  public place = input<string>();
-  public email = input<string>();
-  public coordinates = input<string>();
-  public url = input<string>();
-  public title = input<string>();
+  public readonly contactType = input.required<'address' | 'email' | 'link'>();
+  public readonly street = input<string>();
+  public readonly place = input<string>();
+  public readonly email = input<string>();
+  public readonly coordinates = input<string>();
+  public readonly url = input<string>();
+  public readonly title = input<string>();
 
   public copyToClipboard(event: Event) {
     event.preventDefault();

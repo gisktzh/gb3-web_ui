@@ -27,15 +27,15 @@ export class SearchBarComponent {
 
   public readonly searchInput = viewChild.required(SearchInputComponent);
 
-  public mode = input<SearchMode>('normal');
-  public placeholderText = input('Suche nach Karten, Kartendaten, Geodaten und Geodiensten');
-  public searchConfig = input(this.configService.searchConfig.mapPage);
-  public showFilterButton = input(true);
-  public hasFocusEvent = input(false);
+  public readonly mode = input<SearchMode>('normal');
+  public readonly placeholderText = input('Suche nach Karten, Kartendaten, Geodaten und Geodiensten');
+  public readonly searchConfig = input(this.configService.searchConfig.mapPage);
+  public readonly showFilterButton = input(true);
+  public readonly hasFocusEvent = input(false);
 
-  public searchState = this.store.selectSignal(selectSearchState);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public isAnySearchFilterActive = this.store.selectSignal(selectIsAnySearchFilterActiveSelector);
+  public readonly searchState = this.store.selectSignal(selectSearchState);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly isAnySearchFilterActive = this.store.selectSignal(selectIsAnySearchFilterActiveSelector);
 
   constructor() {
     this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig().filterGroups}));

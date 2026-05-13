@@ -11,11 +11,11 @@ import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/
   styleUrls: ['./drawing-symbols-collection.component.scss'],
 })
 export class DrawingSymbolsCollectionComponent {
-  public collectionId = input.required<string>();
-  public groupName = input('');
+  public readonly collectionId = input.required<string>();
+  public readonly groupName = input('');
   public value = model<DrawingSymbolDefinition | null>(null);
-  public items = signal<DrawingSymbolChoice[]>([]);
-  public statefulItems = computed<{symbol: DrawingSymbolChoice; isSelected: boolean}[]>(() => {
+  public readonly items = signal<DrawingSymbolChoice[]>([]);
+  public readonly statefulItems = computed<{symbol: DrawingSymbolChoice; isSelected: boolean}[]>(() => {
     const innerValue = this.value();
 
     return this.items().map((symbol) => ({

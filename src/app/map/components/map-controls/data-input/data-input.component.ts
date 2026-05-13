@@ -6,5 +6,5 @@ import {Component, input} from '@angular/core';
   styleUrls: ['./data-input.component.scss'],
 })
 export class DataInputComponent {
-  public prefix = input<string>();
+  public readonly prefix = input<string>();
 }

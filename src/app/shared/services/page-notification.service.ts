@@ -10,9 +10,9 @@ import {selectMainPage} from '../../state/app/reducers/url.reducer';
 })
 export class PageNotificationService {
   private readonly store = inject(Store);
-  private mainPage = this.store.selectSignal(selectMainPage);
-  private pageNotifications = this.store.selectSignal(selectAllUnreadPageNotifications);
-  public currentPageNotifications = computed<PageNotification[]>(() => {
+  private readonly mainPage = this.store.selectSignal(selectMainPage);
+  private readonly pageNotifications = this.store.selectSignal(selectAllUnreadPageNotifications);
+  public readonly currentPageNotifications = computed<PageNotification[]>(() => {
     const mainPage = this.mainPage();
 
     if (!mainPage) {

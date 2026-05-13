@@ -19,5 +19,5 @@ export class TermsOfUsePageComponent {
   private readonly store = inject(Store);
 
   public heroText = TERMS_OF_USE_SUMMARY;
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 }

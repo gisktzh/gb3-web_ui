@@ -22,12 +22,12 @@ import {selectTerms} from 'src/app/state/app/selectors/search-terms.selector';
 export class ResultGroupsComponent {
   private readonly store = inject(Store);
   public readonly resultGroupComponents = viewChildren<ResultGroupComponent>(ResultGroupComponent);
-  public showMultiplePanels = input(true);
-  public searchTerms = this.store.selectSignal(selectTerms);
-  public filteredAddressesAndPlacesMatches = this.store.selectSignal(selectFilteredAddressesAndPlacesMatches);
-  public filteredActiveMapMatches = this.store.selectSignal(selectFilteredActiveMapMatches);
-  public filteredMaps = this.store.selectSignal(selectFilteredLayerCatalogMaps);
-  public searchApiLoadingState = this.store.selectSignal(selectSearchApiLoadingState);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public selectedSearchResult = this.store.selectSignal(selectSelectedSearchResult);
+  public readonly showMultiplePanels = input(true);
+  public readonly searchTerms = this.store.selectSignal(selectTerms);
+  public readonly filteredAddressesAndPlacesMatches = this.store.selectSignal(selectFilteredAddressesAndPlacesMatches);
+  public readonly filteredActiveMapMatches = this.store.selectSignal(selectFilteredActiveMapMatches);
+  public readonly filteredMaps = this.store.selectSignal(selectFilteredLayerCatalogMaps);
+  public readonly searchApiLoadingState = this.store.selectSignal(selectSearchApiLoadingState);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly selectedSearchResult = this.store.selectSignal(selectSelectedSearchResult);
 }

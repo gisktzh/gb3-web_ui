@@ -24,7 +24,7 @@ export class FavouriteDeletionDialogComponent implements HasSavingStateSingal {
     favourite: Favourite;
   }>(MAT_DIALOG_DATA);
   private readonly store = inject(Store);
-  public savingState = signal<LoadingState>(undefined);
+  public readonly savingState = signal<LoadingState>(undefined);
 
   public async delete() {
     this.savingState.set('loading');

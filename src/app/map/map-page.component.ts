@@ -79,13 +79,13 @@ export class MapPageComponent implements AfterViewInit, OnInit {
   private readonly initialMapExtentService = inject(InitialMapExtentService);
   private readonly store = inject(Store);
 
-  public numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
-  public isMapDataCatalogueMinimized = signal(false);
-  public mapUiState = this.store.selectSignal(selectMapUiState);
-  public mapSideDrawerContent = computed(() => this.mapUiState().mapSideDrawerContent || 'none');
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public mapConfigState = this.store.selectSignal(selectMapConfigState);
-  public rotation = this.store.selectSignal(selectRotation);
+  public readonly numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
+  public readonly isMapDataCatalogueMinimized = signal(false);
+  public readonly mapUiState = this.store.selectSignal(selectMapUiState);
+  public readonly mapSideDrawerContent = computed(() => this.mapUiState().mapSideDrawerContent || 'none');
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
+  public readonly rotation = this.store.selectSignal(selectRotation);
 
   public ngOnInit() {
     if (!this.mapConfigState().predefinedInitialExtent) {

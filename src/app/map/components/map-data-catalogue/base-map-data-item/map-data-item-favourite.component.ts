@@ -49,6 +49,6 @@ export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
   public override showExpandButton = signal(false);
   public override showDeleteButton = true;
   public override errorTooltip: string = FAVOURITE_ERROR_TOOLTIP;
-  public activeTool = this.store.selectSignal(selectActiveTool);
+  public readonly activeTool = this.store.selectSignal(selectActiveTool);
   public override isAddItemDisabled = computed(() => !!this.activeTool());
 }

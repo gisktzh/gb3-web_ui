@@ -10,6 +10,6 @@ import {RouterLink} from '@angular/router';
   imports: [MatProgressSpinner, RouterLink],
 })
 export class WaitingPageComponent {
-  public waitingText = input.required<string>();
-  public redirectMainPage = input.required<MainPage>();
+  public readonly waitingText = input.required<string>();
+  public readonly redirectMainPage = input.required<MainPage>();
 }

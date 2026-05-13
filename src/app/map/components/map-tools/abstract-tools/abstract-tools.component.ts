@@ -10,7 +10,7 @@ export class AbstractToolsComponent {
   private readonly store = inject(Store);
   protected readonly dialogService = inject(MatDialog);
 
-  public activeTool = this.store.selectSignal(selectActiveTool);
+  public readonly activeTool = this.store.selectSignal(selectActiveTool);
 
   protected toggleTool(tool: ToolType) {
     if (this.activeTool() === tool) {

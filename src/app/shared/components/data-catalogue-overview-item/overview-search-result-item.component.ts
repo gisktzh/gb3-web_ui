@@ -18,10 +18,10 @@ import {MatRipple} from '@angular/material/core';
 })
 export class OverviewSearchResultItemComponent {
   private readonly store = inject(Store);
-  public item = input.required<OverviewSearchResultDisplayItem>();
+  public readonly item = input.required<OverviewSearchResultDisplayItem>();
   // This is a workaround for OverviewSearchResultItemComponent that do not have the SearchResultIdentifierDirective applied to them (no arrow-key navigation enabled)
   // Can be removed if/when all searches have the arrow-key navigation enabled
-  public canFocusWithTabKey = input(false);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public isMobile = computed(() => this.screenMode() === 'mobile');
+  public readonly canFocusWithTabKey = input(false);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly isMobile = computed(() => this.screenMode() === 'mobile');
 }

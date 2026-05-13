@@ -12,10 +12,10 @@ import {MatIcon} from '@angular/material/icon';
   imports: [MatIconButton, ClickOnSpaceBarDirective, MatTooltip, MatIcon],
 })
 export class ExternalLinkButtonComponent {
-  public url = input.required<string>();
-  public size = input<'small' | 'regular'>('regular');
-  public highlighted = input(false);
-  public color = input<'primary' | 'accent'>('primary');
-  public toolTip = input<string>();
-  public disableTabFocus = input(false);
+  public readonly url = input.required<string>();
+  public readonly size = input<'small' | 'regular'>('regular');
+  public readonly highlighted = input(false);
+  public readonly color = input<'primary' | 'accent'>('primary');
+  public readonly toolTip = input<string>();
+  public readonly disableTabFocus = input(false);
 }

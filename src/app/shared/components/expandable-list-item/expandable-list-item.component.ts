@@ -11,17 +11,17 @@ import {ExpandableListItemHeaderComponent} from './expandable-list-item-header/e
   imports: [MatExpansionPanel, MatExpansionPanelHeader, ExpandableListItemHeaderComponent],
 })
 export class ExpandableListItemComponent {
-  public expanded = input(false);
-  public header = input('');
-  public disabled = input(false);
-  public loadingState = input<LoadingState>(undefined);
-  public numberOfItems = input<number | undefined>(0);
-  public showBadge = input(false);
-  public noPadding = input(false);
-  public allowTabFocus = input(true);
-  public stickyHeader = input(false);
-  public renderContentEagerly = input(false);
-  public expansionPanel = viewChild.required<MatExpansionPanel>('itemExpansionPanel');
+  public readonly expanded = input(false);
+  public readonly header = input('');
+  public readonly disabled = input(false);
+  public readonly loadingState = input<LoadingState>(undefined);
+  public readonly numberOfItems = input<number | undefined>(0);
+  public readonly showBadge = input(false);
+  public readonly noPadding = input(false);
+  public readonly allowTabFocus = input(true);
+  public readonly stickyHeader = input(false);
+  public readonly renderContentEagerly = input(false);
+  public readonly expansionPanel = viewChild.required<MatExpansionPanel>('itemExpansionPanel');
 
   constructor() {
     // If done via the [expanded] prop, this will trigger a NG0100.

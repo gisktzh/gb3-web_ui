@@ -26,7 +26,7 @@ function getIconBySeverity(severity: PageNotificationSeverity) {
 export class PageNotificationComponent {
   public readonly data = inject<PageNotification>(MAT_SNACK_BAR_DATA);
   private readonly store = inject(Store);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly icon = getIconBySeverity(this.data.severity);
 
   public markPageNotificationAsRead() {

@@ -9,7 +9,7 @@ import {SIGNAL} from '@angular/core/primitives/signals';
  */
 @Directive({selector: '[typedTourAnchor]'})
 export class TypedTourAnchorDirective extends TourAnchorMatMenuDirective implements OnInit {
-  public typedTourAnchor = input.required<OnboardingGuideAnchor>();
+  public readonly typedTourAnchor = input.required<OnboardingGuideAnchor>();
 
   override ngOnInit() {
     this.tourAnchor[SIGNAL].value = this.typedTourAnchor();

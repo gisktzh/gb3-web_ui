@@ -8,6 +8,6 @@ import {ConfigService} from '../../../../shared/services/config.service';
   styleUrls: ['./legend-content.component.scss'],
 })
 export class LegendContentComponent {
-  public layer = input.required<Layer>();
+  public readonly layer = input.required<Layer>();
   public readonly staticFilesBaseUrl = inject(ConfigService).apiConfig.gb2StaticFiles.baseUrl;
 }

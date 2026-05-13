@@ -21,16 +21,16 @@ const MAX_DIMENSION_PERCENTAGE = 0.85;
   imports: [ResizableModule],
 })
 export class ResizeHandlerComponent {
-  public minWidth = input(MIN_DIMENSIONS_WIDTH__PX);
-  public minHeight = input(MIN_DIMENSIONS_HEIGHT__PX);
-  public maxWidth = input<number>();
-  public maxHeight = input<number>();
-  public location = input.required<ResizeHandlerLocation>();
-  public usePrimaryColor = input(false);
+  public readonly minWidth = input(MIN_DIMENSIONS_WIDTH__PX);
+  public readonly minHeight = input(MIN_DIMENSIONS_HEIGHT__PX);
+  public readonly maxWidth = input<number>();
+  public readonly maxHeight = input<number>();
+  public readonly location = input.required<ResizeHandlerLocation>();
+  public readonly usePrimaryColor = input(false);
 
-  public resizeEvent = output<StyleExpression>();
-  public resizeableStyle = signal<StyleExpression>({});
-  public isResizeActive = signal(false);
+  public readonly resizeEvent = output<StyleExpression>();
+  public readonly resizeableStyle = signal<StyleExpression>({});
+  public readonly isResizeActive = signal(false);
 
   public onResizeStart() {
     this.isResizeActive.set(true);

@@ -17,8 +17,8 @@ export class DrawingsImportDialogComponent {
   private readonly store = inject(Store);
   private readonly dialogRef = inject<MatDialogRef<DrawingsImportDialogComponent>>(MatDialogRef);
 
-  public loadingState = this.store.selectSignal(selectLoadingState);
-  protected fileUploadErrorMessage = signal('');
+  public readonly loadingState = this.store.selectSignal(selectLoadingState);
+  protected readonly fileUploadErrorMessage = signal('');
 
   constructor() {
     effect(() => {

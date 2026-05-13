@@ -85,7 +85,7 @@ export class EsriToolService implements ToolService {
   private readonly geoshopMunicipalitiesService = inject(Gb3GeoshopMunicipalitiesService);
 
   private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
-  private drawingLayers = this.store.selectSignal(selectDrawingLayers);
+  private readonly drawingLayers = this.store.selectSignal(selectDrawingLayers);
 
   public cancelTool() {
     this.toolStrategy.cancel();

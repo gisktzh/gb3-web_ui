@@ -38,8 +38,8 @@ export class FavouritesService {
   private readonly timeSliderService = inject(TimeSliderService);
   private readonly timeService = inject(TIME_SERVICE);
 
-  private activeMapItemConfigurations = this.store.selectSignal(selectActiveMapItemConfigurations);
-  public availableMaps = this.store.selectSignal(selectMaps);
+  private readonly activeMapItemConfigurations = this.store.selectSignal(selectActiveMapItemConfigurations);
+  public readonly availableMaps = this.store.selectSignal(selectMaps);
   private readonly favouriteBaseConfig = this.store.selectSignal(selectFavouriteBaseConfig);
   private readonly userDrawingsVectorLayers = this.store.selectSignal(selectUserDrawingsVectorLayers);
   private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
@@ -77,8 +77,6 @@ export class FavouritesService {
     ignoreErrors: boolean = false,
   ): ActiveMapItem[] {
     const activeMapItems: ActiveMapItem[] = [];
-
-    // throw new Error(this.availableMaps().map((m) => m.id).join(', '));
 
     activeMapItemConfigurations.forEach((configuration) => {
       const existingMap = this.availableMaps().find((availableMap) => availableMap.id === configuration.mapId);

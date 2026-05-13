@@ -15,8 +15,8 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 export class UiToggleComponent {
   private readonly store = inject(Store);
 
-  public checked = this.store.selectSignal(selectHideUiElements);
-  public hideUiElementsButton = this.store.selectSignal(selectHideToggleUiElementsButton);
+  public readonly checked = this.store.selectSignal(selectHideUiElements);
+  public readonly hideUiElementsButton = this.store.selectSignal(selectHideToggleUiElementsButton);
 
   public toggleUiElementsVisibility() {
     this.store.dispatch(MapUiActions.changeUiElementsVisibility({hideAllUiElements: !this.checked(), hideUiToggleButton: false}));

@@ -37,8 +37,8 @@ export class NavbarMobileDialogComponent {
   private readonly store = inject(Store);
 
   protected readonly mainPageEnum = MainPage;
-  public isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
-  public userName = this.store.selectSignal(selectUserName);
+  public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  public readonly userName = this.store.selectSignal(selectUserName);
 
   public close(isAborted: boolean = false) {
     this.dialogRef.close(isAborted);

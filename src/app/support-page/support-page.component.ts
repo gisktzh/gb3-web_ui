@@ -21,6 +21,6 @@ export class SupportPageComponent {
   private readonly store = inject(Store);
 
   public heroText = SUPPORT_PAGE_SUMMARY;
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public additionalInformationLinksGroups = this.store.selectSignal(selectAdditionalInformationLinks);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly additionalInformationLinksGroups = this.store.selectSignal(selectAdditionalInformationLinks);
 }

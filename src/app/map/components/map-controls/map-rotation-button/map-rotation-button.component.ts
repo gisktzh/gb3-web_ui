@@ -17,8 +17,8 @@ import {MapRotationPipe} from '../../../pipes/map-rotation.pipe';
 export class MapRotationButtonComponent {
   private readonly store = inject(Store);
 
-  public rotation = input(0);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly rotation = input(0);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
   public resetRotation() {
     this.store.dispatch(MapConfigActions.setRotation({rotation: 0}));

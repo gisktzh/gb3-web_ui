@@ -33,8 +33,8 @@ import {DataDownloadOrderDownloadUrlPipe} from '../../../pipes/data-download-ord
 export class DataDownloadStatusQueueComponent {
   private readonly store = inject(Store);
 
-  public isMinimized = signal(false);
-  public statusJobs = this.store.selectSignal(selectIncompleteOrderStatusJobs);
+  public readonly isMinimized = signal(false);
+  public readonly statusJobs = this.store.selectSignal(selectIncompleteOrderStatusJobs);
 
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());

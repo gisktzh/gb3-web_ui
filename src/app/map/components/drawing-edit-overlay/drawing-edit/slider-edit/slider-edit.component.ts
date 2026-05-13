@@ -11,9 +11,9 @@ import {FormsModule} from '@angular/forms';
 })
 export class SliderEditComponent {
   public value = model<number | string>(0);
-  public minValue = input(0);
-  public maxValue = input(1);
-  public step = input(0.01);
-  public title = input('');
-  public showLineWidth = input(false);
+  public readonly minValue = input(0);
+  public readonly maxValue = input(1);
+  public readonly step = input(0.01);
+  public readonly title = input('');
+  public readonly showLineWidth = input(false);
 }

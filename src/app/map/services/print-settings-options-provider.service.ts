@@ -15,7 +15,7 @@ export class PrintSettingsOptionsProviderService {
     allCombinations: PrintCapabilitiesCombination[] | undefined,
     key: T,
   ): Array<PrintCapabilitiesCombination[typeof key]> {
-    return !allCombinations ? [] : [...new Set(allCombinations.map((c) => c[key]).filter((v) => v !== undefined && v !== null))];
+    return allCombinations ? [...new Set(allCombinations.map((c) => c[key]).filter((v) => v !== undefined && v !== null))] : [];
   }
 
   public filterOptions(

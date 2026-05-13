@@ -6,5 +6,5 @@ import {Component, input} from '@angular/core';
   styleUrls: ['./data-catalogue-detail-page-section.component.scss'],
 })
 export class DataCatalogueDetailPageSectionComponent {
-  public hasTwoColumns = input(false);
+  public readonly hasTwoColumns = input(false);
 }

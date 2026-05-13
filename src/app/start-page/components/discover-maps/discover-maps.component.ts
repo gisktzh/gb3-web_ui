@@ -1,7 +1,6 @@
 import {Component, inject, signal} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
-import {map} from 'rxjs';
-import {catchError} from 'rxjs';
+import {map, catchError} from 'rxjs';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DiscoverMapsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
@@ -22,8 +21,8 @@ const NUMBER_OF_ENTRIES = 2;
 })
 export class DiscoverMapsComponent implements HasLoadingStateSignal {
   private readonly gravCmsService = inject<GravCmsService>(GRAV_CMS_SERVICE);
-  public loadingState = signal<LoadingState>('loading');
-  public discoverMapsItems = toSignal(
+  public readonly loadingState = signal<LoadingState>('loading');
+  public readonly discoverMapsItems = toSignal(
     this.gravCmsService.loadDiscoverMapsData().pipe(
       map((discoverMapsItems) => {
         this.loadingState.set('loaded');

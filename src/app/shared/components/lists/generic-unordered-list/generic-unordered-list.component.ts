@@ -8,7 +8,7 @@ import {NgTemplateOutlet} from '@angular/common';
   styleUrl: './generic-unordered-list.component.scss',
 })
 export class GenericUnorderedListComponent<T> {
-  public listData = input<T[]>([]);
-  public itemTemplate = input<TemplateRef<unknown> | null>(null);
-  public hasGap = input(false);
+  public readonly listData = input<T[]>([]);
+  public readonly itemTemplate = input<TemplateRef<unknown> | null>(null);
+  public readonly hasGap = input(false);
 }

@@ -20,12 +20,12 @@ import {NgTemplateOutlet} from '@angular/common';
   imports: [RouterLink, NgTemplateOutlet],
 })
 export class LinkGridListItemComponent {
-  public title = input.required<string>();
-  public url = input<string>();
-  public internalLink = input<MainPage>();
-  public internalQueryParams = input<Record<string, string>>();
-  public entryType = input<string>();
-  public entryDate = input<string>();
-  public size = input<'small' | 'large'>('small');
-  public imageUrl = input<string>();
+  public readonly title = input.required<string>();
+  public readonly url = input<string>();
+  public readonly internalLink = input<MainPage>();
+  public readonly internalQueryParams = input<Record<string, string>>();
+  public readonly entryType = input<string>();
+  public readonly entryDate = input<string>();
+  public readonly size = input<'small' | 'large'>('small');
+  public readonly imageUrl = input<string>();
 }

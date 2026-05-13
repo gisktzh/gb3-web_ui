@@ -95,23 +95,23 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   private readonly configService = inject(ConfigService);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
 
-  public layer = input.required<FeatureInfoResultLayer>();
-  public topicId = input.required<string>();
+  public readonly layer = input.required<FeatureInfoResultLayer>();
+  public readonly topicId = input.required<string>();
   public readonly staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
 
   public readonly minTableHeaderWidth: number = MIN_TABLE_HEADER_WIDTH;
-  public tableHeaderWidth = signal(`${DEFAULT_TABLE_HEADER_WIDTH}px`);
-  public pinnedFeatureId = this.store.selectSignal(selectPinnedFeatureId);
-  public hoveredFeatureId = signal<number | null>(0);
-  public containerWidth = signal(0);
-  public maxTableHeaderWidth = computed(() => this.containerWidth() * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO);
-  public container = viewChild.required<ElementRef>('container');
+  public readonly tableHeaderWidth = signal(`${DEFAULT_TABLE_HEADER_WIDTH}px`);
+  public readonly pinnedFeatureId = this.store.selectSignal(selectPinnedFeatureId);
+  public readonly hoveredFeatureId = signal<number | null>(0);
+  public readonly containerWidth = signal(0);
+  public readonly maxTableHeaderWidth = computed(() => this.containerWidth() * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO);
+  public readonly container = viewChild.required<ElementRef>('container');
 
-  public highlightedFeatureId = computed(() => {
+  public readonly highlightedFeatureId = computed(() => {
     return this.pinnedFeatureId() ?? this.hoveredFeatureId();
   });
 
-  public tableData = computed(() => {
+  public readonly tableData = computed(() => {
     const tableHeaders: TableHeader[] = [];
     const tableRows: TableRows = new Map<string, TableCell[]>();
 
@@ -140,7 +140,7 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
 
   private resizeObserver!: ResizeObserver;
 
-  public featureGeometries = computed(() => {
+  public readonly featureGeometries = computed(() => {
     const featureGeometries: Map<number, GeometryWithSrs | undefined> = new Map();
 
     this.layer().features.forEach(({fid, geometry}) => {

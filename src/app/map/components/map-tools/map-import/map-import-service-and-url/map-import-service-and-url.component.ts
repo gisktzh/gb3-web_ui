@@ -17,10 +17,10 @@ import {form, required, validate, FormField, disabled, FormRoot} from '@angular/
 export class MapImportServiceAndUrlComponent {
   private readonly store = inject(Store);
 
-  public loadingState = this.store.selectSignal(selectLoadingState);
-  public serviceType = this.store.selectSignal(selectServiceType);
-  public url = this.store.selectSignal(selectUrl);
-  public serviceAndUrlModel = signal<{
+  public readonly loadingState = this.store.selectSignal(selectLoadingState);
+  public readonly serviceType = this.store.selectSignal(selectServiceType);
+  public readonly url = this.store.selectSignal(selectUrl);
+  public readonly serviceAndUrlModel = signal<{
     serviceType: MapServiceType | null;
     url: string;
   }>({
@@ -50,7 +50,7 @@ export class MapImportServiceAndUrlComponent {
       },
     },
   );
-  public validateButtonEnabled = computed(() => this.serviceAndUrlForm.url().value() || this.loadingState() === 'loading');
+  public readonly validateButtonEnabled = computed(() => this.serviceAndUrlForm.url().value() || this.loadingState() === 'loading');
 
   constructor() {
     effect(() => {

@@ -27,5 +27,5 @@ import {DecimalPipe} from '@angular/common';
   ],
 })
 export class FeatureInfoGeneralInformationComponent {
-  public generalInfoData = input.required<GeneralInfoResponse>();
+  public readonly generalInfoData = input.required<GeneralInfoResponse>();
 }

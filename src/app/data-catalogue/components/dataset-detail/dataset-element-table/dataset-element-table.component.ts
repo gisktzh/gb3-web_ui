@@ -10,6 +10,6 @@ import {TextOrPlaceholderPipe} from '../../../../shared/pipes/text-or-placeholde
   styleUrl: './dataset-element-table.component.scss',
 })
 export class DatasetElementTableComponent {
-  public attributes = input<LayerAttributes[]>([]);
-  public name = input.required<string>();
+  public readonly attributes = input<LayerAttributes[]>([]);
+  public readonly name = input.required<string>();
 }

@@ -17,27 +17,26 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 export class SearchInputComponent {
   private readonly store = inject(Store);
 
-  public placeholderText = input.required<string>();
-  public showFilterButton = input(true);
-  public alwaysEnableClearButton = input(false);
-  public clearButtonLabel = input<string>();
-  public mode = input<SearchMode>('normal');
-  public focusOnInit = input(false);
-  public disabled = input(false);
-  public isAnyFilterActive = input(false);
+  public readonly placeholderText = input.required<string>();
+  public readonly showFilterButton = input(true);
+  public readonly alwaysEnableClearButton = input(false);
+  public readonly clearButtonLabel = input<string>();
+  public readonly mode = input<SearchMode>('normal');
+  public readonly focusOnInit = input(false);
+  public readonly disabled = input(false);
+  public readonly isAnyFilterActive = input(false);
+  public readonly searchTerm = signal('');
+  private readonly lastEmittedTerm = signal('');
+  private readonly shouldEmitNext = signal(true);
 
   public readonly focusEvent = output();
   public readonly changeSearchTermEvent = output<string>();
   public readonly clearSearchTermEvent = output();
   public readonly openFilterEvent = output();
 
-  public inputRef = viewChild.required<ElementRef>('searchInput');
+  public readonly inputRef = viewChild.required<ElementRef>('searchInput');
 
-  public screenMode = this.store.selectSignal(selectScreenMode);
-
-  private lastEmittedTerm = signal('');
-  private shouldEmitNext = signal(true);
-  public searchTerm = signal('');
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
   constructor() {
     effect((onCleanup) => {

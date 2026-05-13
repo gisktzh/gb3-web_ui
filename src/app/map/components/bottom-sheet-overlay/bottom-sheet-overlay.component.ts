@@ -29,6 +29,6 @@ import {MapManagementMobileComponent} from '../map-management-mobile/map-managem
 export class BottomSheetOverlayComponent {
   private readonly store = inject(Store);
 
-  public showInteractiveElements = input(true);
-  public bottomSheetContent = this.store.selectSignal(selectBottomSheetContent);
+  public readonly showInteractiveElements = input(true);
+  public readonly bottomSheetContent = this.store.selectSignal(selectBottomSheetContent);
 }

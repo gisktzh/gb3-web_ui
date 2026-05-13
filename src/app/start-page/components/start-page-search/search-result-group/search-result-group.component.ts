@@ -16,5 +16,5 @@ export class SearchResultGroupComponent {
   public readonly header = input('');
   public readonly loadingState = input<LoadingState>();
   public readonly numberOfItems = input(0);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 }

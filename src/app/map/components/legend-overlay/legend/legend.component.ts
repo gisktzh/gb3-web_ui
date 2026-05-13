@@ -15,9 +15,9 @@ import {LegendItemComponent} from '../legend-item/legend-item.component';
 export class LegendComponent {
   private readonly store = inject(Store);
 
-  public showInteractiveElements = input(true);
-  public legendItems = this.store.selectSignal(selectLegendItemsForDisplay);
-  public loadingState = this.store.selectSignal(selectLoadingState);
+  public readonly showInteractiveElements = input(true);
+  public readonly legendItems = this.store.selectSignal(selectLegendItemsForDisplay);
+  public readonly loadingState = this.store.selectSignal(selectLoadingState);
 
   public trackById(_: number, item: LegendDisplay): string {
     return item.id;

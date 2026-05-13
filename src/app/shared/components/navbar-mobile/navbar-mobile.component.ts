@@ -17,9 +17,8 @@ import {MatIcon} from '@angular/material/icon';
 export class NavbarMobileComponent {
   private readonly dialog = inject(MatDialog);
   private readonly store = inject(Store);
-
-  private urlState = this.store.selectSignal(selectUrlState);
-  public isSimplifiedPage = computed(() => {
+  private readonly urlState = this.store.selectSignal(selectUrlState);
+  public readonly isSimplifiedPage = computed(() => {
     const urlState = this.urlState();
     if (!urlState) {
       return false;

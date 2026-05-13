@@ -34,11 +34,11 @@ import {MatIcon} from '@angular/material/icon';
   ],
 })
 export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductMetadata> {
-  public metadataContactElements = computed<DataDisplayElement[]>(() => {
+  public readonly metadataContactElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? DataExtractionUtils.extractContactElements(baseDetailMetaData.contact.metadata) : [];
   });
-  public linkedDatasets = computed<MetadataLink[]>(() => {
+  public readonly linkedDatasets = computed<MetadataLink[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? baseDetailMetaData.datasets : [];
   });

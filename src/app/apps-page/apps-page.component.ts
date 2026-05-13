@@ -15,5 +15,5 @@ import {selectExternalAppsForAccessMode} from '../state/external-apps/selectors/
 export class AppsPageComponent {
   private readonly store = inject(Store);
 
-  public externalApps = this.store.selectSignal(selectExternalAppsForAccessMode);
+  public readonly externalApps = this.store.selectSignal(selectExternalAppsForAccessMode);
 }

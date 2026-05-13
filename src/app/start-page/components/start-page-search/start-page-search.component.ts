@@ -30,8 +30,8 @@ export class StartPageSearchComponent extends BaseSearchContainerComponent {
 
   private readonly searchResultGroupsComponent = viewChild(SearchResultGroupsComponent);
 
-  public searchTerm = this.store.selectSignal(selectTerm);
-  public searchTerms = computed<string[]>(() => {
+  public readonly searchTerm = this.store.selectSignal(selectTerm);
+  public readonly searchTerms = computed<string[]>(() => {
     const searchTerm = this.searchTerm()?.trim();
     if (!searchTerm || searchTerm.length === 0) {
       return [];
@@ -39,16 +39,16 @@ export class StartPageSearchComponent extends BaseSearchContainerComponent {
 
     return searchTerm.split(/\s+/);
   });
-  public activeSearchFilterValues = this.store.selectSignal(selectActiveSearchFilterValues);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly activeSearchFilterValues = this.store.selectSignal(selectActiveSearchFilterValues);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly searchConfig = this.configService.searchConfig.startPage;
 
-  public filteredFaqItems = this.store.selectSignal(selectFilteredFaqItems);
-  public filteredUsefulLinks = this.store.selectSignal(selectFilteredUsefulLinks);
-  public filteredMetadataItems = this.store.selectSignal(selectFilteredMetadataItems);
-  public filteredLayerCatalogMaps = this.store.selectSignal(selectFilteredLayerCatalogMaps);
+  public readonly filteredFaqItems = this.store.selectSignal(selectFilteredFaqItems);
+  public readonly filteredUsefulLinks = this.store.selectSignal(selectFilteredUsefulLinks);
+  public readonly filteredMetadataItems = this.store.selectSignal(selectFilteredMetadataItems);
+  public readonly filteredLayerCatalogMaps = this.store.selectSignal(selectFilteredLayerCatalogMaps);
 
-  public combinedSearchData = computed(() => ({
+  public readonly combinedSearchData = computed(() => ({
     searchTerms: this.searchTerms(),
     faq: this.filteredFaqItems(),
     usefulLinks: this.filteredUsefulLinks(),

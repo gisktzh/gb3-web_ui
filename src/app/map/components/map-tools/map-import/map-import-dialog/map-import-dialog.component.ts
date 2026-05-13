@@ -30,9 +30,9 @@ export class MapImportDialogComponent {
   private readonly dialogRef = inject<MatDialogRef<MapImportDialogComponent>>(MatDialogRef);
   private readonly store = inject(Store);
 
-  public externalServiceLoadingState = this.store.selectSignal(selectLoadingState);
-  public isAnyLayerSelected = this.store.selectSignal(selectIsAnyLayerSelected);
-  public title = this.store.selectSignal(selectTitle);
+  public readonly externalServiceLoadingState = this.store.selectSignal(selectLoadingState);
+  public readonly isAnyLayerSelected = this.store.selectSignal(selectIsAnyLayerSelected);
+  public readonly title = this.store.selectSignal(selectTitle);
 
   public cancel() {
     this.store.dispatch(MapImportActions.clearAll());

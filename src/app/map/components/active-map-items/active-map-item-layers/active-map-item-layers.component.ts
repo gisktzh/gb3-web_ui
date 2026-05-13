@@ -16,9 +16,9 @@ import {ActiveMapItemLayerComponent} from './active-map-item-layer/active-map-it
 export class ActiveMapItemLayersComponent {
   private readonly store = inject(Store);
 
-  public activeMapItem = input.required<ActiveMapItem>();
+  public readonly activeMapItem = input.required<ActiveMapItem>();
 
-  public shownLayers = computed(() => {
+  public readonly shownLayers = computed(() => {
     const activeMapItem = this.activeMapItem();
 
     if (activeMapItem.settings.type !== 'gb2Wms') {

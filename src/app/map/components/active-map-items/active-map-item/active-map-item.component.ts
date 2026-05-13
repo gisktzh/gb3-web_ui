@@ -27,12 +27,12 @@ type TabType = 'layers' | 'settings';
 export class ActiveMapItemComponent {
   private readonly store = inject(Store);
 
-  public activeMapItem = input.required<ActiveMapItem>();
-  public isFirstActiveMapItem = input(false);
-  public isLastActiveMapItem = input(false);
-  public isDragAndDropDisabled = input(false);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public activeTab = signal<TabType>('layers');
+  public readonly activeMapItem = input.required<ActiveMapItem>();
+  public readonly isFirstActiveMapItem = input(false);
+  public readonly isLastActiveMapItem = input(false);
+  public readonly isDragAndDropDisabled = input(false);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly activeTab = signal<TabType>('layers');
 
   constructor() {
     effect(() => {

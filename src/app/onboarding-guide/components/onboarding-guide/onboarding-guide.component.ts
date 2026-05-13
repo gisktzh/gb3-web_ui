@@ -29,8 +29,8 @@ import {toSignal} from '@angular/core/rxjs-interop';
 export class OnboardingGuideComponent {
   protected readonly tourService = inject(TourService);
   private readonly store = inject(Store);
-  private currentShownStep = toSignal(this.tourService.stepShow$);
-  private currentShownStepIndex = computed(() => {
+  private readonly currentShownStep = toSignal(this.tourService.stepShow$);
+  private readonly currentShownStepIndex = computed(() => {
     const currentShownStep = this.currentShownStep();
     if (!currentShownStep) {
       return 0;
@@ -38,10 +38,10 @@ export class OnboardingGuideComponent {
 
     return this.tourService.steps.indexOf(currentShownStep.step);
   });
-  private currentStepNumber = computed(() => this.currentShownStepIndex() + 1);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public progress = computed(() => this.currentStepNumber() + 1);
-  public hasNextStep = computed(() => {
+  private readonly currentStepNumber = computed(() => this.currentShownStepIndex() + 1);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly progress = computed(() => this.currentStepNumber() + 1);
+  public readonly hasNextStep = computed(() => {
     const currentShownStep = this.currentShownStep();
     if (!currentShownStep) {
       return false;
@@ -49,7 +49,7 @@ export class OnboardingGuideComponent {
 
     return this.tourService.hasNext(currentShownStep.step);
   });
-  public hasPreviousStep = computed(() => {
+  public readonly hasPreviousStep = computed(() => {
     const currentShownStep = this.currentShownStep();
     if (!currentShownStep) {
       return false;

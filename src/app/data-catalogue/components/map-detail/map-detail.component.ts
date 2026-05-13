@@ -40,15 +40,15 @@ interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   ],
 })
 export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata> {
-  public geodataContactElements = computed<DataDisplayElement[]>(() => {
+  public readonly geodataContactElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? DataExtractionUtils.extractContactElements(baseDetailMetaData.contact.geodata) : [];
   });
-  public linkedDatasets = computed<MetadataLink[]>(() => {
+  public readonly linkedDatasets = computed<MetadataLink[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? baseDetailMetaData.datasets : [];
   });
-  public gB2Url = computed<string | undefined>(() => this.baseDetailMetaData()?.gb2Url?.href);
+  public readonly gB2Url = computed<string | undefined>(() => this.baseDetailMetaData()?.gb2Url?.href);
 
   protected loadMetadata(id: string) {
     return this.gb3MetadataService.loadMapDetail(id);

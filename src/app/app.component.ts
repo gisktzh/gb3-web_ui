@@ -47,10 +47,10 @@ export class AppComponent {
   private readonly elements = viewChildren<HTMLElement, ElementRef<HTMLElement>>(Object.values(SkipLinkTemplateVariable).join(', '), {
     read: ElementRef<HTMLElement>,
   });
-  protected screenMode = this.store.selectSignal(selectScreenMode);
-  protected mapUiState = this.store.selectSignal(selectMapUiState);
-  protected urlState = this.store.selectSignal(selectUrlState);
-  protected isHeadlessPage = computed(() => {
+  protected readonly screenMode = this.store.selectSignal(selectScreenMode);
+  protected readonly mapUiState = this.store.selectSignal(selectMapUiState);
+  protected readonly urlState = this.store.selectSignal(selectUrlState);
+  protected readonly isHeadlessPage = computed(() => {
     const urlState = this.urlState();
     if (!urlState) {
       return false;
@@ -58,7 +58,7 @@ export class AppComponent {
 
     return urlState.isHeadlessPage;
   });
-  protected isSimplifiedPage = computed(() => {
+  protected readonly isSimplifiedPage = computed(() => {
     const urlState = this.urlState();
     if (!urlState) {
       return false;
@@ -66,8 +66,8 @@ export class AppComponent {
 
     return urlState.isSimplifiedPage;
   });
-  protected scrollbarWidth = this.store.selectSignal(selectScrollbarWidth);
-  protected breakpointState = toSignal(
+  protected readonly scrollbarWidth = this.store.selectSignal(selectScrollbarWidth);
+  protected readonly breakpointState = toSignal(
     this.breakpointObserver.observe([
       BreakpointsWidth.Mobile,
       BreakpointsWidth.SmallTablet,
@@ -117,7 +117,7 @@ export class AppComponent {
 
   public skipToDomElement(elementId: string): void {
     const element = this.elements().find((el) => el.nativeElement.id === elementId);
-    if (element && element.nativeElement) {
+    if (element?.nativeElement) {
       element.nativeElement.setAttribute('tabindex', '-1');
       element.nativeElement.focus();
     }

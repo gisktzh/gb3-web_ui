@@ -35,13 +35,13 @@ import {disabled, form, FormField} from '@angular/forms/signals';
 export class ProductComponent {
   private readonly store = inject(Store);
 
-  public product = input.required<Product>();
-  public order = input<Order>();
-  public disabled = input(false);
+  public readonly product = input.required<Product>();
+  public readonly order = input<Order>();
+  public readonly disabled = input(false);
 
-  public orderProducts = computed(() => (this.order()?.products || []).filter((product) => product.id === this.product().gisZHNr));
-  public isProductSelected = signal(this.orderProducts.length > 0);
-  public selectableFormats = computed(() => {
+  public readonly orderProducts = computed(() => (this.order()?.products || []).filter((product) => product.id === this.product().gisZHNr));
+  public readonly isProductSelected = signal(this.orderProducts.length > 0);
+  public readonly selectableFormats = computed(() => {
     const productFormats: ProductFormat[] = [];
     this.orderProducts().forEach((orderProduct) => {
       const productFormat = this.product().formats.find((format) => orderProduct.formatId === format.id);
@@ -51,15 +51,14 @@ export class ProductComponent {
     });
     return productFormats;
   });
-
-  public formatsFormModel = signal<{formats: ProductFormat[]}>({
+  public readonly formatsFormModel = signal<{formats: ProductFormat[]}>({
     formats: this.selectableFormats(),
   });
-  public formatsForm = form(this.formatsFormModel, (fieldPath) => {
+  public readonly formatsForm = form(this.formatsFormModel, (fieldPath) => {
     disabled(fieldPath.formats, () => this.disabled());
   });
 
-  public matSelectRef = viewChild<MatSelect>('formatsSelect');
+  public readonly matSelectRef = viewChild<MatSelect>('formatsSelect');
 
   public toggleProduct() {
     if (this.isProductSelected()) {

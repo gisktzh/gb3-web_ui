@@ -18,12 +18,12 @@ import {FeatureInfoComponent} from './feature-info/feature-info.component';
 export class FeatureInfoOverlayComponent {
   private readonly store = inject(Store);
 
-  public showInteractiveElements = input(true);
+  public readonly showInteractiveElements = input(true);
 
-  public isVisible = this.store.selectSignal(selectIsFeatureInfoOverlayVisible);
-  public featureInfoData = this.store.selectSignal(selectFeatureInfosForDisplay);
-  public loadingState = this.store.selectSignal(selectFeatureInfoQueryLoadingState);
-  public printLoadingState = this.store.selectSignal(selectFeatureInfoPrintState);
+  public readonly isVisible = this.store.selectSignal(selectIsFeatureInfoOverlayVisible);
+  public readonly featureInfoData = this.store.selectSignal(selectFeatureInfosForDisplay);
+  public readonly loadingState = this.store.selectSignal(selectFeatureInfoQueryLoadingState);
+  public readonly printLoadingState = this.store.selectSignal(selectFeatureInfoPrintState);
 
   public close() {
     this.store.dispatch(MapUiActions.setFeatureInfoVisibility({isVisible: false}));

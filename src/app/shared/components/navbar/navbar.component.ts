@@ -38,12 +38,12 @@ export class NavbarComponent {
   private readonly store = inject(Store);
   private readonly dialog = inject(MatDialog);
 
-  public isSimplifiedPage = input(false);
+  public readonly isSimplifiedPage = input(false);
 
-  public isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
-  public userName = this.store.selectSignal(selectUserName);
-  public scrollbarWidth = this.store.selectSignal(selectScrollbarWidth);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  public readonly userName = this.store.selectSignal(selectUserName);
+  public readonly scrollbarWidth = this.store.selectSignal(selectScrollbarWidth);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
   protected readonly mainPageEnum = MainPage;
 

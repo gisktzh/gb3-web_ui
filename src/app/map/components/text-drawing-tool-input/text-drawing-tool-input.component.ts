@@ -17,7 +17,7 @@ export class TextDrawingToolInputComponent {
   private readonly dialogRef = inject<MatDialogRef<TextDrawingToolInputComponent>>(MatDialogRef);
 
   public readonly maxLength: number = MapConstants.TEXT_DRAWING_MAX_LENGTH;
-  public textModel = signal<{text: string}>({text: ''});
+  public readonly textModel = signal<{text: string}>({text: ''});
   public textForm = form(this.textModel, (fieldPath) => {
     required(fieldPath.text);
     minLength(fieldPath.text, 1);

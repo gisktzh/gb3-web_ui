@@ -19,14 +19,13 @@ export class SearchWindowComponent extends BaseSearchContainerComponent {
 
   private readonly configService = inject(ConfigService);
   private readonly resultGroupsComponent = viewChild.required<ResultGroupsComponent>(ResultGroupsComponent);
-  public allSearchResults = computed(() => {
-    return this.resultGroupsComponent()
+  public readonly allSearchResults = computed(() =>
+    this.resultGroupsComponent()
       .resultGroupComponents()
-      .map((resultGroup) => resultGroup.searchResultElements())
-      .flat();
-  });
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public selectedSearchResult = this.store.selectSignal(selectSelectedSearchResult);
+      .flatMap((resultGroup) => resultGroup.searchResultElements()),
+  );
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly selectedSearchResult = this.store.selectSignal(selectSelectedSearchResult);
   public readonly searchConfig = this.configService.searchConfig.mapPage;
 
   constructor() {

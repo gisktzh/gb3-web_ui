@@ -11,11 +11,11 @@ export class DragCursorDirective {
 
   constructor() {
     const dragStartedSub = this.cdkDrag.started.subscribe(() => {
-      this.document.body.style.cursor = 'grabbing';
+      this.document.body.style.setProperty('cursor', 'grabbing');
     });
 
     const dragEndedSub = this.cdkDrag.ended.subscribe(() => {
-      this.document.body.style.cursor = 'auto';
+      this.document.body.style.setProperty('cursor', 'auto');
     });
 
     this.destroyRef.onDestroy(() => {

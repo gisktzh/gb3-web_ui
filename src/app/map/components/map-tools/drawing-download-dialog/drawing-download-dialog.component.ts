@@ -23,7 +23,7 @@ export class DrawingDownloadDialogComponent {
   private readonly store = inject(Store);
   private readonly dialogRef = inject<MatDialogRef<DrawingDownloadDialogComponent>>(MatDialogRef);
 
-  public exportFormatModel = signal<{exportFormat: ExportFormat}>({
+  public readonly exportFormatModel = signal<{exportFormat: ExportFormat}>({
     exportFormat: ExportFormat.Geojson,
   });
   public exportFormatForm = form(this.exportFormatModel, (fieldPath) => {
@@ -31,7 +31,7 @@ export class DrawingDownloadDialogComponent {
   });
 
   public availableExportFormats = Object.values(ExportFormat);
-  public loadingState = this.store.selectSignal(selectExportLoadingState);
+  public readonly loadingState = this.store.selectSignal(selectExportLoadingState);
 
   constructor() {
     effect(() => {

@@ -9,5 +9,5 @@ import {TextOrPlaceholderPipe} from '../../../shared/pipes/text-or-placeholder.p
   styleUrls: ['./data-display.component.scss'],
 })
 export class DataDisplayComponent {
-  public elements = input<DataDisplayElement[]>([]);
+  public readonly elements = input<DataDisplayElement[]>([]);
 }

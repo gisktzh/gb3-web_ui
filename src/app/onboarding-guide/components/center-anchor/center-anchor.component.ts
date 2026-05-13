@@ -12,5 +12,5 @@ import {TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
   imports: [TourAnchorMatMenuDirective],
 })
 export class CenterAnchorComponent {
-  public anchorName = input.required<OnboardingGuideAnchor>();
+  public readonly anchorName = input.required<OnboardingGuideAnchor>();
 }

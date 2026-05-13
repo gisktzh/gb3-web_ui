@@ -29,7 +29,7 @@ import {MatButton} from '@angular/material/button';
 export class DataCatalogueFilterDialogComponent {
   private readonly dialogRef = inject<MatDialogRef<DataCatalogueFilterDialogComponent>>(MatDialogRef);
   private readonly store = inject(Store);
-  public dataCatalogueFilters = this.store.selectSignal(selectFilters);
+  public readonly dataCatalogueFilters = this.store.selectSignal(selectFilters);
 
   public trackByFilterLabel(_: number, item: DataCatalogueFilter) {
     return item.label;

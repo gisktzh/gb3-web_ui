@@ -13,7 +13,7 @@ import {LegendContentComponent} from '../legend-content/legend-content.component
   imports: [MapOverlayListItemComponent, MatIcon, NgTemplateOutlet, LegendContentComponent],
 })
 export class LegendItemComponent {
-  public legendItem = input.required<LegendDisplay>();
-  public showInteractiveElements = input(true);
+  public readonly legendItem = input.required<LegendDisplay>();
+  public readonly showInteractiveElements = input(true);
   public readonly staticFilesBaseUrl = inject(ConfigService).apiConfig.gb2StaticFiles.baseUrl;
 }

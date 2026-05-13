@@ -14,7 +14,7 @@ import {ExternalLayerId} from '../../../../../shared/types/external-layer-id.typ
 export class MapImportLayerListComponent {
   private readonly store = inject(Store);
 
-  public layerSelections = this.store.selectSignal(selectLayerSelections);
+  public readonly layerSelections = this.store.selectSignal(selectLayerSelections);
 
   public toggleSelection(layerId: ExternalLayerId) {
     this.store.dispatch(MapImportActions.toggleLayerSelection({layerId}));

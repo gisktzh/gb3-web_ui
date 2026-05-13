@@ -22,11 +22,11 @@ export class AccordionItemComponent {
    * * Light = white borders, white font
    * * Dark = dark borders, black font
    */
-  public variant = input<'light' | 'dark' | 'grey'>('light');
-  public header = input.required<string>();
-  public ariaIdentifier = computed(() => btoa(this.header()));
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  private accordionItem = viewChild.required<CdkAccordionItem>(CdkAccordionItem);
+  public readonly variant = input<'light' | 'dark' | 'grey'>('light');
+  public readonly header = input.required<string>();
+  public readonly ariaIdentifier = computed(() => btoa(this.header()));
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  private readonly accordionItem = viewChild.required<CdkAccordionItem>(CdkAccordionItem);
 
   public toggle(event: Event) {
     event.preventDefault();

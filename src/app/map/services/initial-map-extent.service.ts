@@ -12,7 +12,7 @@ import {BoundingBox, InitialMapPadding} from '../../state/map/states/map-config.
 export class InitialMapExtentService {
   private readonly store = inject(Store);
 
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
   public calculateInitialExtent(): {x: number; y: number; scale: number} {
     const min = defaultMapConfig.initialBoundingBox.min;
@@ -22,10 +22,10 @@ export class InitialMapExtentService {
     const boundingBoxHeight = max.y - min.y;
 
     const viewExtentPadding =
-      this.screenMode() !== 'mobile' ? defaultMapConfig.initialMapPadding : defaultMapConfig.initialMapPaddingMobile;
+      this.screenMode() === 'mobile' ? defaultMapConfig.initialMapPaddingMobile : defaultMapConfig.initialMapPadding;
 
     const mapWidth = window.innerWidth;
-    const mapHeight = this.screenMode() !== 'mobile' ? window.innerHeight - MapConstants.NAV_BAR_HEIGHT : window.innerHeight;
+    const mapHeight = this.screenMode() === 'mobile' ? window.innerHeight : window.innerHeight - MapConstants.NAV_BAR_HEIGHT;
 
     const viewportWidth = mapWidth - viewExtentPadding.left - viewExtentPadding.right;
     const viewportHeight = mapHeight - viewExtentPadding.top - viewExtentPadding.bottom;

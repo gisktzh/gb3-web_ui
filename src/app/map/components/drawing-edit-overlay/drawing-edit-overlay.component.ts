@@ -14,7 +14,7 @@ import {DrawingEditComponent} from './drawing-edit/drawing-edit.component';
 export class DrawingEditOverlayComponent {
   private readonly store = inject(Store);
 
-  public isVisible = this.store.selectSignal(selectIsDrawingEditOverlayVisible);
+  public readonly isVisible = this.store.selectSignal(selectIsDrawingEditOverlayVisible);
 
   public close() {
     this.store.dispatch(DrawingActions.cancelEditMode());

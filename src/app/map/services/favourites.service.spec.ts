@@ -2439,7 +2439,12 @@ describe('FavouritesService', () => {
       await vi.runAllTimersAsync();
       const result = service.getActiveMapItemsForFavourite(activeMapItemConfigurations, true);
 
-      const initialTimeExtent = timeSliderService.createInitialTimeSliderExtent(service.availableMaps()[0].timeSliderConfiguration!);
+      const timeSliderConfiguration = service.availableMaps()[0].timeSliderConfiguration;
+      if (!timeSliderConfiguration) {
+        expect.fail('timeSliderConfiguration not defined');
+      }
+
+      const initialTimeExtent = timeSliderService.createInitialTimeSliderExtent(timeSliderConfiguration);
       const activeMapItems: ActiveMapItem[] = [
         ActiveMapItemFactory.createGb2WmsMapItem(
           service.availableMaps()[0],

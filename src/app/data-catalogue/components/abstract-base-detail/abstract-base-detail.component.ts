@@ -22,20 +22,20 @@ type DetailMetadata = ProductMetadata | MapMetadata | ServiceMetadata | DatasetM
   template: '',
 })
 export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> {
-  protected baseDetailMetaData = signal<T | undefined>(undefined);
-  public baseMetadataInformation = computed<BaseMetadataInformation | undefined>(() => {
+  protected readonly baseDetailMetaData = signal<T | undefined>(undefined);
+  public readonly baseMetadataInformation = computed<BaseMetadataInformation | undefined>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? this.extractBaseMetadataInformation(baseDetailMetaData) : undefined;
   });
-  public informationElements = computed<DataDisplayElement[]>(() => {
+  public readonly informationElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? this.extractInformationElements(baseDetailMetaData) : [];
   });
 
   private readonly store: Store = inject(Store);
-  public loadingState = signal<LoadingState>('loading');
+  public readonly loadingState = signal<LoadingState>('loading');
   public readonly apiBaseUrl: string;
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
   protected readonly gb3MetadataService: Gb3MetadataService = inject(Gb3MetadataService);
   protected readonly mainPageEnum = MainPage;
   protected readonly dataCataloguePageEnum = DataCataloguePage;

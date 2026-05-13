@@ -18,11 +18,11 @@ import {FeatureInfoItemComponent} from '../feature-info-item/feature-info-item.c
 export class FeatureInfoComponent {
   private readonly store = inject(Store);
 
-  public showInteractiveElements = input(true);
+  public readonly showInteractiveElements = input(true);
 
-  public loadingState = this.store.selectSignal(selectFeatureInfoQueryLoadingState);
-  public featureInfoData = this.store.selectSignal(selectFeatureInfosForDisplay);
-  public generalInfoData = this.store.selectSignal(selectData);
+  public readonly loadingState = this.store.selectSignal(selectFeatureInfoQueryLoadingState);
+  public readonly featureInfoData = this.store.selectSignal(selectFeatureInfosForDisplay);
+  public readonly generalInfoData = this.store.selectSignal(selectData);
 
   public trackById(_: number, item: FeatureInfoResultDisplay): string {
     return item.id;

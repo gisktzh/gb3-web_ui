@@ -53,17 +53,18 @@ export class MapDataCatalogueComponent implements OnDestroy {
   private readonly store = inject(Store);
   private readonly favouritesService = inject(FavouritesService);
 
-  public changeIsMinimizedEvent = output<boolean>();
+  public readonly changeIsMinimizedEvent = output<boolean>();
 
-  public topics = this.store.selectSignal(selectFilteredLayerCatalog);
-  public catalogueLoadingState = this.store.selectSignal(selectCatalogueLoadingState);
-  public favouritesLoadingState = this.store.selectSignal(selectFavouritesLoadingState);
-  public filterString = this.store.selectSignal(selectFilterString);
-  public filteredFavourites = this.store.selectSignal(selectFilteredFavouriteList);
-  public isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  private originalMaps = this.store.selectSignal(selectMaps);
-  public isMinimized = signal(false);
+  public readonly topics = this.store.selectSignal(selectFilteredLayerCatalog);
+  public readonly catalogueLoadingState = this.store.selectSignal(selectCatalogueLoadingState);
+  public readonly favouritesLoadingState = this.store.selectSignal(selectFavouritesLoadingState);
+  public readonly filterString = this.store.selectSignal(selectFilterString);
+  public readonly filteredFavourites = this.store.selectSignal(selectFilteredFavouriteList);
+  public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  private readonly originalMaps = this.store.selectSignal(selectMaps);
+  public readonly isMinimized = signal(false);
+
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
     effect(() => {

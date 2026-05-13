@@ -33,9 +33,9 @@ export class CoordinateScaleInputsComponent {
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
 
-  public scale = this.store.selectSignal(selectRoundedScale);
-  public mapCenter = this.store.selectSignal(selectCenterReadable);
-  public rotation = this.store.selectSignal(selectRotation);
+  public readonly scale = this.store.selectSignal(selectRoundedScale);
+  public readonly mapCenter = this.store.selectSignal(selectCenterReadable);
+  public readonly rotation = this.store.selectSignal(selectRotation);
 
   public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
   public readonly minScale = this.configService.mapConfig.mapScaleConfig.minScale;

@@ -20,10 +20,10 @@ import {LayerTooltipPipe} from '../../../../../shared/pipes/layer-tooltip.pipe';
 export class ActiveMapItemLayerComponent {
   private readonly store = inject(Store);
 
-  public activeMapItem = input.required<ActiveMapItem>();
-  public layer = input.required<MapLayer>();
+  public readonly activeMapItem = input.required<ActiveMapItem>();
+  public readonly layer = input.required<MapLayer>();
 
-  public scale = this.store.selectSignal(selectScale);
+  public readonly scale = this.store.selectSignal(selectScale);
 
   public toggleSublayerVisibility(layer: MapLayer) {
     this.store.dispatch(

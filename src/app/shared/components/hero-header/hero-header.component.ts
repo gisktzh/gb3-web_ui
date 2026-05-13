@@ -9,8 +9,8 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 })
 export class HeroHeaderComponent {
   private readonly store = inject(Store);
-  public heroTitle = input('');
-  public heroText = input('');
-  public heroSubText = input<string>();
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly heroTitle = input('');
+  public readonly heroText = input('');
+  public readonly heroSubText = input<string>();
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 }

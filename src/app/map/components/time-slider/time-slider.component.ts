@@ -46,39 +46,39 @@ export class TimeSliderComponent {
 
   public readonly changeTimeExtentEvent = output<TimeExtent>();
 
-  public initialTimeExtent = input.required<TimeExtent>();
-  public timeSliderConfiguration = input.required<TimeSliderConfiguration>();
+  public readonly initialTimeExtent = input.required<TimeExtent>();
+  public readonly timeSliderConfiguration = input.required<TimeSliderConfiguration>();
 
-  public availableDates = computed(() => {
+  public readonly availableDates = computed(() => {
     return this.timeSliderService.createStops(this.timeSliderConfiguration());
   });
 
-  public timeExtent = linkedSignal<TimeExtent>(() => {
+  public readonly timeExtent = linkedSignal<TimeExtent>(() => {
     return {start: this.initialTimeExtent().start, end: this.initialTimeExtent().end};
   });
 
-  public firstSliderPosition = linkedSignal<number>(() => this.findPositionOfDate(this.timeExtent().start) ?? 0);
+  public readonly firstSliderPosition = linkedSignal<number>(() => this.findPositionOfDate(this.timeExtent().start) ?? 0);
   // the second slider position is `undefined` in case that there is a fixed range
-  public secondSliderPosition = linkedSignal<number | undefined>(() =>
+  public readonly secondSliderPosition = linkedSignal<number | undefined>(() =>
     this.timeSliderConfiguration().range ? undefined : this.findPositionOfDate(this.timeExtent().end),
   );
 
-  public minimumDateIndex = signal(0);
-  public maximumDateIndex = computed(() => this.availableDates().length);
+  public readonly minimumDateIndex = signal(0);
+  public readonly maximumDateIndex = computed(() => this.availableDates().length);
 
   // the time slider shows a simple current value (e.g. `2001` instead of `2001-2002`) if it has a range of exactly one of a single time unit (year, month, ...)
-  public hasSimpleCurrentValue = computed(() => this.isStringSingleTimeUnitRange(this.timeSliderConfiguration().range));
+  public readonly hasSimpleCurrentValue = computed(() => this.isStringSingleTimeUnitRange(this.timeSliderConfiguration().range));
 
   // date picker options
-  public hasDatePicker = computed(() => this.timeSliderConfiguration().sourceType === 'parameter');
-  public datePickerStartView = computed<DatePickerStartView>(() => {
+  public readonly hasDatePicker = computed(() => this.timeSliderConfiguration().sourceType === 'parameter');
+  public readonly datePickerStartView = computed<DatePickerStartView>(() => {
     if (!this.hasDatePicker()) {
       return 'month';
     }
 
     return this.createDatePickerStartView(this.datePickerUnit());
   });
-  private datePickerUnit = computed<DatePickerManipulationUnits>(() => {
+  private readonly datePickerUnit = computed<DatePickerManipulationUnits>(() => {
     if (!this.hasDatePicker()) {
       return 'days';
     }

@@ -9,5 +9,5 @@ import {LinkListItemComponent} from './link-list-item/link-list-item.component';
   imports: [LinkListItemComponent],
 })
 export class LinkListComponent {
-  public linksGroups = input<LinksGroup[]>([]);
+  public readonly linksGroups = input<LinksGroup[]>([]);
 }

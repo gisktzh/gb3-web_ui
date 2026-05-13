@@ -11,15 +11,15 @@ import {SharedModule} from '../../../shared/shared.module';
   imports: [SharedModule],
 })
 export class MapOverlayComponent {
-  public showPrintButton = input(true);
-  public isPrintButtonEnabled = input(false);
-  public printLoadingState = input<LoadingState>();
-  public isVisible = input(false);
-  public overlayTitle = input('');
-  public location = input<ResizeHandlerLocation>('left');
-  public closeEvent = output();
-  public printButtonEvent = output();
-  public resizeableStyle = signal<StyleExpression>({});
+  public readonly showPrintButton = input(true);
+  public readonly isPrintButtonEnabled = input(false);
+  public readonly printLoadingState = input<LoadingState>();
+  public readonly isVisible = input(false);
+  public readonly overlayTitle = input('');
+  public readonly location = input<ResizeHandlerLocation>('left');
+  public readonly closeEvent = output();
+  public readonly printButtonEvent = output();
+  public readonly resizeableStyle = signal<StyleExpression>({});
 
   public onClose() {
     this.resizeableStyle.set({});

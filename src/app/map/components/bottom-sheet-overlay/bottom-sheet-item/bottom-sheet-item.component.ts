@@ -21,14 +21,14 @@ import {CdkScrollable} from '@angular/cdk/scrolling';
 export class BottomSheetItemComponent {
   private readonly store = inject(Store);
 
-  public overlayTitle = input('');
-  public usePrimaryColor = input(false);
-  public bottomSheetHeight = input<BottomSheetHeight>('small');
-  public showHeader = input(true);
-  public filterString = this.store.selectSignal(selectFilterString);
-  public mapAttributeFiltersItem = this.store.selectSignal(selectMapAttributeFiltersItem);
-  public mapAttributeFiltersItemTitle = computed(() => this.mapAttributeFiltersItem()?.title);
-  protected resizeableStyle = signal<StyleExpression>({});
+  public readonly overlayTitle = input('');
+  public readonly usePrimaryColor = input(false);
+  public readonly bottomSheetHeight = input<BottomSheetHeight>('small');
+  public readonly showHeader = input(true);
+  public readonly filterString = this.store.selectSignal(selectFilterString);
+  public readonly mapAttributeFiltersItem = this.store.selectSignal(selectMapAttributeFiltersItem);
+  public readonly mapAttributeFiltersItemTitle = computed(() => this.mapAttributeFiltersItem()?.title);
+  protected readonly resizeableStyle = signal<StyleExpression>({});
 
   public close() {
     this.store.dispatch(MapUiActions.hideBottomSheet());

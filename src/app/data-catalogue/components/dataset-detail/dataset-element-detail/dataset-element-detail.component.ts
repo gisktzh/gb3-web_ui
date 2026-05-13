@@ -13,8 +13,8 @@ import {DatasetElementTableComponent} from '../dataset-element-table/dataset-ele
   styleUrl: './dataset-element-detail.component.scss',
 })
 export class DatasetElementDetailComponent {
-  public layer = input.required<DatasetLayer>();
-  public layerListData = computed<DataDisplayElement[]>(() => [
+  public readonly layer = input.required<DatasetLayer>();
+  public readonly layerListData = computed<DataDisplayElement[]>(() => [
     {title: 'GIS-ZH Nr.', value: this.layer().id, type: 'text'},
     {title: 'Beschreibung', value: this.layer().description, type: 'text'},
     {title: 'Geometrietyp', value: this.layer().geometryType, type: 'text'},

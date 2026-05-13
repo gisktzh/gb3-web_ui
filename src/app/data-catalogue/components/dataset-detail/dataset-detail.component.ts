@@ -46,43 +46,43 @@ interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   ],
 })
 export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetMetadata> {
-  public geoSpatialElements = computed<DataDisplayElement[]>(() => {
+  public readonly geoSpatialElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? this.extractGeospatialElements(baseDetailMetaData) : [];
   });
-  public updateElements = computed<DataDisplayElement[]>(() => {
+  public readonly updateElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? this.extractUpdateElements(baseDetailMetaData) : [];
   });
-  public legislationElements = computed<DataDisplayElement[]>(() => {
+  public readonly legislationElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? this.extractLegislationElements(baseDetailMetaData) : [];
   });
-  public geodataContactElements = computed<DataDisplayElement[]>(() => {
+  public readonly geodataContactElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? DataExtractionUtils.extractContactElements(baseDetailMetaData.contact.geodata) : [];
   });
-  public externalLinksElements = computed<DataDisplayElement[]>(() => {
+  public readonly externalLinksElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? this.extractExternalLinkElements(baseDetailMetaData) : [];
   });
-  public arcGISElements = computed<DataDisplayElement[]>(() => {
+  public readonly arcGISElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? this.extractArcGISElements(baseDetailMetaData) : [];
   });
-  public metadataContactElements = computed<DataDisplayElement[]>(() => {
+  public readonly metadataContactElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? DataExtractionUtils.extractContactElements(baseDetailMetaData.contact.metadata) : [];
   });
-  public dataBasisElements = computed<DataDisplayElement[]>(() => {
+  public readonly dataBasisElements = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? this.extractDataBasisElements(baseDetailMetaData) : [];
   });
-  public dataProcurement = computed<DataDisplayElement[]>(() => {
+  public readonly dataProcurement = computed<DataDisplayElement[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? this.extractDataProcurementElements(baseDetailMetaData) : [];
   });
-  public datasetLayers = computed<DatasetLayer[]>(() => {
+  public readonly datasetLayers = computed<DatasetLayer[]>(() => {
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? baseDetailMetaData.layers : [];
   });

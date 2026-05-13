@@ -12,9 +12,9 @@ import {LoadingAndProcessBarComponent} from '../../loading-and-process-bar/loadi
   imports: [MatBadge, MatIcon, LoadingAndProcessBarComponent],
 })
 export class ExpandableListItemHeaderComponent {
-  public title = input.required<string>();
-  public isExpanded = input(true);
-  public loadingState = input<LoadingState>();
-  public numberOfItems = input<number | undefined>(0);
-  public showBadge = input(false);
+  public readonly title = input.required<string>();
+  public readonly isExpanded = input(true);
+  public readonly loadingState = input<LoadingState>();
+  public readonly numberOfItems = input<number | undefined>(0);
+  public readonly showBadge = input(false);
 }

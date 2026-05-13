@@ -44,7 +44,7 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent {
   public override layers = input<MapLayer[]>([]);
   public override imageUrl = input.required<string | undefined>();
   public override gb2Url = input<string | null>(null);
-  public internalMapConfigState = this.store.selectSignal(selectMapConfigState);
+  public readonly internalMapConfigState = this.store.selectSignal(selectMapConfigState);
   public override mapConfigState = computed(() => {
     if (!this.gb2Url()) {
       return undefined;

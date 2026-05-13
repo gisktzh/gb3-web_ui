@@ -31,7 +31,7 @@ export class SearchResultEntryMapComponent {
   private readonly store = inject(Store);
 
   public readonly map = input.required<Map>();
-  public mapConfigState = this.store.selectSignal(selectMapConfigState);
+  public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
   protected readonly mainPageEnum = MainPage;
   public readonly toolTip: string =
     'Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link.';

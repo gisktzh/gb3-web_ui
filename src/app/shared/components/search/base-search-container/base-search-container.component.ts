@@ -21,12 +21,11 @@ import {SearchBarComponent} from '../search-bar/search-bar.component';
 export abstract class BaseSearchContainerComponent {
   protected readonly store: Store = inject(Store);
   private readonly document = inject(DOCUMENT);
-
   public abstract allSearchResults: Signal<readonly SearchResultIdentifierDirective[]>;
   public readonly searchComponent = viewChild.required(SearchBarComponent);
-  private term = this.store.selectSignal(selectTerm);
-  private selectedSearchResultIndex = signal(-1);
-  public totalResults = computed(() => this.allSearchResults().length);
+  private readonly term = this.store.selectSignal(selectTerm);
+  private readonly selectedSearchResultIndex = signal(-1);
+  public readonly totalResults = computed(() => this.allSearchResults().length);
 
   constructor() {
     effect(() => {

@@ -33,9 +33,9 @@ export class EmbeddedMapPageComponent {
   private readonly store = inject(Store);
   private readonly route = inject(ActivatedRoute);
 
-  public numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
+  public readonly numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
   public id: string | null = null;
-  public initializeApplicationLoadingState = this.store.selectSignal(selectApplicationInitializationLoadingState);
+  public readonly initializeApplicationLoadingState = this.store.selectSignal(selectApplicationInitializationLoadingState);
   public isEmbedded: boolean = false;
   protected readonly mainPageEnum = MainPage;
 

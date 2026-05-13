@@ -10,16 +10,16 @@ import {MatIcon} from '@angular/material/icon';
 })
 export class SliderWrapperComponent<T> {
   /** The title of the slider wrapper */
-  public title = input.required<string>();
+  public readonly title = input.required<string>();
   /** An optional description; will be shown as tooltip on top of an info icon */
-  public description = input<string | null>();
+  public readonly description = input<string | null>();
   /** The current value */
-  public value = input.required<T>();
+  public readonly value = input.required<T>();
   /** The maximum value */
-  public maxValue = input.required<T>();
+  public readonly maxValue = input.required<T>();
   /** The minimum value */
-  public minValue = input.required<T>();
+  public readonly minValue = input.required<T>();
 
-  public overwriteHeader = input(false);
-  public overwriteFooter = input(false);
+  public readonly overwriteHeader = input(false);
+  public readonly overwriteFooter = input(false);
 }

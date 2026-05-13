@@ -17,6 +17,6 @@ import {UiToggleComponent} from './ui-toggle/ui-toggle.component';
 })
 export class MapControlsComponent {
   private readonly store = inject(Store);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public mapUiState = this.store.selectSignal(selectMapUiState);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly mapUiState = this.store.selectSignal(selectMapUiState);
 }

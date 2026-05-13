@@ -30,22 +30,22 @@ export class DrawingEditComponent {
   private readonly store = inject(Store);
   private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
-  public selectedFeature = this.store.selectSignal(selectSelectedDrawing);
+  public readonly selectedFeature = this.store.selectSignal(selectSelectedDrawing);
   public style = model<Gb3StyleRepresentation | undefined>(this.selectedFeature()?.properties.style);
 
-  public isPointStyle = computed(() => {
+  public readonly isPointStyle = computed(() => {
     return this.style()?.type === 'point' ? (this.style() as Gb3PointStyle) : null;
   });
-  public isLineStyle = computed(() => {
+  public readonly isLineStyle = computed(() => {
     return this.style()?.type === 'line' ? (this.style() as Gb3LineStringStyle) : null;
   });
-  public isPolygonStyle = computed(() => {
+  public readonly isPolygonStyle = computed(() => {
     return this.style()?.type === 'polygon' ? (this.style() as Gb3PolygonStyle) : null;
   });
-  public isTextStyle = computed(() => {
+  public readonly isTextStyle = computed(() => {
     return this.style()?.type === 'text' ? (this.style() as Gb3TextStyle) : null;
   });
-  public isSymbolStyle = computed(() => {
+  public readonly isSymbolStyle = computed(() => {
     return this.style()?.type === 'symbol' ? (this.style() as Gb3SymbolStyle) : null;
   });
 

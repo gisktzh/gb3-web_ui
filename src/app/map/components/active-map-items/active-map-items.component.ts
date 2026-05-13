@@ -66,12 +66,12 @@ export class ActiveMapItemsComponent {
   private readonly onboardingGuideService = inject(OnboardingGuideService);
 
   public tooltipText = TOOLTIP_TEXT;
-  public isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
-  public activeMapItems = this.store.selectSignal(selectItems);
-  public isMinimized = signal(false);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public activeTool = this.store.selectSignal(selectActiveTool);
-  public toolTipsFavourite = computed(() => {
+  public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  public readonly activeMapItems = this.store.selectSignal(selectItems);
+  public readonly isMinimized = signal(false);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly activeTool = this.store.selectSignal(selectActiveTool);
+  public readonly toolTipsFavourite = computed(() => {
     if (!this.isAuthenticated()) {
       return this.favouriteHelperMessages.notAuthenticated;
     } else if (this.activeMapItems().length === 0) {
@@ -80,15 +80,17 @@ export class ActiveMapItemsComponent {
 
     return this.favouriteHelperMessages.authenticatedAndMapsAdded;
   });
-  public isActiveMapItemDragAndDropDisabled = computed(() => !!this.activeTool());
+  public readonly isActiveMapItemDragAndDropDisabled = computed(() => !!this.activeTool());
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
-  public gb2ActiveMapItems = computed<Gb2WmsActiveMapItem[]>(() =>
+  public readonly gb2ActiveMapItems = computed<Gb2WmsActiveMapItem[]>(() =>
     this.activeMapItems().filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)),
   );
-  public activeMapItemsWithNotices = computed(() => this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice));
+  public readonly activeMapItemsWithNotices = computed(() =>
+    this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice),
+  );
 
-  public numberOfNotices = computed(() => this.activeMapItemsWithNotices().length);
-  public numberOfUnreadNotices = computed(
+  public readonly numberOfNotices = computed(() => this.activeMapItemsWithNotices().length);
+  public readonly numberOfUnreadNotices = computed(
     () => this.activeMapItemsWithNotices().filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length,
   );
 

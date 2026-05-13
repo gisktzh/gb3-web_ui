@@ -74,7 +74,7 @@ export class PrintDialogComponent {
   private readonly printSettingsOptionsProvider = inject(PrintSettingsOptionsProviderService);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
 
-  public printFormModel = signal<PrintFormValues>({
+  public readonly printFormModel = signal<PrintFormValues>({
     title: '',
     comment: '',
     reportType: printConfig.defaultPrintValues.reportType,
@@ -134,45 +134,45 @@ export class PrintDialogComponent {
     });
   });
 
-  public printCreationLoadingState = this.store.selectSignal(selectCreationLoadingState);
-  public mapConfigState = this.store.selectSignal(selectMapConfigState);
-  public activeMapItems = this.store.selectSignal(selectItems);
-  public drawings = this.store.selectSignal(selectDrawings);
-  public isMapSlideDrawerOpen = this.store.selectSignal(selectIsMapSideDrawerOpen);
+  public readonly printCreationLoadingState = this.store.selectSignal(selectCreationLoadingState);
+  public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
+  public readonly activeMapItems = this.store.selectSignal(selectItems);
+  public readonly drawings = this.store.selectSignal(selectDrawings);
+  public readonly isMapSlideDrawerOpen = this.store.selectSignal(selectIsMapSideDrawerOpen);
   public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
   public readonly minScale = this.configService.mapConfig.mapScaleConfig.minScale;
 
-  public capabilitiesValidCombinations = this.store.selectSignal(selectCapabilitiesValidCombinations);
+  public readonly capabilitiesValidCombinations = this.store.selectSignal(selectCapabilitiesValidCombinations);
 
-  public allFileFormats = computed<FileFormat[]>(() => {
+  public readonly allFileFormats = computed<FileFormat[]>(() => {
     return this.printSettingsOptionsProvider.getUnqiueOptions<'file_format'>(this.capabilitiesValidCombinations(), 'file_format');
   });
-  public allDpiSettings = computed<DpiSetting[]>(() => {
+  public readonly allDpiSettings = computed<DpiSetting[]>(() => {
     return this.printSettingsOptionsProvider.getUnqiueOptions<'dpi'>(this.capabilitiesValidCombinations(), 'dpi');
   });
-  public allLayouts = computed<DocumentFormat[]>(() => {
+  public readonly allLayouts = computed<DocumentFormat[]>(() => {
     return this.printSettingsOptionsProvider.getUnqiueOptions<'layout'>(this.capabilitiesValidCombinations(), 'layout');
   });
-  public allOrientations = computed<ReportOrientation[]>(() => {
+  public readonly allOrientations = computed<ReportOrientation[]>(() => {
     return this.printSettingsOptionsProvider.getUnqiueOptions<'report_orientation'>(
       this.capabilitiesValidCombinations(),
       'report_orientation',
     );
   });
-  public availableOptions = computed(() => {
+  public readonly availableOptions = computed(() => {
     const allCombinations = this.capabilitiesValidCombinations() ?? [];
     return this.printSettingsOptionsProvider.filterOptions(this.printFormModel(), allCombinations, AVAILABLE_VALUES_CHECK_PRIORITY);
   });
-  public availableFileFormats = computed<FileFormat[]>(() => {
+  public readonly availableFileFormats = computed<FileFormat[]>(() => {
     return this.availableOptions()?.fileFormat ?? [];
   });
-  public availableDpiSettings = computed<DpiSetting[]>(() => {
+  public readonly availableDpiSettings = computed<DpiSetting[]>(() => {
     return this.availableOptions()?.dpi ?? [];
   });
-  public availableLayouts = computed<DocumentFormat[]>(() => {
+  public readonly availableLayouts = computed<DocumentFormat[]>(() => {
     return this.availableOptions()?.layout ?? [];
   });
-  public availableOrientations = computed<ReportOrientation[]>(() => {
+  public readonly availableOrientations = computed<ReportOrientation[]>(() => {
     return this.availableOptions()?.reportOrientation ?? [];
   });
 
@@ -256,7 +256,7 @@ export class PrintDialogComponent {
       this.updatePrintPreview(
         formValue.layout,
         formValue.reportOrientation,
-        formValue.scale !== null ? Number.parseInt(formValue.scale) : 0,
+        formValue.scale === null ? 0 : Number.parseInt(formValue.scale),
         formValue.rotation,
       );
     });

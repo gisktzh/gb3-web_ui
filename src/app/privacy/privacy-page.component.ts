@@ -17,5 +17,5 @@ const PRIVACY_SUMMARY =
 export class PrivacyPageComponent {
   private readonly store = inject(Store);
   public heroText = PRIVACY_SUMMARY;
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 }

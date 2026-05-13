@@ -15,5 +15,5 @@ import {FormatContentPipe} from '../../../shared/pipes/format-content.pipe';
 export class FaqComponent {
   private readonly store = inject(Store);
 
-  public faqCollections = this.store.selectSignal(selectFaq);
+  public readonly faqCollections = this.store.selectSignal(selectFaq);
 }

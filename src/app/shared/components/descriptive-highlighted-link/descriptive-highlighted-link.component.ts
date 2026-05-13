@@ -6,8 +6,8 @@ import {Component, input} from '@angular/core';
   styleUrls: ['./descriptive-highlighted-link.component.scss'],
 })
 export class DescriptiveHighlightedLinkComponent {
-  public title = input.required<string>();
-  public description = input<string>();
-  public id = input<number>();
-  public multiLine = input(false);
+  public readonly title = input.required<string>();
+  public readonly description = input<string>();
+  public readonly id = input<number>();
+  public readonly multiLine = input(false);
 }

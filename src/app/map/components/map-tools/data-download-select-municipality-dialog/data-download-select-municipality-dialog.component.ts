@@ -29,18 +29,18 @@ export class DataDownloadSelectMunicipalityDialogComponent {
   private readonly dialogRef = inject<MatDialogRef<DataDownloadSelectMunicipalityDialogComponent, Municipality | undefined>>(MatDialogRef);
   private readonly store = inject(Store);
 
-  public municipalities = this.store.selectSignal(selectMunicipalities);
-  public loadingState = this.store.selectSignal(selectMunicipalitiesLoadingState);
+  public readonly municipalities = this.store.selectSignal(selectMunicipalities);
+  public readonly loadingState = this.store.selectSignal(selectMunicipalitiesLoadingState);
 
-  public municipalityModel = signal<{municipality: Municipality | null; filter: string}>({
+  public readonly municipalityModel = signal<{municipality: Municipality | null; filter: string}>({
     municipality: null,
     filter: '',
   });
   public municipalityForm = form(this.municipalityModel, (fieldPath) => {
     required(fieldPath.municipality);
   });
-  public isMunicipalityFieldDisabled = computed(() => this.loadingState() !== 'loaded');
-  public filteredMunicipalities = computed(() => {
+  public readonly isMunicipalityFieldDisabled = computed(() => this.loadingState() !== 'loaded');
+  public readonly filteredMunicipalities = computed(() => {
     const filterValue = this.municipalityForm.filter().value().toLowerCase().trim();
     if (filterValue.length === 0) {
       return this.municipalities();
@@ -60,8 +60,9 @@ export class DataDownloadSelectMunicipalityDialogComponent {
 
   public continue() {
     const municipalityField = this.municipalityForm.municipality();
-    if (municipalityField.valid()) {
-      this.close(municipalityField.value()!);
+    const municipalityValue = municipalityField.value();
+    if (municipalityField.valid() && municipalityValue) {
+      this.close(municipalityValue);
     } else {
       this.cancel();
     }

@@ -38,9 +38,9 @@ export class ShareLinkDialogComponent implements HasSavingStateSingal {
   private readonly router = inject(Router);
   private readonly configService = inject(ConfigService);
 
-  public savingState = this.store.selectSignal(selectSavingState);
-  protected shareLinkId = this.store.selectSignal(selectId);
-  public shareLinkUrl = computed(() => {
+  public readonly savingState = this.store.selectSignal(selectSavingState);
+  protected readonly shareLinkId = this.store.selectSignal(selectId);
+  public readonly shareLinkUrl = computed(() => {
     const id = this.shareLinkId();
     if (!id) {
       return 'Generiere Link...';
@@ -49,7 +49,7 @@ export class ShareLinkDialogComponent implements HasSavingStateSingal {
     const relativeShareLinkUrl = this.router.createUrlTree([MainPage.ShareLink, id]).toString();
     return new URL(relativeShareLinkUrl, globalThis.location.origin).toString();
   });
-  public iframeCode = computed(() => {
+  public readonly iframeCode = computed(() => {
     const id = this.shareLinkId();
     if (!id) {
       return 'Generiere iframe Code zum einbetten...';

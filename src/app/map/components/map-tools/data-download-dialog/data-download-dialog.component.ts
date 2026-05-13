@@ -43,13 +43,13 @@ export class DataDownloadDialogComponent {
   private readonly store = inject(Store);
   private readonly dialogService = inject(MatDialog);
 
-  public order = this.store.selectSignal(selectOrder);
-  public savingState = this.store.selectSignal(selectSavingState);
-  public relevantProducts = this.store.selectSignal(selectFilteredRelevantProducts);
-  public relevantProductsLoadingState = this.store.selectSignal(selectRelevantProductIdsLoadingState);
-  public filteredProducts = this.store.selectSignal(selectFilteredProducts);
-  public productsLoadingState = this.store.selectSignal(selectProductsLoadingState);
-  public activeDataDownloadFiltersPerCategory = this.store.selectSignal(selectActiveDataDownloadFiltersPerCategory);
+  public readonly order = this.store.selectSignal(selectOrder);
+  public readonly savingState = this.store.selectSignal(selectSavingState);
+  public readonly relevantProducts = this.store.selectSignal(selectFilteredRelevantProducts);
+  public readonly relevantProductsLoadingState = this.store.selectSignal(selectRelevantProductIdsLoadingState);
+  public readonly filteredProducts = this.store.selectSignal(selectFilteredProducts);
+  public readonly productsLoadingState = this.store.selectSignal(selectProductsLoadingState);
+  public readonly activeDataDownloadFiltersPerCategory = this.store.selectSignal(selectActiveDataDownloadFiltersPerCategory);
 
   public trackByProductId(_: number, item: Product) {
     return item.id;

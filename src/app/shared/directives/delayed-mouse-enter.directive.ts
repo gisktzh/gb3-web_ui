@@ -13,16 +13,15 @@ import {Directive, input, output, OnDestroy} from '@angular/core';
   },
 })
 export class DelayedMouseEnterDirective implements OnDestroy {
-  // signal-style input/output APIs
   public readonly delayDurationInMs = input<number>(1000);
   public readonly delayedMouseEnter = output<void>();
 
-  private timeoutId?: number;
+  private timeoutId?: ReturnType<typeof setTimeout>;
 
   public onMouseEnter(): void {
     this.clearTimeout();
 
-    this.timeoutId = window.setTimeout(() => {
+    this.timeoutId = setTimeout(() => {
       this.delayedMouseEnter.emit();
     }, this.delayDurationInMs());
   }

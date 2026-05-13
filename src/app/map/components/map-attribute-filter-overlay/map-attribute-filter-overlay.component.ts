@@ -15,8 +15,8 @@ import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-at
 export class MapAttributeFilterOverlayComponent {
   private readonly store = inject(Store);
 
-  public isVisible = this.store.selectSignal(selectIsAttributeFilterOverlayVisible);
-  public mapAttributeFiltersItem = this.store.selectSignal(selectMapAttributeFiltersItem);
+  public readonly isVisible = this.store.selectSignal(selectIsAttributeFilterOverlayVisible);
+  public readonly mapAttributeFiltersItem = this.store.selectSignal(selectMapAttributeFiltersItem);
 
   public close() {
     this.store.dispatch(MapUiActions.setAttributeFilterVisibility({isVisible: false}));

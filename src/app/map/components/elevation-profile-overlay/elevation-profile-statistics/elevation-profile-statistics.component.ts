@@ -9,5 +9,5 @@ import {DecimalPipe} from '@angular/common';
   imports: [DecimalPipe],
 })
 export class ElevationProfileStatisticsComponent {
-  public statistics = input.required<ElevationProfileStatistics>();
+  public readonly statistics = input.required<ElevationProfileStatistics>();
 }

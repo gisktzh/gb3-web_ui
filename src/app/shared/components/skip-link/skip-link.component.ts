@@ -9,6 +9,6 @@ import {SkipLinkTemplateVariable} from '../../enums/skip-link-template-variable.
   imports: [],
 })
 export class SkipLinkComponent {
-  public skipLinks = input<SkipLink[]>([]);
+  public readonly skipLinks = input<SkipLink[]>([]);
   public readonly skipToLocationEvent = output<SkipLinkTemplateVariable>();
 }

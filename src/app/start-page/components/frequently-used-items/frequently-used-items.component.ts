@@ -23,10 +23,9 @@ const NUMBER_OF_FREQUENTLY_USED_ITEMS = 3;
 export class FrequentlyUsedItemsComponent implements HasLoadingStateSignal {
   private readonly gravCmsService = inject<GravCmsService>(GRAV_CMS_SERVICE);
   private readonly store = inject(Store);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public loadingState = signal<LoadingState>('loading');
-
-  public frequentlyUsedItems = toSignal(
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly loadingState = signal<LoadingState>('loading');
+  public readonly frequentlyUsedItems = toSignal(
     this.gravCmsService.loadFrequentlyUsedData().pipe(
       map((items) => {
         this.loadingState.set('loaded');

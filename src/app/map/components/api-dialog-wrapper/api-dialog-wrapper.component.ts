@@ -14,10 +14,10 @@ import {HasSavingStateSingal} from 'src/app/shared/interfaces/has-saving-state-s
   imports: [MatDialogTitle, MatIconButton, MatIcon, CdkScrollable, MatDialogContent, MatDialogActions, LoadingAndProcessBarComponent],
 })
 export class ApiDialogWrapperComponent implements HasSavingStateSingal {
-  public title = input<string>();
-  public savingState = input<LoadingState>();
-  public errorText = input('Beim Speichern ist etwas schief gelaufen.');
-  public showCloseButton = input(true);
+  public readonly title = input<string>();
+  public readonly savingState = input<LoadingState>();
+  public readonly errorText = input('Beim Speichern ist etwas schief gelaufen.');
+  public readonly showCloseButton = input(true);
 
   public readonly closeEvent = output();
 }

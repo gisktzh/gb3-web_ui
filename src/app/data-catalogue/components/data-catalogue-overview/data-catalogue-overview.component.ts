@@ -79,11 +79,11 @@ export class DataCatalogueOverviewComponent {
   private readonly dialogService = inject(MatDialog);
   private readonly configService = inject(ConfigService);
 
-  public loadingState = this.store.selectSignal(selectLoadingState);
-  public activeFilters = this.store.selectSignal(selectActiveFilterValues);
-  public screenMode = this.store.selectSignal(selectScreenMode);
-  public dataCatalogueLoadingState = this.store.selectSignal(selectLoadingState);
-  public dataCatalogueItemsFromStore = this.store.selectSignal(selectDataCatalogueItems);
+  public readonly loadingState = this.store.selectSignal(selectLoadingState);
+  public readonly activeFilters = this.store.selectSignal(selectActiveFilterValues);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly dataCatalogueLoadingState = this.store.selectSignal(selectLoadingState);
+  public readonly dataCatalogueItemsFromStore = this.store.selectSignal(selectDataCatalogueItems);
   public dataCatalogueItems: MatTableDataSource<OverviewSearchResultDisplayItem> = new MatTableDataSource<OverviewSearchResultDisplayItem>(
     [],
   );

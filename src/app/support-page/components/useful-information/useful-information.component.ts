@@ -12,5 +12,5 @@ import {LinkListComponent} from '../../../shared/components/lists/link-list/link
 export class UsefulInformationComponent {
   private readonly store = inject(Store);
 
-  public usefulInformationLinksGroups = this.store.selectSignal(selectUsefulInformationLinksWithDynamicUrls);
+  public readonly usefulInformationLinksGroups = this.store.selectSignal(selectUsefulInformationLinksWithDynamicUrls);
 }

@@ -14,10 +14,10 @@ export interface TitleLink {
 })
 export class PageSectionComponent {
   private readonly store = inject(Store);
-  public background = input<'primary' | 'accent'>();
-  public sectionTitle = input<string>();
-  public titleLink = input<TitleLink>();
-  public hideBottomPadding = input(false);
-  public pageTitle = input(false);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly background = input<'primary' | 'accent'>();
+  public readonly sectionTitle = input<string>();
+  public readonly titleLink = input<TitleLink>();
+  public readonly hideBottomPadding = input(false);
+  public readonly pageTitle = input(false);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 }

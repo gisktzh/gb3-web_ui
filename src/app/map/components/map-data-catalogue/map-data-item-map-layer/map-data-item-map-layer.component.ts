@@ -19,12 +19,12 @@ import {LayerTooltipPipe} from '../../../../shared/pipes/layer-tooltip.pipe';
 export class MapDataItemMapLayerComponent {
   private readonly store = inject(Store);
 
-  public layer = input.required<MapLayer>();
-  public filterString = input<string | undefined>(undefined);
-  public isMapHovered = input(false);
-  public isLayerHovered = input(false);
-  public scale = this.store.selectSignal(selectScale);
-  public visibleAtCurrentScale = computed(() => {
+  public readonly layer = input.required<MapLayer>();
+  public readonly filterString = input<string | undefined>(undefined);
+  public readonly isMapHovered = input(false);
+  public readonly isLayerHovered = input(false);
+  public readonly scale = this.store.selectSignal(selectScale);
+  public readonly visibleAtCurrentScale = computed(() => {
     const scale = this.scale();
     if (!scale) {
       return true;

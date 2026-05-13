@@ -11,15 +11,15 @@ import {By} from '@angular/platform-browser';
   imports: [SearchResultIdentifierDirective],
   template: `<button searchResultIdentifier [isMapResult]="isMapResult()" [isFocusable]="isFocusable()" [text]="text()">Button</button>`,
 })
-class HostComponent {
-  public isMapResult = input(false);
-  public isFocusable = input(false);
-  public text = signal('Lorem ipsum');
+class TestComponent {
+  public readonly isMapResult = input(false);
+  public readonly isFocusable = input(false);
+  public readonly text = signal('Lorem ipsum');
 }
 
 describe('SearchResultIdentifierDirective', () => {
-  let fixture: ComponentFixture<HostComponent>;
-  let host: ComponentRef<HostComponent>;
+  let fixture: ComponentFixture<TestComponent>;
+  let host: ComponentRef<TestComponent>;
   let directive: SearchResultIdentifierDirective;
   let el: HTMLElement;
 
@@ -32,10 +32,10 @@ describe('SearchResultIdentifierDirective', () => {
           useValue: new ElementRef(document.createElement('div')),
         },
       ],
-      imports: [HostComponent],
+      imports: [TestComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HostComponent);
+    fixture = TestBed.createComponent(TestComponent);
     host = fixture.componentRef;
 
     directive = fixture.debugElement

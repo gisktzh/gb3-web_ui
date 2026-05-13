@@ -26,11 +26,11 @@ import {MatIcon} from '@angular/material/icon';
 export class ActiveMapItemSettingsComponent {
   private readonly store = inject(Store);
 
-  public activeMapItem = input.required<ActiveMapItem>();
-  private activeMapItems = this.store.selectSignal(selectItems);
-  public currentOpacity = linkedSignal(() => this.activeMapItem().opacity || 0);
-  public formattedCurrentOpacity = computed(() => this.convertTransparencyToString(this.currentOpacity()));
-  public numberOfChangedFilters = computed(() => {
+  public readonly activeMapItem = input.required<ActiveMapItem>();
+  private readonly activeMapItems = this.store.selectSignal(selectItems);
+  public readonly currentOpacity = linkedSignal(() => this.activeMapItem().opacity || 0);
+  public readonly formattedCurrentOpacity = computed(() => this.convertTransparencyToString(this.currentOpacity()));
+  public readonly numberOfChangedFilters = computed(() => {
     let numberOfChangedFilters = 0;
     const activeGb2WmsMapItems: Gb2WmsActiveMapItem[] = this.activeMapItems().filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
     const activeMapItem = activeGb2WmsMapItems.find((mapItem) => mapItem.id === this.activeMapItem().id);
@@ -44,7 +44,7 @@ export class ActiveMapItemSettingsComponent {
 
     return numberOfChangedFilters;
   });
-  public gb2WmsActiveMapItemWithTimeslider = computed<Gb2WmsActiveMapItem | null>(() => {
+  public readonly gb2WmsActiveMapItemWithTimeslider = computed<Gb2WmsActiveMapItem | null>(() => {
     const activeMapItem = this.activeMapItem();
 
     return activeMapItem.settings.type === 'gb2Wms' &&
@@ -53,7 +53,7 @@ export class ActiveMapItemSettingsComponent {
       ? (activeMapItem as Gb2WmsActiveMapItem)
       : null;
   });
-  public hasAttributeFilter = computed(() => {
+  public readonly hasAttributeFilter = computed(() => {
     const activeMapItemSettings = this.activeMapItem().settings;
     return activeMapItemSettings.type === 'gb2Wms' && activeMapItemSettings.filterConfigurations;
   });

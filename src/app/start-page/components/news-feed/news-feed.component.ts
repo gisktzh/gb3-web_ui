@@ -1,7 +1,6 @@
 import {Component, inject, signal} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
-import {map} from 'rxjs';
-import {catchError} from 'rxjs';
+import {map, catchError} from 'rxjs';
 import {NewsService} from '../../../shared/interfaces/news-service.interface';
 import {NewsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 import {NEWS_SERVICE} from '../../../app.tokens';
@@ -22,8 +21,8 @@ const NUMBER_OF_NEWS = 3;
 export class NewsFeedComponent implements HasLoadingStateSignal {
   private readonly newsService = inject<NewsService>(NEWS_SERVICE);
 
-  public loadingState = signal<LoadingState>('loading');
-  public news = toSignal(
+  public readonly loadingState = signal<LoadingState>('loading');
+  public readonly news = toSignal(
     this.newsService.loadNews().pipe(
       map((news) => {
         this.loadingState.set('loaded');

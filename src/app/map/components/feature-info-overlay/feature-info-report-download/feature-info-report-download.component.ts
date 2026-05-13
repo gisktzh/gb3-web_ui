@@ -10,6 +10,6 @@ import {MatIcon} from '@angular/material/icon';
   imports: [MapOverlayListItemComponent, MatButton, MatIcon],
 })
 export class FeatureInfoReportDownloadComponent {
-  public reportUrl = input.required<string>();
-  public reportDescription = input<string | null | undefined>();
+  public readonly reportUrl = input.required<string>();
+  public readonly reportDescription = input<string | null | undefined>();
 }

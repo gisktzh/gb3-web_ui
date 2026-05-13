@@ -21,11 +21,11 @@ export class DrawingSettingsDialogComponent {
   private readonly dialogRef = inject<MatDialogRef<DrawingSettingsDialogComponent>>(MatDialogRef);
   private readonly configService = inject(ConfigService);
 
-  public drawingStyleState = this.store.selectSignal(selectDrawingStyleState);
+  public readonly drawingStyleState = this.store.selectSignal(selectDrawingStyleState);
 
-  public fillColor = signal(ColorUtils.convertSymbolizationColorToHex(this.configService.drawingConfig.defaultFillColor).hexColor);
-  public lineColor = signal(ColorUtils.convertSymbolizationColorToHex(this.configService.drawingConfig.defaultLineColor).hexColor);
-  public lineWidth = signal(this.configService.drawingConfig.defaultLineWidth);
+  public readonly fillColor = signal(ColorUtils.convertSymbolizationColorToHex(this.configService.drawingConfig.defaultFillColor).hexColor);
+  public readonly lineColor = signal(ColorUtils.convertSymbolizationColorToHex(this.configService.drawingConfig.defaultLineColor).hexColor);
+  public readonly lineWidth = signal(this.configService.drawingConfig.defaultLineWidth);
 
   constructor() {
     effect(() => {

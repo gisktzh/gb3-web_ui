@@ -37,6 +37,6 @@ export class StartPageComponent {
     url: 'https://www.zh.ch/de/news-uebersicht.html?organisation=organisationen%253Akanton-zuerich%252Fbaudirektion%252Famt-fuer-raumentwicklung&topic=themen%253Aplanen-bauen%252Fgeoinformation',
     displayTitle: 'Mehr Beiträge',
   };
-  public additionalInformationLinksGroups = this.store.selectSignal(selectAdditionalInformationLinks);
-  public screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly additionalInformationLinksGroups = this.store.selectSignal(selectAdditionalInformationLinks);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 }

@@ -24,7 +24,7 @@ import {HasSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface
 import {Point} from 'geojson';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
 import Graphic from '@arcgis/core/Graphic';
-import {MapViewWithMap} from './types/esri-mapview-with-map.type';
+import MapView from '@arcgis/core/views/MapView';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -96,7 +96,7 @@ describe('EsriMapService', () => {
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
     mapMock = new EsriMapMock(internalLayers);
     mapViewService = TestBed.inject(EsriMapViewService);
-    mapViewService.mapView.set({map: mapMock} as MapViewWithMap);
+    mapViewService.mapView.set({map: mapMock} as MapView);
     store = TestBed.inject(MockStore);
     toolServiceSpy = TestBed.inject(EsriToolService);
     vi.spyOn(toolServiceSpy, 'initializeMeasurement').mockImplementation(vi.fn());
