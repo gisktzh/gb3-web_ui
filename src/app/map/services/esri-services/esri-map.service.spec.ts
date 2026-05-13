@@ -25,6 +25,10 @@ import {Point} from 'geojson';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
 import Graphic from '@arcgis/core/Graphic';
 import MapView from '@arcgis/core/views/MapView';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {InitialMapExtentService} from '../initial-map-extent.service';
+import {default as EsriPoint} from '@arcgis/core/geometry/Point';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -72,7 +76,9 @@ describe('EsriMapService', () => {
   let mapMock: EsriMapMock;
   let toolServiceSpy: EsriToolService;
   let mapViewService: EsriMapViewService = new EsriMapViewService();
+  let initialMapExtentService: InitialMapExtentService;
   let store: MockStore;
+  let mapViewMock: MapView;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -96,9 +102,16 @@ describe('EsriMapService', () => {
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
     mapMock = new EsriMapMock(internalLayers);
     mapViewService = TestBed.inject(EsriMapViewService);
-    mapViewService.mapView.set({map: mapMock} as MapView);
+    mapViewMock = {
+      map: mapMock,
+      zoom: 0,
+      scale: 0,
+      center: new EsriPoint({x: -1, y: -1, spatialReference: new SpatialReference({wkid: 2056})}),
+    } as MapView;
+    mapViewService.mapView.set(mapViewMock);
     store = TestBed.inject(MockStore);
     toolServiceSpy = TestBed.inject(EsriToolService);
+    initialMapExtentService = TestBed.inject(InitialMapExtentService);
     vi.spyOn(toolServiceSpy, 'initializeMeasurement').mockImplementation(vi.fn());
     vi.spyOn(toolServiceSpy, 'addExistingDrawingsToLayer').mockImplementation(vi.fn());
   });
@@ -106,6 +119,46 @@ describe('EsriMapService', () => {
   it('should be created', () => {
     service = TestBed.inject(EsriMapService);
     expect(service).toBeTruthy();
+  });
+
+  it('should init and deinit correctly', async () => {
+    vi.useFakeTimers();
+
+    store.overrideSelector(selectMapConfigState, {
+      ...defaultMapConfig,
+      isMapServiceInitialized: false,
+      center: {
+        x: 1408,
+        y: 1337,
+      },
+      scale: 12,
+      rotation: 34,
+      srsId: 2056,
+      ready: true,
+    });
+    store.refreshState();
+
+    await vi.runAllTimersAsync();
+
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    service = TestBed.inject(EsriMapService);
+    service.assignMapElement(document.createElement('div'));
+
+    await vi.runAllTimersAsync();
+
+    expect(service.mapContainerElement()).not.toBeNull();
+    expect(service.mapInitialized()).toBeTruthy();
+    expect(mapViewService.mapView()).toBeTruthy();
+
+    service.deInit();
+
+    await vi.runAllTimersAsync();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(MapConfigActions.markMapServiceAsDeinitialized());
+    expect(service.mapContainerElement()).toBeNull();
+    expect(service.mapInitialized()).toBeFalsy();
+    expect(mapViewService.mapView()).toBeUndefined();
   });
 
   it('should initialize the map with config and add drawings on init', async () => {
@@ -386,8 +439,90 @@ describe('EsriMapService', () => {
 
       const internalLayerSpy = vi.spyOn(internalLayer as GraphicsLayer, 'removeMany');
 
+      service = TestBed.inject(EsriMapService);
       service.removeGeometryFromInternalDrawingLayer(InternalDrawingLayer.SearchResultHighlight, 'asdf');
       expect(internalLayerSpy).toHaveBeenCalledWith([graphic]);
+    });
+  });
+
+  describe('moveLayerToTop', () => {
+    it('should not do anything if esri layer is not found', () => {
+      const reorderSpy = vi.spyOn(mapMock, 'reorder');
+      const findEsriLayerSpy = vi.spyOn(mapViewService, 'findEsriLayer').mockReturnValue(undefined);
+      service = TestBed.inject(EsriMapService);
+      service.moveLayerToTop({id: 'asdf'} as ActiveMapItem);
+
+      expect(findEsriLayerSpy).toHaveBeenCalledWith('asdf');
+      expect(reorderSpy).not.toHaveBeenCalled();
+    });
+
+    it('should attempt to reorder if a layer was found', () => {
+      const mockLayer = {id: 'asdf'} as Layer;
+      const reorderSpy = vi.spyOn(mapMock.layers, 'reorder');
+      const findEsriLayerSpy = vi.spyOn(mapViewService, 'findEsriLayer').mockReturnValue(mockLayer);
+      service = TestBed.inject(EsriMapService);
+      service.moveLayerToTop({id: 'asdf'} as ActiveMapItem);
+      expect(findEsriLayerSpy).toHaveBeenCalledWith('asdf');
+      expect(reorderSpy).toHaveBeenCalledWith(mockLayer, -1);
+    });
+  });
+
+  describe('handleZoom', () => {
+    it('should not zoom in if current zoom level already is too small', () => {
+      mapViewMock.zoom = 3000;
+      service = TestBed.inject(EsriMapService);
+      service.handleZoom('zoomIn');
+      expect(mapViewMock.zoom).toBe(3000);
+    });
+
+    it('should zoom in if the zoom level is still small enough', () => {
+      expect(mapViewMock.zoom).toBe(0);
+      service = TestBed.inject(EsriMapService);
+      service.handleZoom('zoomIn');
+      expect(mapViewMock.zoom).toBe(1);
+    });
+
+    it('should zoom out if the zoom level large enough', () => {
+      expect(mapViewMock.zoom).toBe(0);
+      service = TestBed.inject(EsriMapService);
+      service.handleZoom('zoomOut');
+      expect(mapViewMock.zoom).toBe(-1);
+    });
+
+    it('should not zoom out if the zoom level is too small', () => {
+      mapViewMock.zoom = -2;
+      mapViewMock.scale = 3000;
+      service = TestBed.inject(EsriMapService);
+      service.handleZoom('zoomOut');
+      expect(mapViewMock.zoom).toBe(-2);
+    });
+
+    it('should not zoom out if the scale level is too large', () => {
+      mapViewMock.zoom = -2;
+      mapViewMock.scale = 3000;
+      service = TestBed.inject(EsriMapService);
+      service.handleZoom('zoomOut');
+      expect(mapViewMock.zoom).toBe(-2);
+    });
+  });
+
+  describe('setScale', () => {
+    it('should set the scale correcly', () => {
+      expect(mapViewMock.scale).toBe(0);
+      service = TestBed.inject(EsriMapService);
+      service.setScale(3000);
+      expect(mapViewMock.scale).toBe(3000);
+    });
+  });
+
+  describe('resetExtent', () => {
+    it('should reset the extent correctly', () => {
+      vi.spyOn(initialMapExtentService, 'calculateInitialExtent').mockReturnValue({x: 12, y: 13, scale: 14});
+      service = TestBed.inject(EsriMapService);
+      service.resetExtent();
+      expect(mapViewMock.center.x).toBe(12);
+      expect(mapViewMock.center.y).toBe(13);
+      expect(mapViewMock.scale).toBe(14);
     });
   });
 });

@@ -121,7 +121,7 @@ export class EsriMapService implements MapService {
   private readonly drawings = this.store.selectSignal(selectDrawings);
   // starting with Arcgis v5, this cast is necessary since we also supply the mode, which is not exposed by config
   private readonly wmsImageFormatMimeType: WMSLayerFormatType = this.configService.gb2Config.wmsFormatMimeType as WMSLayerFormatType;
-  private readonly mapInitialized = signal(false);
+  public readonly mapInitialized = signal(false);
   private readonly printPreviewHandle = signal<ResourceHandle | null>(null);
   private readonly previousPrintPreviewHandle = signal<ResourceHandle | null>(null);
   public readonly mapContainerElement = signal<HTMLDivElement | null>(null);
