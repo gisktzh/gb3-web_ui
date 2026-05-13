@@ -479,12 +479,7 @@ export class EsriMapService implements MapService {
     }
 
     if (hasNonNullishProperty(esriGeometry, 'extent')) {
-      return this.getMapView().goTo(
-        {
-          center: esriGeometry.extent.clone().expand(expandFactor).center,
-        },
-        {duration},
-      ) as never;
+      return this.getMapView().goTo(esriGeometry.extent.clone().expand(expandFactor), {duration}) as never;
     }
 
     throw new ZoomExtentMissing();
