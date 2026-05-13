@@ -111,7 +111,7 @@ jobs:
             xvfb \
             mesa-utils \
             libgl1-mesa-dri
-          npx playwright install --with-deps
+          ./node_modules/.bin/playwright install --with-deps
 
       - name: Run tests
         run: |

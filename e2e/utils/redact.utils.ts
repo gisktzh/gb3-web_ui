@@ -68,7 +68,8 @@ function redactUrl(url: string) {
 function isJsonString(value: string) {
   try {
     JSON.parse(value);
-  } catch (_) {
+  } catch (_error) {
+    // NOSONAR: JSON.parse throws on invalid JSON, which is expected here
     return false;
   }
 
@@ -123,12 +124,12 @@ export function redactAny(v: any): any {
       return redactUrl(v);
     }
 
-    if (isJsonString(v)) {
-      return JSON.stringify(redactAny(JSON.parse(v)));
-    }
-
     if (isSearchParamsString(v)) {
       return redactSearchParams(new URLSearchParams(v)).toString();
+    }
+
+    if (isJsonString(v)) {
+      return JSON.stringify(redactAny(JSON.parse(v)));
     }
 
     return v;
