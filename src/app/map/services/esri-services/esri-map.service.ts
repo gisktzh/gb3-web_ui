@@ -433,7 +433,7 @@ export class EsriMapService implements MapService, OnDestroy {
     }) as never;
   }
 
-  public zoomToExtent(geometry: GeometryWithSrs, expandFactor: number = 1, duration?: number): Promise<never> {
+  public zoomToExtent(geometry: GeometryWithSrs, expandFactor: number = 1.075, duration?: number): Promise<never> {
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
 
     if (esriGeometry instanceof Point) {
