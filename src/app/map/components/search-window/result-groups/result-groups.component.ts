@@ -5,7 +5,6 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {GeometryWithSrsSearchApiResultMatch} from '../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
-import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {selectSearchApiLoadingState, selectSelectedSearchResult, selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {
   selectFilteredLayerCatalogMaps,
