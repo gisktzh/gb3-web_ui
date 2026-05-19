@@ -22,7 +22,7 @@ export interface PrintForm {
   showLegend: FormControl<boolean | null>;
 }
 
-export type ToArrays<T> = {
+type ToArrays<T> = {
   [K in keyof T]: Array<T[K]>;
 };
 

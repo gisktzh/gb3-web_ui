@@ -11,7 +11,7 @@ export interface DiscoverMapsRoot {
   'discover-maps': Map[];
 }
 
-export interface Map {
+interface Map {
   description: string;
   flex_id: string;
   from_date: string;
@@ -22,7 +22,7 @@ export interface Map {
   to_date: string;
 }
 
-export interface Image {
+interface Image {
   name: string;
   path: string;
   size: number;
@@ -33,7 +33,7 @@ export interface PageInfosRoot {
   'page-infos': PageInfo[];
 }
 
-export interface PageInfo {
+interface PageInfo {
   title: string;
   description: string;
   pages: Pages;
@@ -54,7 +54,7 @@ export interface FrequentlyUsedRoot {
   'frequently-used': FrequentlyUsed[];
 }
 
-export interface FrequentlyUsed {
+interface FrequentlyUsed {
   created: string;
   description: string;
   flex_id: string;

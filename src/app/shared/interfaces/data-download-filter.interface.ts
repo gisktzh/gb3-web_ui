@@ -1,4 +1,5 @@
-export const dataDownloadFilterCategoryKeys = ['availability', 'format', 'theme'] as const; // TS3.4 syntax
+const dataDownloadFilterCategoryKeys = ['availability', 'format', 'theme'] as const; // TS3.4 syntax
+
 export type DataDownloadFilterCategory = (typeof dataDownloadFilterCategoryKeys)[number];
 
 /**

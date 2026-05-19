@@ -7,7 +7,7 @@ export interface SearchConfig {
   dataCatalogPage: SearchDetailConfig;
 }
 
-export interface SearchDetailConfig {
+interface SearchDetailConfig {
   searchOptions: SearchOptions;
   filterGroups: SearchFilterGroup[];
 }

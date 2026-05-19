@@ -23,7 +23,7 @@ export interface ElevationProfileStatistics {
   highestPoint: number;
 }
 
-export interface ElevationProfileRequest {
+interface ElevationProfileRequest {
   url: string;
   params: URLSearchParams;
 }

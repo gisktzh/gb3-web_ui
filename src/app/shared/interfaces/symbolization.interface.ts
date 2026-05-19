@@ -71,7 +71,7 @@ interface PolygonSymbolization {
   outline: PolygonOutlineSymbolization;
 }
 
-export interface SymbolizationStyle {
+interface SymbolizationStyle {
   point: PointSymbolization;
   line: LineSymbolization;
   polygon: PolygonSymbolization;
