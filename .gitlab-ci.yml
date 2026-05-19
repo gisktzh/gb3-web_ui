@@ -7,7 +7,13 @@ variables:
   DOCKER_TLS_CERTDIR: ''
   CA_CERTIFICATE: '$ZS_CERTIFICATE'
   WORK_DIR: gb3-web_ui
-  STAGE: staging
+  STAGE:
+    value: "staging"
+    options:
+      - "staging"
+      - "uat"
+      - "production"
+    description: "deploy target ('staging' by default)"
 
 build:
   image: docker:29.4.3
@@ -18,7 +24,7 @@ build:
       command:
         - /bin/sh
         - -c
-        - echo "$ZS_CERTIFICATE" > /usr/local/share/ca-certificates/proxyzs.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
+        - echo "$CA_CERTIFICATE" > /usr/local/share/ca-certificates/proxyzs.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
   before_script:
     - docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -32,16 +38,25 @@ deploy:
   image: ubuntu:24.04
   stage: deploy
   tags: [docker]
+  rules:
+    - if: $STAGE == "staging"
+      variables:
+        SSH_HOST: $SSH_HOST_STAGING_FRONTEND
+        SSH_KEY: $SSH_KEY_STAGING_FRONTEND
+    - if: $STAGE == "uat"
+      variables:
+        SSH_HOST: $SSH_HOST_UAT_FRONTEND
+        SSH_KEY: $SSH_KEY_UAT_FRONTEND
   before_script:
     - apt-get -yq update
     - apt-get -yqq install openssh-client
     - install -m 600 -D /dev/null ~/.ssh/id_rsa
-    - echo "$SSH_KEY_STAGING_FRONTEND" | base64 -d > ~/.ssh/id_rsa
-    - ssh-keyscan -H $SSH_HOST_STAGING_FRONTEND > ~/.ssh/known_hosts
-    - ssh $SSH_USER@$SSH_HOST_STAGING_FRONTEND "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - echo "$SSH_KEY" | base64 -d > ~/.ssh/id_rsa
+    - ssh-keyscan -H $SSH_HOST > ~/.ssh/known_hosts
+    - ssh $SSH_USER@$SSH_HOST "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
   script:
-    - scp docker-compose.ktzh.yml $SSH_USER@$SSH_HOST_STAGING_FRONTEND:~/$WORK_DIR/
-    - ssh $SSH_USER@$SSH_HOST_STAGING_FRONTEND "cd $WORK_DIR && docker compose -f docker-compose.ktzh.yml up -d --pull always && exit"
+    - scp docker-compose.ktzh.yml $SSH_USER@$SSH_HOST:~/$WORK_DIR/
+    - ssh $SSH_USER@$SSH_HOST "cd $WORK_DIR && docker compose -f docker-compose.ktzh.yml up -d --pull always && exit"
   after_script:
     - rm -rf ~/.ssh
   when: manual
