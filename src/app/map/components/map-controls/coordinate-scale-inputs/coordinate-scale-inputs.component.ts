@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject, signal} from '@angular/core';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectCenter, selectRotation, selectScale} from '../../../../state/map/reducers/map-config.reducer';
@@ -33,10 +33,10 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
 
-  public scale: number = 0;
-  public scaleInput: string = '';
-  public mapCenter: string = '';
-  public mapCenterInput: string = '';
+  public scale = signal(0);
+  public scaleInput = signal('');
+  public mapCenter = signal('');
+  public mapCenterInput = signal('');
 
   public rotation: number = 0;
 
@@ -51,10 +51,10 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
     const input = (event.target as HTMLInputElement).value;
     const newScale = NumberUtils.parseNumberFromMixedString(input);
 
-    if (newScale && newScale !== this.scale) {
+    if (newScale && newScale !== this.scale()) {
       this.store.dispatch(MapConfigActions.setScale({scale: newScale}));
     } else {
-      this.scaleInput = this.scale.toString();
+      this.scaleInput.set(this.scale().toString());
     }
   }
 
@@ -65,7 +65,7 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
     if (center) {
       this.store.dispatch(MapConfigActions.setMapCenterAndDrawHighlight({center}));
     } else {
-      input.value = this.mapCenter;
+      input.value = this.mapCenter();
     }
   }
 
@@ -92,12 +92,12 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   }
 
   private updateMapCenterValues(x: number, y: number) {
-    this.mapCenter = `${NumberUtils.roundToDecimals(x)} / ${NumberUtils.roundToDecimals(y)}`;
-    this.mapCenterInput = this.mapCenter;
+    this.mapCenter.set(`${NumberUtils.roundToDecimals(x)} / ${NumberUtils.roundToDecimals(y)}`);
+    this.mapCenterInput.set(this.mapCenter());
   }
 
   private updateScaleValues(value: number) {
-    this.scale = NumberUtils.roundToDecimals(value);
-    this.scaleInput = this.scale.toString();
+    this.scale.set(NumberUtils.roundToDecimals(value));
+    this.scaleInput.set(this.scale().toString());
   }
 }

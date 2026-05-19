@@ -31,7 +31,6 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
   public filteredAddressesAndPlacesMatches: GeometryWithSrsSearchApiResultMatch[] = [];
   public filteredActiveMapMatches: GeometryWithSrsSearchApiResultMatch[] = [];
   public filteredMaps: Map[] = [];
-  public searchApiLoadingState: LoadingState;
   public screenMode: ScreenMode = 'regular';
   public selectedSearchResult?: GeometryWithSrsSearchApiResultMatch;
 
@@ -39,7 +38,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
   private readonly filteredSearchApiResultMatches$ = this.store.select(selectFilteredSearchApiResultMatches);
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
-  private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
+  public readonly searchApiLoadingState = this.store.selectSignal(selectSearchApiLoadingState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -89,9 +88,6 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
           }),
         )
         .subscribe(),
-    );
-    this.subscriptions.add(
-      this.searchApiLoadingState$.pipe(tap((searchApiLoadingState) => (this.searchApiLoadingState = searchApiLoadingState))).subscribe(),
     );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
     this.subscriptions.add(
