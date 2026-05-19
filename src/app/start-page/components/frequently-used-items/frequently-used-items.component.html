@@ -9,42 +9,53 @@
   }
   <generic-list [listData]="frequentlyUsedItems" [itemTemplate]="frequentlyUsedItem"></generic-list>
   <ng-template #frequentlyUsedItem let-frequentlyUsedItem>
-    <div
-      class="frequently-used-items__item"
-      [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}"
-      [attr.aria-label]="frequentlyUsedItem.title"
-    >
+    @if (frequentlyUsedItem.url === undefined) {
       <div
-        class="frequently-used-items__item__image-container"
-        [ngClass]="{'frequently-used-items__item__image-container--mobile': screenMode === 'mobile'}"
+        class="frequently-used-items__item"
+        [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}"
+        [attr.aria-label]="frequentlyUsedItem.title"
       >
-        @if (frequentlyUsedItem.image !== undefined) {
-          <img
-            [src]="frequentlyUsedItem.image.url"
-            [alt]="frequentlyUsedItem.image.altText ?? ''"
-            class="frequently-used-items__item__image-container__image"
-          />
-        }
+        <ng-container *ngTemplateOutlet="frequentlyUsedItemContent"></ng-container>
       </div>
+    } @else {
+      <a
+        class="frequently-used-items__item"
+        [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}"
+        [attr.aria-label]="frequentlyUsedItem.title"
+        [href]="frequentlyUsedItem.url"
+        target="_self"
+        rel="noopener noreferrer"
+        title="Link öffnen"
+      >
+        <ng-container *ngTemplateOutlet="frequentlyUsedItemContent"></ng-container>
+      </a>
+    }
+
+    <ng-template #frequentlyUsedItemContent>
       <div
-        class="frequently-used-items__item__text-container"
-        [ngClass]="{'frequently-used-items__item__text-container--mobile': screenMode === 'mobile'}"
+        class="frequently-used-items__item__content"
+        [ngClass]="{'frequently-used-items__item__content--mobile': screenMode === 'mobile'}"
       >
-        <h3 class="ktzh-h3-small-big">{{ frequentlyUsedItem.title }}</h3>
-        <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
-        @if (frequentlyUsedItem.url !== undefined) {
-          <a
-            [href]="frequentlyUsedItem.url"
-            class="frequently-used-items__item__text-container__link"
-            target="_self"
-            rel="noopener noreferrer"
-            title="Link öffnen"
-          >
-            Link öffnen
-          </a>
-        }
+        <div
+          class="frequently-used-items__item__image-container"
+          [ngClass]="{'frequently-used-items__item__image-container--mobile': screenMode === 'mobile'}"
+        >
+          @if (frequentlyUsedItem.image !== undefined) {
+            <img
+              [src]="frequentlyUsedItem.image.url"
+              [alt]="frequentlyUsedItem.image.altText ?? ''"
+              class="frequently-used-items__item__image-container__image"
+            />
+          }
+        </div>
+        <div
+          class="frequently-used-items__item__text-container"
+          [ngClass]="{'frequently-used-items__item__text-container--mobile': screenMode === 'mobile'}"
+        >
+          <h3 class="ktzh-h3-small-big frequently-used-items__item__text-container__title">{{ frequentlyUsedItem.title }}</h3>
+          <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
+        </div>
       </div>
-    </div>
-    <mat-divider></mat-divider>
+    </ng-template>
   </ng-template>
 </div>
