@@ -27,7 +27,7 @@ import Graphic from '@arcgis/core/Graphic';
 import MapView from '@arcgis/core/views/MapView';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {InitialMapExtentService} from '../initial-map-extent.service';
-import {default as EsriPoint} from '@arcgis/core/geometry/Point';
+import EsriPoint from '@arcgis/core/geometry/Point';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
