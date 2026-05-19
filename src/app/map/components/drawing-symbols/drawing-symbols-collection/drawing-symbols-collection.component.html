@@ -9,15 +9,20 @@
         [checked]="isSelected(drawingSymbol.item)"
         (change)="onValueChange(drawingSymbol.item)"
       />
-      <img
-        loading="lazy"
-        [src]="drawingSymbol.thumbnail"
-        [alt]="drawingSymbol.name"
-        [title]="drawingSymbol.name"
-        class="drawing-symbols-collection__grid__thumbnail"
-        width="64"
-        height="64"
-      />
+      @defer {
+        <img
+          loading="lazy"
+          fetchpriority="low"
+          [src]="drawingSymbol.thumbnail"
+          [alt]="drawingSymbol.name"
+          [title]="drawingSymbol.name"
+          class="drawing-symbols-collection__grid__thumbnail"
+          width="64"
+          height="64"
+        />
+      } @placeholder {
+        <div aria-hidden="true" class="drawing-symbols-collection__grid__thumbnail--placeholder"></div>
+      }
       <span class="sr-only">
         {{ drawingSymbol.name }}
       </span>
