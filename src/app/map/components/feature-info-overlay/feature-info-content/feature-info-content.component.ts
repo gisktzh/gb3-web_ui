@@ -11,8 +11,6 @@ import {MapService} from '../../../interfaces/map.service';
 import {StyleExpression} from '../../../../shared/types/style-expression.type';
 import {MAP_SERVICE} from '../../../../app.tokens';
 import {KeyValuePipe} from '@angular/common';
-import {MatTooltip} from '@angular/material/tooltip';
-import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 
 type CellType = 'text' | 'url' | 'image';
@@ -81,14 +79,7 @@ const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
-  imports: [
-    TableColumnIdentifierDirective,
-    MatRadioButton,
-    MatTooltip,
-    ShowTooltipIfTruncatedDirective,
-    ResizeHandlerComponent,
-    KeyValuePipe,
-  ],
+  imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe],
 })
 export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   private readonly store = inject(Store);
