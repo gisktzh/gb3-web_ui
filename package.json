@@ -53,7 +53,6 @@
     "@types/geojson": "^7946.0.10",
     "@types/node": "^24",
     "@types/terraformer__arcgis": "^2.0.2",
-    "@types/twitter-for-web": "^0.0.6",
     "angular-oauth2-oidc": "^20.0.0",
     "angular-resizable-element": "^8.0.0",
     "chart.js": "^4.5.0",
