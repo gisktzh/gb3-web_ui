@@ -75,7 +75,7 @@
     "@ngrx/schematics": "^21.0.0",
     "@vitest/coverage-v8": "^4.1.0",
     "@vitest/spy": "^4.1.0",
-    "angular-eslint": "^21.0.0",
+    "angular-eslint": "^22.0.0",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.0.0",
