@@ -79,7 +79,6 @@ export class DataCatalogueOverviewComponent {
   private readonly dialogService = inject(MatDialog);
   private readonly configService = inject(ConfigService);
 
-  public readonly loadingState = this.store.selectSignal(selectLoadingState);
   public readonly activeFilters = this.store.selectSignal(selectActiveFilterValues);
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly dataCatalogueLoadingState = this.store.selectSignal(selectLoadingState);

@@ -4,7 +4,6 @@ import {selectFilterGroups} from '../../../state/app/reducers/search.reducer';
 import {SearchActions} from '../../../state/app/actions/search.actions';
 import {MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
 import {SearchFilter, SearchFilterGroup} from '../../interfaces/search-filter-group.interface';
-import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
 import {CdkScrollable} from '@angular/cdk/scrolling';
 import {CdkAccordion} from '@angular/cdk/accordion';
 import {AccordionItemComponent} from '../accordion-item/accordion-item.component';
@@ -31,7 +30,6 @@ export class SearchFilterDialogComponent {
   private readonly dialogRef = inject<MatDialogRef<SearchFilterDialogComponent>>(MatDialogRef);
 
   public readonly filterGroups = this.store.selectSignal(selectFilterGroups);
-  public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly nonEmptyFilterGroups = computed(() => this.filterGroups().filter((group) => group.filters.length > 0));
 
   public toggleFilter(groupLabel: string, filterLabel: string, isActive: boolean) {

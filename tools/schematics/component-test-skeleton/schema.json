@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "ComponentTestSkeleton",
+  "title": "Component Test Skeleton Schematic",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "Path to the .component.ts file"
+    }
+  },
+  "required": ["path"]
+}

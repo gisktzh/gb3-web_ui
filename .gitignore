@@ -109,3 +109,5 @@ environment.local.ts
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+tools/**/dist

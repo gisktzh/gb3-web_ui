@@ -33,8 +33,8 @@ export class DataDownloadSelectMunicipalityDialogComponent {
   public readonly loadingState = this.store.selectSignal(selectMunicipalitiesLoadingState);
 
   public readonly municipalityModel = signal<{municipality: Municipality | null; filter: string}>({
-    municipality: null,
     filter: '',
+    municipality: null,
   });
   public municipalityForm = form(this.municipalityModel, (fieldPath) => {
     required(fieldPath.municipality);

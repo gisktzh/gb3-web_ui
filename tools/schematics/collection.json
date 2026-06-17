@@ -1,0 +1,10 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "component-test-skeleton": {
+      "description": "Generate a component test skeleton",
+      "factory": "./component-test-skeleton/dist/index.js#componentTest",
+      "schema": "./component-test-skeleton/schema.json"
+    }
+  }
+}

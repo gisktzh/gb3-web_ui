@@ -19,12 +19,7 @@ export class NavbarMobileComponent {
   private readonly store = inject(Store);
   private readonly urlState = this.store.selectSignal(selectUrlState);
   public readonly isSimplifiedPage = computed(() => {
-    const urlState = this.urlState();
-    if (!urlState) {
-      return false;
-    }
-
-    return urlState.isSimplifiedPage;
+    return !!this.urlState().isSimplifiedPage;
   });
 
   public showMenu() {

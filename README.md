@@ -53,6 +53,47 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 > As such, karma may run into memory overflows. If this happens, you can increase the memory limit for the node process by setting the `NODE_OPTIONS`
 > environment variable to `--max_old_space_size=80192` (or any other value that suits your needs).
 
+### Generating component unit test skeletons
+
+Component unit tests tend to have very similar boiler plates. In order to mitigate having to copy/paste a lot of code, we opted for a **schematic**.
+
+To use the schematic, we first need to build it locally:
+
+```
+npm run build-schematics
+```
+
+We can then generate a test skeleton for any component using`the following command
+
+```
+ng g component-test-skeleton --path=path/to/your/desired.component.ts
+```
+
+Make sure the use the relative path from project root, i.e. `src/app/...`.
+
+This generates a `.component.spec.ts` file next to the `.component.ts` file that contains the following:
+
+- If the component uses the store: Definition of a mock store and initial selector overrides of all used selectors in the component with sensible empty default values
+- If something is dispatched on the store: A spy on store.dispatch
+- If the component uses the router or any routing component: Definition of a mock router
+- If the component has any input: Default bindings with default values as signals
+- Default values for any required input
+- Mocks for all injected tokens with all used methods mocked via `vi.fn()` and necessary providers in the TestBed
+- Spies for all outputs
+- Everything necessary already imported
+- A basic test if the component is instantied correctly
+
+This can be used to quickly scaffold a test for complex components.
+
+Common gotchas:
+
+- Any nested anything isn't caught, this includes:
+  - Router
+  - Store
+  - Selectors
+- Prettier might act up if there are too many tokens provided at once
+- Default values for anything are rudimentary and often need some more content, especially when using objects as inputs
+
 ### Running end-to-end tests
 
 #### Installing browsers
@@ -99,6 +140,22 @@ To enable "debug mode", do the following steps in order:
 This will now start one window per specified .spec.ts file. An additional window is Playwrights own debugger window. From there, you can follow the official docs. If you want to execute a single specific test, you can adjust pass the `--files` parameter.
 
 If you also want to capture browser console out, you can use the `CAPTURE_CONSOLE` env var: `CAPTURE_CONSOLE=1 ng e2e`.
+
+### Creating component unit tests
+
+To create a component unit test from a given component, you first need to build the schematic locally:
+
+```
+npm run build-schematics
+```
+
+This will compile the TS files in tools/schematics/component-test-skeleton and make them ready to use with `ng generate`.
+
+To then create a test skeleton, execute the following with adjusted arguments:
+
+```
+ng g component-test-skeleton --name=dasherized-name-of-the-component --path=src/app/path/to/the/component/
+```
 
 ### Further help
 

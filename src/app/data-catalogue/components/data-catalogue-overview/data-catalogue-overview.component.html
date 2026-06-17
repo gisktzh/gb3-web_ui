@@ -17,8 +17,8 @@
 <page-section>
   <div class="data-catalogue-overview">
     <div class="data-catalogue-overview__content">
-      <loading-and-process-bar [loadingState]="loadingState()" />
-      @if (loadingState() === 'loaded') {
+      <loading-and-process-bar [loadingState]="dataCatalogueLoadingState()" />
+      @if (dataCatalogueLoadingState() === 'loaded') {
         <div
           class="data-catalogue-overview__content__active-filters"
           [class.data-catalogue-overview__content__active-filters--mobile]="screenMode() === 'mobile'"
@@ -53,7 +53,7 @@
         </cdk-table>
         <mat-paginator [pageSize]="10" hidePageSize showFirstLastButtons />
       }
-      @if (loadingState() === 'error') {
+      @if (dataCatalogueLoadingState() === 'error') {
         <b>Fehler beim Laden der Metadatenübersicht.</b>
       }
     </div>

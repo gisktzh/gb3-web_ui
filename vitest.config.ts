@@ -27,7 +27,6 @@ export default defineConfig({
         '**/*.mock.ts',
         '**/*.stub.ts',
         '**/app/testing/**',
-        '**/*.component.ts',
         '**/environments/environment*.ts',
       ],
     },

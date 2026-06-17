@@ -10,14 +10,10 @@
             aria-label="Gemeinde"
             matInput
             [matAutocomplete]="municipalityAutocomplete"
-            [formField]="municipalityForm.filter"
-          />
-          <mat-autocomplete
-            requireSelection
-            #municipalityAutocomplete="matAutocomplete"
-            [displayWith]="getMunicipalityName"
             [formField]="municipalityForm.municipality"
-          >
+            (input)="municipalityForm.filter().value.set($event.target.value)"
+          />
+          <mat-autocomplete requireSelection #municipalityAutocomplete="matAutocomplete" [displayWith]="getMunicipalityName">
             @for (municipality of filteredMunicipalities(); track municipality) {
               <mat-option [value]="municipality">
                 {{ municipality.name }}

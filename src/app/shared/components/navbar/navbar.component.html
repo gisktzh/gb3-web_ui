@@ -79,7 +79,12 @@
     @if (!isAuthenticated()) {
       <button (click)="startLogin()" class="navbar__item navbar__item--button" mat-button><mat-icon svgIcon="ktzh_user" />Login</button>
     } @else {
-      <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__item--button" mat-button #trigger="matMenuTrigger">
+      <button
+        [matMenuTriggerFor]="userMenu"
+        class="navbar__item navbar__item--button navbar__item__user-trigger"
+        mat-button
+        #trigger="matMenuTrigger"
+      >
         <mat-icon svgIcon="ktzh_user" />
         {{ userName() }}
         <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="navbar__item__arrow-icon" />
@@ -91,7 +96,7 @@
           <span>Profil</span>
         </a>
         <mat-divider />
-        <button (click)="logout()" mat-menu-item>
+        <button (click)="logout()" mat-menu-item class="navbar__item__logout-button">
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
         </button>

@@ -12,6 +12,7 @@
     "build-staging": "ng build --configuration=production-staging",
     "build-staging-using-productive-gb2-backend": "ng build --configuration=production-staging-using-productive-gb2-backend",
     "build-production": "ng build --configuration=production",
+    "build-schematics": "tsc -p tools/schematics/component-test-skeleton/tsconfig.json",
     "watch": "ng build --configuration development",
     "test": "ng test",
     "test-ci": "ng test --no-watch --no-progress --coverage",
@@ -21,7 +22,8 @@
     "generate-gb3-api": "npx swagger-typescript-api generate -p https://maps.zh.ch/api-docs/gb3/v4/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body --extract-request-body --extract-request-body && node ./remove-generated-api-version-references.js ./src/app/shared/models/gb3-api-generated.interfaces.ts",
     "lint": "eslint",
     "knip": "knip",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "generate-component-test-skeleton": "ng generate component-test-skeleton"
   },
   "private": true,
   "engines": {
@@ -69,6 +71,8 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@angular-devkit/core": "^21.2.12",
+    "@angular-devkit/schematics": "^21.2.12",
     "@angular-eslint/schematics": "^21.0.0",
     "@angular-eslint/template-parser": "^21.0.0",
     "@eslint/js": "^9.19.0",
