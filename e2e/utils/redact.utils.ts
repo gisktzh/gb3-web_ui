@@ -11,6 +11,8 @@ const REDACTABLE_KEYS = new Set([
   'authenticity_token',
   'user[login]',
   'user[password]',
+  'user%5Blogin%5D',
+  'user%5Bpassword%5D',
   'x-request-id',
   '_ts',
   'n',
@@ -18,6 +20,7 @@ const REDACTABLE_KEYS = new Set([
   'kid',
   'user-agent',
   'User-Agent',
+  'set-cookie',
 ]);
 
 /**
