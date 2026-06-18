@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {forkJoin, map, Observable} from 'rxjs';
+import {forkJoin, map, Observable, timer, switchMap} from 'rxjs';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
 import {FeatureInfoResponse, FeatureInfoResultFeatureField} from '../../../interfaces/feature-info.interface';
@@ -50,8 +50,11 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
-    const topicsListData = this.get<TopicsListData>(requestUrl);
-    return topicsListData.pipe(map((data) => this.transformTopicsListDataToTopicsResponse(data)));
+    return timer(25).pipe(
+      switchMap(() => this.get<TopicsListData>(requestUrl)),
+      map((data) => data ?? ({categories: []} as TopicsListData)),
+      map((data) => this.transformTopicsListDataToTopicsResponse(data)),
+    );
   }
 
   public loadLegends(queryTopics: QueryTopic[]): Observable<LegendResponse[]> {

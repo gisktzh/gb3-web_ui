@@ -1,13 +1,17 @@
+<!-- eslint-disable @angular-eslint/template/no-autofocus -- ESLint says it's an anti-pattern, but it has been implemented without autofocus. -->
 <div class="search" [ngClass]="'search--' + mode">
   <div class="search__bar">
     <mat-icon class="search__bar__icon" svgIcon="ktzh_search"></mat-icon>
     <input
       #searchInput
-      class="search__bar__input"
-      [ngClass]="{'search__bar__input--mobile': screenMode === 'mobile'}"
-      [placeholder]="placeholderText"
       type="text"
+      [value]="searchTerm()"
+      (keyup)="onInput($event.target.value)"
+      class="search__bar__input"
+      [ngClass]="{'search__bar__input--mobile': screenMode() === 'mobile'}"
+      [placeholder]="placeholderText"
       (focus)="focusEvent.emit()"
+      [autofocus]="focusOnInit"
       [disabled]="disabled"
     />
     @if (showFilterButton && (mode === 'compact' || mode === 'mobile')) {
@@ -30,7 +34,7 @@
         mat-button
         (click)="clearInput()"
         class="search__bar__close-button"
-        [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
+        [disabled]="(!alwaysEnableClearButton && searchTerm().length === 0) || disabled"
         aria-label="Sucheingabe löschen"
       >
         {{ clearButtonLabel }}
@@ -41,10 +45,10 @@
         mat-icon-button
         (click)="clearInput()"
         class="search__bar__close-icon-button"
-        [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
+        [disabled]="(!alwaysEnableClearButton && searchTerm().length === 0) || disabled"
         aria-label="Sucheingabe löschen"
       >
-        @if (screenMode === 'mobile') {
+        @if (screenMode() === 'mobile') {
           <mat-icon>cancel</mat-icon>
         } @else {
           <mat-icon>close</mat-icon>

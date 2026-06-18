@@ -42,9 +42,11 @@ export abstract class BaseSearchContainerComponent implements OnInit, OnDestroy,
   public ngAfterViewInit() {
     this.cdr.detectChanges();
 
-    this.searchComponent.searchInput.inputRef.nativeElement.onfocus = () => {
-      this.selectedSearchResultIndex = -1;
-    };
+    this.subscriptions.add(
+      this.searchComponent.searchInput.focusEvent.subscribe(() => {
+        this.selectedSearchResultIndex = -1;
+      }),
+    );
   }
   @HostListener('keydown.arrowdown', ['$event'])
   public handleArrowDown(event: KeyboardEvent) {
@@ -124,7 +126,7 @@ export abstract class BaseSearchContainerComponent implements OnInit, OnDestroy,
       this.searchComponent.searchInput.setTerm(selectedResult.text, false);
       selectedResult.host.nativeElement.focus();
     } else {
-      this.searchComponent.searchInput.inputRef.nativeElement.focus();
+      this.searchComponent.searchInput.focus();
       this.searchComponent.searchInput.setTerm(this.term, false);
     }
   }

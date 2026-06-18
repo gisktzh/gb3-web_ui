@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild, inject} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild, inject, signal} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
 import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
@@ -61,8 +61,8 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   @Output() public readonly changeIsMinimizedEvent = new EventEmitter<boolean>();
 
   public topics: Topic[] = [];
-  public catalogueLoadingState: LoadingState;
-  public favouritesLoadingState: LoadingState;
+  public catalogueLoadingState = signal<LoadingState>(undefined);
+  public favouritesLoadingState = signal<LoadingState>(undefined);
   public filterString: string | undefined = undefined;
   public filteredFavourites: Favourite[] = [];
   public isAuthenticated: boolean = false;
@@ -72,8 +72,8 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   private originalMaps: Map[] = [];
   private readonly filterString$ = this.store.select(selectFilterString);
   protected readonly catalogueLoadingState$ = this.store.select(selectCatalogueLoadingState);
-  private readonly favouritesLoadingState$ = this.store.select(selectFavouritesLoadingState);
-  private readonly filteredFavourites$ = this.store.select(selectFilteredFavouriteList);
+  protected readonly favouritesLoadingState$ = this.store.select(selectFavouritesLoadingState);
+  protected readonly filteredFavourites$ = this.store.select(selectFilteredFavouriteList);
   private readonly topics$ = this.store.select(selectFilteredLayerCatalog);
   private readonly originalMaps$ = this.store.select(selectMaps);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
@@ -201,7 +201,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
       this.catalogueLoadingState$
         .pipe(
           tap((value) => {
-            this.catalogueLoadingState = value;
+            this.catalogueLoadingState.set(value);
           }),
         )
         .subscribe(),
@@ -211,7 +211,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
       this.favouritesLoadingState$
         .pipe(
           tap((value) => {
-            this.favouritesLoadingState = value;
+            this.favouritesLoadingState.set(value);
           }),
         )
         .subscribe(),

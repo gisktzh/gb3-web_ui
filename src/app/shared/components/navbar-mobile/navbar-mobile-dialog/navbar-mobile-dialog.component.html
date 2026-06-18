@@ -1,6 +1,6 @@
 <mat-card class="navbar-mobile__dialog">
   <mat-card-header class="navbar-mobile__dialog__header">
-    @if (!isAuthenticated) {
+    @if (!isAuthenticated()) {
       <button (click)="startLogin()" class="navbar__item navbar__user" mat-button>
         <mat-icon svgIcon="ktzh_user"></mat-icon>
         <span>Login</span>
@@ -8,7 +8,7 @@
     } @else {
       <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__user" mat-button #trigger="matMenuTrigger">
         <mat-icon svgIcon="ktzh_user"></mat-icon>
-        <span>{{ userName }}</span>
+        <span>{{ userName() }}</span>
         <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="arrow-icon"></mat-icon>
       </button>
       <mat-menu #userMenu="matMenu" style="padding-left: 12px">

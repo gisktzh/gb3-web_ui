@@ -25,7 +25,7 @@ export default tseslint.config(
   },
   {
     ignores: ['**/*.mock.ts', '**/*.stub.ts'],
-    files: ['src/**/*.ts'],
+    files: ['src/**/*.ts', 'e2e/**/*.ts'],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,

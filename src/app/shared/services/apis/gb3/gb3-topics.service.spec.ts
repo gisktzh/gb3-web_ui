@@ -32,7 +32,9 @@ describe('Gb3TopicsService', () => {
   });
 
   describe('loadTopics', () => {
-    it('should receive the data and transform it correctly', () => {
+    it('should receive the data and transform it correctly', async () => {
+      vi.useFakeTimers();
+
       const data: TopicsListData = {
         categories: [
           {
@@ -262,9 +264,14 @@ describe('Gb3TopicsService', () => {
         expect(httpGetSpy).toHaveBeenCalledWith(expectedUrl);
         expect(actual).toEqual(expected);
       });
+
+      await vi.runAllTimersAsync();
+      vi.useRealTimers();
     });
 
-    it('should sort topics alphabetically ascending by title', () => {
+    it('should sort topics alphabetically ascending by title', async () => {
+      vi.useFakeTimers();
+
       const randomOrder = ['B-2', 'B-3', 'A-1', 'AA 2', 'AA 1', '-1'];
       const data: TopicsListData = {
         categories: [
@@ -316,6 +323,9 @@ describe('Gb3TopicsService', () => {
         const actualTitles = actual.topics.map((topic) => topic.maps.map((map) => map.title)).flat();
         expect(actualTitles).toEqual(expectedOrder);
       });
+
+      await vi.runAllTimersAsync();
+      vi.useRealTimers();
     });
   });
 
