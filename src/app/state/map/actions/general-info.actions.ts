@@ -6,7 +6,7 @@ import {Coordinate} from '../../../shared/interfaces/coordinate.interface';
 export const GeneralInfoActions = createActionGroup({
   source: 'GeneralInfo',
   events: {
-    'Send Request': props<Coordinate>(),
+    'Send Request': props<Coordinate & {scale?: number}>(),
     'Update Content': props<{generalInfo: GeneralInfoResponse}>(),
     'Clear Content': emptyProps(),
     'Set Error': errorProps(),
