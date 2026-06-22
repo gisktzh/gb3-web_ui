@@ -49,6 +49,8 @@ const mockCoord = {
   y: 9001,
 };
 
+const mockScale = 15000;
+
 describe('Gb3GeneralInfoService', () => {
   let service: Gb3GeneralInfoService;
   let configService: ConfigService;
@@ -82,11 +84,11 @@ describe('Gb3GeneralInfoService', () => {
   it('creates correct url with scale parameter', () => {
     vi.spyOn(httpClient, 'get').mockReturnValue(of(mockResponse));
 
-    const scale = 5000;
     const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/general_info?x=${mockCoord.x}&y=${mockCoord.y}&scale=${scale}`;
 
     service.loadGeneralInfo(mockCoord.x, mockCoord.y, scale).subscribe(() => {
-      expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
+      expect(httpClient.get).toHaveBeenCalledTimes(1);
+      expect(httpClient.get).toHaveBeenCalledWith(expected);
     });
   });
 
