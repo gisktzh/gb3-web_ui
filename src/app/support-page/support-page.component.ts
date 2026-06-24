@@ -1,9 +1,6 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
-import {ScreenMode} from '../shared/types/screen-size.type';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
-import {LinksGroup} from '../shared/interfaces/links-group.interface';
 import {selectAdditionalInformationLinks} from '../state/support/reducers/support-content.reducer';
 import {PageSectionComponent} from '../shared/components/page-section/page-section.component';
 import {HeroHeaderComponent} from '../shared/components/hero-header/hero-header.component';
@@ -20,25 +17,10 @@ const SUPPORT_PAGE_SUMMARY =
   styleUrls: ['./support-page.component.scss'],
   imports: [PageSectionComponent, HeroHeaderComponent, SupportPageNavigationComponent, RouterOutlet, LinkListComponent],
 })
-export class SupportPageComponent implements OnInit, OnDestroy {
+export class SupportPageComponent {
   private readonly store = inject(Store);
 
   public heroText = SUPPORT_PAGE_SUMMARY;
-  public screenMode: ScreenMode = 'regular';
-  public additionalInformationLinksGroups: LinksGroup[] = [];
-
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly additionalInformationLinksGroups$ = this.store.select(selectAdditionalInformationLinks);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit(): void {
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(
-      this.additionalInformationLinksGroups$.pipe(tap((linksGroups) => (this.additionalInformationLinksGroups = linksGroups))).subscribe(),
-    );
-  }
-
-  public ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly additionalInformationLinksGroups = this.store.selectSignal(selectAdditionalInformationLinks);
 }

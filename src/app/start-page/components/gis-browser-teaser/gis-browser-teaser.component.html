@@ -1,8 +1,13 @@
-<div class="gis-browser-teaser">
+<a class="gis-browser-teaser" [routerLink]="['/', mainPageEnum.Maps]" tabindex="0">
   <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">GIS-Browser</h3>
   <p>
     Im GIS-Browser sind die Geodaten des Kantons Zürich auf rund 200 interaktiven Karten visualisiert. Nutzen Sie dieses Instrument und
     entdecken Sie die vielfältigen Kartenthemen.
   </p>
-  <a class="gis-browser-teaser__start-button" mat-flat-button routerLink="/maps">GIS-Browser starten</a>
-</div>
+
+  <div
+    class="mdc-button mat-mdc-button-base gis-browser-teaser__start-button mdc-button--unelevated mat-mdc-unelevated-button mat-unthemed _mat-animation-noopable"
+  >
+    <span class="mdc-button__label"> GIS-Browser starten </span>
+  </div>
+</a>

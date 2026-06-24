@@ -65,11 +65,8 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
       & .feature-info-content__table__row__column {
         background-color: ktzh-variables.$zh-white;
         padding: 6px 8px;
-        word-break: break-word;
-
-        &--attribute {
-          @include mixins.multiline-ellipsis(1);
-        }
+        word-break: normal;
+        hyphens: auto;
 
         &--header {
           font-size: 12px;

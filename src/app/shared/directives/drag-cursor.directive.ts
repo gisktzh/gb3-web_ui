@@ -1,41 +1,26 @@
-import {Directive, OnDestroy, OnInit, DOCUMENT, inject} from '@angular/core';
+import {Directive, DOCUMENT, DestroyRef, inject} from '@angular/core';
 import {CdkDrag} from '@angular/cdk/drag-drop';
-import {Subscription, tap} from 'rxjs';
 
-@Directive({selector: '[dragCursor]'})
-export class DragCursorDirective implements OnInit, OnDestroy {
+@Directive({
+  selector: '[dragCursor]',
+})
+export class DragCursorDirective {
   private readonly document = inject<Document>(DOCUMENT);
   private readonly cdkDrag = inject(CdkDrag);
+  private readonly destroyRef = inject(DestroyRef);
 
-  private readonly subscriptions: Subscription = new Subscription();
+  constructor() {
+    const dragStartedSub = this.cdkDrag.started.subscribe(() => {
+      this.document.body.style.setProperty('cursor', 'grabbing');
+    });
 
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
+    const dragEndedSub = this.cdkDrag.ended.subscribe(() => {
+      this.document.body.style.setProperty('cursor', 'auto');
+    });
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.cdkDrag.started
-        .pipe(
-          tap(() => {
-            this.document.body.style.cursor = 'grabbing';
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.cdkDrag.ended
-        .pipe(
-          tap(() => {
-            this.document.body.style.cursor = 'auto';
-          }),
-        )
-        .subscribe(),
-    );
+    this.destroyRef.onDestroy(() => {
+      dragStartedSub.unsubscribe();
+      dragEndedSub.unsubscribe();
+    });
   }
 }

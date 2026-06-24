@@ -1,21 +1,15 @@
-import {AfterViewInit, Component, HostListener, inject, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, computed, inject, OnInit, signal} from '@angular/core';
 import {ONBOARDING_STEPS, OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {Store} from '@ngrx/store';
-import {delayWhen, interval, Subscription, tap} from 'rxjs';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
-import {MapUiState} from '../state/map/states/map-ui.state';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
-import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content.type';
-import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
+import {selectNumberOfQueryLegends} from '../state/map/selectors/query-legends.selector';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
-import {ScreenMode} from '../shared/types/screen-size.type';
-import {initialState as initialMapConfigState, selectMapConfigState, selectRotation} from '../state/map/reducers/map-config.reducer';
+import {selectMapConfigState, selectRotation} from '../state/map/reducers/map-config.reducer';
 import {InitialMapExtentService} from './services/initial-map-extent.service';
-import {MapConfigState} from '../state/map/states/map-config.state';
 import {MapConfigActions} from '../state/map/actions/map-config.actions';
 import {DisableOverscrollBehaviourComponent} from './components/disable-overscroll-behaviour/disable-overscroll-behaviour.component';
 import {MatDrawer, MatDrawerContainer} from '@angular/material/sidenav';
-import {NgClass} from '@angular/common';
 import {PrintDialogComponent} from './components/map-tools/print-dialog/print-dialog.component';
 import {DataDownloadDialogComponent} from './components/map-tools/data-download-dialog/data-download-dialog.component';
 import {LegendOverlayComponent} from './components/legend-overlay/legend-overlay.component';
@@ -52,7 +46,6 @@ import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
   imports: [
     DisableOverscrollBehaviourComponent,
     MatDrawerContainer,
-    NgClass,
     MatDrawer,
     PrintDialogComponent,
     DataDownloadDialogComponent,
@@ -77,49 +70,40 @@ import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
     OnboardingGuideComponent,
     CenterAnchorComponent,
   ],
+  host: {
+    '(window:keydown.esc)': 'closeSideDrawer()',
+  },
 })
-export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
+export class MapPageComponent implements AfterViewInit, OnInit {
   private readonly onboardingGuideService = inject(OnboardingGuideService);
   private readonly initialMapExtentService = inject(InitialMapExtentService);
   private readonly store = inject(Store);
 
-  public numberOfQueryLegends: number = 0;
-  public isMapDataCatalogueMinimized: boolean = false;
-  public mapUiState?: MapUiState;
-  public mapSideDrawerContent: MapSideDrawerContent = 'none';
-  public screenMode: ScreenMode = 'mobile';
-  public mapConfigState: MapConfigState = initialMapConfigState;
-  public rotation: number = 0;
-
-  private readonly queryLegends$ = this.store.select(selectQueryLegends);
-  private readonly mapUiState$ = this.store.select(selectMapUiState);
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly rotation$ = this.store.select(selectRotation);
-  private readonly mapConfigState$ = this.store.select(selectMapConfigState);
-  private readonly subscriptions: Subscription = new Subscription();
+  public readonly numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
+  public readonly isMapDataCatalogueMinimized = signal(false);
+  public readonly mapUiState = this.store.selectSignal(selectMapUiState);
+  public readonly mapSideDrawerContent = computed(() => this.mapUiState().mapSideDrawerContent || 'none');
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
+  public readonly rotation = this.store.selectSignal(selectRotation);
 
   public ngOnInit() {
-    this.initSubscriptions();
-    if (!this.mapConfigState.predefinedInitialExtent) {
+    if (!this.mapConfigState().predefinedInitialExtent) {
       const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
       this.store.dispatch(
         MapConfigActions.setInitialMapConfig({
           x,
           y,
           scale,
-          basemapId: this.mapConfigState.activeBasemapId,
+          basemapId: this.mapConfigState().activeBasemapId,
           initialMaps: [],
         }),
       );
     }
   }
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
   public ngAfterViewInit() {
-    if (this.screenMode !== 'mobile') {
+    if (this.screenMode() !== 'mobile') {
       this.onboardingGuideService.autoStart();
     }
   }
@@ -133,39 +117,11 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   public setIsMapDataCatalogueMinimized(isMinimized: boolean) {
-    this.isMapDataCatalogueMinimized = isMinimized;
+    this.isMapDataCatalogueMinimized.set(isMinimized);
   }
 
-  @HostListener('window:keydown.esc')
   public closeSideDrawer() {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.rotation$
-        .pipe(
-          delayWhen((rotation) => (rotation === 0 ? interval(2000) : interval(0))),
-          tap((rotation) => (this.rotation = rotation)),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.queryLegends$.pipe(tap((currentActiveMapItems) => (this.numberOfQueryLegends = currentActiveMapItems.length))).subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.mapUiState$
-        .pipe(
-          tap((mapUiState) => {
-            this.mapUiState = mapUiState;
-            this.mapSideDrawerContent = mapUiState.mapSideDrawerContent;
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
   }
 
   public mapSideDrawerFullyOpened() {

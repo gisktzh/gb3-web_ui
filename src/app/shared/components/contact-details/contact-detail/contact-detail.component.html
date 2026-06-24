@@ -1,39 +1,37 @@
 <div class="contact-detail">
   <div class="contact-detail__icon">
     <span class="contact-detail__icon__wrapper">
-      <mat-icon
-        class="contact-detail__icon__wrapper"
-        [svgIcon]="contactType === 'address' ? 'ktzh_location' : 'ktzh_envelope_open'"
-      ></mat-icon>
+      <mat-icon class="contact-detail__icon__wrapper" [svgIcon]="contactType() === 'address' ? 'ktzh_location' : 'ktzh_envelope_open'" />
     </span>
   </div>
-  @if (contactType === 'email') {
+  @if (contactType() === 'email') {
     <div class="contact-detail__address">
-      <a [title]="email" rel="noopener noreferrer" href="mailto:{{ email }}">{{ email }}</a>
+      <a [title]="email()" rel="noopener noreferrer" href="mailto:{{ email() }}">{{ email() }}</a>
     </div>
   } @else {
-    <ng-template [ngTemplateOutlet]="contactType === 'link' ? linkTemplate : addressTemplate"></ng-template>
+    <ng-template [ngTemplateOutlet]="contactType() === 'link' ? linkTemplate : addressTemplate" />
   }
 </div>
 
 <ng-template #linkTemplate>
   <div class="contact-detail__address">
-    <a title="{{ url }}" rel="noopener noreferrer" href="{{ url }}" target="_blank">{{ title }} </a>
+    <a [title]="url()" rel="noopener noreferrer" [href]="url()" target="_blank">{{ title() }} </a>
   </div>
 </ng-template>
 
 <ng-template #addressTemplate>
   <div class="contact-detail__address">
-    <address>{{ street }}<br />{{ place }}</address>
+    <address>{{ street() }}<br />{{ place() }}</address>
   </div>
   <div class="contact-detail__links">
     <a
-      href="https://www.google.com/maps/dir/?api=1&destination={{ coordinates }}"
+      [href]="`https://www.google.com/maps/dir/?api=1&destination=${coordinates()}`"
       rel="noopener noreferrer"
       target="_blank"
       title="Route (Google Maps)"
-      >Route (Google Maps)</a
     >
+      Route (Google Maps)
+    </a>
     <a (click)="copyToClipboard($event)" href="" title="Adresse kopieren">Adresse kopieren</a>
   </div>
 </ng-template>

@@ -1,5 +1,5 @@
-<div #scaleBar class="scale-bar" [ngClass]="{'scale-bar--hidden': !scaleBarLabel}">
+<div #scaleBar class="scale-bar" [class.scale-bar--hidden]="!scaleBarLabel()" [style]="scaleBarStyle()">
   <span class="scale-bar__label">
-    <strong>{{ scaleBarLabel }}</strong>
+    <strong>{{ scaleBarLabel() }}</strong>
   </span>
 </div>

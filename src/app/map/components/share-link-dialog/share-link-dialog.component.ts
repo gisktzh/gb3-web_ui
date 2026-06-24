@@ -1,12 +1,9 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {Subscription, filter, map, tap} from 'rxjs';
 import {MainPage} from 'src/app/shared/enums/main-page.enum';
 import {ConfigService} from 'src/app/shared/services/config.service';
-import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
-import {LoadingState} from '../../../shared/types/loading-state.type';
 import {selectId, selectSavingState} from '../../../state/map/reducers/share-link.reducer';
 import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
 import {MatFormField, MatLabel, MatInput, MatSuffix} from '@angular/material/input';
@@ -15,6 +12,7 @@ import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
 import {MatIcon} from '@angular/material/icon';
 import {FeatureFlagDirective} from '../../../shared/directives/feature-flag.directive';
 import {MapOverlayListItemComponent} from '../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
+import {HasSavingStateSingal} from 'src/app/shared/interfaces/has-saving-state-signal.interface';
 
 @Component({
   selector: 'share-link-dialog',
@@ -34,61 +32,39 @@ import {MapOverlayListItemComponent} from '../map-overlay/map-overlay-list-item/
     MatButton,
   ],
 })
-export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingState {
+export class ShareLinkDialogComponent implements HasSavingStateSingal {
   private readonly dialogRef = inject<MatDialogRef<ShareLinkDialogComponent>>(MatDialogRef);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly configService = inject(ConfigService);
 
-  public savingState: LoadingState = undefined;
-  public shareLinkUrl?: string;
-  public iframeCode?: string;
+  public readonly savingState = this.store.selectSignal(selectSavingState);
+  protected readonly shareLinkId = this.store.selectSignal(selectId);
+  public readonly shareLinkUrl = computed(() => {
+    const id = this.shareLinkId();
+    if (!id) {
+      return 'Generiere Link...';
+    }
 
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly savingState$ = this.store.select(selectSavingState);
-  private readonly shareLinkId$ = this.store.select(selectId);
-
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  public initSubscriptions() {
-    this.subscriptions.add(this.savingState$.pipe(tap((savingState) => (this.savingState = savingState))).subscribe());
-    this.subscriptions.add(
-      this.shareLinkId$
-        .pipe(
-          filter((id) => id !== undefined),
-          map((id) => id!),
-          tap((id) => {
-            const baseUrl = window.location.origin;
-            this.shareLinkUrl = this.createShareLinkUrl(id, baseUrl);
-            this.iframeCode = this.createIFrameCode(id, baseUrl);
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
-  public close(isAborted: boolean = false) {
-    this.dialogRef.close(isAborted);
-  }
-
-  private createShareLinkUrl(id: string, baseUrl: string): string {
     const relativeShareLinkUrl = this.router.createUrlTree([MainPage.ShareLink, id]).toString();
-    return new URL(relativeShareLinkUrl, baseUrl).toString();
-  }
+    return new URL(relativeShareLinkUrl, globalThis.location.origin).toString();
+  });
+  public readonly iframeCode = computed(() => {
+    const id = this.shareLinkId();
+    if (!id) {
+      return 'Generiere iframe Code zum einbetten...';
+    }
 
-  private createIFrameCode(id: string, baseUrl: string): string {
     const relativeEmbeddedMapUrl = this.router.createUrlTree([MainPage.Embedded, id]).toString();
-    const embeddedMapUrl = new URL(relativeEmbeddedMapUrl, baseUrl).toString();
+    const embeddedMapUrl = new URL(relativeEmbeddedMapUrl, globalThis.location.origin).toString();
     const embeddedMapConfig = this.configService.embeddedMapConfig;
     return (
       `<iframe src='${embeddedMapUrl}' title="${embeddedMapConfig.title}" width='${embeddedMapConfig.width}'` +
       ` height='${embeddedMapConfig.height}' style='border:${embeddedMapConfig.borderSize}'></iframe>`
     );
+  });
+
+  public close(isAborted: boolean = false) {
+    this.dialogRef.close(isAborted);
   }
 }

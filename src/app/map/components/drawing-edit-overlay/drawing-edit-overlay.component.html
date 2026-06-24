@@ -1,3 +1,9 @@
-<map-overlay (closeEvent)="close()" [isVisible]="isVisible" [showPrintButton]="false" overlayTitle="Darstellung anpassen" location="right">
-  <drawing-edit></drawing-edit>
+<map-overlay
+  (closeEvent)="close()"
+  [isVisible]="isVisible()"
+  [showPrintButton]="false"
+  overlayTitle="Darstellung anpassen"
+  location="right"
+>
+  <drawing-edit />
 </map-overlay>
