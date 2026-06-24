@@ -6,6 +6,7 @@ import {SearchInputComponent} from './search-input.component';
 import {inputBinding, signal} from '@angular/core';
 import {TypedTourAnchorDirective} from '../../directives/typed-tour-anchor.directive';
 import {provideUiTour} from 'ngx-ui-tour-md-menu';
+import {By} from '@angular/platform-browser';
 
 describe('SearchInputComponent', () => {
   let component: SearchInputComponent;
@@ -277,45 +278,27 @@ describe('SearchInputComponent', () => {
       expect(labelOnlyButton!.textContent).toContain('Lorem ipsum');
     });
 
-    it('should clear the search input when the icon-only button is clicked', async () => {
-      vi.useFakeTimers();
-
+    it('should clear the search input when the icon-only button is clicked', () => {
       component.setTerm('Something something go go yes', false);
       alwaysEnableClearButton.set(true);
       fixture.detectChanges();
 
-      await vi.runAllTimersAsync();
-
-      const button = compiled.querySelector<HTMLButtonElement>('.search__bar__close-icon-button');
-      expect(button).not.toBeNull();
-
-      button!.dispatchEvent(new MouseEvent('click'));
-
-      await vi.runAllTimersAsync();
+      fixture.debugElement.query(By.css('.search__bar__close-icon-button')).triggerEventHandler('click');
 
       expect(changeSearchTermEventSpy).not.toHaveBeenCalled();
       expect(clearSearchTermEventSpy).toHaveBeenCalled();
       expect(component.searchTerm()).toBe('');
     });
 
-    it('should clear the search input when the label-only button is clicked', async () => {
-      vi.useFakeTimers();
-
+    it('should clear the search input when the label-only button is clicked', () => {
       clearButtonLabel.set('Lorem ipsum');
       alwaysEnableClearButton.set(true);
       component.setTerm('Something something go go yes', false);
       fixture.detectChanges();
 
-      await vi.runAllTimersAsync();
-
       expect(component.searchTerm()).toBe('Something something go go yes');
 
-      const labelOnlyButton = compiled.querySelector<HTMLButtonElement>('.search__bar__close-button');
-      expect(labelOnlyButton).not.toBeNull();
-
-      labelOnlyButton!.dispatchEvent(new MouseEvent('click'));
-
-      await vi.runAllTimersAsync();
+      fixture.debugElement.query(By.css('.search__bar__close-button')).triggerEventHandler('click');
 
       expect(changeSearchTermEventSpy).not.toHaveBeenCalled();
       expect(clearSearchTermEventSpy).toHaveBeenCalled();

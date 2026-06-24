@@ -88,7 +88,7 @@ describe('ImportEffects', () => {
       const file: File = new File([], 'test');
       const gb3ImportServiceSpy = vi.spyOn(gb3ImportService, 'importDrawing').mockReturnValue(throwError(() => expectedError));
 
-      actions$ = of(ImportActions.requestDrawingsImport({file: new File([], 'test')}));
+      actions$ = of(ImportActions.requestDrawingsImport({file}));
       effects.requestImportDrawing$.subscribe((action) => {
         expect(gb3ImportServiceSpy).toHaveBeenCalledTimes(1);
         expect(gb3ImportServiceSpy).toHaveBeenCalledWith(file);
