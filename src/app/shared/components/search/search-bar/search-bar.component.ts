@@ -1,61 +1,48 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
+import {Component, inject, input, viewChild} from '@angular/core';
 import {SharedModule} from '../../../shared.module';
-import {SearchState} from '../../../../state/app/states/search.state';
-import {initialState, selectSearchState} from '../../../../state/app/reducers/search.reducer';
-import {ScreenMode} from '../../../types/screen-size.type';
+import {selectSearchState} from '../../../../state/app/reducers/search.reducer';
 import {selectScreenMode} from '../../../../state/app/reducers/app-layout.reducer';
 import {selectIsAnySearchFilterActiveSelector} from '../../../../state/app/selectors/is-any-search-filter-active.selector';
 import {ConfigService} from '../../../services/config.service';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {SearchActions} from '../../../../state/app/actions/search.actions';
-import {Subscription, tap} from 'rxjs';
 import {SearchFilterDialogComponent} from '../../search-filter-dialog/search-filter-dialog.component';
 import {PanelClass} from '../../../enums/panel-class.enum';
-import {NgClass} from '@angular/common';
+
 import {SearchInputComponent} from '../search-input.component';
 import {SearchMode} from '../../../types/search-mode.type';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'search-bar',
-  imports: [SharedModule, NgClass, SearchInputComponent],
+  imports: [SharedModule, SearchInputComponent],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss',
 })
-export class SearchBarComponent implements OnInit, OnDestroy {
+export class SearchBarComponent {
   private readonly configService = inject(ConfigService);
   private readonly dialogService = inject(MatDialog);
   private readonly store = inject(Store);
 
-  @Input() public mode: SearchMode = 'normal';
-  @Input() public placeholderText: string = 'Suche nach Karten, Kartendaten, Geodaten und Geodiensten';
-  @Input() public searchConfig = this.configService.searchConfig.mapPage;
-  @Input() public showFilterButton = true;
-  @Input() public hasFocusEvent = false;
+  public readonly searchInput = viewChild.required(SearchInputComponent);
 
-  public searchState: SearchState = initialState;
-  public screenMode: ScreenMode = 'regular';
-  public isAnySearchFilterActive: boolean = false;
+  public readonly mode = input<SearchMode>('normal');
+  public readonly placeholderText = input('Suche nach Karten, Kartendaten, Geodaten und Geodiensten');
+  public readonly searchConfig = input(this.configService.searchConfig.mapPage);
+  public readonly showFilterButton = input(true);
+  public readonly hasFocusEvent = input(false);
 
-  @ViewChild(SearchInputComponent) public readonly searchInput!: SearchInputComponent;
+  public readonly searchState = this.store.selectSignal(selectSearchState);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly isAnySearchFilterActive = this.store.selectSignal(selectIsAnySearchFilterActiveSelector);
 
-  private readonly searchState$ = this.store.select(selectSearchState);
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+  constructor() {
+    this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig().filterGroups}));
   }
 
   public searchForTerm(term: string) {
-    this.store.dispatch(SearchActions.searchForTerm({term, options: this.searchConfig.searchOptions}));
+    this.store.dispatch(SearchActions.searchForTerm({term, options: this.searchConfig().searchOptions}));
   }
 
   public clearSearchTerm() {
@@ -70,14 +57,8 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   }
 
   public handleFocus() {
-    if (this.screenMode === 'mobile' && this.hasFocusEvent) {
+    if (this.screenMode() === 'mobile' && this.hasFocusEvent()) {
       this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'search'}));
     }
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.searchState$.pipe(tap((searchState) => (this.searchState = searchState))).subscribe());
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(this.isAnySearchFilterActive$.pipe(tap((value) => (this.isAnySearchFilterActive = value))).subscribe());
   }
 }

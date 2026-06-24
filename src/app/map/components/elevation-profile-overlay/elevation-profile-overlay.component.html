@@ -1,21 +1,19 @@
 <map-overlay
   (closeEvent)="close()"
-  [isVisible]="isVisible"
+  [isVisible]="isVisible()"
   [showPrintButton]="false"
   class="elevation-profile-overlay"
   location="right"
   overlayTitle="Höhenprofil"
 >
-  <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
-  @if (loadingState === 'loaded' && elevationProfileData) {
+  <loading-and-process-bar [loadingState]="loadingState()" />
+  @if (loadingState() === 'loaded' && elevationProfileData(); as elevationProfileData) {
     <div class="elevation-profile-overlay__content">
-      <elevation-profile-chart [elevationProfileData]="elevationProfileData"></elevation-profile-chart>
-      @if (elevationProfileData) {
-        <elevation-profile-statistics [statistics]="elevationProfileData.statistics"></elevation-profile-statistics>
-      }
+      <elevation-profile-chart [elevationProfileData]="elevationProfileData" />
+      <elevation-profile-statistics [statistics]="elevationProfileData.statistics" />
       <div class="elevation-profile-overlay__content__download">
         <a
-          [href]="downloadCsvUrl"
+          [href]="downloadCsvUrl()"
           mat-raised-button
           class="elevation-profile-overlay__content__download__button"
           [disabled]="!downloadCsvUrl"
@@ -25,7 +23,7 @@
           <span>Download CSV</span></a
         >
       </div>
-      <mat-divider></mat-divider>
+      <mat-divider />
       <div class="elevation-profile-overlay__content__credits">
         <span>Datenquelle:</span>
         <a href="https://api3.geo.admin.ch/services/sdiservices.html#profile" rel="noreferrer noopener" target="_blank">GeoAdmin API</a>

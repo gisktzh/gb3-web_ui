@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, input, model} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
 @Component({
@@ -8,12 +8,6 @@ import {FormsModule} from '@angular/forms';
   imports: [FormsModule],
 })
 export class ColorPickerEditComponent {
-  @Input() public fillColor: string = '';
-  @Input() public title: string = '';
-
-  @Output() public readonly updateColorEvent = new EventEmitter<string>();
-
-  public updateColor() {
-    this.updateColorEvent.emit(this.fillColor);
-  }
+  public readonly value = model('');
+  public readonly title = input('');
 }

@@ -1,39 +1,35 @@
 <div class="result-window">
-  <loading-and-process-bar class="result-window__loading-bar" [loadingState]="searchApiLoadingState"></loading-and-process-bar>
+  <loading-and-process-bar class="result-window__loading-bar" [loadingState]="searchApiLoadingState()" />
   @if (
-    searchTerms[0].length >= 1 &&
-    (filteredMaps.length !== 0 || filteredActiveMapMatches.length !== 0 || filteredAddressesAndPlacesMatches.length !== 0) &&
-    !selectedSearchResult
+    searchTerms().length > 0 &&
+    searchTerms()[0].length >= 1 &&
+    (filteredMaps().length !== 0 || filteredActiveMapMatches().length !== 0 || filteredAddressesAndPlacesMatches().length !== 0) &&
+    !selectedSearchResult()
   ) {
     <mat-accordion
       class="result-window__content"
       [multi]="showMultiplePanels"
-      [ngClass]="{'result-window__content--mobile': screenMode === 'mobile'}"
+      [class.result-window__content--mobile]="screenMode() === 'mobile'"
     >
-      @if (filteredAddressesAndPlacesMatches.length > 0) {
+      @if (filteredAddressesAndPlacesMatches().length > 0) {
         <result-group
-          [searchResults]="filteredAddressesAndPlacesMatches"
-          [header]="'Orte / Adressen'"
-          [searchTerms]="searchTerms"
+          [searchResults]="filteredAddressesAndPlacesMatches()"
+          header="Orte / Adressen"
+          [searchTerms]="searchTerms()"
           [isExpanded]="true"
           class="result-window__content__group"
-        ></result-group>
+        />
       }
-      @if (filteredActiveMapMatches.length > 0) {
+      @if (filteredActiveMapMatches().length > 0) {
         <result-group
-          [searchResults]="filteredActiveMapMatches"
-          [header]="'Objekte'"
-          [searchTerms]="searchTerms"
+          [searchResults]="filteredActiveMapMatches()"
+          header="Objekte"
+          [searchTerms]="searchTerms()"
           class="result-window__content__group"
-        ></result-group>
+        />
       }
-      @if (filteredMaps.length > 0) {
-        <result-group
-          [filteredMaps]="filteredMaps"
-          [header]="'Karten'"
-          [searchTerms]="searchTerms"
-          class="result-window__content__group"
-        ></result-group>
+      @if (filteredMaps().length > 0) {
+        <result-group [filteredMaps]="filteredMaps()" header="Karten" [searchTerms]="searchTerms()" class="result-window__content__group" />
       }
     </mat-accordion>
   }

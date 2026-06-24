@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild, inject} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, viewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {AppLayoutActions} from '../../../state/app/actions/app-layout.actions';
 
@@ -14,10 +14,11 @@ import {AppLayoutActions} from '../../../state/app/actions/app-layout.actions';
 export class ScrollbarWidthCalculationComponent implements AfterViewInit {
   private readonly store = inject(Store);
 
-  @ViewChild('container') private readonly containerRef!: ElementRef;
+  private readonly containerRef = viewChild.required<ElementRef>('container');
 
   public ngAfterViewInit() {
-    const scrollbarWidth = this.containerRef.nativeElement.offsetWidth - this.containerRef.nativeElement.clientWidth;
+    const container = this.containerRef().nativeElement;
+    const scrollbarWidth = container.offsetWidth - container.clientWidth;
     this.store.dispatch(AppLayoutActions.setScrollbarWidth({scrollbarWidth: scrollbarWidth}));
   }
 }

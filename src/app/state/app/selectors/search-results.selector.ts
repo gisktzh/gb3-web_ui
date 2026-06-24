@@ -1,6 +1,7 @@
 import {createSelector} from '@ngrx/store';
 import {selectFilterGroups, selectSearchApiResultMatches, selectTerm} from '../reducers/search.reducer';
 import {
+  GeometryWithSrsSearchApiResultMatch,
   MetadataSearchApiResultMatch,
   SearchApiResultMatch,
 } from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
@@ -64,6 +65,20 @@ export const selectFilteredSearchApiResultMatches = createSelector(
           }
         });
   },
+);
+
+export const selectFilteredAddressesAndPlacesMatches = createSelector(
+  selectFilteredSearchApiResultMatches,
+  (matches): GeometryWithSrsSearchApiResultMatch[] =>
+    matches.filter(
+      (match) => !!match.indexType && ['addresses', 'places', 'gvz', 'egid', 'egrid', 'parcels'].includes(match.indexType),
+    ) as GeometryWithSrsSearchApiResultMatch[],
+);
+
+export const selectFilteredActiveMapMatches = createSelector(
+  selectFilteredSearchApiResultMatches,
+  (matches): GeometryWithSrsSearchApiResultMatch[] =>
+    matches.filter((match) => !!match.indexType && match.indexType === 'activeMapItems') as GeometryWithSrsSearchApiResultMatch[],
 );
 
 export const selectFilteredLayerCatalogMaps = createSelector(

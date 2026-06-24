@@ -1,11 +1,11 @@
 <drawing-symbols
   class="symbol-edit"
   groupName="symbols"
-  [sizeValue]="style.symbolSize"
-  [rotationValue]="style.symbolRotation"
+  [size]="symbolStyleForm.style.symbolSize().value()"
+  (sizeChange)="symbolStyleForm.style.symbolSize().value.set($event)"
+  [rotation]="symbolStyleForm.style.symbolRotation().value()"
+  (rotationChange)="symbolStyleForm.style.symbolRotation().value.set($event)"
+  [symbol]="symbolStyleForm.selectedSymbol().value()"
+  (symbolChange)="symbolStyleForm.selectedSymbol().value.set($event)"
   [fullHeight]="true"
-  [symbolValue]="selectedSymbol"
-  (symbolChange)="onSymbolChange($event)"
-  (sizeChange)="updateValueWithDelay('symbolSize', $event)"
-  (rotationChange)="updateValueWithDelay('symbolRotation', $event)"
-></drawing-symbols>
+/>

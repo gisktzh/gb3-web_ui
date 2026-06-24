@@ -80,6 +80,7 @@ $border-width: 8px;
     &:active,
     &:focus-within,
     &:focus {
+      z-index: 1;
       .frequently-used-items__item__content
         .frequently-used-items__item__text-container
         .frequently-used-items__item__text-container__title {

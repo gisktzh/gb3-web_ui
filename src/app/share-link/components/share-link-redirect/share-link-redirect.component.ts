@@ -1,8 +1,7 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {filter, from, Subscription, switchMap} from 'rxjs';
 import {ShareLinkActions} from '../../../state/map/actions/share-link.actions';
 import {selectApplicationInitializationLoadingState, selectLoadingState} from '../../../state/map/reducers/share-link.reducer';
 import {ShareLinkParameterInvalid} from '../../../shared/errors/share-link.errors';
@@ -15,55 +14,39 @@ import {WaitingPageComponent} from '../../../shared/components/waiting-page/wait
   styleUrls: ['./share-link-redirect.component.scss'],
   imports: [WaitingPageComponent],
 })
-export class ShareLinkRedirectComponent implements OnInit, OnDestroy {
+export class ShareLinkRedirectComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
 
-  public id: string | null = null;
+  public readonly applicationInitializationLoadingState = this.store.selectSignal(selectApplicationInitializationLoadingState);
+  public readonly shareLinkLoadingState = this.store.selectSignal(selectLoadingState);
+  public readonly id = signal(this.route.snapshot.paramMap.get(RouteParamConstants.RESOURCE_IDENTIFIER));
 
   protected readonly mainPageEnum = MainPage;
 
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly applicationInitializationLoadingState$ = this.store.select(selectApplicationInitializationLoadingState);
-  private readonly shareLinkLoadingState$ = this.store.select(selectLoadingState);
-
-  public ngOnInit() {
-    this.initSubscriptions();
-    this.id = this.route.snapshot.paramMap.get(RouteParamConstants.RESOURCE_IDENTIFIER);
-    if (this.id !== null) {
-      this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id: this.id}));
-    } else {
-      // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
+  constructor() {
+    const id = this.id();
+    if (id === null) {
       throw new ShareLinkParameterInvalid();
     }
-  }
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+    this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id}));
 
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.applicationInitializationLoadingState$
-        .pipe(
-          filter((loadingState) => loadingState === 'error' || loadingState === 'loaded'),
-          switchMap(() => {
-            return from(this.router.navigate([MainPage.Maps]));
-          }),
-        )
-        .subscribe(),
-    );
+    effect(() => {
+      const loadingState = this.applicationInitializationLoadingState();
 
-    this.subscriptions.add(
-      this.shareLinkLoadingState$
-        .pipe(
-          filter((loadingState) => loadingState === 'error'),
-          switchMap(() => {
-            return from(this.router.navigate([MainPage.Maps]));
-          }),
-        )
-        .subscribe(),
-    );
+      if (loadingState === 'error' || loadingState === 'loaded') {
+        this.router.navigate([MainPage.Maps]);
+      }
+    });
+
+    effect(() => {
+      const loadingState = this.shareLinkLoadingState();
+
+      if (loadingState === 'error') {
+        this.router.navigate([MainPage.Maps]);
+      }
+    });
   }
 }

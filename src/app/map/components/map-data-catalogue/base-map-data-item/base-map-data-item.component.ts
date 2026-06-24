@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, computed, input, output, signal, Signal, WritableSignal} from '@angular/core';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
@@ -7,7 +7,7 @@ import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelContent} fr
 import {MatTooltip} from '@angular/material/tooltip';
 import {DelayedMouseEnterDirective} from '../../../../shared/directives/delayed-mouse-enter.directive';
 import {MatIconButton} from '@angular/material/button';
-import {NgClass} from '@angular/common';
+
 import {MatIcon} from '@angular/material/icon';
 import {MatBadge} from '@angular/material/badge';
 import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
@@ -27,7 +27,6 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
     MatTooltip,
     DelayedMouseEnterDirective,
     MatIconButton,
-    NgClass,
     MatIcon,
     MatBadge,
     ShowTooltipIfTruncatedDirective,
@@ -40,59 +39,71 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
   ],
 })
 export class BaseMapDataItemComponent {
-  @Input() public title!: string;
-  @Input() public filterString: string | undefined = undefined;
+  public readonly title = input.required<string>();
+  public readonly filterString = input<string | undefined>('');
   /**
    * URL to gb2, if the given mapitem is not yet gb3-capable.
    */
-  public gb2Url: string | null = null;
-  public mapConfigState?: MapConfigState;
-  public isAddItemDisabled: boolean = false;
+  public readonly gb2Url: Signal<string | null> = signal(null);
+  public readonly mapConfigState: Signal<MapConfigState | undefined> = signal(undefined);
+  public readonly isAddItemDisabled: Signal<boolean> = signal(false);
 
-  @Output() public readonly addEvent = new EventEmitter<void>();
-  @Output() public readonly hoverStartEvent = new EventEmitter<MapLayer>();
-  @Output() public readonly hoverEndEvent = new EventEmitter<MapLayer>();
+  public readonly addEvent = output();
+  public readonly hoverStartEvent = output<MapLayer | undefined>();
+  public readonly hoverEndEvent = output<MapLayer | undefined>();
 
-  public readonly addLayerEvent = new EventEmitter<MapLayer>();
-  public readonly deleteEvent = new EventEmitter<void>();
-  public readonly hoverDelay = MapConstants.TEMPORARY_PREVIEW_DELAY;
-  public showExpandButton: boolean = true;
+  public readonly addLayerEvent = output<MapLayer>();
+  public readonly deleteEvent = output();
+
+  public readonly showExpandButton: Signal<boolean> = signal(true);
+
+  public readonly loadingState: Signal<LoadingState> = signal('loaded');
+  public readonly invalid: Signal<boolean | undefined> = signal(undefined);
+
+  public readonly layers: Signal<MapLayer[]> = signal([]);
+  public readonly imageUrl: Signal<string | undefined> = signal(undefined);
+
+  public readonly isMapHovered: WritableSignal<boolean> = signal(false);
+  public readonly hoveredLayer: WritableSignal<MapLayer | undefined> = signal(undefined);
+
+  public readonly filteredLayersCount = computed(() => {
+    const filterString = this.filterString();
+    if (!filterString) {
+      return this.layers().length;
+    }
+
+    const lowerCasedFilterString = filterString.toLowerCase();
+    return this.layers().filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString)).length;
+  });
 
   public showDeleteButton: boolean = false;
-  public loadingState: LoadingState;
-  public invalid?: boolean;
   public errorTooltip: string = '';
-
-  public layers: MapLayer[] = [];
-  public imageUrl?: string;
-
-  public isMapHovered: boolean = false;
-  public hoveredLayer?: MapLayer;
+  public readonly hoverDelay = MapConstants.TEMPORARY_PREVIEW_DELAY;
 
   public addItem() {
     this.addEvent.emit();
   }
 
   public setIsHovered(layer?: MapLayer) {
-    if (!this.gb2Url) {
+    if (!this.gb2Url()) {
       if (layer) {
-        this.hoveredLayer = layer;
+        this.hoveredLayer.set(layer);
       } else {
-        this.isMapHovered = true;
+        this.isMapHovered.set(true);
       }
     }
   }
 
   public hoverStart(layer?: MapLayer) {
-    if (!this.gb2Url) {
+    if (!this.gb2Url()) {
       this.hoverStartEvent.emit(layer);
     }
   }
 
   public hoverEnd(layer?: MapLayer) {
-    if (!this.gb2Url) {
-      this.isMapHovered = false;
-      this.hoveredLayer = undefined;
+    if (!this.gb2Url()) {
+      this.isMapHovered.set(false);
+      this.hoveredLayer.set(undefined);
       this.hoverEndEvent.emit(layer);
     }
   }
@@ -103,14 +114,5 @@ export class BaseMapDataItemComponent {
 
   public addItemLayer(layer: MapLayer) {
     this.addLayerEvent.emit(layer);
-  }
-
-  public getFiltedLayersCount(layers: MapLayer[]): number {
-    if (!this.filterString) {
-      return layers.length;
-    }
-
-    const lowerCasedFilterString = this.filterString.toLowerCase();
-    return layers.filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString)).length;
   }
 }

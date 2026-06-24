@@ -25,6 +25,9 @@ export const selectQueryLayers = createSelector(selectItems, selectScale, (activ
         topic: mapItem.settings.mapId,
         layersToQuery: layersToQuery.join(','),
         isSingleLayer: mapItem.isSingleLayer,
+        filterConfigurations: mapItem.settings.filterConfigurations,
+        timeSliderConfiguration: mapItem.settings.timeSliderConfiguration,
+        timeSliderExtent: mapItem.settings.timeSliderExtent,
       };
     });
 

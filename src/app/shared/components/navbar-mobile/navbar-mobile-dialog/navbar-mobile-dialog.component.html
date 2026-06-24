@@ -1,22 +1,22 @@
 <mat-card class="navbar-mobile__dialog">
   <mat-card-header class="navbar-mobile__dialog__header">
-    @if (!isAuthenticated) {
+    @if (!isAuthenticated()) {
       <button (click)="startLogin()" class="navbar__item navbar__user" mat-button>
-        <mat-icon svgIcon="ktzh_user"></mat-icon>
+        <mat-icon svgIcon="ktzh_user" />
         <span>Login</span>
       </button>
     } @else {
       <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__user" mat-button #trigger="matMenuTrigger">
-        <mat-icon svgIcon="ktzh_user"></mat-icon>
-        <span>{{ userName }}</span>
-        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="arrow-icon"></mat-icon>
+        <mat-icon svgIcon="ktzh_user" />
+        <span>{{ userName() }}</span>
+        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="arrow-icon" />
       </button>
       <mat-menu #userMenu="matMenu" style="padding-left: 12px">
         <a href="https://maps.zh.ch/groups_users" target="_blank" rel="noopener noreferrer" mat-menu-item>
-          <mat-icon svgIcon="ktzh_user"></mat-icon>
+          <mat-icon svgIcon="ktzh_user" />
           <span>Profil</span>
         </a>
-        <mat-divider></mat-divider>
+        <mat-divider />
         <button (click)="logout()" mat-menu-item>
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
@@ -39,8 +39,9 @@
         routerLinkActive="navbar__item--active"
         ariaCurrentWhenActive="page"
         (click)="close()"
-        >Geoportal</a
       >
+        Geoportal
+      </a>
       <a
         class="navbar__item"
         mat-button
@@ -48,8 +49,9 @@
         routerLinkActive="navbar__item--active"
         ariaCurrentWhenActive="page"
         (click)="close()"
-        >GIS-Browser</a
       >
+        GIS-Browser
+      </a>
       <a
         class="navbar__item"
         mat-button
@@ -57,8 +59,9 @@
         routerLinkActive="navbar__item--active"
         ariaCurrentWhenActive="page"
         (click)="close()"
-        >Geodatenkatalog</a
       >
+        Geodatenkatalog
+      </a>
       <a
         class="navbar__item"
         mat-button
@@ -66,8 +69,9 @@
         routerLinkActive="navbar__item--active"
         ariaCurrentWhenActive="page"
         (click)="close()"
-        >Apps</a
       >
+        Apps
+      </a>
       <a
         class="navbar__item"
         mat-button
@@ -75,12 +79,13 @@
         routerLinkActive="navbar__item--active"
         ariaCurrentWhenActive="page"
         (click)="close()"
-        >Hilfe & Support</a
       >
+        Hilfe & Support
+      </a>
       <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer" (click)="close()">
         <mat-icon>launch</mat-icon>
-        Geodatenshop</a
-      >
+        Geodatenshop
+      </a>
       <a
         class="navbar__item"
         href="https://gdi.zh.ch/portal/home/"
@@ -91,8 +96,8 @@
         *featureFlag="'koPlaNavItem'"
       >
         <mat-icon>launch</mat-icon>
-        KoPla</a
-      >
+        KoPla
+      </a>
     </div>
   </mat-card-content>
 </mat-card>

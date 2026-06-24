@@ -1,71 +1,69 @@
-@if (item.url.isInternal) {
+@if (item().url.isInternal) {
   <a
     matRipple
-    #internalLink
-    [routerLink]="item.url.path"
-    [attr.aria-label]="'Details zu' + item.title + ' ' + item.type + ' öffnen.'"
-    [tabIndex]="canFocusWithTabKey ? 0 : -1"
+    [routerLink]="item().url.path"
+    [aria-label]="'Details zu ' + item().title + ' ' + item().type + ' öffnen.'"
+    [tabIndex]="canFocusWithTabKey() ? 0 : -1"
     class="overview-search-result-item"
   >
-    <ng-container *ngTemplateOutlet="content"></ng-container>
+    <ng-container *ngTemplateOutlet="content" />
   </a>
 } @else {
   <a
     matRipple
-    #externalLink
-    [href]="item.url.path"
+    [href]="item().url.path"
     target="_blank"
     rel="noopener noreferrer"
-    [attr.aria-label]="'Details zu' + item.title + ' ' + item.type + ' öffnen.'"
+    [aria-label]="'Details zu ' + item().title + ' ' + item().type + ' öffnen.'"
     tabIndex="-1"
     class="overview-search-result-item"
   >
-    <ng-container *ngTemplateOutlet="content"></ng-container>
+    <ng-container *ngTemplateOutlet="content" />
   </a>
 }
 <ng-template #content>
-  @if (!isMobile) {
-    <div class="overview-search-result-item__icon" [matTooltip]="item.type" [matTooltipPosition]="'right'">
-      @switch (item.type) {
+  @if (!isMobile()) {
+    <div class="overview-search-result-item__icon" [matTooltip]="item().type" matTooltipPosition="right">
+      @switch (item().type) {
         @case ('Geodatensatz') {
-          <mat-icon svgIcon="ktzh_search_dataset"></mat-icon>
+          <mat-icon svgIcon="ktzh_search_dataset" />
         }
         @case ('Produkt') {
-          <mat-icon svgIcon="ktzh_search_product"></mat-icon>
+          <mat-icon svgIcon="ktzh_search_product" />
         }
         @case ('Karte') {
-          <mat-icon svgIcon="ktzh_search_map"></mat-icon>
+          <mat-icon svgIcon="ktzh_search_map" />
         }
         @case ('Geoservice') {
-          <mat-icon svgIcon="ktzh_search_service"></mat-icon>
+          <mat-icon svgIcon="ktzh_search_service" />
         }
         @case ('Frage') {
-          <mat-icon svgIcon="ktzh_search_faq"></mat-icon>
+          <mat-icon svgIcon="ktzh_search_faq" />
         }
         @case ('Info') {
-          <mat-icon svgIcon="ktzh_search_helpful_information"></mat-icon>
+          <mat-icon svgIcon="ktzh_search_helpful_information" />
         }
       }
     </div>
   }
   <div class="overview-search-result-item__content">
     <div class="overview-search-result-item__content__title">
-      <span class="overview-search-result-item__content__title__text">{{ item.title }}</span>
-      @if (item.flags.ogd === false) {
+      <span class="overview-search-result-item__content__title__text">{{ item().title }}</span>
+      @if (item().flags.ogd === false) {
         <div class="overview-search-result-item__content__title__flag">
-          <mat-icon svgIcon="ktzh_lock"></mat-icon>
+          <mat-icon svgIcon="ktzh_lock" />
         </div>
       }
     </div>
-    @if (item.fields.length > 0) {
+    @if (item().fields.length > 0) {
       <div class="overview-search-result-item__content__details">
-        @for (field of item.fields; track field) {
+        @for (field of item().fields; track field) {
           <div
             class="overview-search-result-item__content__details__item"
-            [ngClass]="{'overview-search-result-item__content__details__item--truncated': field.truncatable}"
+            [class.overview-search-result-item__content__details__item--truncated]="field.truncatable"
           >
             <!-- Only show the title if we have more than 1 element to have a clean display -->
-            @if (item.fields.length > 1) {
+            @if (item().fields.length > 1) {
               <span class="overview-search-result-item__content__details__item__title">{{ field.title }}:</span>
             }
             <span class="overview-search-result-item__content__details__item__content">{{ field.content }}</span>
@@ -77,7 +75,7 @@
   <mat-icon
     svgIcon="ktzh_arrow_right"
     class="search-result-entry-map__icon"
-    [ngClass]="{'search-result-entry-map__icon--rotate': !item.url.isInternal}"
-  ></mat-icon>
+    [class.search-result-entry-map__icon--rotate]="!item().url.isInternal"
+  />
 </ng-template>
-<mat-divider></mat-divider>
+<mat-divider />

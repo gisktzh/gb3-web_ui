@@ -1,14 +1,13 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject} from '@angular/core';
+import {Component, computed, inject, input, signal} from '@angular/core';
 import {BaseMapDataItemComponent} from './base-map-data-item.component';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
 import {selectActiveTool} from '../../../../state/map/reducers/tool.reducer';
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelContent} from '@angular/material/expansion';
 import {MatTooltip} from '@angular/material/tooltip';
 import {DelayedMouseEnterDirective} from '../../../../shared/directives/delayed-mouse-enter.directive';
 import {MatIconButton} from '@angular/material/button';
-import {NgClass} from '@angular/common';
+
 import {MatIcon} from '@angular/material/icon';
 import {MatBadge} from '@angular/material/badge';
 import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
@@ -32,7 +31,6 @@ const FAVOURITE_ERROR_TOOLTIP =
     MatTooltip,
     DelayedMouseEnterDirective,
     MatIconButton,
-    NgClass,
     MatIcon,
     MatBadge,
     ShowTooltipIfTruncatedDirective,
@@ -44,26 +42,13 @@ const FAVOURITE_ERROR_TOOLTIP =
     AppendMapConfigurationToUrlPipe,
   ],
 })
-export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
+export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
   private readonly store = inject(Store);
-
-  @Input() public override loadingState: LoadingState;
-  @Input() public override invalid?: boolean;
-
-  @Output() public override readonly deleteEvent = new EventEmitter<void>();
-
-  public override showExpandButton = false;
+  public override readonly loadingState = input.required<LoadingState>();
+  public override readonly invalid = input<boolean>();
+  public override readonly showExpandButton = signal(false);
   public override showDeleteButton = true;
   public override errorTooltip: string = FAVOURITE_ERROR_TOOLTIP;
-  public override isAddItemDisabled: boolean = false;
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly activeTool$ = this.store.select(selectActiveTool);
-
-  public ngOnInit() {
-    this.subscriptions.add(this.activeTool$.pipe(tap((activeTool) => (this.isAddItemDisabled = !!activeTool))).subscribe());
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+  public readonly activeTool = this.store.selectSignal(selectActiveTool);
+  public override readonly isAddItemDisabled = computed(() => !!this.activeTool());
 }

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, computed} from '@angular/core';
 import {MapMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {DataDisplayElement} from '../../types/data-display-element.type';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
@@ -40,25 +40,21 @@ interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   ],
 })
 export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata> {
-  public baseMetadataInformation?: BaseMetadataWithTopicInformation;
-  public informationElements: DataDisplayElement[] = [];
-  public geodataContactElements: DataDisplayElement[] = [];
-  public linkedDatasets: MetadataLink[] = [];
-  public gB2Url?: string;
+  public readonly geodataContactElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? DataExtractionUtils.extractContactElements(baseDetailMetaData.contact.geodata) : [];
+  });
+  public readonly linkedDatasets = computed<MetadataLink[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? baseDetailMetaData.datasets : [];
+  });
+  public readonly gB2Url = computed<string | undefined>(() => this.baseDetailMetaData()?.gb2Url?.href);
 
   protected loadMetadata(id: string) {
     return this.gb3MetadataService.loadMapDetail(id);
   }
 
-  protected handleMetadata(mapMetadata: MapMetadata) {
-    this.baseMetadataInformation = this.extractBaseMetadataInformation(mapMetadata);
-    this.informationElements = this.extractInformationElements(mapMetadata);
-    this.geodataContactElements = DataExtractionUtils.extractContactElements(mapMetadata.contact.geodata);
-    this.linkedDatasets = mapMetadata.datasets;
-    this.gB2Url = mapMetadata.gb2Url?.href;
-  }
-
-  private extractBaseMetadataInformation(mapMetadata: MapMetadata): BaseMetadataWithTopicInformation {
+  protected extractBaseMetadataInformation(mapMetadata: MapMetadata): BaseMetadataWithTopicInformation {
     return {
       itemTitle: mapMetadata.name,
       topic: mapMetadata.topic,
@@ -68,7 +64,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
     };
   }
 
-  private extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
+  protected extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
     return [
       {title: 'Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'Kartentyp', value: mapMetadata.gb2Url ? 'GB2' : 'GB3', type: 'text'},
