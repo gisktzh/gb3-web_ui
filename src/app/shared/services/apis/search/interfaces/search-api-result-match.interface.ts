@@ -29,7 +29,7 @@ export interface MetadataSearchApiResultMatch extends AbstractSearchApiResultMat
   uuid: string;
 }
 
-interface UnknownSearchApiResultMatch extends AbstractSearchApiResultMatch {
+export interface UnknownSearchApiResultMatch extends AbstractSearchApiResultMatch {
   indexType: 'unknown';
   [key: string]: unknown;
 }

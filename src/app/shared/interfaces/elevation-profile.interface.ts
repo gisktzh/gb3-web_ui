@@ -1,6 +1,6 @@
 import {PointWithSrs} from './geojson-types-with-srs.interface';
 
-export interface ElevationProfileDataPointLocation {
+interface ElevationProfileDataPointLocation {
   location: PointWithSrs;
 }
 
@@ -23,7 +23,7 @@ export interface ElevationProfileStatistics {
   highestPoint: number;
 }
 
-interface ElevationProfileRequest {
+export interface ElevationProfileRequest {
   url: string;
   params: URLSearchParams;
 }
