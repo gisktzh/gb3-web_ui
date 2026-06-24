@@ -41,18 +41,18 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
 export class MapDataItemMapComponent extends BaseMapDataItemComponent {
   private readonly store = inject(Store);
 
-  public override layers = input<MapLayer[]>([]);
-  public override imageUrl = input.required<string | undefined>();
-  public override gb2Url = input<string | null>(null);
+  public override readonly layers = input<MapLayer[]>([]);
+  public override readonly imageUrl = input.required<string | undefined>();
+  public override readonly gb2Url = input<string | null>(null);
   public readonly internalMapConfigState = this.store.selectSignal(selectMapConfigState);
-  public override mapConfigState = computed(() => {
+  public override readonly mapConfigState = computed(() => {
     if (!this.gb2Url()) {
       return undefined;
     }
 
     return this.internalMapConfigState();
   });
-  public override showExpandButton = computed(() => {
+  public override readonly showExpandButton = computed(() => {
     return !this.gb2Url();
   });
 }

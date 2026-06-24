@@ -263,7 +263,7 @@ export class PrintDialogComponent {
   }
 
   public print() {
-    if (!this.printForm().valid || this.printCreationLoadingState() === 'loading') {
+    if (!this.printForm().valid() || this.printCreationLoadingState() === 'loading') {
       return;
     }
 

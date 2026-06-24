@@ -9,9 +9,9 @@ import {TableColumnIdentifierDirective} from './table-column-identifier.directiv
   standalone: true,
 })
 class TestComponent {
-  public topicId = signal('topicA');
-  public layerId = signal('layerB');
-  public featureId = signal(42);
+  public readonly topicId = signal('topicA');
+  public readonly layerId = signal('layerB');
+  public readonly featureId = signal(42);
 }
 
 describe('TableColumnIdentifierDirective', () => {

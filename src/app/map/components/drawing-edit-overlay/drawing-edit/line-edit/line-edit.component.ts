@@ -11,6 +11,6 @@ import {form, FormField} from '@angular/forms/signals';
   imports: [SliderEditComponent, ColorPickerEditComponent, FormField],
 })
 export class LineEditComponent {
-  public lineStyle = model.required<Gb3LineStringStyle>();
+  public readonly lineStyle = model.required<Gb3LineStringStyle>();
   public lineStyleForm = form(this.lineStyle);
 }

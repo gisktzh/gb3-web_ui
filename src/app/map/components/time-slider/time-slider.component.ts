@@ -110,7 +110,7 @@ export class TimeSliderComponent {
     // create a new time extent based on the current slider position(s)
     const newTimeExtent: TimeExtent = {
       start: this.availableDates()[this.firstSliderPosition()],
-      end: this.secondSliderPosition
+      end: this.secondSliderPosition()
         ? this.availableDates()[this.secondSliderPosition() || 0]
         : this.availableDates()[this.firstSliderPosition()],
     };

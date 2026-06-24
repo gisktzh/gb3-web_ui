@@ -31,7 +31,7 @@ export class DrawingEditComponent {
   private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   public readonly selectedFeature = this.store.selectSignal(selectSelectedDrawing);
-  public style = model<Gb3StyleRepresentation | undefined>(this.selectedFeature()?.properties.style);
+  public readonly style = model<Gb3StyleRepresentation | undefined>(this.selectedFeature()?.properties.style);
 
   public readonly isPointStyle = computed(() => {
     return this.style()?.type === 'point' ? (this.style() as Gb3PointStyle) : null;

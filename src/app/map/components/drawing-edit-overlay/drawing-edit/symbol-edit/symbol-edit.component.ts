@@ -13,7 +13,7 @@ const INPUT_DEBOUNCE_IN_MS = 10;
   imports: [DrawingSymbolsComponent],
 })
 export class SymbolEditComponent {
-  public symbolStyle = model.required<{
+  public readonly symbolStyle = model.required<{
     style: Gb3SymbolStyle;
     selectedSymbol: DrawingSymbolDefinition | null;
   }>();

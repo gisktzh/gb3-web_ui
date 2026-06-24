@@ -12,6 +12,6 @@ import {form, FormField} from '@angular/forms/signals';
   imports: [SliderEditComponent, ColorPickerEditComponent, MatDivider, FormField],
 })
 export class PolygonEditComponent {
-  public polygonStyle = model.required<Gb3PolygonStyle>();
+  public readonly polygonStyle = model.required<Gb3PolygonStyle>();
   public polygonStyleForm = form(this.polygonStyle);
 }
