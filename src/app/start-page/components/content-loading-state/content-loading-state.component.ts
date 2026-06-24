@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MatProgressBar} from '@angular/material/progress-bar';
 
@@ -9,8 +9,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
   imports: [MatProgressBar],
 })
 export class ContentLoadingStateComponent {
-  @Input() public loadingState: LoadingState = 'loading';
-
-  @Input() public loadingText?: string;
-  @Input() public loadingCompletedText?: string;
+  public readonly loadingState = input<LoadingState>('loading');
+  public readonly loadingText = input<string>();
+  public readonly loadingCompletedText = input<string>();
 }

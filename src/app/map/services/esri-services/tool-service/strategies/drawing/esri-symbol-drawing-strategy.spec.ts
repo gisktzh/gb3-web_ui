@@ -238,6 +238,7 @@ describe('EsriSymbolDrawingStrategy', () => {
         type: 'symbol',
         symbolSize: mockUpdatedSize,
         symbolRotation: mockUpdatedRotation,
+        symbolDefinition: null,
       },
       {
         drawingSymbolDefinition: mockUpdatedEsriDrawingSymbolDefinition,

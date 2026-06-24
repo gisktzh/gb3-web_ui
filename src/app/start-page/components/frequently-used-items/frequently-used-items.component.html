@@ -1,22 +1,22 @@
 <div class="frequently-used-items">
   <content-loading-state
-    [loadingState]="loadingState"
+    [loadingState]="loadingState()"
     loadingText="Lade häufig verwendete Karten und Daten..."
     loadingCompletedText="Fehler beim Laden der häufig verwendeten Karten und Daten."
-  ></content-loading-state>
-  @if (frequentlyUsedItems.length === 0 && loadingState === 'loaded') {
+  />
+  @if (frequentlyUsedItems().length === 0 && loadingState() === 'loaded') {
     <p class="mat-caption">Aktuell gibt es keine häufig verwendete Karten oder Daten.</p>
   }
-  <generic-list [listData]="frequentlyUsedItems" [itemTemplate]="frequentlyUsedItem"></generic-list>
+  <generic-list [listData]="frequentlyUsedItems()" [itemTemplate]="frequentlyUsedItem" />
   <ng-template #frequentlyUsedItem let-frequentlyUsedItem>
     <div
       class="frequently-used-items__item"
-      [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}"
-      [attr.aria-label]="frequentlyUsedItem.title"
+      [class.frequently-used-items__item--mobile]="screenMode() === 'mobile'"
+      [aria-label]="frequentlyUsedItem.title"
     >
       <div
         class="frequently-used-items__item__image-container"
-        [ngClass]="{'frequently-used-items__item__image-container--mobile': screenMode === 'mobile'}"
+        [class.frequently-used-items__item__image-container--mobile]="screenMode() === 'mobile'"
       >
         @if (frequentlyUsedItem.image !== undefined) {
           <img
@@ -28,7 +28,7 @@
       </div>
       <div
         class="frequently-used-items__item__text-container"
-        [ngClass]="{'frequently-used-items__item__text-container--mobile': screenMode === 'mobile'}"
+        [class.frequently-used-items__item__text-container--mobile]="screenMode() === 'mobile'"
       >
         <h3 class="ktzh-h3-small-big">{{ frequentlyUsedItem.title }}</h3>
         <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
@@ -45,6 +45,6 @@
         }
       </div>
     </div>
-    <mat-divider></mat-divider>
+    <mat-divider />
   </ng-template>
 </div>

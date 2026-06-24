@@ -23,7 +23,7 @@ export interface ToolService {
     drawing: Gb3StyledInternalDrawingRepresentation,
     style: Gb3StyleRepresentation,
     labelText?: string,
-    mapDrawingSymbol?: MapDrawingSymbol,
+    mapDrawingSymbol?: MapDrawingSymbol | null,
   ): Promise<void>;
 
   cancelTool(): void;

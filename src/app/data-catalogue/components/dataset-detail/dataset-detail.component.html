@@ -1,69 +1,69 @@
-<loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+<loading-and-process-bar [loadingState]="loadingState()" />
 
-@if (baseMetadataInformation) {
+@if (baseMetadataInformation(); as baseMetadataInformation) {
   <data-catalogue-detail-page [baseMetadataInformation]="baseMetadataInformation" class="dataset-detail">
-    <data-catalogue-detail-page-section [hasTwoColumns]="screenMode !== 'mobile'">
-      <data-display-section [sectionTitle]="'Verantwortlich für Geodaten'">
-        <data-display [elements]="geodataContactElements"></data-display>
+    <data-catalogue-detail-page-section [hasTwoColumns]="screenMode() !== 'mobile'">
+      <data-display-section sectionTitle="Verantwortlich für Geodaten">
+        <data-display [elements]="geodataContactElements()" />
       </data-display-section>
-      <data-display-section [sectionTitle]="'Zuständig für Geometadaten'">
-        <data-display [elements]="metadataContactElements"></data-display>
-      </data-display-section>
-    </data-catalogue-detail-page-section>
-    <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Kennzeichnung'">
-        <data-display [elements]="informationElements"></data-display>
+      <data-display-section sectionTitle="Zuständig für Geometadaten">
+        <data-display [elements]="metadataContactElements()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Datengrundlage'">
-        <data-display [elements]="dataBasisElements"></data-display>
+      <data-display-section sectionTitle="Kennzeichnung">
+        <data-display [elements]="informationElements()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Raumbezug'">
-        <data-display [elements]="geoSpatialElements"></data-display>
+      <data-display-section sectionTitle="Datengrundlage">
+        <data-display [elements]="dataBasisElements()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Nachführung'">
-        <data-display [elements]="updateElements"></data-display>
+      <data-display-section sectionTitle="Raumbezug">
+        <data-display [elements]="geoSpatialElements()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Datenbezug'">
-        <data-display [elements]="dataProcurement"></data-display>
+      <data-display-section sectionTitle="Nachführung">
+        <data-display [elements]="updateElements()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Gesetzgebung'">
-        <data-display [elements]="legislationElements"></data-display>
+      <data-display-section sectionTitle="Datenbezug">
+        <data-display [elements]="dataProcurement()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Anbindungen'">
-        <data-display [elements]="externalLinksElements"></data-display>
+      <data-display-section sectionTitle="Gesetzgebung">
+        <data-display [elements]="legislationElements()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'ArcGIS-Dateien'">
-        <data-display [elements]="arcGISElements"></data-display>
+      <data-display-section sectionTitle="Anbindungen">
+        <data-display [elements]="externalLinksElements()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Geodatenelemente'">
-        @for (layer of datasetLayers; track layer) {
-          <dataset-element-detail [layer]="layer"></dataset-element-detail>
+      <data-display-section sectionTitle="ArcGIS-Dateien">
+        <data-display [elements]="arcGISElements()" />
+      </data-display-section>
+    </data-catalogue-detail-page-section>
+    <data-catalogue-detail-page-section>
+      <data-display-section sectionTitle="Geodatenelemente">
+        @for (layer of datasetLayers(); track layer) {
+          <dataset-element-detail [layer]="layer" />
         }
       </data-display-section>
     </data-catalogue-detail-page-section>
-    @if (linkedData.maps.length > 0) {
+    @if (linkedData().maps.length > 0) {
       <data-catalogue-detail-page-section>
-        <data-display-section [sectionTitle]="'Karten mit diesem Datensatz'">
-          <generic-list [listData]="linkedData.maps" [itemTemplate]="linkedMap" [hasGap]="true"></generic-list>
+        <data-display-section sectionTitle="Karten mit diesem Datensatz">
+          <generic-list [listData]="linkedData().maps" [itemTemplate]="linkedMap" [hasGap]="true" />
           <ng-template #linkedMap let-map>
-            <descriptive-highlighted-link [title]="map.name" [multiLine]="screenMode === 'mobile'">
-              @if (screenMode === 'mobile') {
+            <descriptive-highlighted-link [title]="map.name" [multiLine]="screenMode() === 'mobile'">
+              @if (screenMode() === 'mobile') {
                 <a
                   [queryParams]="{initialMapIds: map.topic}"
                   [routerLink]="['/', mainPageEnum.Maps]"
@@ -82,7 +82,7 @@
                   class="dataset-detail__linked-data-button"
                   mat-button
                 >
-                  <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+                  <mat-icon svgIcon="ktzh_arrow_right" />
                   Im GIS-Browser öffnen
                 </a>
                 <a
@@ -90,7 +90,7 @@
                   class="dataset-detail__linked-data-button"
                   mat-button
                 >
-                  <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+                  <mat-icon svgIcon="ktzh_arrow_right" />
                   Zu Metadaten springen
                 </a>
               }

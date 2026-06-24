@@ -9,7 +9,6 @@ import Map from '@arcgis/core/Map';
 import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
@@ -29,7 +28,7 @@ const mockResourceHandle = {
  * Esri properly adds the graphic).
  */
 describe('EsriPointMeasurementStrategy', () => {
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let pointSymbol: SimpleMarkerSymbol;
   let textSymbol: TextSymbol;
@@ -40,11 +39,11 @@ describe('EsriPointMeasurementStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     pointSymbol = new SimpleMarkerSymbol();
     textSymbol = new TextSymbol();
   });

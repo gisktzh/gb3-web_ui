@@ -1,13 +1,11 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
-import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
+import {selectNumberOfQueryLegends} from '../state/map/selectors/query-legends.selector';
 import {RouteParamConstants} from '../shared/constants/route-param.constants';
 import {ShareLinkActions} from '../state/map/actions/share-link.actions';
 import {ShareLinkParameterInvalid} from '../shared/errors/share-link.errors';
 import {ActivatedRoute, RouterLink} from '@angular/router';
-import {LoadingState} from '../shared/types/loading-state.type';
 import {selectApplicationInitializationLoadingState} from '../state/map/reducers/share-link.reducer';
 import {MainPage} from '../shared/enums/main-page.enum';
 import {MapContainerComponent} from '../map/components/map-container/map-container.component';
@@ -31,27 +29,20 @@ import {ZoomControlsComponent} from '../map/components/map-controls/zoom-control
     ZoomControlsComponent,
   ],
 })
-export class EmbeddedMapPageComponent implements OnInit, OnDestroy {
+export class EmbeddedMapPageComponent {
   private readonly store = inject(Store);
   private readonly route = inject(ActivatedRoute);
 
-  public numberOfQueryLegends: number = 0;
+  public readonly numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
   public id: string | null = null;
-  public initializeApplicationLoadingState: LoadingState;
+  public readonly initializeApplicationLoadingState = this.store.selectSignal(selectApplicationInitializationLoadingState);
   public isEmbedded: boolean = false;
   protected readonly mainPageEnum = MainPage;
-
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly queryLegends$ = this.store.select(selectQueryLegends);
-  private readonly initializeApplicationLoadingState$ = this.store.select(selectApplicationInitializationLoadingState);
 
   constructor() {
     // compare the window location with its parent location to detect if the page is run within an iframe or not
     this.isEmbedded = window.location !== window.parent.location;
-  }
 
-  public ngOnInit() {
-    this.initSubscriptions();
     this.id = this.route.snapshot.paramMap.get(RouteParamConstants.RESOURCE_IDENTIFIER);
     if (this.id !== null) {
       this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id: this.id}));
@@ -60,28 +51,7 @@ export class EmbeddedMapPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
   public showLegend() {
     this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.queryLegends$
-        .pipe(
-          tap((currentActiveMapItems) => {
-            this.numberOfQueryLegends = currentActiveMapItems.length;
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.initializeApplicationLoadingState$
-        .pipe(tap((loadingState) => (this.initializeApplicationLoadingState = loadingState)))
-        .subscribe(),
-    );
   }
 }

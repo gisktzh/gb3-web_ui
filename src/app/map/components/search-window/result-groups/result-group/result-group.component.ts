@@ -1,20 +1,17 @@
-import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject} from '@angular/core';
+import {Component, inject, input, viewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ActiveMapItemFactory} from '../../../../../shared/factories/active-map-item.factory';
 import {Map} from '../../../../../shared/interfaces/topic.interface';
 import {GeometryWithSrsSearchApiResultMatch} from '../../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-item.actions';
 import {selectMapConfigState} from '../../../../../state/map/reducers/map-config.reducer';
-import {MapConfigState} from '../../../../../state/map/states/map-config.state';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {SearchActions} from '../../../../../state/app/actions/search.actions';
 import {SearchResultIdentifierDirective} from '../../../../../shared/directives/search-result-identifier.directive';
 import {ExpandableListItemComponent} from '../../../../../shared/components/expandable-list-item/expandable-list-item.component';
-import {NgClass, NgTemplateOutlet} from '@angular/common';
+import {NgTemplateOutlet} from '@angular/common';
 import {MatRipple} from '@angular/material/core';
 import {MatDivider} from '@angular/material/divider';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -29,7 +26,6 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../../shared/pipes/appen
   styleUrls: ['./result-group.component.scss'],
   imports: [
     ExpandableListItemComponent,
-    NgClass,
     MatRipple,
     SearchResultIdentifierDirective,
     MatDivider,
@@ -41,33 +37,21 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../../shared/pipes/appen
     AppendMapConfigurationToUrlPipe,
   ],
 })
-export class ResultGroupComponent implements OnInit, OnDestroy {
+export class ResultGroupComponent {
   private readonly store = inject(Store);
 
-  @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElements!: QueryList<SearchResultIdentifierDirective>;
-  @Input() public searchResults: GeometryWithSrsSearchApiResultMatch[] = [];
-  @Input() public filteredMaps: Map[] = [];
-  @Input() public header: string = '';
-  @Input() public searchTerms: string[] = [];
-  @Input() public isExpanded: boolean = false;
+  public readonly searchResultElements = viewChildren<SearchResultIdentifierDirective>(SearchResultIdentifierDirective);
+  public readonly searchResults = input<GeometryWithSrsSearchApiResultMatch[]>([]);
+  public readonly filteredMaps = input<Map[]>([]);
+  public readonly header = input('');
+  public readonly searchTerms = input<string[]>([]);
+  public readonly isExpanded = input(false);
 
-  public screenMode: ScreenMode = 'regular';
-  public mapConfigState?: MapConfigState;
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
   public readonly hoverDelay = MapConstants.TEMPORARY_PREVIEW_DELAY;
   public readonly toolTip: string =
     'Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link.';
-
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly mapConfigState$ = this.store.select(selectMapConfigState);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
 
   public selectSearchResult(searchResult: GeometryWithSrsSearchApiResultMatch) {
     this.store.dispatch(SearchActions.selectMapSearchResult({searchResult}));
@@ -86,11 +70,6 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
       const item = ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap);
       this.store.dispatch(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem: item}));
     }
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
   }
 
   private addActiveItem(activeMapItem: ActiveMapItem) {

@@ -1,12 +1,12 @@
 <div class="dataset-element-table">
-  <table class="dataset-element-table__table" attr.aria-describedby="Informationen zu den Attributen von {{ name }}" aria-description="">
+  <table class="dataset-element-table__table" attr.aria-describedby="Informationen zu den Attributen von {{ name() }}" aria-description="">
     <tr class="dataset-element-table__table__row">
       <th class="dataset-element-table__table__row__column">Name</th>
       <th class="dataset-element-table__table__row__column">Beschreibung</th>
       <th class="dataset-element-table__table__row__column">Typ</th>
       <th class="dataset-element-table__table__row__column">Einheit</th>
     </tr>
-    @for (attribute of attributes; track attribute.name) {
+    @for (attribute of attributes(); track attribute.name) {
       <tr class="dataset-element-table__table__row">
         <td class="dataset-element-table__table__row__column">{{ attribute.name | textOrPlaceholder }}</td>
         <td

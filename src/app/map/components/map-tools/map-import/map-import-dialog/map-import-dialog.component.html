@@ -1,15 +1,15 @@
-<api-dialog-wrapper title="Kartendienst importieren" [savingState]="externalServiceLoadingState" errorText="" (closeEvent)="cancel()">
+<api-dialog-wrapper title="Kartendienst importieren" [savingState]="externalServiceLoadingState()" errorText="" (closeEvent)="cancel()">
   <ng-container content>
     <div class="map-import-dialog__content">
       <mat-stepper linear #stepper labelPosition="bottom" class="map-import-dialog__content__stepper">
-        <mat-step label="Kartendienst laden" [completed]="externalServiceLoadingState === 'loaded'">
-          <map-import-service-and-url></map-import-service-and-url>
+        <mat-step label="Kartendienst laden" [completed]="externalServiceLoadingState() === 'loaded'">
+          <map-import-service-and-url />
         </mat-step>
-        <mat-step label="Layer auswählen" [completed]="isAnyLayerSelected">
-          <map-import-layer-list></map-import-layer-list>
+        <mat-step label="Layer auswählen" [completed]="isAnyLayerSelected()">
+          <map-import-layer-list />
         </mat-step>
-        <mat-step label="Anzeigenamen festlegen" [completed]="!!title">
-          <map-import-display-name></map-import-display-name>
+        <mat-step label="Anzeigenamen festlegen" [completed]="!!title()">
+          <map-import-display-name />
         </mat-step>
       </mat-stepper>
     </div>
