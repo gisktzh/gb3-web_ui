@@ -24,7 +24,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geolion.zh.ch',
       },
       ktzhWebsite: {
-        baseUrl: 'https://zh.ch',
+        baseUrl: 'https://www.zh.ch',
         useMockData: true,
       },
       gravCms: {
@@ -74,7 +74,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geolion.ktzh.ch/',
       },
       ktzhWebsite: {
-        baseUrl: 'https://zh.ch',
+        baseUrl: 'https://www.zh.ch',
         useMockData: true,
       },
       gravCms: {

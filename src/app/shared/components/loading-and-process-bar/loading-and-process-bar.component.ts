@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {LoadingState} from '../../types/loading-state.type';
 import {ViewProcessState} from '../../types/view-process-state.type';
 import {MatProgressBar} from '@angular/material/progress-bar';
@@ -10,6 +10,6 @@ import {MatProgressBar} from '@angular/material/progress-bar';
   imports: [MatProgressBar],
 })
 export class LoadingAndProcessBarComponent {
-  @Input() public loadingState: LoadingState;
-  @Input() public viewProcessState: ViewProcessState;
+  public readonly loadingState = input<LoadingState>();
+  public readonly viewProcessState = input<ViewProcessState>();
 }

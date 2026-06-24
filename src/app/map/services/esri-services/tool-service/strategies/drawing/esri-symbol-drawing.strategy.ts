@@ -9,7 +9,7 @@ import {SupportedEsriTool} from '../supported-esri-tool.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
 import {SymbolDrawingToolInputComponent} from 'src/app/map/components/symbols-drawing-tool-input/symbol-drawing-tool-input.component';
 import {PanelClass} from 'src/app/shared/enums/panel-class.enum';
-import {tap} from 'rxjs';
+import {catchError, tap} from 'rxjs';
 import Graphic from '@arcgis/core/Graphic';
 import {Gb3SymbolStyle} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 import {EsriMapDrawingSymbol} from '../../../types/esri-map-drawing-symbol.type';
@@ -17,6 +17,7 @@ import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.consta
 import {EsriDrawingSymbolDefinition} from './drawing-symbol/esri-drawing-symbol-definition';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import {EsriSymbolDescriptorFetchingFailed} from '../../../errors/esri.errors';
 
 export type SymbolDrawingInputComponentOutput = {
   drawingSymbolDefinition: EsriDrawingSymbolDefinition;
@@ -78,6 +79,11 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
           this.symbolRotation = rotation;
 
           super.start();
+        }),
+        catchError((err: unknown) => {
+          console.warn(err);
+          super.handleComplete(undefined, 'add');
+          throw new EsriSymbolDescriptorFetchingFailed();
         }),
       )
       .subscribe();

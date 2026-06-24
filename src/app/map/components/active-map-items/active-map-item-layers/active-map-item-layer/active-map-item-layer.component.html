@@ -1,22 +1,21 @@
 <div class="active-map-item-layer">
   <div class="active-map-item-layer__drag-handle">
-    <ng-content select="[activeMapItemLayerDragHandle]"></ng-content>
+    <ng-content select="[activeMapItemLayerDragHandle]" />
     <mat-icon class="active-map-item-layer__drag-handle__icon" cdkDragHandle>drag_indicator</mat-icon>
   </div>
   <mat-checkbox
     class="active-map-item-layer__checkbox"
-    [checked]="layer.visible"
-    (change)="toggleSublayerVisibility(layer)"
-    [disabled]="!activeMapItem.visible"
-  ></mat-checkbox>
+    [checked]="layer().visible"
+    (change)="toggleSublayerVisibility(layer())"
+    [disabled]="!activeMapItem().visible"
+  />
   <p
     class="active-map-item-layer__title"
-    matTooltip="{{ layer | layerTooltip }}"
-    [ngClass]="{
-      'active-map-item-layer__title--inactive':
-        !activeMapItem.visible || !layer.visible || scale < layer.minScale || scale > layer.maxScale,
-    }"
+    [matTooltip]="layer() | layerTooltip"
+    [class.active-map-item-layer__title--inactive]="
+      !activeMapItem().visible || !layer().visible || scale() < layer().minScale || scale() > layer().maxScale
+    "
   >
-    {{ layer.title }}
+    {{ layer().title }}
   </p>
 </div>

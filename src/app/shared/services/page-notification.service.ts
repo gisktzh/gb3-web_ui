@@ -1,7 +1,5 @@
-import {Injectable, OnDestroy, inject} from '@angular/core';
-import {BehaviorSubject, Subscription, tap} from 'rxjs';
+import {Injectable, computed, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {MainPage} from '../enums/main-page.enum';
 import {PageNotificationActions} from '../../state/app/actions/page-notification.actions';
 import {PageNotification} from '../interfaces/page-notification.interface';
 import {selectAllUnreadPageNotifications} from '../../state/app/selectors/page-notification.selector';
@@ -10,55 +8,21 @@ import {selectMainPage} from '../../state/app/reducers/url.reducer';
 @Injectable({
   providedIn: 'root',
 })
-export class PageNotificationService implements OnDestroy {
+export class PageNotificationService {
   private readonly store = inject(Store);
+  private readonly mainPage = this.store.selectSignal(selectMainPage);
+  private readonly pageNotifications = this.store.selectSignal(selectAllUnreadPageNotifications);
+  public readonly currentPageNotifications = computed<PageNotification[]>(() => {
+    const mainPage = this.mainPage();
 
-  public readonly currentPageNotifications$ = new BehaviorSubject<PageNotification[]>([]);
+    if (!mainPage) {
+      return [];
+    }
 
-  private mainPage: MainPage | undefined;
-  private pageNotifications: PageNotification[] = [];
-
-  private readonly mainPage$ = this.store.select(selectMainPage);
-  private readonly pageNotifications$ = this.store.select(selectAllUnreadPageNotifications);
-  private readonly subscriptions: Subscription = new Subscription();
+    return this.pageNotifications().filter((pageNotification) => pageNotification.pages.includes(mainPage));
+  });
 
   constructor() {
     this.store.dispatch(PageNotificationActions.loadPageNotifications());
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.mainPage$
-        .pipe(
-          tap((mainPage) => {
-            this.mainPage = mainPage;
-            this.refreshCurrentPageNotifications();
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.pageNotifications$
-        .pipe(
-          tap((pageNotifications) => {
-            this.pageNotifications = pageNotifications;
-            this.refreshCurrentPageNotifications();
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
-  private refreshCurrentPageNotifications() {
-    let currentPageNotifications: PageNotification[] = [];
-    if (this.mainPage !== undefined && this.pageNotifications.length > 0) {
-      currentPageNotifications = this.pageNotifications.filter((pageNotification) => pageNotification.pages.includes(this.mainPage!));
-    }
-    this.currentPageNotifications$.next(currentPageNotifications);
   }
 }

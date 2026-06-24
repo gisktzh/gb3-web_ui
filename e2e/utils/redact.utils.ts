@@ -68,15 +68,15 @@ function redactUrl(url: string) {
 /**
  * Checks if a given value is parsable JSON.
  */
-function isJsonString(value: string) {
+function isJsonString(value: string): boolean {
   try {
     JSON.parse(value);
-  } catch (_error) {
-    // NOSONAR: JSON.parse throws on invalid JSON, which is expected here
+    return true;
+  } catch (error) {
+    // eslint-disable-next-line no-console -- Debugging JSON strings in HAR handling.
+    console.debug('Invalid JSON string while checking for JSON strings', error);
     return false;
   }
-
-  return true;
 }
 
 /**

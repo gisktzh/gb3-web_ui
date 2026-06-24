@@ -1,40 +1,42 @@
 <map-overlay-list-item
   [forceExpanded]="true"
-  [overlayTitle]="featureInfo.title"
-  [metaDataLink]="showInteractiveElements ? featureInfo.metaDataLink : undefined"
+  [overlayTitle]="featureInfo().title"
+  [metaDataLink]="showInteractiveElements() ? featureInfo().metaDataLink : undefined"
 >
-  @if (featureInfo.report.url !== null && !featureInfo.isSingleLayer) {
-    <div class="feature-info-item">
-      <feature-info-report-download [reportUrl]="featureInfo.report.url" [reportDescription]="featureInfo.report.description" />
-    </div>
+  @if (!featureInfo().isSingleLayer) {
+    @if (featureInfo().report.url; as reportUrl) {
+      <div class="feature-info-item">
+        <feature-info-report-download [reportUrl]="reportUrl" [reportDescription]="featureInfo().report.description" />
+      </div>
+    }
   }
-  @for (layer of featureInfo.layers; track layer) {
+  @for (layer of featureInfo().layers; track layer) {
     <div class="feature-info-item">
       <!-- For some results, there may be no features; if so, hide the sublayer. This might be an error API-wise, but we can handle it gracefully. -->
-      @if (!featureInfo.isSingleLayer) {
+      @if (!featureInfo().isSingleLayer) {
         <map-overlay-list-item
           [forceExpanded]="layer.features.length > 0"
           [disabled]="layer.features.length === 0"
           [overlayTitle]="layer.title"
           [metaDataLink]="layer.metaDataLink"
           [hasBackgroundColor]="false"
-          [showInteractiveElements]="showInteractiveElements"
+          [showInteractiveElements]="showInteractiveElements()"
         >
           <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
-          <ng-container *ngTemplateOutlet="featureInfoContent"></ng-container>
+          <ng-container *ngTemplateOutlet="featureInfoContent" />
         </map-overlay-list-item>
       } @else {
-        <feature-info-content [layer]="layer" [topicId]="featureInfo.id"></feature-info-content>
+        <feature-info-content [layer]="layer" [topicId]="featureInfo().id" />
       }
       <ng-template #featureInfoContent>
-        <feature-info-content [layer]="layer" [topicId]="featureInfo.id"></feature-info-content>
+        <feature-info-content [layer]="layer" [topicId]="featureInfo().id" />
       </ng-template>
     </div>
   }
 
   <ng-container header-icon>
-    @if (!featureInfo.isSingleLayer && featureInfo.icon) {
-      <img class="feature-info-item-icon" ngSrc="{{ featureInfo.icon }}" [alt]="featureInfo.title" width="24" height="24" />
+    @if (!featureInfo().isSingleLayer && featureInfo().icon) {
+      <img class="feature-info-item-icon" [src]="featureInfo().icon" [alt]="featureInfo().title" width="24" height="24" />
     } @else {
       <mat-icon class="feature-info-item-icon">layers</mat-icon>
     }
