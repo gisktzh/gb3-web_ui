@@ -63,10 +63,6 @@ export class SearchInputComponent {
     this.openFilterEvent.emit();
   }
 
-  public onInput(term: string) {
-    this.searchTerm.set(term);
-  }
-
   public setTerm(term: string, shouldEmit: boolean) {
     this.shouldEmitNext.set(shouldEmit);
     this.searchTerm.set(term);
