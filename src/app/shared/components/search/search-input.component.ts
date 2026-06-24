@@ -2,9 +2,9 @@ import {Component, effect, ElementRef, inject, input, output, signal, untracked,
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {SearchMode} from '../../types/search-mode.type';
-
 import {MatIcon} from '@angular/material/icon';
 import {SharedModule} from '../../shared.module';
+import {FormsModule} from '@angular/forms';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
@@ -12,7 +12,7 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
   selector: 'search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
-  imports: [MatIcon, SharedModule],
+  imports: [MatIcon, SharedModule, FormsModule],
 })
 export class SearchInputComponent {
   private readonly store = inject(Store);
@@ -61,10 +61,6 @@ export class SearchInputComponent {
 
   public openFilter() {
     this.openFilterEvent.emit();
-  }
-
-  public onInput(term: string) {
-    this.searchTerm.set(term);
   }
 
   public setTerm(term: string, shouldEmit: boolean) {

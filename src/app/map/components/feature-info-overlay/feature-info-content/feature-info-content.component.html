@@ -39,9 +39,9 @@
           scope="col"
           [style.min-width]="tableHeaderWidth()"
         >
-          <span class="feature-info-content__table__row__column--attribute" [matTooltip]="tableRow.key" showTooltipIfTruncated>{{
-            tableRow.key
-          }}</span>
+          <span class="feature-info-content__table__row__column--attribute">
+            {{ tableRow.key }}
+          </span>
         </th>
         @for (cellValue of tableRow.value; track cellValue) {
           <td

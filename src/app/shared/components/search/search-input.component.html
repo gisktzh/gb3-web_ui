@@ -10,8 +10,7 @@
     <input
       #searchInput
       type="text"
-      [value]="searchTerm()"
-      (keyup)="onInput($event.target.value)"
+      [(ngModel)]="searchTerm"
       class="search__bar__input"
       [class.search__bar__input--mobile]="screenMode() === 'mobile'"
       [placeholder]="placeholderText()"
