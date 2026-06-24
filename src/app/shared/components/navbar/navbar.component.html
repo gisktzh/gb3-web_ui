@@ -1,5 +1,5 @@
 <mat-toolbar aria-label="Hauptnavigation" class="navbar" color="primary" role="navigation">
-  <span class="navbar__item" role="banner">
+  <a class="navbar__item navbar__logo" role="banner" [queryParams]="{}" [routerLink]="[mainPageEnum.Start]" aria-label="Zum Geoportal">
     <img
       [style.display]="!isSimplifiedPage() ? 'none' : 'inline'"
       alt="KTZH Logo"
@@ -10,7 +10,7 @@
       aria-hidden="true"
     />
     Geoportal Kanton Zürich
-  </span>
+  </a>
   <span class="navbar__spacer"></span>
   @if (screenMode() === 'regular') {
     <a
