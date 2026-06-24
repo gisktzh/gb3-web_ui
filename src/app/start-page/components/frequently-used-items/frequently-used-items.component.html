@@ -1,50 +1,59 @@
 <div class="frequently-used-items">
   <content-loading-state
-    [loadingState]="loadingState"
+    [loadingState]="loadingState()"
     loadingText="Lade häufig verwendete Karten und Daten..."
     loadingCompletedText="Fehler beim Laden der häufig verwendeten Karten und Daten."
-  ></content-loading-state>
-  @if (frequentlyUsedItems.length === 0 && loadingState === 'loaded') {
+  />
+  @if (frequentlyUsedItems().length === 0 && loadingState() === 'loaded') {
     <p class="mat-caption">Aktuell gibt es keine häufig verwendete Karten oder Daten.</p>
   }
-  <generic-list [listData]="frequentlyUsedItems" [itemTemplate]="frequentlyUsedItem"></generic-list>
+  <generic-list [listData]="frequentlyUsedItems()" [itemTemplate]="frequentlyUsedItem" />
   <ng-template #frequentlyUsedItem let-frequentlyUsedItem>
-    <div
-      class="frequently-used-items__item"
-      [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}"
-      [attr.aria-label]="frequentlyUsedItem.title"
-    >
+    @if (frequentlyUsedItem.url === undefined) {
       <div
-        class="frequently-used-items__item__image-container"
-        [ngClass]="{'frequently-used-items__item__image-container--mobile': screenMode === 'mobile'}"
+        class="frequently-used-items__item"
+        [class.frequently-used-items__item--mobile]="screenMode() === 'mobile'"
+        [attr.aria-label]="frequentlyUsedItem.title"
       >
-        @if (frequentlyUsedItem.image !== undefined) {
-          <img
-            [src]="frequentlyUsedItem.image.url"
-            [alt]="frequentlyUsedItem.image.altText ?? ''"
-            class="frequently-used-items__item__image-container__image"
-          />
-        }
+        <ng-container *ngTemplateOutlet="frequentlyUsedItemContent"></ng-container>
       </div>
-      <div
-        class="frequently-used-items__item__text-container"
-        [ngClass]="{'frequently-used-items__item__text-container--mobile': screenMode === 'mobile'}"
+    } @else {
+      <a
+        class="frequently-used-items__item"
+        [class.frequently-used-items__item--mobile]="screenMode() === 'mobile'"
+        [attr.aria-label]="frequentlyUsedItem.title"
+        [href]="frequentlyUsedItem.url"
+        target="_self"
+        rel="noopener noreferrer"
+        title="Link öffnen"
+        tabindex="0"
       >
-        <h3 class="ktzh-h3-small-big">{{ frequentlyUsedItem.title }}</h3>
-        <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
-        @if (frequentlyUsedItem.url !== undefined) {
-          <a
-            [href]="frequentlyUsedItem.url"
-            class="frequently-used-items__item__text-container__link"
-            target="_self"
-            rel="noopener noreferrer"
-            title="Link öffnen"
-          >
-            Link öffnen
-          </a>
-        }
+        <ng-container *ngTemplateOutlet="frequentlyUsedItemContent"></ng-container>
+      </a>
+    }
+
+    <ng-template #frequentlyUsedItemContent>
+      <div class="frequently-used-items__item__content" [class.frequently-used-items__item__content--mobile]="screenMode() === 'mobile'">
+        <div
+          class="frequently-used-items__item__image-container"
+          [class.frequently-used-items__item__image-container--mobile]="screenMode() === 'mobile'"
+        >
+          @if (frequentlyUsedItem.image !== undefined) {
+            <img
+              [src]="frequentlyUsedItem.image.url"
+              [alt]="frequentlyUsedItem.image.altText ?? ''"
+              class="frequently-used-items__item__image-container__image"
+            />
+          }
+        </div>
+        <div
+          class="frequently-used-items__item__text-container"
+          [class.frequently-used-items__item__text-container--mobile]="screenMode() === 'mobile'"
+        >
+          <h3 class="ktzh-h3-small-big frequently-used-items__item__text-container__title">{{ frequentlyUsedItem.title }}</h3>
+          <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
+        </div>
       </div>
-    </div>
-    <mat-divider></mat-divider>
+    </ng-template>
   </ng-template>
 </div>

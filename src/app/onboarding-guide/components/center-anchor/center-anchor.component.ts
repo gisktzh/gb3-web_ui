@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {OnboardingGuideAnchor} from '../../types/onboarding-guide-anchor.type';
 import {TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
 
@@ -12,5 +12,5 @@ import {TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
   imports: [TourAnchorMatMenuDirective],
 })
 export class CenterAnchorComponent {
-  @Input() public anchorName!: OnboardingGuideAnchor;
+  public readonly anchorName = input.required<OnboardingGuideAnchor>();
 }

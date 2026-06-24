@@ -68,15 +68,16 @@ function redactUrl(url: string) {
 /**
  * Checks if a given value is parsable JSON.
  */
-function isJsonString(value: string) {
+function isJsonString(value: string): boolean {
   try {
     JSON.parse(value);
-  } catch (_error) {
-    // NOSONAR: JSON.parse throws on invalid JSON, which is expected here
+    return true;
+  } catch (error) {
+    ((_) => {
+      // noop, so SonarQube doesn't complain, we have no debug output and ESLint is happy.
+    })(error);
     return false;
   }
-
-  return true;
 }
 
 /**

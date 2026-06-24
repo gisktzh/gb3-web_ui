@@ -31,14 +31,11 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://staging.geo.ktzh.ch/cms',
         useMockData: false,
       },
-      twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js',
-      },
       geoshopApi: {
-        baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
+        baseUrl: 'https://testgdserv.ktzh.ch/geoshopapi/v1',
       },
       ownershipInformationApi: {
-        baseUrl: 'https://portal.objektwesen.zh.ch/aks/detail',
+        baseUrl: 'https://test-portal.objektwesen.zh.ch/aks/detail',
       },
       swisstopoRestApi: {
         baseUrl: 'https://api3.geo.admin.ch/rest/services',

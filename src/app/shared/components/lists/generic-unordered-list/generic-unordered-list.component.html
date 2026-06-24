@@ -1,7 +1,7 @@
-<ul class="list" [ngClass]="{'list--gap': hasGap}">
-  @for (item of listData; track item) {
+<ul class="list" [class.list--gap]="hasGap()">
+  @for (item of listData(); track item) {
     <li class="list__item">
-      <ng-container *ngTemplateOutlet="itemTemplate; context: {$implicit: item}"></ng-container>
+      <ng-container *ngTemplateOutlet="itemTemplate(); context: {$implicit: item}" />
     </li>
   }
 </ul>

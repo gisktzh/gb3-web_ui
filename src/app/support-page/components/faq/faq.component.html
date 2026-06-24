@@ -1,9 +1,9 @@
-@for (faqCollection of this.faqCollections; track faqCollection) {
+@for (faqCollection of faqCollections(); track faqCollection) {
   <div class="faq">
     <h3 class="ktzh-h3-small-big">{{ faqCollection.category }}</h3>
     <div>
       <cdk-accordion [multi]="true">
-        <generic-list [listData]="faqCollection.items" [itemTemplate]="faqItem"></generic-list>
+        <generic-list [listData]="faqCollection.items" [itemTemplate]="faqItem" />
         <ng-template #faqItem let-faqItem>
           <accordion-item [header]="faqItem.question" variant="dark">
             <p [innerHTML]="faqItem.answer | formatContent" class="faq__content"></p>

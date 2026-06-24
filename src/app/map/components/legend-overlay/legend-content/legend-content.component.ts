@@ -1,4 +1,4 @@
-import {Component, Input, inject} from '@angular/core';
+import {Component, inject, input} from '@angular/core';
 import {Layer} from '../../../../shared/interfaces/legend.interface';
 import {ConfigService} from '../../../../shared/services/config.service';
 
@@ -8,14 +8,6 @@ import {ConfigService} from '../../../../shared/services/config.service';
   styleUrls: ['./legend-content.component.scss'],
 })
 export class LegendContentComponent {
-  private readonly configService = inject(ConfigService);
-
-  @Input() public layer!: Layer;
-  public readonly staticFilesBaseUrl: string;
-
-  constructor() {
-    const configService = this.configService;
-
-    this.staticFilesBaseUrl = configService.apiConfig.gb2StaticFiles.baseUrl;
-  }
+  public readonly layer = input.required<Layer>();
+  public readonly staticFilesBaseUrl = inject(ConfigService).apiConfig.gb2StaticFiles.baseUrl;
 }

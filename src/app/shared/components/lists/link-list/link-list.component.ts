@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {LinksGroup} from '../../../interfaces/links-group.interface';
 import {LinkListItemComponent} from './link-list-item/link-list-item.component';
 
@@ -9,5 +9,5 @@ import {LinkListItemComponent} from './link-list-item/link-list-item.component';
   imports: [LinkListItemComponent],
 })
 export class LinkListComponent {
-  @Input() public linksGroups: LinksGroup[] = [];
+  public readonly linksGroups = input<LinksGroup[]>([]);
 }

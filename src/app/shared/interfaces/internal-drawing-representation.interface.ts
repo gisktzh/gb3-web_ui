@@ -24,21 +24,21 @@ interface InternalDrawingType {
  */
 export type UnstyledInternalDrawingRepresentation = InternalDrawingRepresentation;
 
-export type LineStyleConfiguration = Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'>;
+type LineStyleConfiguration = Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'>;
 
-export interface AreaStyleConfiguration extends LineStyleConfiguration, Pick<MapfishPrintStyleProperties, 'fillColor' | 'fillOpacity'> {}
+interface AreaStyleConfiguration extends LineStyleConfiguration, Pick<MapfishPrintStyleProperties, 'fillColor' | 'fillOpacity'> {}
 
-export interface PointStyleConfiguration extends AreaStyleConfiguration, Pick<MapfishPrintStyleProperties, 'pointRadius'> {}
+interface PointStyleConfiguration extends AreaStyleConfiguration, Pick<MapfishPrintStyleProperties, 'pointRadius'> {}
 
-export type TextStyleConfiguration = Pick<
+type TextStyleConfiguration = Pick<
   MapfishPrintStyleProperties,
   'label' | 'fontSize' | 'fontColor' | 'fontFamily' | 'labelYOffset' | 'labelAlign' | 'haloColor' | 'haloRadius'
 >;
 
-export type DrawingSymbolStyleConfiguration = {
+type DrawingSymbolStyleConfiguration = {
   symbolSize: number;
   symbolRotation: number;
-  symbolDefinition?: DrawingSymbolDefinition;
+  symbolDefinition: DrawingSymbolDefinition | undefined | null;
 };
 
 export interface Gb3LineStringStyle extends InternalDrawingType, LineStyleConfiguration {

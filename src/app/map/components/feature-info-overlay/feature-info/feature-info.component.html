@@ -1,15 +1,13 @@
-<loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
-@if (loadingState === 'loaded') {
-  @if (generalInfoData) {
-    <feature-info-general-information [generalInfoData]="generalInfoData"></feature-info-general-information>
+<loading-and-process-bar [loadingState]="loadingState()" />
+@if (loadingState() === 'loaded') {
+  @if (generalInfoData(); as generalInfoData) {
+    <feature-info-general-information [generalInfoData]="generalInfoData" />
+    <mat-divider class="feature-info__divider" />
   }
-  @if (generalInfoData) {
-    <mat-divider class="feature-info__divider"></mat-divider>
+  @for (featureInfo of featureInfoData(); track trackById($index, featureInfo)) {
+    <feature-info-item [featureInfo]="featureInfo" [showInteractiveElements]="showInteractiveElements()" />
   }
-  @for (featureInfo of featureInfoData; track trackById($index, featureInfo)) {
-    <feature-info-item [featureInfo]="featureInfo" [showInteractiveElements]="showInteractiveElements"></feature-info-item>
-  }
-  @if (featureInfoData.length === 0) {
+  @if (featureInfoData().length === 0) {
     <i>Keine kartenspezifischen Treffer!</i>
   }
 }

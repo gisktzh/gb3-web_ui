@@ -1,40 +1,40 @@
-<loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+<loading-and-process-bar [loadingState]="loadingState()" />
 
-@if (baseMetadataInformation) {
+@if (baseMetadataInformation(); as baseMetadataInformation) {
   <data-catalogue-detail-page [baseMetadataInformation]="baseMetadataInformation">
     <data-catalogue-detail-page-section>
-      <descriptive-highlighted-link [title]="'Karte im GIS-Browser öffnen'" topLink>
-        @if (gB2Url) {
-          <gb2-exit-button [url]="gB2Url"> </gb2-exit-button>
+      <descriptive-highlighted-link title="Karte im GIS-Browser öffnen" topLink>
+        @if (gB2Url(); as gB2Url) {
+          <gb2-exit-button [url]="gB2Url" />
         } @else {
-          <a [queryParams]="{initialMapIds: baseMetadataInformation.topic}" [routerLink]="'/' + mainPageEnum.Maps" mat-icon-button>
-            <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+          <a [queryParams]="{initialMapIds: baseDetailMetaData()!.topic}" [routerLink]="'/' + mainPageEnum.Maps" mat-icon-button>
+            <mat-icon svgIcon="ktzh_arrow_right" />
           </a>
         }
       </descriptive-highlighted-link>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Verantwortlich für Geodaten'">
-        <data-display [elements]="geodataContactElements"></data-display>
+      <data-display-section sectionTitle="Verantwortlich für Geodaten">
+        <data-display [elements]="geodataContactElements()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
     <data-catalogue-detail-page-section>
-      <data-display-section [sectionTitle]="'Informationen'">
-        <data-display [elements]="informationElements"></data-display>
+      <data-display-section sectionTitle="Informationen">
+        <data-display [elements]="informationElements()" />
       </data-display-section>
     </data-catalogue-detail-page-section>
-    @if (linkedDatasets.length > 0) {
+    @if (linkedDatasets().length > 0) {
       <data-catalogue-detail-page-section>
-        <data-display-section [sectionTitle]="'Verwendete Geodaten'">
-          <generic-list [listData]="linkedDatasets" [itemTemplate]="linkedDataset" [hasGap]="true"></generic-list>
-          <ng-template #linkedDataset let-linkedDataset>
+        <data-display-section sectionTitle="Verwendete Geodaten">
+          <generic-list [listData]="linkedDatasets()" [itemTemplate]="linkedDatasetEl" [hasGap]="true" />
+          <ng-template #linkedDatasetEl let-linkedDataset>
             <descriptive-highlighted-link
               [description]="linkedDataset.shortDescription"
               [title]="linkedDataset.name"
               [id]="linkedDataset.gisZHNr"
             >
               <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Datasets, linkedDataset.uuid]" mat-icon-button>
-                <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+                <mat-icon svgIcon="ktzh_arrow_right" />
               </a>
             </descriptive-highlighted-link>
           </ng-template>

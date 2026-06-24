@@ -11,7 +11,6 @@ import {MatMenuTrigger, MatMenu, MatMenuItem} from '@angular/material/menu';
 import {MatDivider} from '@angular/material/divider';
 import {RouterLinkActive, RouterLink} from '@angular/router';
 import {FeatureFlagDirective} from '../../../directives/feature-flag.directive';
-import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'navbar-mobile-dialog',
@@ -38,8 +37,8 @@ export class NavbarMobileDialogComponent {
   private readonly store = inject(Store);
 
   protected readonly mainPageEnum = MainPage;
-  public isAuthenticated = toSignal(this.store.select(selectIsAuthenticated), {initialValue: false});
-  public userName = toSignal(this.store.select(selectUserName), {initialValue: undefined});
+  public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  public readonly userName = this.store.selectSignal(selectUserName);
 
   public close(isAborted: boolean = false) {
     this.dialogRef.close(isAborted);
