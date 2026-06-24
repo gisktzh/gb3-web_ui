@@ -1,2 +1,5 @@
 .husky/commit-msg eol=lf
 .husky/pre-commit eol=lf
+# prevent git from changing line endings on checkout. why is this even a thing.
+* -text
+
