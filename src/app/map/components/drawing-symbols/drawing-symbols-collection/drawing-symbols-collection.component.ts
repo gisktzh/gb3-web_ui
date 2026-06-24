@@ -13,7 +13,7 @@ import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/
 export class DrawingSymbolsCollectionComponent {
   public readonly collectionId = input.required<string>();
   public readonly groupName = input('');
-  public value = model<DrawingSymbolDefinition | null>(null);
+  public readonly value = model<DrawingSymbolDefinition | null>(null);
   public readonly items = signal<DrawingSymbolChoice[]>([]);
   public readonly statefulItems = computed<{symbol: DrawingSymbolChoice; isSelected: boolean}[]>(() => {
     const innerValue = this.value();

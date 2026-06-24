@@ -13,7 +13,7 @@ import {MatIcon} from '@angular/material/icon';
   imports: [MatIconButton, ClickOnSpaceBarDirective, MatTooltip, MatIcon],
 })
 export class Gb2ExitButtonComponent extends ExternalLinkButtonComponent {
-  public override toolTip = input<string | undefined>(
+  public override readonly toolTip = input<string | undefined>(
     'Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link.',
   );
 }

@@ -16,7 +16,7 @@ const INPUT_DEBOUNCE_IN_MS = 10;
   imports: [MatFormField, MatLabel, MatInput, FormsModule, MatDivider, SliderEditComponent, ColorPickerEditComponent, FormField],
 })
 export class TextEditComponent {
-  public textStyle = model.required<{
+  public readonly textStyle = model.required<{
     style: Gb3TextStyle;
     label: string;
   }>();

@@ -74,6 +74,12 @@ export default tseslint.config(
         },
       ],
 
+      '@angular-eslint/prefer-signals': ['error'],
+
+      '@angular-eslint/no-uncalled-signals': ['error'],
+
+      '@angular-eslint/prefer-signal-model': ['warn'],
+
       '@typescript-eslint/explicit-member-accessibility': [
         'error',
         {

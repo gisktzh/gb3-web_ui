@@ -40,7 +40,7 @@ export class ProductComponent {
   public readonly disabled = input(false);
 
   public readonly orderProducts = computed(() => (this.order()?.products || []).filter((product) => product.id === this.product().gisZHNr));
-  public readonly isProductSelected = signal(this.orderProducts.length > 0);
+  public readonly isProductSelected = signal(this.orderProducts().length > 0);
   public readonly selectableFormats = computed(() => {
     const productFormats: ProductFormat[] = [];
     this.orderProducts().forEach((orderProduct) => {

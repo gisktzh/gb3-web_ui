@@ -12,6 +12,6 @@ import {form, FormField} from '@angular/forms/signals';
   imports: [SliderEditComponent, ColorPickerEditComponent, MatDivider, FormField],
 })
 export class PointEditComponent {
-  public pointStyle = model.required<Gb3PointStyle>();
+  public readonly pointStyle = model.required<Gb3PointStyle>();
   public pointStyleForm = form(this.pointStyle);
 }

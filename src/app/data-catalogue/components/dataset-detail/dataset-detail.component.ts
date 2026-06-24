@@ -86,7 +86,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     const baseDetailMetaData = this.baseDetailMetaData();
     return baseDetailMetaData ? baseDetailMetaData.layers : [];
   });
-  public linkedData: Signal<{
+  public readonly linkedData: Signal<{
     maps: MetadataLinkWithTopicId[];
     services: MetadataLinkWithoutDescription[];
     products: MetadataLinkWithoutDescription[];

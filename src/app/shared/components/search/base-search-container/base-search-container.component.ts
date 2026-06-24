@@ -67,7 +67,7 @@ export abstract class BaseSearchContainerComponent {
     } else {
       const direction = event.shiftKey ? -1 : 1;
       // Find the next focusable element (first of group) and set focus on it
-      for (let i = this.selectedSearchResultIndex() + direction; i >= 0 && i < this.allSearchResults.length; i += direction) {
+      for (let i = this.selectedSearchResultIndex() + direction; i >= 0 && i < this.allSearchResults().length; i += direction) {
         const item = this.allSearchResults()[i];
         if (item.isFocusable()) {
           event.preventDefault();
