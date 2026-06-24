@@ -1,34 +1,29 @@
 <mat-expansion-panel
   #itemExpansionPanel
-  [expanded]="expanded"
-  class="expandable-list-item"
-  [disabled]="disabled"
+  [disabled]="disabled()"
   hideToggle="true"
-  [ngClass]="{
-    'expandable-list-item--no-padding': noPadding,
-    'expandable-list-item--sticky-header': stickyHeader && itemExpansionPanel.expanded,
-  }"
+  class="expandable-list-item"
+  [class.expandable-list-item--no-padding]="noPadding()"
+  [class.expandable-list-item--sticky-header]="stickyHeader() && expansionPanel().expanded"
 >
   <mat-expansion-panel-header
     class="expandable-list-item__header"
-    [ngClass]="{
-      'expandable-list-item__header--sticky-header': stickyHeader && itemExpansionPanel.expanded,
-    }"
-    [tabIndex]="allowTabFocus ? 0 : -1"
+    [class.expandable-list-item__header--sticky-header]="stickyHeader() && expansionPanel().expanded"
+    [tabIndex]="allowTabFocus() ? 0 : -1"
   >
     <expandable-list-item-header
-      [isExpanded]="itemExpansionPanel.expanded"
-      [numberOfItems]="numberOfItems"
-      [title]="header"
-      [loadingState]="loadingState"
-      [showBadge]="showBadge"
+      [isExpanded]="expansionPanel().expanded"
+      [numberOfItems]="numberOfItems()"
+      [title]="header()"
+      [loadingState]="loadingState()"
+      [showBadge]="showBadge()"
       class="expandable-list-item__header__item"
-    ></expandable-list-item-header>
+    />
   </mat-expansion-panel-header>
 
-  @if (renderContentEagerly || itemExpansionPanel.expanded) {
-    <ng-content></ng-content>
+  @if (renderContentEagerly() || expansionPanel().expanded) {
+    <ng-content />
   } @else {
-    <ng-template matExpansionPanelContent></ng-template>
+    <ng-template matExpansionPanelContent />
   }
 </mat-expansion-panel>

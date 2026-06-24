@@ -13,6 +13,7 @@ describe('isGb3SymbolStyle', () => {
       type: 'symbol',
       symbolSize: 12,
       symbolRotation: 90,
+      symbolDefinition: null,
     };
 
     expect(isGb3SymbolStyle(style)).toBe(true);

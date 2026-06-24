@@ -1,98 +1,93 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Component, computed, effect, inject, signal} from '@angular/core';
 import {MapServiceType} from '../../../../types/map-service.type';
 import {Store} from '@ngrx/store';
-import {distinctUntilChanged, filter, Subscription, tap} from 'rxjs';
-
 import {SharedModule} from '../../../../../shared/shared.module';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
-import {LoadingState} from '../../../../../shared/types/loading-state.type';
 import {selectLoadingState} from '../../../../../state/map/reducers/external-map-item.reducer';
 import {selectServiceType, selectUrl} from '../../../../../state/map/reducers/map-import.reducer';
 import {ExternalMapItemActions} from '../../../../../state/map/actions/external-map-item.actions';
-
-interface ServiceFormGroup {
-  serviceType: FormControl<MapServiceType | null>;
-  url: FormControl<string | null>;
-}
+import {form, required, validate, FormField, disabled, FormRoot} from '@angular/forms/signals';
 
 @Component({
   selector: 'map-import-service-and-url',
-  imports: [SharedModule, ReactiveFormsModule],
+  imports: [SharedModule, FormField, FormRoot],
   templateUrl: './map-import-service-and-url.component.html',
   styleUrl: './map-import-service-and-url.component.scss',
 })
-export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
+export class MapImportServiceAndUrlComponent {
   private readonly store = inject(Store);
-  private readonly formBuilder = inject(FormBuilder);
 
-  public readonly serviceFormGroup = this.formBuilder.group<ServiceFormGroup>({
-    serviceType: this.formBuilder.control(null, [Validators.required]),
-    url: this.formBuilder.control({value: null, disabled: true}, [Validators.required]),
+  public readonly loadingState = this.store.selectSignal(selectLoadingState);
+  public readonly serviceType = this.store.selectSignal(selectServiceType);
+  public readonly url = this.store.selectSignal(selectUrl);
+  public readonly serviceAndUrlModel = signal<{
+    serviceType: MapServiceType | null;
+    url: string;
+  }>({
+    serviceType: null,
+    url: '',
   });
-  public loadingState: LoadingState;
+  public serviceAndUrlForm = form(
+    this.serviceAndUrlModel,
+    (fieldPath) => {
+      required(fieldPath.serviceType);
+      required(fieldPath.url);
+      validate(fieldPath.url, () => {
+        return this.loadingState() === 'error'
+          ? {
+              kind: 'incorrect',
+            }
+          : null;
+      });
+      disabled(fieldPath.url, ({valueOf}) => !valueOf(fieldPath.serviceType));
+    },
+    {
+      submission: {
+        action: () => {
+          this.validateUrl();
+          return Promise.resolve();
+        },
+      },
+    },
+  );
+  public readonly validateButtonEnabled = computed(() => this.serviceAndUrlForm.url().value() || this.loadingState() === 'loading');
 
-  private readonly loadingState$ = this.store.select(selectLoadingState);
-  private readonly serviceType$ = this.store.select(selectServiceType);
-  private readonly url$ = this.store.select(selectUrl);
-  private readonly subscriptions = new Subscription();
-
-  public ngOnInit(): void {
-    this.initSubscriptions();
+  constructor() {
+    effect(() => {
+      const serviceType = this.serviceType();
+      queueMicrotask(() => {
+        this.serviceAndUrlForm.serviceType().value.set(serviceType ?? null);
+      });
+    });
+    effect(() => {
+      const url = this.url();
+      this.serviceAndUrlForm.url().value.set(url ?? '');
+      if (url) {
+        this.store.dispatch(ExternalMapItemActions.clearLoadingState());
+      }
+    });
+    effect(() => {
+      if (this.serviceAndUrlForm.url().value()) {
+        this.store.dispatch(ExternalMapItemActions.clearLoadingState());
+      }
+    });
+    effect(() => {
+      const serviceType = this.serviceAndUrlForm.serviceType().value();
+      if (serviceType) {
+        this.store.dispatch(MapImportActions.setServiceType({serviceType}));
+      }
+    });
   }
 
-  public ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+  public submit(event: Event) {
+    event.preventDefault();
+    this.validateUrl();
   }
 
   public validateUrl() {
-    this.store.dispatch(MapImportActions.setUrl({url: this.serviceFormGroup.controls.url.value!}));
-  }
-
-  public handleManualValidation(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      this.validateUrl();
-    }
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.serviceFormGroup.controls.serviceType.valueChanges
-        .pipe(
-          filter((serviceType): serviceType is MapServiceType => !!serviceType),
-          tap((serviceType) => this.store.dispatch(MapImportActions.setServiceType({serviceType}))),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.serviceFormGroup.controls.url.valueChanges
-        .pipe(
-          distinctUntilChanged(),
-          filter((url): url is string => !!url),
-          tap(() => this.store.dispatch(ExternalMapItemActions.clearLoadingState())),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(this.serviceType$.pipe(tap((serviceType) => this.handleServiceTypeChange(serviceType))).subscribe());
-    this.subscriptions.add(this.url$.pipe(tap((url) => this.serviceFormGroup.controls.url.setValue(url ?? null))).subscribe());
-    this.subscriptions.add(this.loadingState$.pipe(tap((loadingState) => this.handleLoadingState(loadingState))).subscribe());
-  }
-
-  private handleServiceTypeChange(serviceType: MapServiceType | undefined) {
-    this.serviceFormGroup.controls.serviceType.setValue(serviceType ?? null);
-    if (serviceType) {
-      this.serviceFormGroup.controls.url.enable();
-    } else {
-      this.serviceFormGroup.controls.url.disable();
-    }
-  }
-
-  private handleLoadingState(loadingState: LoadingState) {
-    this.loadingState = loadingState;
-    if (loadingState === 'error') {
-      this.serviceFormGroup.controls.url.setErrors({incorrect: true});
-    } else {
-      this.serviceFormGroup.controls.url.setErrors(null);
+    const url = this.serviceAndUrlForm.url().value();
+    if (url) {
+      this.store.dispatch(MapImportActions.setUrl({url}));
     }
   }
 }

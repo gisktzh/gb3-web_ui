@@ -24,15 +24,12 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geolion.zh.ch',
       },
       ktzhWebsite: {
-        baseUrl: 'https://zh.ch',
+        baseUrl: 'https://www.zh.ch',
         useMockData: true,
       },
       gravCms: {
         baseUrl: 'https://geo.zh.ch/cms',
         useMockData: false,
-      },
-      twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js',
       },
       geoshopApi: {
         baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
@@ -74,15 +71,12 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geolion.ktzh.ch/',
       },
       ktzhWebsite: {
-        baseUrl: 'https://zh.ch',
+        baseUrl: 'https://www.zh.ch',
         useMockData: true,
       },
       gravCms: {
         baseUrl: 'https://geo.zh.ch/cms',
         useMockData: false,
-      },
-      twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js',
       },
       geoshopApi: {
         baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
