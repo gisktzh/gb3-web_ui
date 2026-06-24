@@ -3,11 +3,11 @@
     [loadingState]="loadingState()"
     loadingText="Lade häufig verwendete Karten und Daten..."
     loadingCompletedText="Fehler beim Laden der häufig verwendeten Karten und Daten."
-  ></content-loading-state>
+  />
   @if (frequentlyUsedItems().length === 0 && loadingState() === 'loaded') {
     <p class="mat-caption">Aktuell gibt es keine häufig verwendete Karten oder Daten.</p>
   }
-  <generic-list [listData]="frequentlyUsedItems()" [itemTemplate]="frequentlyUsedItem"></generic-list>
+  <generic-list [listData]="frequentlyUsedItems()" [itemTemplate]="frequentlyUsedItem" />
   <ng-template #frequentlyUsedItem let-frequentlyUsedItem>
     @if (frequentlyUsedItem.url === undefined) {
       <div
