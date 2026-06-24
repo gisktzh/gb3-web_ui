@@ -1,8 +1,7 @@
-import {Injectable, OnDestroy, inject} from '@angular/core';
+import {Injectable, effect, inject} from '@angular/core';
 import {MapService} from '../interfaces/map.service';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
-import {combineLatestWith, filter, Subscription, tap} from 'rxjs';
 import {selectCurrentGpsLocation} from '../../state/map/reducers/geolocation.reducer';
 import {Store} from '@ngrx/store';
 import {ConfigService} from '../../shared/services/config.service';
@@ -14,21 +13,20 @@ export const ELEVATION_PROFILE_LOCATION_IDENTIFIER = 'elevation_profile_location
 @Injectable({
   providedIn: 'root',
 })
-export class MapDrawingService implements OnDestroy {
+export class MapDrawingService {
   private readonly mapService = inject<MapService>(MAP_SERVICE);
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
 
-  private readonly isMapReady$ = this.store.select(selectReady);
-  private readonly currentGpsLocation$ = this.store.select(selectCurrentGpsLocation);
-  private readonly subscriptions: Subscription = new Subscription();
+  private readonly isMapReady = this.store.selectSignal(selectReady);
+  private readonly currentGpsLocation = this.store.selectSignal(selectCurrentGpsLocation);
 
   constructor() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    effect(() => {
+      if (this.isMapReady()) {
+        this.handleGpsLocation(this.currentGpsLocation());
+      }
+    });
   }
 
   public drawElevationProfileHoverLocation(geometry: PointWithSrs) {
@@ -80,21 +78,6 @@ export class MapDrawingService implements OnDestroy {
 
   public clearSearchResultHighlight() {
     this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.SearchResultHighlight);
-  }
-
-  private initSubscriptions() {
-    // todo: when adding the redlining, this might be refactored away as an effect.
-    this.subscriptions.add(
-      this.currentGpsLocation$
-        .pipe(
-          combineLatestWith(this.isMapReady$),
-          filter(([_, isMapReady]) => isMapReady),
-          tap(([location, _]) => {
-            this.handleGpsLocation(location);
-          }),
-        )
-        .subscribe(),
-    );
   }
 
   private handleGpsLocation(location: PointWithSrs | undefined): Promise<never> | void {

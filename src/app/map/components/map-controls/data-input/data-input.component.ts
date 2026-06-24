@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 
 @Component({
   selector: 'data-input',
@@ -6,5 +6,5 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./data-input.component.scss'],
 })
 export class DataInputComponent {
-  @Input() public prefix?: string;
+  public readonly prefix = input<string>();
 }

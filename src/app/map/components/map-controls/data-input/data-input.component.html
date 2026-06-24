@@ -1,8 +1,8 @@
 <div class="data-input">
   <div class="data-input__wrapper">
-    @if (this.prefix) {
-      <span class="data-input__prefix">{{ this.prefix }}</span>
+    @if (prefix(); as prefix) {
+      <span class="data-input__prefix">{{ prefix }}</span>
     }
-    <ng-content></ng-content>
+    <ng-content />
   </div>
 </div>

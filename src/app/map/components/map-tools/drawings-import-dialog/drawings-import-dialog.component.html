@@ -1,7 +1,12 @@
-<api-dialog-wrapper [savingState]="loadingState" title="Zeichnung hochladen" [errorText]="fileUploadErrorMessage" (closeEvent)="cancel()">
+<api-dialog-wrapper
+  [savingState]="loadingState()"
+  title="Zeichnung hochladen"
+  [errorText]="fileUploadErrorMessage()"
+  (closeEvent)="cancel()"
+>
   <ng-container content>
     <div>
-      <drop-zone (addedFileEvent)="handleFileChange($event)" (uploadErrorEvent)="handleFileError($event)"></drop-zone>
+      <drop-zone (addedFileEvent)="handleFileChange($event)" (uploadErrorEvent)="handleFileError($event)" />
     </div>
   </ng-container>
   <ng-container actions>

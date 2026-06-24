@@ -5,6 +5,8 @@
   background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
   color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
   padding: 40px;
+  display: block;
+  text-decoration: none;
 
   .gis-browser-teaser__start-button {
     margin-top: 24px;
