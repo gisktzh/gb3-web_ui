@@ -8,12 +8,12 @@ variables:
   CA_CERTIFICATE: '$ZS_CERTIFICATE'
   WORK_DIR: gb3-web_ui
 
-.build:
-  image: docker:29.4.3
+build:
+  image: docker:29.5.3
   stage: build
   tags: [docker]
   services:
-    - name: docker:29.4.3-dind
+    - name: docker:29.5.3-dind
       command:
         - /bin/sh
         - -c

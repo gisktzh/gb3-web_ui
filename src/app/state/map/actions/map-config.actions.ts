@@ -7,6 +7,7 @@ export const MapConfigActions = createActionGroup({
   source: 'Map Config',
   events: {
     'Mark Map Service As Initialized': emptyProps(),
+    'Mark Map Service As Deinitialized': emptyProps(),
     'Set Initial Map Config': props<{
       x: number | undefined;
       y: number | undefined;

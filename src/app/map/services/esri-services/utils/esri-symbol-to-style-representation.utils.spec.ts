@@ -115,7 +115,7 @@ describe('EsriSymbolToStyleRepresentationUtils', () => {
     expect(actual.type).toEqual('symbol');
     expect((actual as Gb3SymbolStyle).symbolSize).toEqual(mockSymbolSize);
     expect((actual as Gb3SymbolStyle).symbolRotation).toEqual(mockSymbolRotation);
-    expect((actual as Gb3SymbolStyle).symbolDefinition).toEqual(undefined);
+    expect((actual as Gb3SymbolStyle).symbolDefinition).toEqual(null);
   });
 
   it('returns a Gb3SymbolStyle for a WebStyle drawing symbol', () => {
@@ -128,7 +128,7 @@ describe('EsriSymbolToStyleRepresentationUtils', () => {
     expect(actual.type).toEqual('symbol');
     expect((actual as Gb3SymbolStyle).symbolSize).toEqual(mockSymbolSize);
     expect((actual as Gb3SymbolStyle).symbolRotation).toEqual(mockSymbolRotation);
-    expect((actual as Gb3SymbolStyle).symbolDefinition).toEqual(undefined);
+    expect((actual as Gb3SymbolStyle).symbolDefinition).toEqual(null);
   });
 
   it('returns a Gb3SymbolStyle for a WebStyle drawing symbol with default size and rotation', () => {
@@ -139,7 +139,7 @@ describe('EsriSymbolToStyleRepresentationUtils', () => {
     expect(actual.type).toEqual('symbol');
     expect((actual as Gb3SymbolStyle).symbolSize).toEqual(SymbolStyleConstants.DEFAULT_SYMBOL_SIZE);
     expect((actual as Gb3SymbolStyle).symbolRotation).toEqual(SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION);
-    expect((actual as Gb3SymbolStyle).symbolDefinition).toEqual(undefined);
+    expect((actual as Gb3SymbolStyle).symbolDefinition).toEqual(null);
   });
 
   it('should throw an error for any unsupported symbol type', () => {

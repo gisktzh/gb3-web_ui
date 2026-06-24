@@ -10,6 +10,7 @@ export default {
     'src/**/*.reducer.ts',
     'src/**/*.selector.ts',
     'src/app/testing/providers.ts',
+    '*/**/*.spec.exclude.ts', // In case we need to exclude specific tests from being executed, we don't want Knip to complain.
   ],
   ignoreDependencies: ['@angular-eslint/schematics', '@angular-eslint/template-parser', '@ngrx/schematics', 'material-icons'],
   ignoreBinaries: ['swagger-typescript-api'],

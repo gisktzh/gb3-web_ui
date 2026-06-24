@@ -1,8 +1,8 @@
 <div class="map-management-mobile-header">
-  @if (filterString === undefined) {
+  @if (filterString() === undefined) {
     <div class="map-management-mobile-header__buttons">
       <button
-        [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'activeMaps'}"
+        [class.map-management-mobile-header__buttons__button--selected]="activeTab() === 'activeMaps'"
         class="map-management-mobile-header__buttons__button"
         mat-flat-button
         (click)="changeTabs('activeMaps')"
@@ -11,13 +11,13 @@
           <span> Aktive Karten </span>
           <span
             class="map-management-mobile-header__badge"
-            [ngClass]="{'map-management-mobile-header__badge--hidden': activeMapItems.length === 0}"
-            [matBadge]="activeMapItems.length"
+            [class.map-management-mobile-header__badge--hidden]="activeMapItems().length === 0"
+            [matBadge]="activeMapItems().length"
           ></span>
         </div>
       </button>
       <button
-        [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'mapsCatalogue'}"
+        [class.map-management-mobile-header__buttons__button--selected]="activeTab() === 'mapsCatalogue'"
         class="map-management-mobile-header__buttons__button"
         mat-flat-button
         (click)="changeTabs('mapsCatalogue')"
@@ -29,64 +29,64 @@
   <div class="map-management-mobile-header__tools">
     <search-input
       class="map-management-mobile-header__tools__filter"
-      [ngClass]="{'map-management-mobile-header__tools__filter--hidden': activeTab !== 'mapsCatalogue'}"
-      [mode]="'mobile'"
+      [class.map-management-mobile-header__tools__filter--hidden]="activeTab() !== 'mapsCatalogue'"
+      mode="mobile"
       [showFilterButton]="false"
       [alwaysEnableClearButton]="true"
       placeholderText="Karten und Layer filtern"
       (focusEvent)="startFiltering()"
       (changeSearchTermEvent)="filterCatalog($event)"
       (clearSearchTermEvent)="clearInput()"
-    ></search-input>
+    />
     <div
       class="map-management-mobile-header__tools__buttons"
-      [ngClass]="{'map-management-mobile-header__tools__buttons--hidden': activeTab !== 'activeMaps'}"
+      [class.map-management-mobile-header__tools__buttons--hidden]="activeTab() !== 'activeMaps'"
     >
       <button
         class="map-management-mobile-header__tools__buttons__action map-management-mobile-header__tools__buttons__action--notices"
         (click)="showMapNotices()"
-        [disabled]="numberOfNotices === 0"
+        [disabled]="numberOfNotices() === 0"
         mat-icon-button
       >
-        @if (numberOfUnreadNotices > 0) {
-          <notification-indicator></notification-indicator>
+        @if (numberOfUnreadNotices() > 0) {
+          <notification-indicator />
         }
-        <mat-icon svgIcon="ktzh_notification"></mat-icon>
+        <mat-icon svgIcon="ktzh_notification" />
       </button>
-      <mat-divider class="map-management-mobile-header__tools__buttons__divider" [vertical]="true"></mat-divider>
+      <mat-divider class="map-management-mobile-header__tools__buttons__divider" [vertical]="true" />
       <button
         (click)="removeAllActiveMapItems()"
-        [disabled]="activeMapItems.length === 0"
+        [disabled]="activeMapItems().length === 0"
         mat-icon-button
         class="map-management-mobile-header__tools__buttons__action"
       >
-        <mat-icon svgIcon="ktzh_delete"></mat-icon>
+        <mat-icon svgIcon="ktzh_delete" />
       </button>
-      <mat-divider class="map-management-mobile-header__tools__buttons__divider" [vertical]="true"></mat-divider>
+      <mat-divider class="map-management-mobile-header__tools__buttons__divider" [vertical]="true" />
       <span
         #tooltip="matTooltip"
-        [matTooltipDisabled]="this.isAuthenticated && this.activeMapItems.length > 0"
+        [matTooltipDisabled]="isAuthenticated() && activeMapItems().length > 0"
         [matTooltip]="
-          this.isAuthenticated && this.activeMapItems.length === 0
-            ? this.favouriteHelperMessages.noMapsAdded
-            : this.favouriteHelperMessages.notAuthenticated
+          isAuthenticated() && activeMapItems().length === 0
+            ? favouriteHelperMessages.noMapsAdded
+            : favouriteHelperMessages.notAuthenticated
         "
       >
         <button
           (click)="showFavouriteDialog()"
-          [disabled]="activeMapItems.length === 0 || !this.isAuthenticated"
+          [disabled]="activeMapItems().length === 0 || !isAuthenticated()"
           mat-icon-button
           class="map-management-mobile-header__tools__buttons__action"
         >
-          <mat-icon svgIcon="ktzh_star"></mat-icon>
+          <mat-icon svgIcon="ktzh_star" />
         </button>
       </span>
     </div>
   </div>
 </div>
-<div class="map-management-mobile-content" [ngClass]="{'map-management-mobile-content--filtering': filterString !== undefined}">
+<div class="map-management-mobile-content" [class.map-management-mobile-content--filtering]="filterString() !== undefined">
   <div body>
-    <active-map-items [ngClass]="{'map-management-mobile-content--hidden': activeTab !== 'activeMaps'}"></active-map-items>
-    <map-data-catalogue [ngClass]="{'map-management-mobile-content--hidden': activeTab !== 'mapsCatalogue'}"></map-data-catalogue>
+    <active-map-items [class.map-management-mobile-content--hidden]="activeTab() !== 'activeMaps'" />
+    <map-data-catalogue [class.map-management-mobile-content--hidden]="activeTab() !== 'mapsCatalogue'" />
   </div>
 </div>

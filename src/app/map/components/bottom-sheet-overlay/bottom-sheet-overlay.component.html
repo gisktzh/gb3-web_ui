@@ -1,40 +1,40 @@
 <div class="bottom-sheet-overlay">
-  @if (bottomSheetContent === 'basemap') {
+  @if (bottomSheetContent() === 'basemap') {
     <bottom-sheet-item overlayTitle="Hintergrund" bottomSheetHeight="small">
-      <basemap-selection-list body></basemap-selection-list>
+      <basemap-selection-list body />
     </bottom-sheet-item>
   }
-  @if (bottomSheetContent === 'legend') {
+  @if (bottomSheetContent() === 'legend') {
     <bottom-sheet-item overlayTitle="Legende" bottomSheetHeight="large">
-      <legend body [showInteractiveElements]="showInteractiveElements"></legend>
+      <legend body [showInteractiveElements]="showInteractiveElements()"></legend>
     </bottom-sheet-item>
   }
-  @if (bottomSheetContent === 'feature-info') {
+  @if (bottomSheetContent() === 'feature-info') {
     <bottom-sheet-item overlayTitle="Info" bottomSheetHeight="large">
-      <feature-info body></feature-info>
+      <feature-info body />
     </bottom-sheet-item>
   }
-  @if (bottomSheetContent === 'map-attributes') {
+  @if (bottomSheetContent() === 'map-attributes') {
     <bottom-sheet-item overlayTitle="Attributfilter:" bottomSheetHeight="medium">
-      <map-attribute-filter body></map-attribute-filter>
+      <map-attribute-filter body />
     </bottom-sheet-item>
   }
-  @if (bottomSheetContent === 'share-link') {
+  @if (bottomSheetContent() === 'share-link') {
     <bottom-sheet-item overlayTitle="Teilen" bottomSheetHeight="small">
-      <share-link-mobile body></share-link-mobile>
+      <share-link-mobile body />
     </bottom-sheet-item>
   }
-  @if (bottomSheetContent === 'search') {
+  @if (bottomSheetContent() === 'search') {
     <bottom-sheet-item bottomSheetHeight="large" [showHeader]="false">
-      <search-window-mobile body [focusOnInit]="true"></search-window-mobile>
+      <search-window-mobile body [focusOnInit]="true" />
     </bottom-sheet-item>
   }
   <bottom-sheet-item
-    [ngClass]="{'bottom-sheet-overlay--hidden': bottomSheetContent !== 'map-management'}"
+    [class.bottom-sheet-overlay--hidden]="bottomSheetContent() !== 'map-management'"
     [usePrimaryColor]="true"
     bottomSheetHeight="medium"
     [showHeader]="false"
   >
-    <map-management-mobile body></map-management-mobile>
+    <map-management-mobile body />
   </bottom-sheet-item>
 </div>

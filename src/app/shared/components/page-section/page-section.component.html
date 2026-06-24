@@ -1,40 +1,38 @@
 <section
   class="page-section"
-  [ngClass]="[
-    this.background ? 'page-section__' + this.background : '',
-    this.hideBottomPadding ? 'page-section--no-padding-bottom' : '',
-    this.screenMode === 'mobile' && !pageTitle ? 'page-section--mobile' : '',
-  ]"
-  [attr.aria-label]="sectionTitle"
+  [class.page-section__primary]="background() === 'primary'"
+  [class.page-section__accent]="background() === 'accent'"
+  [class.page-section--mobile]="screenMode() === 'mobile' && !pageTitle()"
+  [aria-label]="sectionTitle()"
 >
   <div class="page-section__content-container">
-    @if (sectionTitle) {
+    @if (sectionTitle()) {
       <span
         class="page-section__content-container__title-line"
-        [ngClass]="{'page-section__content-container__title-line--mobile': screenMode === 'mobile'}"
+        [class.page-section__content-container__title-line--mobile]="screenMode() === 'mobile'"
       ></span>
       <div
         class="page-section__content-container__title-wrapper"
-        [ngClass]="{'page-section__content-container__title-wrapper--mobile': screenMode === 'mobile'}"
+        [class.page-section__content-container__title-wrapper--mobile]="screenMode() === 'mobile'"
       >
         <h2 class="ktzh-h2-big">
-          {{ this.sectionTitle }}
+          {{ sectionTitle() }}
         </h2>
-        @if (this.titleLink) {
+        @if (titleLink(); as titleLink) {
           <a
-            [href]="this.titleLink.url"
-            [title]="this.titleLink.displayTitle"
+            [href]="titleLink.url"
+            [title]="titleLink.displayTitle"
             rel="noopener noreferrer"
             class="page-section__content-container__title-wrapper__link"
             target="_blank"
           >
-            {{ this.titleLink.displayTitle }}
+            {{ titleLink.displayTitle }}
           </a>
         }
       </div>
     }
     <div class="page-section__content-container__content">
-      <ng-content></ng-content>
+      <ng-content />
     </div>
   </div>
 </section>

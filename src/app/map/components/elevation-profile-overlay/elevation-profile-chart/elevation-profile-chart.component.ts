@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, inject} from '@angular/core';
+import {Component, OnInit, inject, input, signal} from '@angular/core';
 import {ElevationProfileData, ElevationProfileDataPoint} from '../../../../shared/interfaces/elevation-profile.interface';
 import {ElevationProfileChartJsDataConfiguration} from './types/chartjs.type';
 import {ElevationPlotConfigService} from './services/elevation-plot-config.service';
@@ -19,19 +19,19 @@ export class ElevationProfileChartComponent implements OnInit {
   private readonly elevationPlotConfigService = inject(ElevationPlotConfigService);
   private readonly store = inject(Store);
 
-  @Input() public elevationProfileData!: ElevationProfileData;
-  public readonly lineChartData: ElevationProfileChartJsDataConfiguration = {
+  public readonly elevationProfileData = input.required<ElevationProfileData>();
+  public readonly lineChartData = signal<ElevationProfileChartJsDataConfiguration>({
     datasets: [],
-  };
-  public readonly lineChartOptions: ElevationProfileChartJsOptions = this.elevationPlotConfigService.getElevationPlotChartOptions();
+  });
+  public readonly lineChartOptions = signal<ElevationProfileChartJsOptions>(this.elevationPlotConfigService.getElevationPlotChartOptions());
 
   constructor() {
     this.setupHoverEvent();
   }
 
   public ngOnInit() {
-    if (this.elevationProfileData.dataPoints.length > 1) {
-      this.updateData(this.elevationProfileData.dataPoints, this.elevationProfileData.statistics.linearDistance);
+    if (this.elevationProfileData().dataPoints.length > 1) {
+      this.updateData(this.elevationProfileData().dataPoints, this.elevationProfileData().statistics.linearDistance);
     }
   }
 
@@ -40,19 +40,19 @@ export class ElevationProfileChartComponent implements OnInit {
   }
 
   private updateData(elevationProfileData: ElevationProfileDataPoint[], maxDistance: number) {
-    this.lineChartData.datasets.push(
+    this.lineChartData().datasets.push(
       this.elevationPlotConfigService.createElevationProfileDataset(elevationProfileData, VERTIXAL_AXIS_LABEL),
     );
-    this.lineChartOptions.scales.x.max = maxDistance;
+    this.lineChartOptions().scales.x.max = maxDistance;
   }
 
   private drawElevationProfileLocation(datasetIndex: number, index: number) {
-    const location = this.lineChartData.datasets[datasetIndex].data[index].location;
+    const location = this.lineChartData().datasets[datasetIndex].data[index].location;
     this.store.dispatch(ElevationProfileActions.drawElevationProfileHoverLocation({location}));
   }
 
   private setupHoverEvent() {
-    this.lineChartOptions.onHover = (event, elements, _) => {
+    this.lineChartOptions().onHover = (_, elements) => {
       if (elements.length > 0) {
         this.drawElevationProfileLocation(elements[0].datasetIndex, elements[0].index);
       }

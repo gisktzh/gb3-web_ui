@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Subscription, tap} from 'rxjs';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton} from '@angular/material/button';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'fatal-error-page',
@@ -10,30 +10,12 @@ import {MatButton} from '@angular/material/button';
   styleUrls: ['./fatal-error-page.component.scss'],
   imports: [MatIcon, MatButton],
 })
-export class FatalErrorPageComponent implements OnInit, OnDestroy {
+export class FatalErrorPageComponent {
   private readonly route = inject(ActivatedRoute);
-
-  public errorMessage: string | null = null;
-
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    this.subscriptions.add(
-      this.route.queryParamMap
-        .pipe(
-          tap((params) => {
-            this.errorMessage = params.get('error');
-          }),
-        )
-        .subscribe(),
-    );
-  }
+  private readonly queryParamMap = toSignal(this.route.queryParamMap);
+  public readonly errorMessage = computed(() => this.queryParamMap()?.get('error'));
 
   public forceRefresh() {
     window.location.href = '/';
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
   }
 }

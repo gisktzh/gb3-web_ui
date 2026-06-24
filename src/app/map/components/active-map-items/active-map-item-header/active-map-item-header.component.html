@@ -1,54 +1,50 @@
 <div class="active-map-item-header">
   <button
     class="active-map-item-header__button"
-    (click)="activeMapItemExpansionPanel.toggle()"
-    [attr.data-test-id]="activeMapItemExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
+    (click)="activeMapItemExpansionPanel().toggle()"
+    [attr.data-test-id]="activeMapItemExpansionPanel().expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
     mat-icon-button
   >
-    <mat-icon [fontIcon]="activeMapItemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
+    <mat-icon [fontIcon]="activeMapItemExpansionPanel().expanded ? 'arrow_drop_down' : 'arrow_right'" />
   </button>
   <div class="active-map-item-header__image-container">
-    @if (!activeMapItem.isSingleLayer && activeMapItem.mapImageUrl) {
+    @if (!activeMapItem().isSingleLayer && activeMapItem().mapImageUrl) {
       <img
         class="active-map-item-header__image-container__image"
-        [ngClass]="{'active-map-item-header__image-container__image--inactive': !activeMapItem.visible}"
-        [alt]="activeMapItem.title"
-        [src]="activeMapItem.mapImageUrl"
+        [class.active-map-item-header__image-container__image--inactive]="!activeMapItem().visible"
+        [src]="activeMapItem().mapImageUrl"
+        [alt]="activeMapItem().title"
       />
     }
     <mat-checkbox
       class="active-map-item-header__image-container__checkbox"
-      [checked]="activeMapItem.visible"
-      (change)="toggleMapItemVisibility(activeMapItem)"
-    ></mat-checkbox>
+      [checked]="activeMapItem().visible"
+      (change)="toggleMapItemVisibility(activeMapItem())"
+    />
     <loading-and-process-bar
-      [loadingState]="activeMapItem.loadingState"
-      [viewProcessState]="activeMapItem.viewProcessState"
+      [loadingState]="activeMapItem().loadingState"
+      [viewProcessState]="activeMapItem().viewProcessState"
       class="active-map-item-header__image-container__progress-bar"
-    ></loading-and-process-bar>
+    />
   </div>
   <div class="active-map-item-header__title-container">
     <p
       class="active-map-item-header__title-container__title"
-      [ngClass]="{
-        'active-map-item-header__title-container__title--inactive': !activeMapItem.visible,
-        'active-map-item-header__title-container__title--inverted': activeMapItemExpansionPanel.expanded,
-      }"
-      matTooltip="{{ activeMapItem.title }}"
+      [class.active-map-item-header__title-container__title--inactive]="!activeMapItem().visible"
+      [class.active-map-item-header__title-container__title--inverted]="activeMapItemExpansionPanel().expanded"
+      [matTooltip]="activeMapItem().title"
     >
-      {{ activeMapItem.title }}
+      {{ activeMapItem().title }}
     </p>
     <div
       class="active-map-item-header__title-container__options"
-      [ngClass]="{
-        'active-map-item-header__title-container__options--inverted': activeMapItemExpansionPanel.expanded,
-        'active-map-item-header__title-container__options--mobile': screenMode === 'mobile',
-      }"
+      [class.active-map-item-header__title-container__options--inverted]="activeMapItemExpansionPanel().expanded"
+      [class.active-map-item-header__title-container__options--mobile]="screenMode() === 'mobile'"
     >
-      @if (activeMapItem.geometadataUuid) {
+      @if (activeMapItem().geometadataUuid; as geometadataUuid) {
         <a
           class="active-map-item-header__button"
-          [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, activeMapItem.geometadataUuid]"
+          [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, geometadataUuid]"
           mat-icon-button
           data-test-id="info"
         >
@@ -56,27 +52,28 @@
         </a>
         <mat-divider
           class="active-map-item-header__divider"
-          [ngClass]="{'active-map-item-header__divider--inverted': activeMapItemExpansionPanel.expanded}"
+          [class.active-map-item-header__divider--inverted]="activeMapItemExpansionPanel().expanded"
           [vertical]="true"
-        ></mat-divider>
+        />
       }
-      <button class="active-map-item-header__button" (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
+      <button class="active-map-item-header__button" (click)="removeActiveMapItem(activeMapItem())" mat-icon-button data-test-id="delete">
         <mat-icon>delete</mat-icon>
       </button>
       <mat-divider
         class="active-map-item-header__divider"
-        [ngClass]="{'active-map-item-header__divider--inverted': activeMapItemExpansionPanel.expanded}"
+        [class.active-map-item-header__divider--inverted]="activeMapItemExpansionPanel().expanded"
         [vertical]="true"
-      ></mat-divider>
+      />
     </div>
   </div>
   <div class="active-map-item-header__drag-handle">
-    <ng-content select="[activeMapItemDragHandle]"></ng-content>
+    <ng-content select="[activeMapItemDragHandle]" />
     <mat-icon
       class="active-map-item-header__drag-handle__icon"
-      [ngClass]="{'active-map-item-header__drag-handle__icon--disabled': isDragAndDropDisabled}"
+      [class.active-map-item-header__drag-handle__icon--disabled]="isDragAndDropDisabled()"
       cdkDragHandle
-      >drag_indicator</mat-icon
     >
+      drag_indicator
+    </mat-icon>
   </div>
 </div>
