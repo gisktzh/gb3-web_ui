@@ -1,7 +1,7 @@
 import {ReportOrientation, ReportType} from './print.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from './print-rules.interface';
 
-type ToArrays<T> = {
+export type ToArrays<T> = {
   [K in keyof T]: Array<T[K]>;
 };
 

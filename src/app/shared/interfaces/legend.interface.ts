@@ -23,7 +23,7 @@ export interface LegendResponse {
   legend: Legend;
 }
 
-interface LegendLayer extends Omit<Layer, 'geolion' | 'attribution'>, HasMetaDataLink {}
+export interface LegendLayer extends Omit<Layer, 'geolion' | 'attribution'>, HasMetaDataLink {}
 
 export interface LegendDisplay extends HasMetaDataLink, IsSingleLayer {
   id: string;

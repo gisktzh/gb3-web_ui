@@ -1,4 +1,4 @@
-interface FaqItem {
+export interface FaqItem {
   uuid: string;
   question: string;
   answer: string;

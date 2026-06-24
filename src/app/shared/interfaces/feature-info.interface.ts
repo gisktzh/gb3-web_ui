@@ -12,17 +12,17 @@ interface AbstractFeatureInfoResultFeatureFieldInterface {
   type: FeatureInfoResultFeatureFieldType;
 }
 
-interface FeatureInfoResultFeatureImageField extends AbstractFeatureInfoResultFeatureFieldInterface {
+export interface FeatureInfoResultFeatureImageField extends AbstractFeatureInfoResultFeatureFieldInterface {
   value: Image | null;
   type: 'image';
 }
 
-interface FeatureInfoResultFeatureLinkField extends AbstractFeatureInfoResultFeatureFieldInterface {
+export interface FeatureInfoResultFeatureLinkField extends AbstractFeatureInfoResultFeatureFieldInterface {
   value: LinkObject | null;
   type: 'link';
 }
 
-interface FeatureInfoResultFeatureTextField extends AbstractFeatureInfoResultFeatureFieldInterface {
+export interface FeatureInfoResultFeatureTextField extends AbstractFeatureInfoResultFeatureFieldInterface {
   value: string | null;
   type: 'text';
 }

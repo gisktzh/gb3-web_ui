@@ -1,6 +1,6 @@
 import {OverviewSearchResultDisplayItemFlags, OverviewSearchResultType} from '../types/overview-search-result.type';
 
-interface OverviewSearchResultDisplayItemField {
+export interface OverviewSearchResultDisplayItemField {
   title: string;
   content: string;
   /**
