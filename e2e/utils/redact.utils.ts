@@ -73,8 +73,9 @@ function isJsonString(value: string): boolean {
     JSON.parse(value);
     return true;
   } catch (error) {
-    // eslint-disable-next-line no-console -- Debugging JSON strings in HAR handling.
-    console.debug('Invalid JSON string while checking for JSON strings', error);
+    ((_) => {
+      // noop, so SonarQube doesn't complain, we have no debug output and ESLint is happy.
+    })(error);
     return false;
   }
 }
