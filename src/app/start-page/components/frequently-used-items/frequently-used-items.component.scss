@@ -2,56 +2,89 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/collapsing-flexbox-list.mixin' as collapsing-flexbox-list;
+
+/// The border width around the link elements
+$border-width: 8px;
+
+.link-grid-list {
+  width: 100%;
+
+  .link-grid-list__content {
+    @include collapsing-flexbox-list.list($border-width);
+  }
+}
 
 .frequently-used-items {
   width: 100%;
+  left: $border-width;
+  position: relative;
 
   .frequently-used-items__item {
-    display: flex;
-    flex-direction: row;
-    padding: 24px 0;
+    @include collapsing-flexbox-list.list__item($border-width, 100%, 1, auto);
+    display: block;
+    text-decoration: none;
 
-    &--mobile {
-      flex-direction: column;
-      padding: 12px 0 0 0;
-    }
-
-    .frequently-used-items__item__image-container {
-      width: 268px;
-      max-height: 151px;
-      min-width: 268px;
-
-      &--mobile {
-        width: 100%;
-        max-height: unset;
-        max-width: 600px;
-        min-width: unset;
-      }
-
-      .frequently-used-items__item__image-container__image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-      }
-    }
-
-    .frequently-used-items__item__text-container {
+    .frequently-used-items__item__content {
+      background-color: ktzh-variables.$zh-white;
+      position: relative;
       display: flex;
-      flex-direction: column;
-      padding-left: 24px;
-      width: 100%;
+      flex-direction: row;
 
       &--mobile {
-        padding-left: 0;
+        flex-direction: column;
       }
 
-      .frequently-used-items__item__text-container__text {
-        @include mixins.multiline-ellipsis(3);
+      .frequently-used-items__item__image-container {
+        width: 268px;
+        max-height: 151px;
+        min-width: 268px;
+
+        &--mobile {
+          width: 100%;
+          max-height: unset;
+          min-width: unset;
+        }
+
+        .frequently-used-items__item__image-container__image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+        }
       }
 
-      .frequently-used-items__item__text-container__link {
-        @include mixins.link-decoration;
+      .frequently-used-items__item__text-container {
+        display: flex;
+        flex-direction: column;
+        padding-top: 24px;
+        padding-left: 24px;
+
+        &--mobile {
+          padding-bottom: 24px;
+          padding-right: 24px;
+        }
+
+        .frequently-used-items__item__text-container__title {
+          color: ktzh-variables.$zh-darkblue;
+        }
+
+        .frequently-used-items__item__text-container__text {
+          @include mixins.multiline-ellipsis(3);
+          color: ktzh-variables.$zh-black60;
+        }
+      }
+    }
+
+    &:hover,
+    &:active,
+    &:focus-within,
+    &:focus {
+      z-index: 1;
+      .frequently-used-items__item__content
+        .frequently-used-items__item__text-container
+        .frequently-used-items__item__text-container__title {
+        color: ktzh-variables.$zh-black100;
       }
     }
   }

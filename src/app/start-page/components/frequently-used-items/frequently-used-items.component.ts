@@ -7,10 +7,10 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {GRAV_CMS_SERVICE} from '../../../app.tokens';
 import {ContentLoadingStateComponent} from '../content-loading-state/content-loading-state.component';
 import {GenericUnorderedListComponent} from '../../../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
-import {MatDivider} from '@angular/material/divider';
 import {HasLoadingStateSignal} from 'src/app/shared/interfaces/has-loading-state-signal.interface';
 import {catchError, map} from 'rxjs';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {NgTemplateOutlet} from '@angular/common';
 
 const NUMBER_OF_FREQUENTLY_USED_ITEMS = 3;
 
@@ -18,7 +18,7 @@ const NUMBER_OF_FREQUENTLY_USED_ITEMS = 3;
   selector: 'frequently-used-items',
   templateUrl: './frequently-used-items.component.html',
   styleUrls: ['./frequently-used-items.component.scss'],
-  imports: [ContentLoadingStateComponent, GenericUnorderedListComponent, MatDivider],
+  imports: [ContentLoadingStateComponent, GenericUnorderedListComponent, NgTemplateOutlet],
 })
 export class FrequentlyUsedItemsComponent implements HasLoadingStateSignal {
   private readonly gravCmsService = inject<GravCmsService>(GRAV_CMS_SERVICE);
