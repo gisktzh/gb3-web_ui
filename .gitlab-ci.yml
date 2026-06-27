@@ -47,7 +47,7 @@ build:uat:
 #     TARGET_ENV: production
 
 .deploy:
-  image: alpine:3.22
+  image: alpine:3.24
   stage: deploy
   tags: [docker]
   before_script:
