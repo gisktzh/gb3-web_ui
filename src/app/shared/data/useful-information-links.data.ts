@@ -13,7 +13,7 @@ export const usefulInformationLinks: AbstractLinksGroup[] = [
         title: 'API Dokumentation URL Parameter',
       },
       {
-        relativeUrl: '/api',
+        relativeUrl: '/api-docs/index.html',
         title: 'API Dokumentation Geodatenkatalog',
         baseUrlType: 'geolion',
       },
