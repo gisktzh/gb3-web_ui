@@ -1,12 +1,10 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, inject} from '@angular/core';
+import {Component, effect, ElementRef, inject, input, output, signal, untracked, viewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {debounceTime, distinctUntilChanged, fromEvent, map, Subject, Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
-import {NgClass} from '@angular/common';
 import {MatIcon} from '@angular/material/icon';
 import {SharedModule} from '../../shared.module';
+import {FormsModule} from '@angular/forms';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
@@ -14,53 +12,46 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
   selector: 'search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
-  imports: [NgClass, MatIcon, SharedModule],
+  imports: [MatIcon, SharedModule, FormsModule],
 })
-export class SearchInputComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SearchInputComponent {
   private readonly store = inject(Store);
 
-  @Input() public placeholderText!: string;
-  @Input() public showFilterButton: boolean = true;
-  @Input() public alwaysEnableClearButton: boolean = false;
-  @Input() public clearButtonLabel?: string;
-  @Input() public mode: SearchMode = 'normal';
-  @Input() public focusOnInit: boolean = false;
-  @Input() public disabled: boolean = false;
-  @Input() public isAnyFilterActive: boolean = false;
+  public readonly placeholderText = input.required<string>();
+  public readonly showFilterButton = input(true);
+  public readonly alwaysEnableClearButton = input(false);
+  public readonly clearButtonLabel = input<string>();
+  public readonly mode = input<SearchMode>('normal');
+  public readonly focusOnInit = input(false);
+  public readonly disabled = input(false);
+  public readonly isAnyFilterActive = input(false);
+  public readonly searchTerm = signal('');
+  private readonly lastEmittedTerm = signal('');
+  private readonly shouldEmitNext = signal(true);
 
-  @Output() public readonly focusEvent = new EventEmitter<void>();
-  @Output() public readonly changeSearchTermEvent = new EventEmitter<string>();
-  @Output() public readonly clearSearchTermEvent = new EventEmitter<void>();
-  @Output() public readonly openFilterEvent = new EventEmitter<void>();
+  public readonly focusEvent = output();
+  public readonly changeSearchTermEvent = output<string>();
+  public readonly clearSearchTermEvent = output();
+  public readonly openFilterEvent = output();
 
-  public screenMode: ScreenMode = 'regular';
+  public readonly inputRef = viewChild.required<ElementRef>('searchInput');
 
-  @ViewChild('searchInput') public readonly inputRef!: ElementRef<HTMLInputElement>;
-  private readonly searchTerm = new Subject<{term: string; emitChangeEvent: boolean}>();
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly subscriptions: Subscription = new Subscription();
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
-  public ngOnInit() {
-    this.subscriptions.add(
-      this.screenMode$
-        .pipe(
-          tap((screenMode) => {
-            this.screenMode = screenMode;
-          }),
-        )
-        .subscribe(),
-    );
-  }
+  constructor() {
+    effect((onCleanup) => {
+      const term = this.searchTerm();
 
-  public ngAfterViewInit() {
-    this.initSubscriptions();
-    if (this.focusOnInit) {
-      this.inputRef.nativeElement.focus();
-    }
-  }
+      const timer = setTimeout(() => {
+        if (term !== untracked(() => this.lastEmittedTerm()) && untracked(() => this.shouldEmitNext())) {
+          this.lastEmittedTerm.set(term);
+          this.changeSearchTermEvent.emit(term);
+        }
+        this.shouldEmitNext.set(true);
+      }, SEARCH_TERM_INPUT_DEBOUNCE_IN_MS);
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+      onCleanup(() => clearTimeout(timer));
+    });
   }
 
   public clearInput() {
@@ -72,40 +63,12 @@ export class SearchInputComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openFilterEvent.emit();
   }
 
-  public setTerm(term: string, emitChangeEvent: boolean = true) {
-    this.searchTerm.next({term, emitChangeEvent});
+  public setTerm(term: string, shouldEmit: boolean) {
+    this.shouldEmitNext.set(shouldEmit);
+    this.searchTerm.set(term);
   }
 
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.searchTerm
-        .pipe(
-          map((searchTerm) => {
-            this.inputRef.nativeElement.value = searchTerm.term;
-            return {...searchTerm, term: searchTerm.term};
-          }),
-          distinctUntilChanged((prev, curr) => {
-            return prev.term === curr.term;
-          }),
-          tap((searchTerm) => {
-            if (searchTerm.emitChangeEvent) {
-              this.changeSearchTermEvent.emit(searchTerm.term);
-            }
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      fromEvent<KeyboardEvent>(this.inputRef.nativeElement, 'keyup')
-        .pipe(
-          debounceTime(SEARCH_TERM_INPUT_DEBOUNCE_IN_MS),
-          tap((event) => {
-            const term = (<HTMLInputElement>event.target).value;
-            this.setTerm(term);
-          }),
-        )
-        .subscribe(),
-    );
+  public focus() {
+    this.inputRef().nativeElement.focus();
   }
 }

@@ -1,27 +1,16 @@
-@if (style) {
-  @switch (style.type) {
-    @case ('point') {
-      <point-edit [pointStyle]="style" (updateStyleEvent)="updateStyle($event)"></point-edit>
-    }
-    @case ('line') {
-      <line-edit (updateStyleEvent)="updateStyle($event)" [lineStyle]="style"></line-edit>
-    }
-    @case ('polygon') {
-      <polygon-edit [polygonStyle]="style" (updateStyleEvent)="updateStyle($event)"></polygon-edit>
-    }
-    @case ('text') {
-      <text-edit
-        [textStyle]="style"
-        [labelText]="selectedFeature?.labelText!"
-        (updateStyleEvent)="updateStyle($event.style, $event.labelText)"
-      ></text-edit>
-    }
-    @case ('symbol') {
-      <symbol-edit
-        [style]="style"
-        (updateStyleEvent)="updateStyle($event.style, undefined, $event.drawingSymbolDefinition)"
-        [selectedSymbol]="selectedFeature?.mapDrawingSymbol?.drawingSymbolDefinition"
-      ></symbol-edit>
-    }
+@if (style()) {
+  @if (isPointStyle(); as style) {
+    <point-edit [pointStyle]="style" (pointStyleChange)="updateStyle($event)" />
+  } @else if (isLineStyle(); as style) {
+    <line-edit [lineStyle]="style" (lineStyleChange)="updateStyle($event)" />
+  } @else if (isPolygonStyle(); as style) {
+    <polygon-edit [polygonStyle]="style" (polygonStyleChange)="updateStyle($event)" />
+  } @else if (isTextStyle(); as style) {
+    <text-edit [textStyle]="{style, label: selectedFeature()?.labelText!}" (textStyleChange)="updateStyle($event.style, $event.label)" />
+  } @else if (isSymbolStyle(); as style) {
+    <symbol-edit
+      [symbolStyle]="{style, selectedSymbol: selectedFeature()?.mapDrawingSymbol?.drawingSymbolDefinition!}"
+      (symbolStyleChange)="updateStyle($event.style, undefined, $event.selectedSymbol)"
+    />
   }
 }

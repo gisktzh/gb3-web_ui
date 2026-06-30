@@ -41,7 +41,7 @@ describe('ExternalMapItemEffects', () => {
     effects = TestBed.inject(ExternalMapItemEffects);
     store = TestBed.inject(MockStore);
     mapLoaderService = TestBed.inject(MAP_LOADER_SERVICE);
-    spyOn(UuidUtils, 'createUuid').and.returnValue('not-a-real-uuid');
+    vi.spyOn(UuidUtils, 'createUuid').mockReturnValue('not-a-real-uuid');
   });
 
   afterEach(() => {
@@ -49,41 +49,41 @@ describe('ExternalMapItemEffects', () => {
   });
 
   describe('loadExternalMapItem$', () => {
-    it('dispatches ExternalMapItemActions.setItem() with the service response on success', (done: DoneFn) => {
+    it('dispatches ExternalMapItemActions.setItem() with the service response on success', () => {
       const url = 'test-url';
       const serviceType: MapServiceType = 'wms';
       const externalMapItem = createExternalWmsMapItemMock(url, 'test', []);
-      const mapLoaderServiceSpy = spyOn(mapLoaderService, 'loadExternalService').and.returnValue(of(externalMapItem));
+      const mapLoaderServiceSpy = vi.spyOn(mapLoaderService, 'loadExternalService').mockReturnValue(of(externalMapItem));
 
       const expectedAction = ExternalMapItemActions.setItem({externalMapItem});
 
       actions$ = of(ExternalMapItemActions.loadItem({url, serviceType}));
       effects.loadExternalMapItem$.subscribe((action) => {
-        expect(mapLoaderServiceSpy).toHaveBeenCalledOnceWith(url, serviceType);
+        expect(mapLoaderServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapLoaderServiceSpy).toHaveBeenCalledWith(url, serviceType);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches ExternalMapItemActions.setItemError() with the error on failure', (done: DoneFn) => {
+    it('dispatches ExternalMapItemActions.setItemError() with the error on failure', () => {
       const url = 'test-url';
       const serviceType: MapServiceType = 'wms';
       const error = new Error('oh no! anyway...');
-      const mapLoaderServiceSpy = spyOn(mapLoaderService, 'loadExternalService').and.returnValue(throwError(() => error));
+      const mapLoaderServiceSpy = vi.spyOn(mapLoaderService, 'loadExternalService').mockReturnValue(throwError(() => error));
 
       const expectedAction = ExternalMapItemActions.setItemError({error});
 
       actions$ = of(ExternalMapItemActions.loadItem({url, serviceType}));
       effects.loadExternalMapItem$.subscribe((action) => {
-        expect(mapLoaderServiceSpy).toHaveBeenCalledOnceWith(url, serviceType);
+        expect(mapLoaderServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapLoaderServiceSpy).toHaveBeenCalledWith(url, serviceType);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('setLayersAndImageFormatFromExternalMapItem$', () => {
-    it('dispatches MapImportActions.setLayersAndImageFormat() after setting an external WMS map item', (done: DoneFn) => {
+    it('dispatches MapImportActions.setLayersAndImageFormat() after setting an external WMS map item', () => {
       const layers: ExternalWmsLayer[] = [
         {type: 'wms', id: 1, name: 'wms-layer-name-one', title: 'wms-layer-title-one', visible: true},
         {type: 'wms', id: 2, name: 'wms-layer-name-two', title: 'wms-layer-title-two', visible: false},
@@ -99,11 +99,10 @@ describe('ExternalMapItemEffects', () => {
       actions$ = of(ExternalMapItemActions.setItem({externalMapItem}));
       effects.setLayersAndImageFormatFromExternalMapItem$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches MapImportActions.setLayersAndImageFormat() after setting an external KML map item', (done: DoneFn) => {
+    it('dispatches MapImportActions.setLayersAndImageFormat() after setting an external KML map item', () => {
       const layers: ExternalKmlLayer[] = [
         {type: 'kml', id: 1, title: 'kml-layer-title-one', visible: true},
         {type: 'kml', id: 2, title: 'kml-layer-title-two', visible: false},
@@ -117,13 +116,12 @@ describe('ExternalMapItemEffects', () => {
       actions$ = of(ExternalMapItemActions.setItem({externalMapItem}));
       effects.setLayersAndImageFormatFromExternalMapItem$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('throwExternalMapItemError$', () => {
-    it('throws a ExternalServiceCouldNotBeLoaded error after setting an item error', (done: DoneFn) => {
+    it('throws a ExternalServiceCouldNotBeLoaded error after setting an item error', () => {
       const originalError = new Error('oh no! anyway...');
 
       const expectedError = new ExternalServiceCouldNotBeLoaded(originalError);
@@ -133,7 +131,6 @@ describe('ExternalMapItemEffects', () => {
         .pipe(
           catchError((error: unknown) => {
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )

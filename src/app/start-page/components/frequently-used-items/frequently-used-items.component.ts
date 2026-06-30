@@ -1,19 +1,16 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
-import {FrequentlyUsedItem} from '../../../shared/interfaces/frequently-used-item.interface';
-import {Subscription, tap} from 'rxjs';
-import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
-import {catchError} from 'rxjs';
 import {FrequentlyUsedItemsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 import {Store} from '@ngrx/store';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {GRAV_CMS_SERVICE} from '../../../app.tokens';
 import {ContentLoadingStateComponent} from '../content-loading-state/content-loading-state.component';
 import {GenericUnorderedListComponent} from '../../../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
-import {NgClass} from '@angular/common';
-import {MatDivider} from '@angular/material/divider';
+import {HasLoadingStateSignal} from 'src/app/shared/interfaces/has-loading-state-signal.interface';
+import {catchError, map} from 'rxjs';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {NgTemplateOutlet} from '@angular/common';
 
 const NUMBER_OF_FREQUENTLY_USED_ITEMS = 3;
 
@@ -21,43 +18,26 @@ const NUMBER_OF_FREQUENTLY_USED_ITEMS = 3;
   selector: 'frequently-used-items',
   templateUrl: './frequently-used-items.component.html',
   styleUrls: ['./frequently-used-items.component.scss'],
-  imports: [ContentLoadingStateComponent, GenericUnorderedListComponent, NgClass, MatDivider],
+  imports: [ContentLoadingStateComponent, GenericUnorderedListComponent, NgTemplateOutlet],
 })
-export class FrequentlyUsedItemsComponent implements OnInit, OnDestroy, HasLoadingState {
+export class FrequentlyUsedItemsComponent implements HasLoadingStateSignal {
   private readonly gravCmsService = inject<GravCmsService>(GRAV_CMS_SERVICE);
   private readonly store = inject(Store);
-
-  public frequentlyUsedItems: FrequentlyUsedItem[] = [];
-  public loadingState: LoadingState = 'loading';
-  public screenMode: ScreenMode = 'regular';
-
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit(): void {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(
-      this.gravCmsService
-        .loadFrequentlyUsedData()
-        .pipe(
-          tap((frequentlyUsedItems) => {
-            this.frequentlyUsedItems = frequentlyUsedItems.slice(0, NUMBER_OF_FREQUENTLY_USED_ITEMS);
-            this.loadingState = 'loaded';
-          }),
-          catchError((err: unknown) => {
-            this.loadingState = 'error';
-            throw new FrequentlyUsedItemsCouldNotBeLoaded(err);
-          }),
-        )
-        .subscribe(),
-    );
-  }
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly loadingState = signal<LoadingState>('loading');
+  public readonly frequentlyUsedItems = toSignal(
+    this.gravCmsService.loadFrequentlyUsedData().pipe(
+      map((items) => {
+        this.loadingState.set('loaded');
+        return items.slice(0, NUMBER_OF_FREQUENTLY_USED_ITEMS);
+      }),
+      catchError((err: unknown) => {
+        this.loadingState.set('error');
+        throw new FrequentlyUsedItemsCouldNotBeLoaded(err);
+      }),
+    ),
+    {
+      initialValue: [],
+    },
+  );
 }

@@ -46,7 +46,7 @@ describe('DataCatalogueEffects', () => {
   });
 
   describe('setError$', () => {
-    it('raises MetadataOverviewCouldNotBeLoaded exception with the passed error', (done: DoneFn) => {
+    it('raises MetadataOverviewCouldNotBeLoaded exception with the passed error', () => {
       const mockError = new Error('ErrorWrap - delicious and only 5$');
       actions$ = of(DataCatalogueActions.setError({error: mockError}));
 
@@ -54,61 +54,57 @@ describe('DataCatalogueEffects', () => {
         error: (err: unknown) => {
           expect(err).toBeInstanceOf(MetadataOverviewCouldNotBeLoaded);
           expect((err as MetadataOverviewCouldNotBeLoaded).originalError).toEqual(mockError);
-          done();
         },
         complete: () => {
-          fail('Did not raise an exception.');
+          throw new Error('Did not raise an exception.');
         },
       });
     });
   });
 
   describe('requestDataCatalogueItems$', () => {
-    it('dispatches DataCatalogueActions.setCatalogue() with the service response on success', (done: DoneFn) => {
+    it('dispatches DataCatalogueActions.setCatalogue() with the service response on success', () => {
       const expected = [new MapOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt')];
-      spyOn(gb3MetadataService, 'loadFullList').and.returnValue(of(expected));
+      vi.spyOn(gb3MetadataService, 'loadFullList').mockReturnValue(of(expected));
       actions$ = of(DataCatalogueActions.loadCatalogue());
 
       effects.requestDataCatalogueItems$.subscribe((action) => {
         expect(action).toEqual(DataCatalogueActions.setCatalogue({items: expected}));
-        done();
       });
     });
 
-    it('dispatches DataCatalogueActions.setError() if the data cannot be loaded', (done: DoneFn) => {
+    it('dispatches DataCatalogueActions.setError() if the data cannot be loaded', () => {
       const mockError = new Error('Failed loading data');
-      spyOn(gb3MetadataService, 'loadFullList').and.returnValue(throwError(() => mockError));
+      vi.spyOn(gb3MetadataService, 'loadFullList').mockReturnValue(throwError(() => mockError));
       actions$ = of(DataCatalogueActions.loadCatalogue());
 
       effects.requestDataCatalogueItems$.subscribe((action) => {
         expect(action).toEqual(DataCatalogueActions.setError({error: mockError}));
-        done();
       });
     });
 
-    it('does not dispatch a request if loadingState is already loaded', (done: DoneFn) => {
+    it('does not dispatch a request if loadingState is already loaded', () => {
       store.overrideSelector(selectLoadingState, 'loaded');
-      spyOn(gb3MetadataService, 'loadFullList');
+      vi.spyOn(gb3MetadataService, 'loadFullList');
       actions$ = of(DataCatalogueActions.loadCatalogue());
 
       effects.requestDataCatalogueItems$.subscribe({
         complete: () => {
           expect(gb3MetadataService.loadFullList).not.toHaveBeenCalled();
-          done();
         },
       });
     });
   });
 
   describe('initializeDataCatalogueFilters$', () => {
-    it('extracts the configured filter values', (done: DoneFn) => {
+    it('extracts the configured filter values', () => {
       const mockItems = [new DatasetOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt', ['csv', 'Shapefile'], true)];
       const mockConfig: DataCatalogueFilterConfiguration[] = [
         {key: 'description', label: 'Description'},
         {key: 'responsibleDepartment', label: 'Verantwortlich'},
         {key: 'outputFormat', label: 'Dateiformate'},
       ];
-      spyOnProperty(configService, 'filterConfigs', 'get').and.returnValue({
+      vi.spyOn(configService, 'filterConfigs', 'get').mockReturnValue({
         dataCatalogue: mockConfig,
         dataDownload: [],
       });
@@ -130,14 +126,13 @@ describe('DataCatalogueEffects', () => {
 
       effects.initializeDataCatalogueFilters$.subscribe((action) => {
         expect(action).toEqual(DataCatalogueActions.setFilters({dataCatalogueFilters: expected}));
-        done();
       });
     });
 
-    it('does not add a non-existing property if no values are present', (done: DoneFn) => {
+    it('does not add a non-existing property if no values are present', () => {
       const mockItems = [new MapOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt')];
       const mockConfig: DataCatalogueFilterConfiguration[] = [{key: 'outputFormat', label: 'Exists only on DatasetDetails :)'}];
-      spyOnProperty(configService, 'filterConfigs', 'get').and.returnValue({
+      vi.spyOn(configService, 'filterConfigs', 'get').mockReturnValue({
         dataCatalogue: mockConfig,
         dataDownload: [],
       });
@@ -148,11 +143,10 @@ describe('DataCatalogueEffects', () => {
 
       effects.initializeDataCatalogueFilters$.subscribe((action) => {
         expect(action).toEqual(DataCatalogueActions.setFilters({dataCatalogueFilters: expected}));
-        done();
       });
     });
 
-    it('extracts unique values once', (done: DoneFn) => {
+    it('extracts unique values once', () => {
       const mockItems = [
         new MapOverviewMetadataItem('1337', 'Test A', 'Testbeschreibung', 'Testamt'),
         new MapOverviewMetadataItem('1337', 'Test B', 'Testbeschreibung', 'Testamt'),
@@ -162,7 +156,7 @@ describe('DataCatalogueEffects', () => {
         {key: 'name', label: 'Name'},
         {key: 'responsibleDepartment', label: 'Amt'},
       ];
-      spyOnProperty(configService, 'filterConfigs', 'get').and.returnValue({
+      vi.spyOn(configService, 'filterConfigs', 'get').mockReturnValue({
         dataCatalogue: mockConfig,
         dataDownload: [],
       });
@@ -190,7 +184,6 @@ describe('DataCatalogueEffects', () => {
 
       effects.initializeDataCatalogueFilters$.subscribe((action) => {
         expect(action).toEqual(DataCatalogueActions.setFilters({dataCatalogueFilters: expected}));
-        done();
       });
     });
   });

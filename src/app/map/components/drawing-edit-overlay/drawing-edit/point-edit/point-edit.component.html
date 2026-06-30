@@ -1,32 +1,12 @@
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Umrandung</h3>
-<slider-edit
-  (updateSliderEvent)="updateValue('strokeWidth', $event)"
-  [sliderValue]="pointStyle.strokeWidth"
-  [min]="1"
-  [max]="12"
-  [step]="1"
-  title="Strichstärke"
->
-</slider-edit>
-<slider-edit (updateSliderEvent)="updateValue('strokeOpacity', $event)" [sliderValue]="pointStyle.strokeOpacity" title="Deckkraft">
-</slider-edit>
-<color-picker-edit (updateColorEvent)="updateValue('strokeColor', $event)" [fillColor]="pointStyle.strokeColor" title="Strichfarbe">
-</color-picker-edit>
-<mat-divider class="divider"></mat-divider>
+<slider-edit [formField]="pointStyleForm.strokeWidth" [minValue]="1" [maxValue]="12" [step]="1" title="Strichstärke" />
+<slider-edit [formField]="pointStyleForm.strokeOpacity" title="Deckkraft" />
+<color-picker-edit [formField]="pointStyleForm.strokeColor" title="Strichfarbe" />
+<mat-divider class="divider" />
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Füllung</h3>
-<slider-edit (updateSliderEvent)="updateValue('fillOpacity', $event)" [sliderValue]="pointStyle.fillOpacity" title="Deckkraft">
-</slider-edit>
-<color-picker-edit (updateColorEvent)="updateValue('fillColor', $event)" [fillColor]="pointStyle.fillColor" title="Füllfarbe">
-</color-picker-edit>
-<mat-divider class="divider"></mat-divider>
+<slider-edit [formField]="pointStyleForm.fillOpacity" title="Deckkraft" />
+<color-picker-edit [formField]="pointStyleForm.fillColor" title="Füllfarbe" />
+<mat-divider class="divider" />
 
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Grösse</h3>
-<slider-edit
-  (updateSliderEvent)="updateValue('pointRadius', $event)"
-  [sliderValue]="pointStyle.pointRadius"
-  [min]="1"
-  [max]="50"
-  [step]="1"
-  title="Radius"
->
-</slider-edit>
+<slider-edit [formField]="pointStyleForm.pointRadius" [minValue]="1" [maxValue]="50" [step]="1" title="Radius" />

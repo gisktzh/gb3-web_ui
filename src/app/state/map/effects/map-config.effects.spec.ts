@@ -24,13 +24,11 @@ describe('MapConfigEffects', () => {
   let store: MockStore;
   let effects: MapConfigEffects;
   let mapService: MapService;
-  let initialMapExtentServiceMock: jasmine.SpyObj<InitialMapExtentService>;
+  let initialMapExtentServiceMock: InitialMapExtentService;
   let mapDrawingService: MapDrawingService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    initialMapExtentServiceMock = jasmine.createSpyObj<InitialMapExtentService>(['calculateInitialExtent']);
-
     TestBed.configureTestingModule({
       imports: [],
       providers: [
@@ -38,12 +36,13 @@ describe('MapConfigEffects', () => {
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
-        {provide: InitialMapExtentService, useValue: initialMapExtentServiceMock},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(MapConfigEffects);
+    initialMapExtentServiceMock = TestBed.inject(InitialMapExtentService);
+    vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockImplementation(vi.fn());
     mapService = TestBed.inject(MAP_SERVICE);
     store = TestBed.inject(MockStore);
     mapDrawingService = TestBed.inject(MapDrawingService);
@@ -54,94 +53,93 @@ describe('MapConfigEffects', () => {
   });
 
   describe('setScaleOnMap$', () => {
-    it('sets the scale using the map service, no further action dispatch', (done: DoneFn) => {
+    it('sets the scale using the map service, no further action dispatch', () => {
       const expectedScale = 1337;
-      const mapServiceSpy = spyOn(mapService, 'setScale').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'setScale');
 
       const expectedAction = MapConfigActions.setScale({scale: expectedScale});
       actions$ = of(expectedAction);
       effects.setScaleOnMap$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedScale);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedScale);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('resetExtentOnMap$', () => {
-    it('resets the extent using the map service, no further action dispatch', (done: DoneFn) => {
-      const mapServiceSpy = spyOn(mapService, 'resetExtent').and.callThrough();
+    it('resets the extent using the map service, no further action dispatch', () => {
+      const mapServiceSpy = vi.spyOn(mapService, 'resetExtent');
 
       const expectedAction = MapConfigActions.resetExtent();
       actions$ = of(expectedAction);
       effects.resetExtentOnMap$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith();
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith();
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('changeZoomOnMap$', () => {
-    it('changes zoom using the map service, no further action dispatch', (done: DoneFn) => {
+    it('changes zoom using the map service, no further action dispatch', () => {
       const expectedZoomType: ZoomType = 'zoomIn';
-      const mapServiceSpy = spyOn(mapService, 'handleZoom').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'handleZoom');
 
       const expectedAction = MapConfigActions.changeZoom({zoomType: expectedZoomType});
       actions$ = of(expectedAction);
       effects.changeZoomOnMap$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedZoomType);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedZoomType);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('setCenterOnMapAndDrawHighlight$', () => {
-    it('sets the map center using the map service and draws point highlight, no further action dispatch', (done: DoneFn) => {
+    it('sets the map center using the map service and draws point highlight, no further action dispatch', () => {
       const expectedCenter: PointWithSrs = {srs: 2056, type: 'Point', coordinates: [123, 456]};
-      const mapServiceSpy = spyOn(mapService, 'setMapCenter').and.callThrough();
-      const mapDrawingServiceSpy = spyOn(mapDrawingService, 'drawSearchResultHighlight').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'setMapCenter');
+      const mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'drawSearchResultHighlight');
 
       const expectedAction = MapConfigActions.setMapCenterAndDrawHighlight({center: expectedCenter});
       actions$ = of(expectedAction);
       effects.setMapCenterAndDrawHighlight$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedCenter);
-        expect(mapDrawingServiceSpy).toHaveBeenCalledOnceWith(expectedCenter);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedCenter);
+        expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapDrawingServiceSpy).toHaveBeenCalledWith(expectedCenter);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('updateMapPageQueryParams$', () => {
-    it('dispatches UrlActions.setMapPageParams() if either the center, scale, extent or basemap is changed', (done: DoneFn) => {
+    it('dispatches UrlActions.setMapPageParams() if either the center, scale, extent or basemap is changed', () => {
       const expectedParams = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
       store.overrideSelector(selectMapConfigParams, expectedParams);
 
       actions$ = of(MapConfigActions.setMapExtent({x: expectedParams.x, y: expectedParams.y, scale: expectedParams.scale}));
       effects.updateMapPageQueryParams$.subscribe((action) => {
         expect(action).toEqual(UrlActions.setMapPageParams({params: expectedParams}));
-        done();
       });
     });
   });
 
   describe('updateMapRotation$', () => {
-    it('dispatches MapConfigActions.setRotation() if the rotation is changed', (done: DoneFn) => {
+    it('dispatches MapConfigActions.setRotation() if the rotation is changed', () => {
       const expectedRotation = 42;
       store.overrideSelector(selectRotation, expectedRotation);
 
       actions$ = of(MapConfigActions.handleMapRotation({rotation: expectedRotation}));
       effects.updateMapRotation$.subscribe((action) => {
         expect(action).toEqual(MapConfigActions.setRotation({rotation: expectedRotation}));
-        done();
       });
     });
   });
 
   describe('setBaseMapAndInitialMaps$', () => {
-    it('dispatches MapConfigActions.setInitialMapConfig()', (done: DoneFn) => {
+    it('dispatches MapConfigActions.setInitialMapConfig()', () => {
       actions$ = of(
         SearchActions.initializeSearchFromUrlParameters({
           initialMaps: ['one', 'two'],
@@ -150,12 +148,11 @@ describe('MapConfigEffects', () => {
           searchIndex: 'index',
         }),
       );
-      initialMapExtentServiceMock.calculateInitialExtent.and.returnValue({x: 1, y: 2, scale: 3});
+      vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 1, y: 2, scale: 3});
       effects.setBaseMapAndInitialMaps$.subscribe((action) => {
         expect(action).toEqual(
           MapConfigActions.setInitialMapConfig({initialMaps: ['one', 'two'], basemapId: 'base', x: 1, y: 2, scale: 3}),
         );
-        done();
       });
     });
   });

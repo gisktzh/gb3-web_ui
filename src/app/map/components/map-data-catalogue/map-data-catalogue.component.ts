@@ -1,11 +1,9 @@
-import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild, inject} from '@angular/core';
+import {Component, OnDestroy, effect, inject, output, signal} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
 import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
-import {distinctUntilChanged, Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
-import {LoadingState} from '../../../shared/types/loading-state.type';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
 import {selectFilteredLayerCatalog} from '../../../state/map/selectors/filtered-layer-catalog.selector';
@@ -17,12 +15,11 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {FavouritesService} from '../../services/favourites.service';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {MapCouldNotBeFound} from '../../../shared/errors/map.errors';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MatCard, MatCardHeader} from '@angular/material/card';
 import {TypedTourAnchorDirective} from '../../../shared/directives/typed-tour-anchor.directive';
-import {NgClass} from '@angular/common';
+
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
@@ -40,7 +37,6 @@ import {MatDivider} from '@angular/material/divider';
   imports: [
     MatCard,
     TypedTourAnchorDirective,
-    NgClass,
     MatCardHeader,
     MatIconButton,
     MatIcon,
@@ -53,46 +49,33 @@ import {MatDivider} from '@angular/material/divider';
     MatDivider,
   ],
 })
-export class MapDataCatalogueComponent implements OnInit, OnDestroy {
+export class MapDataCatalogueComponent implements OnDestroy {
   private readonly store = inject(Store);
   private readonly favouritesService = inject(FavouritesService);
 
-  @Output() public readonly changeIsMinimizedEvent = new EventEmitter<boolean>();
+  public readonly changeIsMinimizedEvent = output<boolean>();
 
-  public topics: Topic[] = [];
-  public catalogueLoadingState: LoadingState;
-  public favouritesLoadingState: LoadingState;
-  public filterString: string | undefined = undefined;
-  public filteredFavourites: Favourite[] = [];
-  public isAuthenticated: boolean = false;
-  public isMinimized = false;
-  public screenMode: ScreenMode = 'regular';
-
-  private originalMaps: Map[] = [];
-  private readonly filterString$ = this.store.select(selectFilterString);
-  private readonly catalogueLoadingState$ = this.store.select(selectCatalogueLoadingState);
-  private readonly favouritesLoadingState$ = this.store.select(selectFavouritesLoadingState);
-  private readonly filteredFavourites$ = this.store.select(selectFilteredFavouriteList);
-  private readonly topics$ = this.store.select(selectFilteredLayerCatalog);
-  private readonly originalMaps$ = this.store.select(selectMaps);
-  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly subscriptions = new Subscription();
-  @ViewChild('filterInput') private readonly input!: ElementRef;
+  public readonly topics = this.store.selectSignal(selectFilteredLayerCatalog);
+  public readonly catalogueLoadingState = this.store.selectSignal(selectCatalogueLoadingState);
+  public readonly favouritesLoadingState = this.store.selectSignal(selectFavouritesLoadingState);
+  public readonly filterString = this.store.selectSignal(selectFilterString);
+  public readonly filteredFavourites = this.store.selectSignal(selectFilteredFavouriteList);
+  public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  private readonly originalMaps = this.store.selectSignal(selectMaps);
+  public readonly isMinimized = signal(false);
 
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
-  }
-
-  public ngOnInit() {
-    this.initSubscriptions();
+    effect(() => {
+      if (this.isAuthenticated()) {
+        this.store.dispatch(FavouriteListActions.loadFavourites());
+      }
+    });
   }
 
   public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-
-    // make sure our filterstring is properly cleaned to avoid NG100 on navigation
-    this.store.dispatch(LayerCatalogActions.clearFilterString());
+    this.clearInput();
   }
 
   /**
@@ -125,8 +108,8 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
    * @param isTemporary Temporary items are not shown in the active map items GUI, yet added to the state
    */
   public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
-    if (this.filterString !== '') {
-      const originalActiveMap = this.originalMaps.find((originalMap) => originalMap.id === activeMap.id);
+    if (this.filterString() !== '') {
+      const originalActiveMap = this.originalMaps().find((originalMap) => originalMap.id === activeMap.id);
       if (!originalActiveMap) {
         throw new MapCouldNotBeFound(); // although this should never happen here because the item WILL always exist
       }
@@ -159,17 +142,17 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
     );
   }
 
-  public trackByTopicTitle(index: number, item: Topic) {
+  public trackByTopicTitle(_: number, item: Topic) {
     return item.title;
   }
 
-  public trackByMapId(index: number, item: Map) {
+  public trackByMapId(_: number, item: Map) {
     return item.id;
   }
 
   public toggleMinimizeMapDataCatalogue() {
-    this.isMinimized = !this.isMinimized;
-    this.changeIsMinimizedEvent.emit(this.isMinimized);
+    this.isMinimized.set(!this.isMinimized());
+    this.changeIsMinimizedEvent.emit(this.isMinimized());
   }
 
   public filterCatalog(filterString: string) {
@@ -183,85 +166,5 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   private addActiveItem(activeMapItem: ActiveMapItem) {
     // add new map items on top (position 0)
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.topics$
-        .pipe(
-          tap((topics) => {
-            this.topics = topics;
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.catalogueLoadingState$
-        .pipe(
-          tap((value) => {
-            this.catalogueLoadingState = value;
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.favouritesLoadingState$
-        .pipe(
-          tap((value) => {
-            this.favouritesLoadingState = value;
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.filterString$
-        .pipe(
-          tap((value) => {
-            this.filterString = value;
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.originalMaps$
-        .pipe(
-          tap((value) => {
-            this.originalMaps = value;
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.screenMode$
-        .pipe(
-          tap((screenMode) => {
-            this.screenMode = screenMode;
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.isAuthenticated$
-        .pipe(
-          distinctUntilChanged(),
-          tap((isAuthenticated) => {
-            this.isAuthenticated = isAuthenticated;
-
-            // This check is currently needed, because isAuthenticated might not be initialized yet
-            if (this.isAuthenticated) {
-              this.store.dispatch(FavouriteListActions.loadFavourites());
-            }
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(this.filteredFavourites$.pipe(tap((favourites) => (this.filteredFavourites = favourites))).subscribe());
   }
 }

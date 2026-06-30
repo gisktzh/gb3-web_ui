@@ -1,7 +1,7 @@
 <mat-toolbar aria-label="Hauptnavigation" class="navbar" color="primary" role="navigation">
-  <span class="navbar__item" role="banner">
+  <a class="navbar__item navbar__logo" role="banner" [queryParams]="{}" [routerLink]="[mainPageEnum.Start]" aria-label="Zum Geoportal">
     <img
-      [ngStyle]="{display: !isSimplifiedPage ? 'none' : 'inline'}"
+      [style.display]="!isSimplifiedPage() ? 'none' : 'inline'"
       alt="KTZH Logo"
       class="navbar__logo"
       ngSrc="assets/images/ktzh_inverted.svg"
@@ -10,9 +10,9 @@
       aria-hidden="true"
     />
     Geoportal Kanton Zürich
-  </span>
+  </a>
   <span class="navbar__spacer"></span>
-  @if (screenMode === 'regular') {
+  @if (screenMode() === 'regular') {
     <a
       [queryParams]="{}"
       [routerLinkActiveOptions]="{exact: true}"
@@ -21,40 +21,45 @@
       [routerLink]="[mainPageEnum.Start]"
       routerLinkActive="navbar__item--active"
       ariaCurrentWhenActive="page"
-      >Geoportal</a
     >
+      Geoportal
+    </a>
     <a
       class="navbar__item"
       mat-button
       [routerLink]="[mainPageEnum.Maps]"
       routerLinkActive="navbar__item--active"
       ariaCurrentWhenActive="page"
-      >GIS-Browser</a
     >
+      GIS-Browser
+    </a>
     <a
       class="navbar__item"
       mat-button
       [routerLink]="[mainPageEnum.Data]"
       routerLinkActive="navbar__item--active"
       ariaCurrentWhenActive="page"
-      >Geodatenkatalog</a
     >
+      Geodatenkatalog
+    </a>
     <a
       class="navbar__item"
       mat-button
       [routerLink]="[mainPageEnum.Apps]"
       routerLinkActive="navbar__item--active"
       ariaCurrentWhenActive="page"
-      >Apps</a
     >
+      Apps
+    </a>
     <a
       class="navbar__item"
       mat-button
       [routerLink]="[mainPageEnum.Support]"
       routerLinkActive="navbar__item--active"
       ariaCurrentWhenActive="page"
-      >Hilfe & Support</a
     >
+      Hilfe & Support
+    </a>
     <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer">
       <mat-icon>launch</mat-icon>
       Geodatenshop
@@ -70,24 +75,22 @@
       <mat-icon>launch</mat-icon>
       KoPla
     </a>
-    <mat-divider class="navbar__divider" vertical></mat-divider>
-    @if (!isAuthenticated) {
-      <button (click)="startLogin()" class="navbar__item navbar__item--button" mat-button>
-        <mat-icon svgIcon="ktzh_user"></mat-icon>Login
-      </button>
+    <mat-divider class="navbar__divider" vertical />
+    @if (!isAuthenticated()) {
+      <button (click)="startLogin()" class="navbar__item navbar__item--button" mat-button><mat-icon svgIcon="ktzh_user" />Login</button>
     } @else {
       <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__item--button" mat-button #trigger="matMenuTrigger">
-        <mat-icon svgIcon="ktzh_user"></mat-icon>
-        {{ userName }}
-        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="navbar__item__arrow-icon"></mat-icon>
+        <mat-icon svgIcon="ktzh_user" />
+        {{ userName() }}
+        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="navbar__item__arrow-icon" />
       </button>
 
       <mat-menu #userMenu="matMenu" style="padding-left: 12px">
         <a href="https://maps.zh.ch/groups_users" target="_blank" rel="noopener noreferrer" mat-menu-item>
-          <mat-icon svgIcon="ktzh_user"></mat-icon>
+          <mat-icon svgIcon="ktzh_user" />
           <span>Profil</span>
         </a>
-        <mat-divider></mat-divider>
+        <mat-divider />
         <button (click)="logout()" mat-menu-item>
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
@@ -102,14 +105,14 @@
     </button>
   }
 
-  @if (!isSimplifiedPage) {
+  @if (!isSimplifiedPage()) {
     <div class="navbar__underline-container">
       <div class="navbar__underline-container__content-container">
         <span></span>
         <span class="navbar__underline"></span>
         <span class="navbar__underline"></span>
       </div>
-      <span class="navbar__underline" [ngStyle]="{width: scrollbarWidth + 'px'}"></span>
+      <span class="navbar__underline" [style.width]="scrollbarWidth() + 'px'"></span>
     </div>
   }
 </mat-toolbar>

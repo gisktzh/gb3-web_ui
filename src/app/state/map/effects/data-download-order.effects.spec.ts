@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -84,8 +84,8 @@ describe('DataDownloadOrderEffects', () => {
   });
 
   describe('createOrderFromSelection$', () => {
-    it('creates an order from a valid selection and dispatches DataDownloadOrderActions.setOrder', (done: DoneFn) => {
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'createOrderFromSelection').and.callThrough();
+    it('creates an order from a valid selection and dispatches DataDownloadOrderActions.setOrder', () => {
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'createOrderFromSelection');
       const selection = polygonSelectionMock;
 
       const expectedOrder: Order = {
@@ -98,14 +98,14 @@ describe('DataDownloadOrderEffects', () => {
 
       actions$ = of(DataDownloadOrderActions.setSelection({selection}));
       effects.createOrderFromSelection$.subscribe((action) => {
-        expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(selection);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledWith(selection);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('does not create an order from an invalid selection and dispatches DataDownloadOrderActions.setSelectionError', (done: DoneFn) => {
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'createOrderFromSelection').and.callThrough();
+    it('does not create an order from an invalid selection and dispatches DataDownloadOrderActions.setSelectionError', () => {
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'createOrderFromSelection');
       const invalidSelection: DataDownloadSelection = {
         type: 'polygon',
         drawingRepresentation: {
@@ -122,15 +122,15 @@ describe('DataDownloadOrderEffects', () => {
 
       actions$ = of(DataDownloadOrderActions.setSelection({selection: invalidSelection}));
       effects.createOrderFromSelection$.subscribe((action) => {
-        expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(invalidSelection);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledWith(invalidSelection);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('throwSelectionError$', () => {
-    it('throws a OrderSelectionIsInvalid error in case of an original generic error', (done: DoneFn) => {
+    it('throws a OrderSelectionIsInvalid error in case of an original generic error', () => {
       const expectedOriginalError = new Error('oh no! anyway...');
       const expectedError = new OrderSelectionIsInvalid(expectedOriginalError);
 
@@ -139,14 +139,13 @@ describe('DataDownloadOrderEffects', () => {
         .pipe(
           catchError((error: unknown) => {
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
         .subscribe();
     });
 
-    it('throws an OrderUnsupportedGeometry error in case of original OrderUnsupportedGeometry', (done: DoneFn) => {
+    it('throws an OrderUnsupportedGeometry error in case of original OrderUnsupportedGeometry', () => {
       const expectedError = new OrderUnsupportedGeometry();
 
       actions$ = of(DataDownloadOrderActions.setSelectionError({error: expectedError}));
@@ -154,7 +153,6 @@ describe('DataDownloadOrderEffects', () => {
         .pipe(
           catchError((error: unknown) => {
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -163,22 +161,21 @@ describe('DataDownloadOrderEffects', () => {
   });
 
   describe('clearSelectionAfterError$', () => {
-    it('dispatches DataDownloadActions.clearSelection() after a selection error', (done: DoneFn) => {
+    it('dispatches DataDownloadActions.clearSelection() after a selection error', () => {
       const expectedAction = DataDownloadOrderActions.clearSelection();
 
       actions$ = of(DataDownloadOrderActions.setSelectionError({}));
       effects.clearSelectionAfterError$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('zoomToSelection$', () => {
-    it('zooms to the geometry extent using the map service, no further action dispatch', (done: DoneFn) => {
+    it('zooms to the geometry extent using the map service, no further action dispatch', () => {
       const selection = polygonSelectionMock;
       const mapService = TestBed.inject(MAP_SERVICE);
-      const mapServiceSpy = spyOn(mapService, 'zoomToExtent').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'zoomToExtent');
       store.overrideSelector(selectSelection, selection);
       store.overrideSelector(selectMapSideDrawerContent, 'data-download');
 
@@ -186,31 +183,30 @@ describe('DataDownloadOrderEffects', () => {
 
       actions$ = of(expectedAction);
       effects.zoomToSelection$.subscribe(([[action, _], __]) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(
           selection.drawingRepresentation.geometry,
           configService.mapAnimationConfig.zoom.expandFactor,
           configService.mapAnimationConfig.zoom.duration,
         );
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('openDataDownloadDrawerAfterSettingOrder$', () => {
-    it('dispatches MapUiActions.showMapSideDrawerContent() after setting an order', (done: DoneFn) => {
+    it('dispatches MapUiActions.showMapSideDrawerContent() after setting an order', () => {
       const expectedAction = MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'});
 
       actions$ = of(DataDownloadOrderActions.setOrder({order: orderMock}));
       effects.openDataDownloadDrawerAfterSettingOrder$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('deactivateToolAfterClearingSelection$', () => {
-    it('dispatches ToolActions.deactivateTool() after clearing the selection if the currently active tool is not undefined', (done: DoneFn) => {
+    it('dispatches ToolActions.deactivateTool() after clearing the selection if the currently active tool is not undefined', () => {
       store.overrideSelector(selectActiveTool, 'select-polygon');
 
       const expectedAction = ToolActions.deactivateTool();
@@ -218,52 +214,54 @@ describe('DataDownloadOrderEffects', () => {
       actions$ = of(DataDownloadOrderActions.clearSelection());
       effects.deactivateToolAfterClearingSelection$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('does not dispatch an action after clearing the selection if the currently active tool is undefined', fakeAsync(() => {
+    it('does not dispatch an action after clearing the selection if the currently active tool is undefined', async () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectActiveTool, undefined);
 
       let actualAction;
       actions$ = of(DataDownloadOrderActions.clearSelection());
       effects.deactivateToolAfterClearingSelection$.subscribe((action) => (actualAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(actualAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('clearSelectionAfterClosingDataDownloadDrawer$', () => {
-    it('dispatches DataDownloadActions.clearSelection() after hiding the map side drawer', (done: DoneFn) => {
+    it('dispatches DataDownloadActions.clearSelection() after hiding the map side drawer', () => {
       const expectedAction = DataDownloadOrderActions.clearSelection();
 
       actions$ = of(MapUiActions.hideMapSideDrawerContent());
       effects.clearSelectionAfterClosingDataDownloadDrawer$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('clearGeometryFromMap$', () => {
-    it('removes the selection graphics using the map service, no further action dispatch', (done: DoneFn) => {
+    it('removes the selection graphics using the map service, no further action dispatch', () => {
       const mapDrawingService = TestBed.inject(MapDrawingService);
-      const mapDrawingServiceSpy = spyOn(mapDrawingService, 'clearDataDownloadSelection').and.callThrough();
+      const mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'clearDataDownloadSelection');
 
       const expectedAction = DataDownloadOrderActions.clearSelection();
 
       actions$ = of(expectedAction);
       effects.clearGeometryFromMap$.subscribe((action) => {
-        expect(mapDrawingServiceSpy).toHaveBeenCalledOnceWith();
+        expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapDrawingServiceSpy).toHaveBeenCalledWith();
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('sendOrder$', () => {
-    it('dispatches DataDownloadActions.setSendOrderResponse() with the service response on success', (done: DoneFn) => {
+    it('dispatches DataDownloadActions.setSendOrderResponse() with the service response on success', () => {
       const order = orderMock;
       store.overrideSelector(selectOrder, order);
       const orderResponse: OrderResponse = {
@@ -272,46 +270,50 @@ describe('DataDownloadOrderEffects', () => {
         statusUrl: 'something else',
         timestampDateString: 'a timestamp',
       };
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'sendOrder').and.returnValue(of(orderResponse));
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'sendOrder').mockReturnValue(of(orderResponse));
 
       actions$ = of(DataDownloadOrderActions.sendOrder());
       effects.sendOrder$.subscribe((action) => {
-        expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(order);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledWith(order);
         expect(action).toEqual(DataDownloadOrderActions.setSendOrderResponse({order, orderResponse}));
-        done();
       });
     });
 
-    it('dispatches DataDownloadActions.setSendOrderError() with the error on failure', (done: DoneFn) => {
+    it('dispatches DataDownloadActions.setSendOrderError() with the error on failure', () => {
       const order = orderMock;
       store.overrideSelector(selectOrder, order);
       const expectedError = new Error('nooooooooooooo!!!');
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'sendOrder').and.returnValue(throwError(() => expectedError));
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'sendOrder').mockReturnValue(throwError(() => expectedError));
 
       actions$ = of(DataDownloadOrderActions.sendOrder());
       effects.sendOrder$.subscribe((action) => {
-        expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(order);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledWith(order);
         expect(action).toEqual(DataDownloadOrderActions.setSendOrderError({error: expectedError}));
-        done();
       });
     });
 
-    it('dispatches nothing if the order is undefined', fakeAsync(async () => {
+    it('dispatches nothing if the order is undefined', async () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectOrder, undefined);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'sendOrder').and.callThrough();
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'sendOrder');
 
       let newAction;
       actions$ = of(DataDownloadOrderActions.sendOrder());
       effects.sendOrder$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('throwSendOrderError$', () => {
-    it('throws a OrderCouldNotBeSent error after setting a send order error', (done: DoneFn) => {
+    it('throws a OrderCouldNotBeSent error after setting a send order error', () => {
       const originalErrorText = 'that is no moon';
       const originalError = new HttpErrorResponse({statusText: originalErrorText});
 
@@ -322,7 +324,6 @@ describe('DataDownloadOrderEffects', () => {
         .pipe(
           catchError((error: unknown) => {
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -331,7 +332,7 @@ describe('DataDownloadOrderEffects', () => {
   });
 
   describe('closeDataDownloadDrawerAfterSendingAnOrderSuccessfully$', () => {
-    it('dispatches MapUiActions.hideMapSideDrawerContent() after setting a send order response', (done: DoneFn) => {
+    it('dispatches MapUiActions.hideMapSideDrawerContent() after setting a send order response', () => {
       store.overrideSelector(selectMapSideDrawerContent, 'data-download');
 
       const expectedAction = MapUiActions.hideMapSideDrawerContent();
@@ -339,25 +340,23 @@ describe('DataDownloadOrderEffects', () => {
       actions$ = of(DataDownloadOrderActions.setSendOrderResponse({order: orderMock, orderResponse: {} as OrderResponse}));
       effects.closeDataDownloadDrawerAfterSendingAnOrderSuccessfully$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('showEmailConfirmationDialogAfterSendingAnOrderWithEmailSuccessfully$', () => {
-    it('dispatches MapUiActions.hideMapSideDrawerContent() after setting a send order response of an order with an email address', (done: DoneFn) => {
+    it('dispatches MapUiActions.hideMapSideDrawerContent() after setting a send order response of an order with an email address', () => {
       const expectedAction = MapUiActions.showDataDownloadEmailConfirmationDialog();
 
       actions$ = of(DataDownloadOrderActions.setSendOrderResponse({order: orderMock, orderResponse: {} as OrderResponse}));
       effects.showEmailConfirmationDialogAfterSendingAnOrderWithEmailSuccessfully$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('requestOrderStatusAfterSendingAnOrderWithoutEmailSuccessfully$', () => {
-    it('dispatches DataDownloadOrderStatusJobActions.requestOrderStatus() after setting a send order response', (done: DoneFn) => {
+    it('dispatches DataDownloadOrderStatusJobActions.requestOrderStatus() after setting a send order response', () => {
       const order = {
         ...orderMock,
         email: undefined,
@@ -371,15 +370,15 @@ describe('DataDownloadOrderEffects', () => {
       const orderTitle = 'grand moff';
       store.overrideSelector(selectProducts, []);
       store.overrideSelector(selectStatusJobs, []);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'createOrderTitle').and.returnValue(orderTitle);
+      const geoshopApiServiceSpy = vi.spyOn(geoshopApiService, 'createOrderTitle').mockReturnValue(orderTitle);
 
       const expectedAction = DataDownloadOrderStatusJobActions.requestOrderStatus({orderId: orderResponse.orderId, orderTitle});
 
       actions$ = of(DataDownloadOrderActions.setSendOrderResponse({order, orderResponse}));
       effects.requestOrderStatusAfterSendingAnOrderWithoutEmailSuccessfully$.subscribe((action) => {
-        expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(order, []);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
+        expect(geoshopApiServiceSpy).toHaveBeenCalledWith(order, []);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });

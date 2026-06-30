@@ -18,7 +18,7 @@ describe('print reducer', () => {
     map: {
       dpi: 9001,
       rotation: 42,
-      scale: 123_456_789,
+      scale: 123456789,
       center: [12.3, 45.6],
       mapItems: [
         {

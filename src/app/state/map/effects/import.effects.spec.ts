@@ -54,7 +54,7 @@ describe('ImportEffects', () => {
   });
 
   describe('requestImportDrawings$', () => {
-    it('calls ImportService.importDrawing and dispatches ImportActions.createActiveMapItemFromDrawing', (done: DoneFn) => {
+    it('calls ImportService.importDrawing and dispatches ImportActions.createActiveMapItemFromDrawing', () => {
       const expectedDrawing: Gb3VectorLayer = {
         type: 'Vector',
         geojson: {
@@ -74,30 +74,30 @@ describe('ImportEffects', () => {
         styles: {},
       };
       const file: File = new File([], 'test');
-      const gb3ImportServiceSpy = spyOn(gb3ImportService, 'importDrawing').and.returnValue(of(expectedDrawing));
+      const gb3ImportServiceSpy = vi.spyOn(gb3ImportService, 'importDrawing').mockReturnValue(of(expectedDrawing));
 
       actions$ = of(ImportActions.requestDrawingsImport({file}));
       effects.requestImportDrawing$.subscribe((action) => {
-        expect(gb3ImportServiceSpy).toHaveBeenCalledOnceWith(file);
+        expect(gb3ImportServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3ImportServiceSpy).toHaveBeenCalledWith(file);
         expect(action).toEqual(ImportActions.createActiveMapItemFromDrawing({drawing: expectedDrawing}));
-        done();
       });
     });
-    it('disaptches ImportService.setDrawingsImportRequestError on error', (done: DoneFn) => {
+    it('disaptches ImportService.setDrawingsImportRequestError on error', () => {
       const expectedError = new Error('oh no! butterfingers');
       const file: File = new File([], 'test');
-      const gb3ImportServiceSpy = spyOn(gb3ImportService, 'importDrawing').and.returnValue(throwError(() => expectedError));
+      const gb3ImportServiceSpy = vi.spyOn(gb3ImportService, 'importDrawing').mockReturnValue(throwError(() => expectedError));
 
       actions$ = of(ImportActions.requestDrawingsImport({file: new File([], 'test')}));
       effects.requestImportDrawing$.subscribe((action) => {
-        expect(gb3ImportServiceSpy).toHaveBeenCalledOnceWith(file);
+        expect(gb3ImportServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3ImportServiceSpy).toHaveBeenCalledWith(file);
         expect(action).toEqual(ImportActions.setDrawingsImportRequestError({error: expectedError}));
-        done();
       });
     });
   });
   describe('addDrawingToMap$', () => {
-    it('dispatches ImportActions.addDrawingToMap', (done: DoneFn) => {
+    it('dispatches ImportActions.addDrawingToMap', () => {
       const mockDrawing: Gb3VectorLayer = {
         type: 'Vector',
         geojson: {
@@ -127,61 +127,60 @@ describe('ImportEffects', () => {
       symbolizationToGb3ConverterUtils
         .convertExternalToInternalRepresentation(mockDrawing, UserDrawingLayer.Drawings)
         .then((drawingsToAdd) => {
-          const converterSpy = spyOn(symbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.returnValue(
-            Promise.resolve(drawingsToAdd),
-          );
-          const mapServiceSpy = spyOn(TestBed.inject(MAP_SERVICE), 'removeMapItem');
-          const toolServiceSpy = spyOn(TestBed.inject(MAP_SERVICE).getToolService(), 'addExistingDrawingsToLayer');
+          const converterSpy = vi
+            .spyOn(symbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation')
+            .mockReturnValue(Promise.resolve(drawingsToAdd));
+          const mapServiceSpy = vi.spyOn(TestBed.inject(MAP_SERVICE), 'removeMapItem');
+          const toolServiceSpy = vi.spyOn(TestBed.inject(MAP_SERVICE).getToolService(), 'addExistingDrawingsToLayer');
           actions$ = of(ImportActions.createActiveMapItemFromDrawing({drawing: mockDrawing}));
           effects.addDrawingToMap$.subscribe((action) => {
-            expect(converterSpy).toHaveBeenCalledOnceWith(mockDrawing, UserDrawingLayer.Drawings);
-            expect(mapServiceSpy).toHaveBeenCalledOnceWith(activeMapItem.id);
-            expect(toolServiceSpy).toHaveBeenCalledOnceWith(drawingsToAdd, UserDrawingLayer.Drawings);
+            expect(converterSpy).toHaveBeenCalledTimes(1);
+            expect(converterSpy).toHaveBeenCalledWith(mockDrawing, UserDrawingLayer.Drawings);
+            expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+            expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem.id);
+            expect(toolServiceSpy).toHaveBeenCalledTimes(1);
+            expect(toolServiceSpy).toHaveBeenCalledWith(drawingsToAdd, UserDrawingLayer.Drawings);
             expect(action).toEqual(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd}));
-            done();
           });
         });
     });
   });
 
   describe('addDrawingToActiveMapItmes$', () => {
-    it('dispatches ActiveMapItemActions.addActiveMapItem', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.addActiveMapItem', () => {
       const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       actions$ = of(
         ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride: [UserDrawingLayer.Drawings], drawingsToAdd: []}),
       );
       effects.addDrawingToActiveMapItems$.subscribe((action) => {
         expect(action).toEqual(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
-        done();
       });
     });
   });
   describe('overrideExistingDrawings$', () => {
-    it('dispatches DrawingActions.overwriteDrawingLayersWithDrawings', (done: DoneFn) => {
+    it('dispatches DrawingActions.overwriteDrawingLayersWithDrawings', () => {
       const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       const layersToOverride = [UserDrawingLayer.Drawings];
       const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
       actions$ = of(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride: layersToOverride, drawingsToAdd}));
       effects.overrideExistingDrawings$.subscribe((action) => {
         expect(action).toEqual(DrawingActions.overwriteDrawingLayersWithDrawings({layersToOverride, drawingsToAdd}));
-        done();
       });
     });
   });
   describe('resetLoadingStateAfterSuccessfullyAddingDrawingToMap$', () => {
-    it('dispatches ImportActions.resetLoadingStateAfterSuccessfullyAddingDrawingToMap$', (done: DoneFn) => {
+    it('dispatches ImportActions.resetLoadingStateAfterSuccessfullyAddingDrawingToMap$', () => {
       const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       const layersToOverride = [UserDrawingLayer.Drawings];
       const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
       actions$ = of(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride: layersToOverride, drawingsToAdd}));
       effects.resetLoadingStateAfterSuccessfullyAddingDrawingToMap$.subscribe((action) => {
         expect(action).toEqual(ImportActions.resetDrawingImportState());
-        done();
       });
     });
   });
   describe('throwImportDrawingsRequestError$', () => {
-    it('throws a DrawingCouldNotBeExported error', (done: DoneFn) => {
+    it('throws a DrawingCouldNotBeExported error', () => {
       const expectedOriginalError = new Error('oh no! butterfingers');
 
       actions$ = of(ImportActions.setDrawingsImportRequestError({error: expectedOriginalError}));
@@ -190,7 +189,6 @@ describe('ImportEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new FileImportError(expectedOriginalError);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -198,7 +196,7 @@ describe('ImportEffects', () => {
     });
   });
   describe('throwFileValidationError$', () => {
-    it('throws a FileValidationError error', (done: DoneFn) => {
+    it('throws a FileValidationError error', () => {
       const errorMessage = 'oh no! butterfingers';
 
       actions$ = of(ImportActions.setFileValidationError({errorMessage}));
@@ -207,7 +205,6 @@ describe('ImportEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new FileValidationError(errorMessage);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )

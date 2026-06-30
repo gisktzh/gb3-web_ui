@@ -27,7 +27,7 @@ describe('Gb3ImportService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should import drawing', (done: DoneFn) => {
+  it('should import drawing', () => {
     const mockFile = new File([], 'filename', {type: 'text/plain'});
     const mockFormData = new FormData();
     mockFormData.append('file', mockFile);
@@ -36,13 +36,13 @@ describe('Gb3ImportService', () => {
       geojson: {type: 'FeatureCollection', features: []},
       styles: {},
     };
-    const httpGetSpy = spyOn(httpClient, 'post').and.returnValue(of(mockResponse));
+    const httpGetSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(mockResponse));
     const expectedUrl = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/import`;
 
     service.importDrawing(mockFile).subscribe((response) => {
-      expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl, mockFormData, {headers: undefined});
+      expect(httpGetSpy).toHaveBeenCalledTimes(1);
+      expect(httpGetSpy).toHaveBeenCalledWith(expectedUrl, mockFormData, {headers: undefined});
       expect(response).toEqual(mockResponse);
-      done();
     });
   });
 });

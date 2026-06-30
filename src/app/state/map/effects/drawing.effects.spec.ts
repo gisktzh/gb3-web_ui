@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -52,49 +52,50 @@ describe('DrawingEffects', () => {
   });
 
   describe('clearAllDrawingLayers$', () => {
-    it('dispatches DrawingActions.clearDrawings()', (done: DoneFn) => {
+    it('dispatches DrawingActions.clearDrawings()', () => {
       actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
 
       effects.clearAllDrawingLayers$.subscribe((action) => {
         expect(action).toEqual(DrawingActions.clearDrawings());
-        done();
       });
     });
   });
 
   describe('clearSingleDrawingLayer$', () => {
-    it('dispatches nothing if the removed item is not a drawing item', fakeAsync(async () => {
+    it('dispatches nothing if the removed item is not a drawing item', async () => {
+      vi.useFakeTimers();
+
       const mockActiveMapItem: ActiveMapItem = createGb2WmsMapItemMock('Attack of the Gurkenbröters');
 
       let actualAction;
       actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem: mockActiveMapItem}));
       effects.clearSingleDrawingLayer$.subscribe((action) => (actualAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(actualAction).toBeUndefined();
-    }));
 
-    it('dispatches DrawingActions.clearDrawingLayer with the correct DrawingLayer', (done: DoneFn) => {
+      vi.useRealTimers();
+    });
+
+    it('dispatches DrawingActions.clearDrawingLayer with the correct DrawingLayer', () => {
       const mockActiveMapItem: ActiveMapItem = createDrawingMapItemMock(UserDrawingLayer.Measurements);
       actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem: mockActiveMapItem}));
 
       effects.clearSingleDrawingLayer$.subscribe((action) => {
         expect(action).toEqual(DrawingActions.clearDrawingLayer({layer: UserDrawingLayer.Measurements}));
-        done();
       });
     });
   });
   describe('editDrawing$', () => {
-    it('dispatches MapUiActions.setDrawingEditOverlayVisibility()', (done: DoneFn) => {
+    it('dispatches MapUiActions.setDrawingEditOverlayVisibility()', () => {
       store.overrideSelector(selectSelectedDrawing, {id: '123'} as Gb3StyledInternalDrawingRepresentation);
       actions$ = of(DrawingActions.selectDrawing({drawingId: '123'}));
 
       effects.editDrawing$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.setDrawingEditOverlayVisibility({isVisible: true}));
-        done();
       });
     });
-    it('throws a DrawingNotFound Error if the selectedFeatrue is undefined', (done: DoneFn) => {
+    it('throws a DrawingNotFound Error if the selectedFeatrue is undefined', () => {
       store.overrideSelector(selectSelectedDrawing, undefined);
       actions$ = of(DrawingActions.selectDrawing({drawingId: '123'}));
 
@@ -104,7 +105,6 @@ describe('DrawingEffects', () => {
         .pipe(
           catchError((e: unknown) => {
             expect(e).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -113,36 +113,33 @@ describe('DrawingEffects', () => {
   });
 
   describe('closeDrawingEditOverlayAfterFinishEditingOrDeleting$', () => {
-    it('dispatches MapUiActions.setDrawingEditOverlayVisibility() after adding a Drawing', (done: DoneFn) => {
+    it('dispatches MapUiActions.setDrawingEditOverlayVisibility() after adding a Drawing', () => {
       actions$ = of(DrawingActions.addDrawing({drawing: {} as Gb3StyledInternalDrawingRepresentation}));
 
       effects.closeDrawingEditOverlayAfterFinishEditingOrDeleting$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
-        done();
       });
     });
 
-    it('dispatches MapUiActions.setDrawingEditOverlayVisibility() after adding a Measurement', (done: DoneFn) => {
+    it('dispatches MapUiActions.setDrawingEditOverlayVisibility() after adding a Measurement', () => {
       actions$ = of(DrawingActions.addDrawings({drawings: []}));
 
       effects.closeDrawingEditOverlayAfterFinishEditingOrDeleting$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
-        done();
       });
     });
 
-    it('dispatches MapUiActions.setDrawingEditOverlayVisibility() after deleting a drawing', (done: DoneFn) => {
+    it('dispatches MapUiActions.setDrawingEditOverlayVisibility() after deleting a drawing', () => {
       actions$ = of(DrawingActions.deleteDrawing({drawingId: '123'}));
 
       effects.closeDrawingEditOverlayAfterFinishEditingOrDeleting$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
-        done();
       });
     });
   });
 
   describe('passStylingToToolService$', () => {
-    it('calls toolService.updateDrawingStyles', (done: DoneFn) => {
+    it('calls toolService.updateDrawingStyles', () => {
       actions$ = of(
         DrawingActions.updateDrawingStyles({
           drawing: {} as Gb3StyledInternalDrawingRepresentation,
@@ -150,24 +147,22 @@ describe('DrawingEffects', () => {
           labelText: '',
         }),
       );
-      const toolServiceSpy = spyOn(toolService, 'updateDrawingStyles').and.callThrough();
+      const toolServiceSpy = vi.spyOn(toolService, 'updateDrawingStyles');
 
       effects.passStylingToToolService$.subscribe(() => {
         expect(toolServiceSpy).toHaveBeenCalledTimes(1);
-        done();
       });
     });
   });
 
   describe('cancelEditModeAfterClosingDrawingEditOverlay', () => {
-    it('calls toolService.cancelTool', (done: DoneFn) => {
+    it('calls toolService.cancelTool', () => {
       actions$ = of(DrawingActions.cancelEditMode());
-      const mapServiceSpy = spyOn(mapService, 'cancelEditMode').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'cancelEditMode');
 
       effects.cancelEditModeAfterClosingDrawingEditOverlay$.subscribe((action) => {
         expect(mapServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
-        done();
       });
     });
   });

@@ -27,111 +27,133 @@ describe('MapDrawingService', () => {
 
   describe('clearFeatureQueryLocation', () => {
     it('calls mapService.clearInternalDrawingLayer with the correct layer', () => {
-      const mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'clearInternalDrawingLayer');
 
       service.clearFeatureQueryLocation();
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.FeatureQueryLocation);
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceSpy).toHaveBeenCalledWith(InternalDrawingLayer.FeatureQueryLocation);
     });
   });
 
   describe('drawFeatureInfoHighlight', () => {
     it('calls mapService.addGeometryToInternalDrawingLayer with the geometry and correct layer', () => {
-      const mapServiceSpy = spyOn(mapService, 'addGeometryToInternalDrawingLayer').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'addGeometryToInternalDrawingLayer');
       const mockGeometry = MinimalGeometriesUtils.getMinimalLineString(2056);
 
       service.drawFeatureInfoHighlight(mockGeometry);
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(mockGeometry, InternalDrawingLayer.FeatureHighlight);
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceSpy).toHaveBeenCalledWith(mockGeometry, InternalDrawingLayer.FeatureHighlight);
     });
   });
 
   describe('clearFeatureInfoHighlight', () => {
     it('calls mapService.clearInternalDrawingLayer with the correct layer', () => {
-      const mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'clearInternalDrawingLayer');
 
       service.clearFeatureInfoHighlight();
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.FeatureHighlight);
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceSpy).toHaveBeenCalledWith(InternalDrawingLayer.FeatureHighlight);
     });
   });
 
   describe('clearDataDownloadSelection', () => {
     it('calls mapService.clearInternalDrawingLayer with the correct layer', () => {
-      const mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'clearInternalDrawingLayer');
 
       service.clearDataDownloadSelection();
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.Selection);
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceSpy).toHaveBeenCalledWith(InternalDrawingLayer.Selection);
     });
   });
 
   describe('stopDrawPrintPreview', () => {
     it('calls mapService.stopDrawPrintPreview', () => {
-      const mapServiceSpy = spyOn(mapService, 'stopDrawPrintPreview').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'stopDrawPrintPreview');
 
       service.stopDrawPrintPreview();
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith();
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceSpy).toHaveBeenCalledWith();
     });
   });
 
   describe('drawFeatureQueryLocation', () => {
     it('clears the internal layer and calls mapService.addGeometryToInternalDrawingLayer with the geometry and correct layer', () => {
-      const mapServiceSpy = spyOn(mapService, 'addGeometryToInternalDrawingLayer').and.callThrough();
-      const selfServiceSpy = spyOn(service, 'clearFeatureQueryLocation').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'addGeometryToInternalDrawingLayer');
+      const selfServiceSpy = vi.spyOn(service, 'clearFeatureQueryLocation');
       const mockGeometry = MinimalGeometriesUtils.getMinimalLineString(2056);
 
       service.drawFeatureQueryLocation(mockGeometry);
 
-      expect(selfServiceSpy).toHaveBeenCalledOnceWith();
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(mockGeometry, InternalDrawingLayer.FeatureQueryLocation);
+      expect(selfServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(selfServiceSpy).toHaveBeenCalledWith();
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+      expect(mapServiceSpy).toHaveBeenCalledWith(mockGeometry, InternalDrawingLayer.FeatureQueryLocation);
     });
   });
 
   describe('startDrawPrintPreview', () => {
     it('calls mapService.startDrawPrintPreview with the correct params', async () => {
-      const mapServiceSpy = spyOn(mapService, 'startDrawPrintPreview').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'startDrawPrintPreview');
       const extentWidth = 1337;
       const extentHeight = 42;
       const rotation = 9000;
 
       await service.startDrawPrintPreview(extentWidth, extentHeight, rotation);
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(extentWidth, extentHeight, rotation);
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceSpy).toHaveBeenCalledWith(extentWidth, extentHeight, rotation);
     });
   });
 
   describe('drawSearchResultHighlight', () => {
     it('calls mapService.clearInternalDrawingLayer and mapService.addGeometryToInternalDrawingLayer with the geometry and correct layer', () => {
-      const mapServiceAddGeometrySpy = spyOn(mapService, 'addGeometryToInternalDrawingLayer').and.callThrough();
-      const mapServiceClearSpy = spyOn(mapService, 'clearInternalDrawingLayer').and.callThrough();
+      const mapServiceAddGeometrySpy = vi.spyOn(mapService, 'addGeometryToInternalDrawingLayer');
+      const mapServiceClearSpy = vi.spyOn(mapService, 'clearInternalDrawingLayer');
       const mockGeometry = MinimalGeometriesUtils.getMinimalLineString(2056);
 
       service.drawSearchResultHighlight(mockGeometry);
 
-      expect(mapServiceClearSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.SearchResultHighlight);
-      expect(mapServiceAddGeometrySpy).toHaveBeenCalledOnceWith(mockGeometry, InternalDrawingLayer.SearchResultHighlight);
+      expect(mapServiceClearSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceClearSpy).toHaveBeenCalledWith(InternalDrawingLayer.SearchResultHighlight);
+      expect(mapServiceAddGeometrySpy).toHaveBeenCalledTimes(1);
+      expect(mapServiceAddGeometrySpy).toHaveBeenCalledWith(mockGeometry, InternalDrawingLayer.SearchResultHighlight);
     });
   });
 
   describe('clearSearchResultHighlight', () => {
     it('calls mapService.clearInternalDrawingLayer with the correct layer', () => {
-      const mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'clearInternalDrawingLayer');
 
       service.clearSearchResultHighlight();
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.SearchResultHighlight);
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceSpy).toHaveBeenCalledWith(InternalDrawingLayer.SearchResultHighlight);
     });
   });
 
   describe('removeElevationProfileHoverLocation', () => {
     it('calls mapService.removeGeometryFromInternalDrawingLayer with the correct id and layer', () => {
-      const mapServiceSpy = spyOn(mapService, 'removeGeometryFromInternalDrawingLayer').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'removeGeometryFromInternalDrawingLayer');
 
       service.removeElevationProfileHoverLocation();
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.ElevationProfile, ELEVATION_PROFILE_LOCATION_IDENTIFIER);
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceSpy).toHaveBeenCalledWith(InternalDrawingLayer.ElevationProfile, ELEVATION_PROFILE_LOCATION_IDENTIFIER);
     });
   });
 
@@ -139,17 +161,20 @@ describe('MapDrawingService', () => {
     const mockLocation: PointWithSrs = {type: 'Point', coordinates: [1, 2], srs: 2056};
 
     it('uses mapDrawingService.removeElevationProfileHoverLocation to clear the location before drawing a new object', () => {
-      const selfServiceSpy = spyOn(service, 'removeElevationProfileHoverLocation').and.callThrough();
-      const mapServiceSpy = spyOn(mapService, 'addGeometryToInternalDrawingLayer').and.callThrough();
+      const selfServiceSpy = vi.spyOn(service, 'removeElevationProfileHoverLocation');
+      const mapServiceSpy = vi.spyOn(mapService, 'addGeometryToInternalDrawingLayer');
 
       service.drawElevationProfileHoverLocation(mockLocation);
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(
+      expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+
+      expect(mapServiceSpy).toHaveBeenCalledWith(
         mockLocation,
         InternalDrawingLayer.ElevationProfile,
         ELEVATION_PROFILE_LOCATION_IDENTIFIER,
       );
-      expect(selfServiceSpy).toHaveBeenCalledOnceWith();
+      expect(selfServiceSpy).toHaveBeenCalledTimes(1);
+      expect(selfServiceSpy).toHaveBeenCalledWith();
     });
   });
 });

@@ -1,23 +1,22 @@
+import {expect} from 'vitest';
 import {DrawingSymbolDescriptor} from '../../shared/interfaces/drawing-symbol/drawing-symbol-descriptor.interface';
 
-export const DrawingSymbolDescriptorMatcher: jasmine.CustomMatcherFactories = {
-  toEqualSymbolDescriptor(utils: jasmine.MatchersUtil): jasmine.CustomMatcher {
+expect.extend({
+  toEqualSymbolDescriptor(actual: DrawingSymbolDescriptor, expected: DrawingSymbolDescriptor) {
+    // clone to avoid mutating original objects
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- So we can add extra props.
+    const actualClone: any = {...actual};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- So we can add extra props.
+    const expectedClone: any = {...expected};
+
+    actualClone.id = 'generated';
+    expectedClone.id = 'generated';
+
+    const pass = this.equals(actualClone, expectedClone);
+
     return {
-      compare(actual: DrawingSymbolDescriptor, expected: DrawingSymbolDescriptor) {
-        // @ts-ignore -- `id` _does_ exist in the object instance, but isn't correctly typed in @arcgis/core.
-        expected.id = 'generated';
-        // @ts-ignore -- `id` _does_ exist in the object instance, but isn't correctly typed in @arcgis/core.
-        actual.id = 'generated';
-
-        const result: jasmine.CustomMatcherResult = {
-          pass: utils.equals(actual, expected),
-        };
-
-        if (!result.pass) {
-          result.message = `Expected ${JSON.stringify(actual)} toEqualSymbolDescriptor ${JSON.stringify(expected)}`;
-        }
-        return result;
-      },
+      pass,
+      message: () => `Expected ${JSON.stringify(actual)} toEqualSymbolDescriptor ${JSON.stringify(expected)}`,
     };
   },
-};
+});

@@ -1,74 +1,55 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {FormControl, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {Component, computed, effect, inject, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {form, required, email, FormField} from '@angular/forms/signals';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {ApiDialogWrapperComponent} from '../../api-dialog-wrapper/api-dialog-wrapper.component';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {MatFormField, MatLabel, MatInput, MatError} from '@angular/material/input';
-import {NgClass} from '@angular/common';
+
 import {MatButton} from '@angular/material/button';
 import {selectUserEmail} from '../../../../state/auth/reducers/auth-status.reducer';
-import {Subscription, tap} from 'rxjs';
 
 @Component({
   selector: 'data-download-email-dialog',
   templateUrl: './data-download-email-dialog.component.html',
   styleUrls: ['./data-download-email-dialog.component.scss'],
-  imports: [
-    ApiDialogWrapperComponent,
-    MatCheckbox,
-    FormsModule,
-    MatFormField,
-    NgClass,
-    MatLabel,
-    MatInput,
-    ReactiveFormsModule,
-    MatError,
-    MatButton,
-  ],
+  imports: [ApiDialogWrapperComponent, MatCheckbox, FormsModule, MatFormField, MatLabel, MatInput, MatError, MatButton, FormField],
 })
-export class DataDownloadEmailDialogComponent implements OnInit, OnDestroy {
+export class DataDownloadEmailDialogComponent {
   private readonly dialogRef = inject<MatDialogRef<DataDownloadEmailDialogComponent>>(MatDialogRef);
   private readonly store = inject(Store);
   private readonly data = inject<{
     orderEmail: string | undefined;
   }>(MAT_DIALOG_DATA);
-  private readonly userEmail$ = this.store.select(selectUserEmail);
-  public userEmail?: string = undefined;
-  private readonly subscriptions = new Subscription();
 
-  public emailFormControl: FormControl<string | null> = new FormControl(null, [Validators.required, Validators.email]);
-  public isEmailActive: boolean = false;
+  public readonly emailModel = signal<{email: string}>({
+    email: '',
+  });
+  public emailForm = form(this.emailModel, (fieldPath) => {
+    required(fieldPath.email);
+    email(fieldPath.email);
+  });
+  public readonly userEmail = this.store.selectSignal(selectUserEmail);
+  public readonly emailRequested = signal(false);
+  public readonly isEmailActive = computed(() => {
+    return this.data.orderEmail || !(this.data.orderEmail && this.userEmail());
+  });
 
   constructor() {
     if (this.data.orderEmail) {
-      this.emailFormControl.setValue(this.data.orderEmail);
-      this.isEmailActive = true;
+      this.emailModel.set({email: this.data.orderEmail});
     }
-  }
 
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  public initSubscriptions() {
-    this.subscriptions.add(
-      this.userEmail$
-        .pipe(
-          tap((userEmail) => {
-            if (userEmail && !this.data.orderEmail) {
-              this.emailFormControl.setValue(userEmail);
-              this.isEmailActive = true;
-            }
-          }),
-        )
-        .subscribe(),
-    );
+    effect(() => {
+      const userEmail = this.userEmail();
+      if (userEmail) {
+        queueMicrotask(() => {
+          this.emailModel.set({email: userEmail});
+        });
+      }
+    });
   }
 
   public cancel() {
@@ -86,10 +67,11 @@ export class DataDownloadEmailDialogComponent implements OnInit, OnDestroy {
   }
 
   public updateEmail() {
-    let email = undefined;
-    if (this.isEmailActive && this.emailFormControl.valid && this.emailFormControl.value?.trim() !== '') {
-      email = this.emailFormControl.value?.trim();
+    let emailValue = undefined;
+    if (this.emailForm().valid()) {
+      emailValue = this.emailModel().email;
     }
-    this.store.dispatch(DataDownloadOrderActions.setEmailInOrder({email}));
+
+    this.store.dispatch(DataDownloadOrderActions.setEmailInOrder({email: emailValue}));
   }
 }

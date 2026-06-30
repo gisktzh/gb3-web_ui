@@ -1,7 +1,5 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {PageSectionComponent} from '../shared/components/page-section/page-section.component';
 import {HeroHeaderComponent} from '../shared/components/hero-header/hero-header.component';
@@ -16,24 +14,8 @@ const PRIVACY_SUMMARY =
   styleUrls: ['./privacy-page.component.scss'],
   imports: [PageSectionComponent, HeroHeaderComponent, PrivacyContentComponent],
 })
-export class PrivacyPageComponent implements OnInit, OnDestroy {
+export class PrivacyPageComponent {
   private readonly store = inject(Store);
-
   public heroText = PRIVACY_SUMMARY;
-  public screenMode: ScreenMode = 'regular';
-
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-  }
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 }

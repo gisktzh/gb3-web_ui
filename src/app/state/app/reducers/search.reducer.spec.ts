@@ -241,7 +241,7 @@ describe('search Reducer', () => {
       state.filterGroups
         .flatMap((group) => group.filters)
         .forEach((filter) => {
-          expect(filter.isActive).toBeFalse();
+          expect(filter.isActive).toBe(false);
         });
       expect(state.searchApiLoadingState).toBe(existingState.searchApiLoadingState);
       expect(state.searchApiResultMatches).toEqual(existingState.searchApiResultMatches);

@@ -1,11 +1,11 @@
 <map-overlay
   (closeEvent)="close()"
   (printButtonEvent)="print()"
-  [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded' && legendItems.length > 0"
-  [printLoadingState]="printLoadingState"
-  [showPrintButton]="showInteractiveElements"
-  [isVisible]="isVisible"
+  [isPrintButtonEnabled]="showInteractiveElements() && loadingState() === 'loaded' && legendItems().length > 0"
+  [printLoadingState]="printLoadingState()"
+  [showPrintButton]="showInteractiveElements()"
+  [isVisible]="isVisible()"
   overlayTitle="Legende"
 >
-  <legend [showInteractiveElements]="showInteractiveElements"></legend>
+  <legend [showInteractiveElements]="showInteractiveElements()"></legend>
 </map-overlay>

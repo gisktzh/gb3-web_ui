@@ -1,9 +1,8 @@
-import {Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, computed, effect, inject, input, linkedSignal, output, signal} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration} from '../../../shared/interfaces/topic.interface';
 import {TimeSliderService} from '../../services/time-slider.service';
 import {MatDatepicker, MatDatepickerInput} from '@angular/material/datepicker';
-import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {DateUnit} from '../../../shared/types/date-unit.type';
 import {TIME_SERVICE} from '../../../app.tokens';
 import {SliderWrapperComponent} from '../../../shared/components/slider-wrapper/slider-wrapper.component';
@@ -11,7 +10,7 @@ import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from '@angular/material/
 import {FormsModule} from '@angular/forms';
 import {MatFormField, MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
-import {NgClass} from '@angular/common';
+
 import {TimeExtentToStringPipe} from '../../pipes/time-extent-to-string.pipe';
 import {DateToStringPipe} from '../../pipes/date-to-string.pipe';
 
@@ -37,65 +36,70 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
     MatDatepickerInput,
     MatDatepicker,
     MatButton,
-    NgClass,
     TimeExtentToStringPipe,
     DateToStringPipe,
   ],
 })
-export class TimeSliderComponent implements OnInit, OnChanges {
+export class TimeSliderComponent {
   private readonly timeSliderService = inject(TimeSliderService);
-  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+  private readonly timeService = inject(TIME_SERVICE);
 
-  @Output() public readonly changeTimeExtentEvent = new EventEmitter<TimeExtent>();
+  public readonly changeTimeExtentEvent = output<TimeExtent>();
 
-  @Input() public initialTimeExtent!: TimeExtent;
-  @Input() public timeSliderConfiguration!: TimeSliderConfiguration;
+  public readonly initialTimeExtent = input.required<TimeExtent>();
+  public readonly timeSliderConfiguration = input.required<TimeSliderConfiguration>();
 
-  public availableDates: Date[] = [];
+  public readonly availableDates = computed(() => {
+    return this.timeSliderService.createStops(this.timeSliderConfiguration());
+  });
 
-  public firstSliderPosition: number = 0;
+  public readonly timeExtent = linkedSignal<TimeExtent>(() => {
+    return {start: this.initialTimeExtent().start, end: this.initialTimeExtent().end};
+  });
+
+  public readonly firstSliderPosition = linkedSignal<number>(() => this.findPositionOfDate(this.timeExtent().start) ?? 0);
   // the second slider position is `undefined` in case that there is a fixed range
-  public secondSliderPosition?: number;
+  public readonly secondSliderPosition = linkedSignal<number | undefined>(() =>
+    this.timeSliderConfiguration().range ? undefined : this.findPositionOfDate(this.timeExtent().end),
+  );
 
-  public timeExtent!: TimeExtent;
-
-  public minimumDateIndex!: number;
-  public maximumDateIndex!: number;
+  public readonly minimumDateIndex = signal(0);
+  public readonly maximumDateIndex = computed(() => this.availableDates().length);
 
   // the time slider shows a simple current value (e.g. `2001` instead of `2001-2002`) if it has a range of exactly one of a single time unit (year, month, ...)
-  public hasSimpleCurrentValue: boolean = false;
+  public readonly hasSimpleCurrentValue = computed(() => this.isStringSingleTimeUnitRange(this.timeSliderConfiguration().range));
 
   // date picker options
-  public hasDatePicker: boolean = false;
-  public datePickerStartView: DatePickerStartView = 'month';
-  private datePickerUnit: DatePickerManipulationUnits = 'days';
-
-  public ngOnInit() {
-    this.availableDates = this.timeSliderService.createStops(this.timeSliderConfiguration);
-    this.minimumDateIndex = 0;
-    this.maximumDateIndex = this.availableDates.length - 1;
-    this.timeExtent = {start: this.initialTimeExtent.start, end: this.initialTimeExtent.end};
-    this.firstSliderPosition = this.findPositionOfDate(this.timeExtent.start) ?? 0;
-    this.secondSliderPosition = this.timeSliderConfiguration.range ? undefined : this.findPositionOfDate(this.timeExtent.end);
-    this.hasSimpleCurrentValue = this.isStringSingleTimeUnitRange(this.timeSliderConfiguration.range);
-    // date picker
-    // enable the date picker its from sourceType parameter
-    this.hasDatePicker = this.timeSliderConfiguration.sourceType === 'parameter';
-    if (this.hasDatePicker) {
-      this.datePickerUnit = this.extractUniqueDatePickerUnitFromDateFormat(this.timeSliderConfiguration.dateFormat) ?? 'days';
-      this.datePickerStartView = this.createDatePickerStartView(this.datePickerUnit);
+  public readonly hasDatePicker = computed(() => this.timeSliderConfiguration().sourceType === 'parameter');
+  public readonly datePickerStartView = computed<DatePickerStartView>(() => {
+    if (!this.hasDatePicker()) {
+      return 'month';
     }
-  }
 
-  public ngOnChanges(changes: SimpleChanges) {
-    // This is needed to update the timeExtent when opening a favourite containing a map with a timeslider that is currently visible
-    if (changes['initialTimeExtent']) {
-      const start: Date = changes['initialTimeExtent'].currentValue.start;
-      const end: Date = changes['initialTimeExtent'].currentValue.end;
-      this.timeExtent = {start, end};
-      this.firstSliderPosition = this.findPositionOfDate(start) ?? 0;
-      this.secondSliderPosition = this.timeSliderConfiguration.range ? undefined : this.findPositionOfDate(end);
+    return this.createDatePickerStartView(this.datePickerUnit());
+  });
+  private readonly datePickerUnit = computed<DatePickerManipulationUnits>(() => {
+    if (!this.hasDatePicker()) {
+      return 'days';
     }
+
+    return this.extractUniqueDatePickerUnitFromDateFormat(this.timeSliderConfiguration().dateFormat) ?? 'days';
+  });
+
+  constructor() {
+    effect(() => {
+      // This is needed to update the timeExtent when opening a favourite containing a map with a timeslider that is currently visible
+      const newTimeExtent = this.initialTimeExtent();
+      if (newTimeExtent) {
+        const start = newTimeExtent.start;
+        const end = newTimeExtent.end;
+        queueMicrotask(() => {
+          this.timeExtent.set({start, end});
+          this.firstSliderPosition.set(this.findPositionOfDate(start) ?? 0);
+          this.secondSliderPosition.set(this.timeSliderConfiguration().range ? undefined : this.findPositionOfDate(end));
+        });
+      }
+    });
   }
 
   /**
@@ -105,37 +109,39 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   public setValidTimeExtent(hasStartDateChanged: boolean) {
     // create a new time extent based on the current slider position(s)
     const newTimeExtent: TimeExtent = {
-      start: this.availableDates[this.firstSliderPosition],
-      end: this.secondSliderPosition ? this.availableDates[this.secondSliderPosition] : this.availableDates[this.firstSliderPosition],
+      start: this.availableDates()[this.firstSliderPosition()],
+      end: this.secondSliderPosition()
+        ? this.availableDates()[this.secondSliderPosition() || 0]
+        : this.availableDates()[this.firstSliderPosition()],
     };
     // calculate a valid time extent based on the new one
     // it can differ to the given time extent due to active limitations such as a minimal range between start and end time
     const newValidatedTimeExtent = this.timeSliderService.createValidTimeExtent(
-      this.timeSliderConfiguration,
+      this.timeSliderConfiguration(),
       newTimeExtent,
       hasStartDateChanged,
-      this.availableDates[this.minimumDateIndex],
-      this.availableDates[this.maximumDateIndex],
+      this.availableDates()[this.minimumDateIndex()],
+      this.availableDates()[this.maximumDateIndex()],
     );
 
     // correct the thumb that was modified with the calculated time extent if necessary (e.g. enforcing a minimal range)
     const hasStartTimeBeenCorrected =
       this.timeService.calculateDifferenceBetweenDates(newValidatedTimeExtent.start, newTimeExtent.start) > 0;
     if (hasStartTimeBeenCorrected) {
-      this.firstSliderPosition = this.findPositionOfDate(newValidatedTimeExtent.start) ?? 0;
+      this.firstSliderPosition.set(this.findPositionOfDate(newValidatedTimeExtent.start) ?? 0);
     }
     const hasEndTimeBeenCorrected = this.timeService.calculateDifferenceBetweenDates(newValidatedTimeExtent.end, newTimeExtent.end) > 0;
-    if (!this.timeSliderConfiguration.range && hasEndTimeBeenCorrected) {
-      this.secondSliderPosition = this.findPositionOfDate(newValidatedTimeExtent.end) ?? 0;
+    if (!this.timeSliderConfiguration().range && hasEndTimeBeenCorrected) {
+      this.secondSliderPosition.set(this.findPositionOfDate(newValidatedTimeExtent.end) ?? 0);
     }
 
     // overwrite the current time extent and trigger the corresponding event if the new validated time extent is different from the previous one
     if (
-      this.timeService.calculateDifferenceBetweenDates(this.timeExtent.start, newValidatedTimeExtent.start) > 0 ||
-      this.timeService.calculateDifferenceBetweenDates(this.timeExtent.end, newValidatedTimeExtent.end) > 0
+      this.timeService.calculateDifferenceBetweenDates(this.timeExtent().start, newValidatedTimeExtent.start) > 0 ||
+      this.timeService.calculateDifferenceBetweenDates(this.timeExtent().end, newValidatedTimeExtent.end) > 0
     ) {
-      this.timeExtent = newValidatedTimeExtent;
-      this.changeTimeExtentEvent.emit(this.timeExtent);
+      this.timeExtent.set(newValidatedTimeExtent);
+      this.changeTimeExtentEvent.emit(this.timeExtent());
     }
   }
 
@@ -145,7 +151,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     changedMinimumDate: boolean,
     currentDatePickerSelectionUnit: DatePickerManipulationUnits,
   ) {
-    if (currentDatePickerSelectionUnit === this.datePickerUnit) {
+    if (currentDatePickerSelectionUnit === this.datePickerUnit()) {
       this.selectedDatePickerDate($event, changedMinimumDate);
       datePicker.close();
     }
@@ -158,15 +164,15 @@ export class TimeSliderComponent implements OnInit, OnChanges {
 
     // format the given event date to the configured time format and back to ensure that it is a valid date within the current available dates
     const date = this.timeService.createDateFromString(
-      this.timeService.getDateAsFormattedString(eventDate, this.timeSliderConfiguration.dateFormat),
-      this.timeSliderConfiguration.dateFormat,
+      this.timeService.getDateAsFormattedString(eventDate, this.timeSliderConfiguration().dateFormat),
+      this.timeSliderConfiguration().dateFormat,
     );
     const position = this.findPositionOfDate(date);
     if (position !== undefined) {
       if (changedMinimumDate) {
-        this.firstSliderPosition = position;
+        this.firstSliderPosition.set(position);
       } else {
-        this.secondSliderPosition = position;
+        this.secondSliderPosition.set(position);
       }
       this.setValidTimeExtent(changedMinimumDate);
     }
@@ -185,7 +191,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   }
 
   private findPositionOfDate(date: Date): number | undefined {
-    const index = this.availableDates.findIndex(
+    const index = this.availableDates().findIndex(
       (availableDate) => this.timeService.calculateDifferenceBetweenDates(availableDate, date) === 0,
     );
     return index === -1 ? undefined : index;

@@ -1,7 +1,7 @@
-@if (!!layerSelections) {
+@if (!!layerSelections()) {
   <div class="map-import-layer-list">
     <div class="map-import-layer-list__layers">
-      @for (selection of layerSelections; track selection.layer.id) {
+      @for (selection of layerSelections(); track selection.layer.id) {
         <mat-checkbox
           class="map-import-layer-list__checkbox"
           [checked]="selection.isSelected"

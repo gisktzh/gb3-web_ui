@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {TestBed} from '@angular/core/testing';
-
 import {Gb3GeoshopProductsService} from './gb3-geoshop-products.service';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {HttpClient, HttpRequest, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
@@ -29,7 +28,7 @@ describe('Gb3GeoshopProductsService', () => {
   });
 
   describe('loadProductList', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const serverData = {
         timestamp: '2023-11-25T12:51:39.368373',
         products: [
@@ -113,7 +112,7 @@ describe('Gb3GeoshopProductsService', () => {
         ],
       };
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverData));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverData));
 
       const expected: Product[] = [
         {
@@ -184,35 +183,34 @@ describe('Gb3GeoshopProductsService', () => {
       ];
 
       service.loadProducts().subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(
+        expect(getCallSpy).toHaveBeenCalledTimes(1);
+        expect(getCallSpy).toHaveBeenCalledWith(
           `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/products`,
         );
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });
 
   describe('loadRelevanteProducts', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const serverData = {
         timestamp: '2023-11-27T08:45:16.357507',
         products: ['10018-1', '10017-1', '10016-1'],
       };
       const topicGuids = ['01560dfb-1e84-423e-ace9-478848c55132', '26d7c027-38f2-42cb-a17a-99f17a2e383e'];
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverData));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverData));
 
       const expected: string[] = ['10018-1', '10017-1', '10016-1'];
 
       service.loadRelevanteProducts(topicGuids).subscribe((actual) => {
         expect(getCallSpy).toHaveBeenCalledTimes(1);
         expect(actual).toEqual(expected);
-        done();
       });
     });
 
-    it('should return an empty result array and not send any search requests for empty search terms', (done: DoneFn) => {
+    it('should return an empty result array and not send any search requests for empty search terms', () => {
       const httpTestingController = TestBed.inject(HttpTestingController);
       const topicGuids: string[] = [];
 
@@ -223,7 +221,6 @@ describe('Gb3GeoshopProductsService', () => {
           req.url.includes(`${configService.apiConfig.gb2Api.baseUrl}/products/relevant`),
         );
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });

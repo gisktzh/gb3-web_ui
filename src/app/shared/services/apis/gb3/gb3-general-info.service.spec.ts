@@ -68,19 +68,19 @@ describe('Gb3GeneralInfoService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('creates correct url', (done: DoneFn) => {
-    spyOn(httpClient, 'get').and.returnValue(of(mockResponse));
+  it('creates correct url', () => {
+    vi.spyOn(httpClient, 'get').mockReturnValue(of(mockResponse));
 
     const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/general_info?x=${mockCoord.x}&y=${mockCoord.y}`;
 
     service.loadGeneralInfo(mockCoord.x, mockCoord.y).subscribe(() => {
-      expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
-      done();
+      expect(httpClient.get).toHaveBeenCalledTimes(1);
+      expect(httpClient.get).toHaveBeenCalledWith(expected);
     });
   });
 
-  it('maps the response correctly', (done: DoneFn) => {
-    spyOn(httpClient, 'get').and.returnValue(of(mockResponse));
+  it('maps the response correctly', () => {
+    vi.spyOn(httpClient, 'get').mockReturnValue(of(mockResponse));
 
     const expected: GeneralInfoResponse = {
       parcel: {
@@ -121,16 +121,15 @@ describe('Gb3GeneralInfoService', () => {
 
     service.loadGeneralInfo(mockCoord.x, mockCoord.y).subscribe((result) => {
       expect(result).toEqual(expected);
-      done();
     });
   });
 
-  it('handles missing parcel information correctly', (done: DoneFn) => {
+  it('handles missing parcel information correctly', () => {
     const {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       general_info: {parcel, ...parcelLessInformation},
     } = mockResponse;
-    spyOn(httpClient, 'get').and.returnValue(of({general_info: parcelLessInformation}));
+    vi.spyOn(httpClient, 'get').mockReturnValue(of({general_info: parcelLessInformation}));
 
     const expected: GeneralInfoResponse = {
       parcel: undefined,
@@ -164,21 +163,19 @@ describe('Gb3GeneralInfoService', () => {
 
     service.loadGeneralInfo(mockCoord.x, mockCoord.y).subscribe((result) => {
       expect(result).toEqual(expected);
-      done();
     });
   });
 
-  it('handles missing parcel urls correctly', (done: DoneFn) => {
+  it('handles missing parcel urls correctly', () => {
     const response = structuredClone(mockResponse);
     response.general_info.parcel!.oereb_extract = null;
     response.general_info.parcel!.owner = null;
 
-    spyOn(httpClient, 'get').and.returnValue(of(response));
+    vi.spyOn(httpClient, 'get').mockReturnValue(of(response));
 
     service.loadGeneralInfo(mockCoord.x, mockCoord.y).subscribe((result) => {
       expect(result.parcel?.ownershipInformation.url).toBeNull();
       expect(result.parcel?.oerebExtract.pdfUrl).toBeNull();
-      done();
     });
   });
 });

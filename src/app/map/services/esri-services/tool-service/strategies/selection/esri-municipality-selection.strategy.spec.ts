@@ -2,7 +2,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {EsriMunicipalitySelectionStrategy} from './esri-municipality-selection.strategy';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {of} from 'rxjs';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -43,8 +43,8 @@ describe('EsriMunicipalitySelectionStrategy', () => {
 
   describe('cancellation', () => {
     it('does clear the layer and does not dispatch anything', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
-      const dialogSpy = spyOn(dialog, 'open');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
+      const dialogSpy = vi.spyOn(dialog, 'open');
       const strategy = new EsriMunicipalitySelectionStrategy(
         layer,
         fillSymbol,
@@ -53,7 +53,7 @@ describe('EsriMunicipalitySelectionStrategy', () => {
         configService,
         geoshopMunicipalitiesService,
       );
-      const layerRemoveAllSpy = spyOn(layer, 'removeAll');
+      const layerRemoveAllSpy = vi.spyOn(layer, 'removeAll');
 
       strategy.cancel();
       expect(layerRemoveAllSpy).toHaveBeenCalledTimes(1);
@@ -63,14 +63,15 @@ describe('EsriMunicipalitySelectionStrategy', () => {
   });
 
   describe('start', () => {
-    it('dispatches a new selection', fakeAsync(async () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+    it('dispatches a new selection', async () => {
+      vi.useFakeTimers();
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const expectedMunicipality: Municipality = {bfsNo: 1337, name: 'McGrabber'};
-      const layerAddSpy = spyOn(layer, 'add');
-      const dialogSpy = spyOn(dialog, 'open').and.returnValue({
+      const layerAddSpy = vi.spyOn(layer, 'add');
+      const dialogSpy = vi.spyOn(dialog, 'open').mockReturnValue({
         afterClosed: () => of(expectedMunicipality),
       } as MatDialogRef<typeof DataDownloadSelectMunicipalityDialogComponent, Municipality>);
-      const geoshopMunicipalitiesServiceSpy = spyOn(geoshopMunicipalitiesService, 'loadMunicipalityWithGeometry').and.returnValue(
+      const geoshopMunicipalitiesServiceSpy = vi.spyOn(geoshopMunicipalitiesService, 'loadMunicipalityWithGeometry').mockReturnValue(
         of({
           ...expectedMunicipality,
           boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056),
@@ -86,18 +87,21 @@ describe('EsriMunicipalitySelectionStrategy', () => {
       );
 
       strategy.start();
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(layerAddSpy).toHaveBeenCalledTimes(1);
       expect(dialogSpy).toHaveBeenCalledTimes(1);
-      expect(callbackSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'municipality', municipality: expectedMunicipality}));
+      expect(callbackSpy).toHaveBeenCalledWith(expect.objectContaining({type: 'municipality', municipality: expectedMunicipality}));
       expect(geoshopMunicipalitiesServiceSpy).toHaveBeenCalledWith(expectedMunicipality.bfsNo);
-    }));
 
-    it('cancels the dialog without result', fakeAsync(async () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
-      const dialogSpy = spyOn(dialog, 'open').and.callThrough();
-      const layerAddSpy = spyOn(layer, 'add');
+      vi.useRealTimers();
+    });
+
+    it('cancels the dialog without result', async () => {
+      vi.useFakeTimers();
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
+      const dialogSpy = vi.spyOn(dialog, 'open');
+      const layerAddSpy = vi.spyOn(layer, 'add');
       const strategy = new EsriMunicipalitySelectionStrategy(
         layer,
         fillSymbol,
@@ -106,7 +110,7 @@ describe('EsriMunicipalitySelectionStrategy', () => {
         configService,
         geoshopMunicipalitiesService,
       );
-      const layerRemoveAllSpy = spyOn(layer, 'removeAll');
+      const layerRemoveAllSpy = vi.spyOn(layer, 'removeAll');
 
       strategy.start();
       expect(layerRemoveAllSpy).toHaveBeenCalledTimes(1);
@@ -114,11 +118,14 @@ describe('EsriMunicipalitySelectionStrategy', () => {
       expect(callbackSpy).not.toHaveBeenCalled();
 
       dialog.closeAll();
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(layerAddSpy).not.toHaveBeenCalled();
       expect(layerRemoveAllSpy).toHaveBeenCalledTimes(1);
-      expect(callbackSpy).toHaveBeenCalledOnceWith(undefined);
-    }));
+      expect(callbackSpy).toHaveBeenCalledTimes(1);
+      expect(callbackSpy).toHaveBeenCalledWith(undefined);
+
+      vi.useRealTimers();
+    });
   });
 });

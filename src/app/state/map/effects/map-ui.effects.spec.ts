@@ -1,4 +1,5 @@
-import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
+import type {MockedObject} from 'vitest';
+import {TestBed} from '@angular/core/testing';
 import {MapUiEffects} from './map-ui.effects';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {MatDialog} from '@angular/material/dialog';
@@ -24,7 +25,7 @@ import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symb
 describe('MapUiEffects', () => {
   let actions$: Observable<Action>;
   let effects: MapUiEffects;
-  let dialogService: jasmine.SpyObj<MatDialog>;
+  let dialogService: MockedObject<MatDialog>;
   let store: MockStore;
   const internalShareLinkItem: InternalShareLinkItem = {
     center: {x: 1, y: 1},
@@ -60,7 +61,9 @@ describe('MapUiEffects', () => {
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    const spyDialogService = jasmine.createSpyObj('MatDialog', ['open']);
+    const spyDialogService: Partial<MatDialog> = {
+      open: vi.fn().mockName('MatDialog.open'),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -74,7 +77,7 @@ describe('MapUiEffects', () => {
 
     effects = TestBed.inject(MapUiEffects);
     store = TestBed.inject(MockStore);
-    dialogService = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
+    dialogService = TestBed.inject(MatDialog) as MockedObject<MatDialog>;
   });
 
   afterEach(() => {
@@ -96,7 +99,7 @@ describe('MapUiEffects', () => {
   });
 
   describe('createShareLinkAfterDialogOpen$', () => {
-    it('dispatches ShareLinkActions.createItem()', (done: DoneFn) => {
+    it('dispatches ShareLinkActions.createItem()', () => {
       store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
 
       const expectedAction = ShareLinkActions.createItem({item: shareLinkItem});
@@ -104,61 +107,66 @@ describe('MapUiEffects', () => {
 
       effects.createShareLinkAfterDialogOpen$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('createShareLinkAfterBottomSheetOpen$', () => {
-    it('dispatches ShareLinkActions.createItem() if the bottomSheetContent is share-link', (done: DoneFn) => {
+    it('dispatches ShareLinkActions.createItem() if the bottomSheetContent is share-link', () => {
       store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
       const expectedAction = ShareLinkActions.createItem({item: shareLinkItem});
 
       actions$ = of(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
       effects.createShareLinkAfterBottomSheetOpen$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('does not dispatch ShareLinkActions.createItem() if the bottomSheetContent is not share-link', fakeAsync(() => {
+    it('does not dispatch ShareLinkActions.createItem() if the bottomSheetContent is not share-link', async () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectCurrentInternalShareLinkItem, internalShareLinkItem);
       let actualAction;
 
       actions$ = of(MapUiActions.showBottomSheet({bottomSheetContent: 'basemap'}));
       effects.createShareLinkAfterBottomSheetOpen$.subscribe((action) => (actualAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(actualAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('closeAttributeFilterWhenOpeningLegend$', () => {
-    it('dispatches MapUiActions.setAttributeFilterVisibility() when the legend is openend on desktop', (done: DoneFn) => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() when the legend is openend on desktop', () => {
       store.overrideSelector(selectScreenMode, 'regular');
       const expectedAction = MapUiActions.setAttributeFilterVisibility({isVisible: false});
 
       actions$ = of(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
       effects.closeAttributeFilterWhenOpeningLegend$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('does not dispatch MapUiActions.setAttributeFilterVisibility() when the legend is openend on mobile', fakeAsync(() => {
+    it('does not dispatch MapUiActions.setAttributeFilterVisibility() when the legend is openend on mobile', async () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectScreenMode, 'mobile');
       let actualAction;
 
       actions$ = of(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
       effects.closeAttributeFilterWhenOpeningLegend$.subscribe((action) => (actualAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(actualAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('closeAttributeFilterIfAttributeFilterItemIsUndefined$', () => {
-    it('dispatches MapUiActions.setAttributeFilterVisibility() when the current mapAttributeFilter is undefined', (done: DoneFn) => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() when the current mapAttributeFilter is undefined', () => {
       const activeMapItem = createGb2WmsMapItemMock('123');
       store.overrideSelector(selectMapAttributeFiltersItem, undefined);
 
@@ -167,11 +175,12 @@ describe('MapUiEffects', () => {
       actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem}));
       effects.closeAttributeFilterIfAttributeFilterItemIsUndefined$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('does not dispatch MapUiActions.setAttributeFilterVisibility() when the mapAttributeFilter is defined', fakeAsync(() => {
+    it('does not dispatch MapUiActions.setAttributeFilterVisibility() when the mapAttributeFilter is defined', async () => {
+      vi.useFakeTimers();
+
       const removedMapItem = createGb2WmsMapItemMock('123');
       const filterMapItem = createGb2WmsMapItemMock('456');
       store.overrideSelector(selectMapAttributeFiltersItem, filterMapItem);
@@ -179,26 +188,27 @@ describe('MapUiEffects', () => {
 
       actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem: removedMapItem}));
       effects.closeAttributeFilterIfAttributeFilterItemIsUndefined$.subscribe((action) => (actualAction = action));
-      tick();
+      await vi.runAllTimersAsync();
 
       expect(actualAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('openAttributeFilterOverlay', () => {
-    it('dispatches MapUiActions.setAttributeFilterVisibility() when the attributeFilterItemID is set', (done: DoneFn) => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() when the attributeFilterItemID is set', () => {
       const expectedAction = MapUiActions.setAttributeFilterVisibility({isVisible: true});
 
       actions$ = of(MapAttributeFiltersItemActions.setMapAttributeFiltersItemId({id: '123'}));
       effects.openAttributeFilterOverlay.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('closeBottomSheetAfterSelectingSearchResult$', () => {
-    it('dispatches MapUiActions.hideBottomSheet() when a result is selected in the search on mobile', (done: DoneFn) => {
+    it('dispatches MapUiActions.hideBottomSheet() when a result is selected in the search on mobile', () => {
       const expectedAction = MapUiActions.hideBottomSheet();
       const searchResultsMock: GeometryWithSrsSearchApiResultMatch = {
         indexType: 'places',
@@ -212,11 +222,12 @@ describe('MapUiEffects', () => {
       actions$ = of(SearchActions.selectMapSearchResult({searchResult: searchResultsMock}));
       effects.closeBottomSheetAfterSelectingSearchResult$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('dispatches nothing when a result is selected in the search on desktop', fakeAsync(async () => {
+    it('dispatches nothing when a result is selected in the search on desktop', async () => {
+      vi.useFakeTimers();
+
       const searchResultsMock: GeometryWithSrsSearchApiResultMatch = {
         indexType: 'places',
         displayString: 'Some Place',
@@ -228,8 +239,10 @@ describe('MapUiEffects', () => {
       let newAction;
       actions$ = of(SearchActions.selectMapSearchResult({searchResult: searchResultsMock}));
       effects.closeBottomSheetAfterSelectingSearchResult$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
       expect(newAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 });

@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -46,50 +46,68 @@ describe('ToolEffects', () => {
   });
 
   describe('initializeTool$', () => {
-    it('initializes the measurement tool using the tool service; dispatches no further actions', fakeAsync(() => {
-      const expectedTools: Exclude<MeasurementTool, 'measure-elevation-profile'>[] = ['measure-area', 'measure-point', 'measure-line'];
-      const toolServiceSpy = spyOn(toolService, 'initializeMeasurement').and.callThrough();
-      expectedTools.forEach((expectedTool) => {
-        toolServiceSpy.calls.reset();
-        const expectedAction = ToolActions.activateTool({tool: expectedTool});
-        actions$ = of(expectedAction);
-        effects.initializeTool$.subscribe((action) => {
-          expect(toolServiceSpy).toHaveBeenCalledOnceWith(expectedTool);
-          expect(action).toEqual(expectedAction);
-        });
-        flush();
-      });
-    }));
+    it('initializes the measurement tool using the tool service; dispatches no further actions', async () => {
+      vi.useFakeTimers();
 
-    it('initializes the elevation profile measurement tool using the tool service; dispatches no further actions', fakeAsync(() => {
+      const expectedTools: Exclude<MeasurementTool, 'measure-elevation-profile'>[] = ['measure-area', 'measure-point', 'measure-line'];
+      const toolServiceSpy = vi.spyOn(toolService, 'initializeMeasurement');
+      await Promise.all(
+        expectedTools.map(async (expectedTool) => {
+          toolServiceSpy.mockClear();
+          const expectedAction = ToolActions.activateTool({tool: expectedTool});
+          actions$ = of(expectedAction);
+          effects.initializeTool$.subscribe((action) => {
+            expect(toolServiceSpy).toHaveBeenCalledTimes(1);
+            expect(toolServiceSpy).toHaveBeenCalledWith(expectedTool);
+            expect(action).toEqual(expectedAction);
+          });
+          await vi.runAllTimersAsync();
+        }),
+      );
+      vi.useRealTimers();
+    });
+
+    it('initializes the elevation profile measurement tool using the tool service; dispatches no further actions', async () => {
+      vi.useFakeTimers();
+
       const tool: MeasurementTool = 'measure-elevation-profile';
-      const toolServiceSpy = spyOn(toolService, 'initializeElevationProfileMeasurement').and.callThrough();
-      toolServiceSpy.calls.reset();
+      const toolServiceSpy = vi.spyOn(toolService, 'initializeElevationProfileMeasurement');
+      toolServiceSpy.mockClear();
       const expectedAction = ToolActions.activateTool({tool: tool});
       actions$ = of(expectedAction);
       effects.initializeTool$.subscribe((action) => {
         expect(toolServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(expectedAction);
       });
-      flush();
-    }));
+      await vi.runAllTimersAsync();
+      vi.useRealTimers();
+    });
 
-    it('initializes the drawing tool using the tool service; dispatches no further actions', fakeAsync(() => {
+    it('initializes the drawing tool using the tool service; dispatches no further actions', async () => {
+      vi.useFakeTimers();
+
       const expectedTools: DrawingTool[] = ['draw-circle', 'draw-polygon', 'draw-line', 'draw-point', 'draw-rectangle'];
-      const toolServiceSpy = spyOn(toolService, 'initializeDrawing').and.callThrough();
-      expectedTools.forEach((expectedTool) => {
-        toolServiceSpy.calls.reset();
-        const expectedAction = ToolActions.activateTool({tool: expectedTool});
-        actions$ = of(expectedAction);
-        effects.initializeTool$.subscribe((action) => {
-          expect(toolServiceSpy).toHaveBeenCalledOnceWith(expectedTool);
-          expect(action).toEqual(expectedAction);
-        });
-        flush();
-      });
-    }));
+      const toolServiceSpy = vi.spyOn(toolService, 'initializeDrawing');
+      await Promise.all(
+        expectedTools.map(async (expectedTool) => {
+          toolServiceSpy.mockClear();
+          const expectedAction = ToolActions.activateTool({tool: expectedTool});
+          actions$ = of(expectedAction);
+          effects.initializeTool$.subscribe((action) => {
+            expect(toolServiceSpy).toHaveBeenCalledTimes(1);
+            expect(toolServiceSpy).toHaveBeenCalledWith(expectedTool);
+            expect(action).toEqual(expectedAction);
+          });
+          await vi.runAllTimersAsync();
+        }),
+      );
 
-    it('initializes the selection tool using the tool service; dispatches no further actions', fakeAsync(() => {
+      vi.useRealTimers();
+    });
+
+    it('initializes the selection tool using the tool service; dispatches no further actions', async () => {
+      vi.useFakeTimers();
+
       const expectedTools: DataDownloadSelectionTool[] = [
         'select-polygon',
         'select-circle',
@@ -98,40 +116,45 @@ describe('ToolEffects', () => {
         'select-canton',
         'select-section',
       ];
-      const toolServiceSpy = spyOn(toolService, 'initializeDataDownloadSelection').and.callThrough();
-      expectedTools.forEach((expectedTool) => {
-        toolServiceSpy.calls.reset();
-        const expectedAction = ToolActions.activateTool({tool: expectedTool});
-        actions$ = of(expectedAction);
-        effects.initializeTool$.subscribe((action) => {
-          expect(toolServiceSpy).toHaveBeenCalledOnceWith(expectedTool);
-          expect(action).toEqual(expectedAction);
-        });
-        flush();
-      });
-    }));
+      const toolServiceSpy = vi.spyOn(toolService, 'initializeDataDownloadSelection');
+      await Promise.all(
+        expectedTools.map(async (expectedTool) => {
+          toolServiceSpy.mockClear();
+          const expectedAction = ToolActions.activateTool({tool: expectedTool});
+          actions$ = of(expectedAction);
+          effects.initializeTool$.subscribe((action) => {
+            expect(toolServiceSpy).toHaveBeenCalledTimes(1);
+            expect(toolServiceSpy).toHaveBeenCalledWith(expectedTool);
+            expect(action).toEqual(expectedAction);
+          });
+          await vi.runAllTimersAsync();
+        }),
+      );
+
+      vi.useRealTimers();
+    });
   });
 
   describe('cancelOrDeactivateTool$', () => {
-    it('cancels the tool service after deactivating the active tool; dispatches no further actions', (done: DoneFn) => {
-      const toolServiceSpy = spyOn(toolService, 'cancelTool').and.callThrough();
+    it('cancels the tool service after deactivating the active tool; dispatches no further actions', () => {
+      const toolServiceSpy = vi.spyOn(toolService, 'cancelTool');
       const expectedAction = ToolActions.deactivateTool();
       actions$ = of(expectedAction);
       effects.cancelOrDeactivateTool$.subscribe((action) => {
-        expect(toolServiceSpy).toHaveBeenCalledOnceWith();
+        expect(toolServiceSpy).toHaveBeenCalledTimes(1);
+        expect(toolServiceSpy).toHaveBeenCalledWith();
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('cancels the tool service after cancelling the active tool; dispatches no further actions', (done: DoneFn) => {
-      const toolServiceSpy = spyOn(toolService, 'cancelTool').and.callThrough();
+    it('cancels the tool service after cancelling the active tool; dispatches no further actions', () => {
+      const toolServiceSpy = vi.spyOn(toolService, 'cancelTool');
       const expectedAction = ToolActions.cancelTool();
       actions$ = of(expectedAction);
       effects.cancelOrDeactivateTool$.subscribe((action) => {
-        expect(toolServiceSpy).toHaveBeenCalledOnceWith();
+        expect(toolServiceSpy).toHaveBeenCalledTimes(1);
+        expect(toolServiceSpy).toHaveBeenCalledWith();
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });

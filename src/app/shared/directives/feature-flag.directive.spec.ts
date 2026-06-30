@@ -29,14 +29,16 @@ describe('FeatureFlagDirective', () => {
   });
 
   it('calls FeatureFlagService.getFeatureFlag with the supplied flag', () => {
-    const spy = spyOn(service, 'getFeatureFlag').and.callThrough();
+    const spy = vi.spyOn(service, 'getFeatureFlag');
     fixture.detectChanges();
 
-    expect(spy).toHaveBeenCalledOnceWith(featureFlagToCheck);
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    expect(spy).toHaveBeenCalledWith(featureFlagToCheck);
   });
 
   it('should not render element if feature flag is false', () => {
-    spyOn(service, 'getFeatureFlag').and.returnValue(false);
+    vi.spyOn(service, 'getFeatureFlag').mockReturnValue(false);
     fixture.detectChanges();
 
     const elementQuery = fixture.debugElement.query(By.css('span'));
@@ -45,7 +47,7 @@ describe('FeatureFlagDirective', () => {
   });
 
   it('should render element if feature flag is true', () => {
-    spyOn(service, 'getFeatureFlag').and.returnValue(true);
+    vi.spyOn(service, 'getFeatureFlag').mockReturnValue(true);
     fixture.detectChanges();
 
     const elementQuery = fixture.debugElement.query(By.css('span'));

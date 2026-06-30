@@ -12,16 +12,16 @@ describe('SessionStorageService', () => {
 
     store = {};
 
-    spyOn(sessionStorage, 'getItem').and.callFake((key: string): string | null => {
+    vi.spyOn(sessionStorage, 'getItem').mockImplementation((key: string): string | null => {
       return store[key] || null;
     });
-    spyOn(sessionStorage, 'removeItem').and.callFake((key: string): void => {
+    vi.spyOn(sessionStorage, 'removeItem').mockImplementation((key: string): void => {
       delete store[key];
     });
-    spyOn(sessionStorage, 'setItem').and.callFake((key: string, value: string) => {
+    vi.spyOn(sessionStorage, 'setItem').mockImplementation((key: string, value: string) => {
       store[key] = value;
     });
-    spyOn(sessionStorage, 'clear').and.callFake(() => {
+    vi.spyOn(sessionStorage, 'clear').mockImplementation(() => {
       store = {};
     });
   });

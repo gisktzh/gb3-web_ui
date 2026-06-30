@@ -1,12 +1,11 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
-import {Subscription, tap} from 'rxjs';
+import {Component, inject, signal} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {LayerCatalogActions} from '../../../../state/map/actions/layer-catalog.actions';
 import {OrderStatusJob} from '../../../../shared/interfaces/geoshop-order-status.interface';
 import {selectIncompleteOrderStatusJobs} from '../../../../state/map/selectors/incomplete-order-status-jobs.selector';
 import {DataDownloadOrderStatusJobActions} from '../../../../state/map/actions/data-download-order-status-job.actions';
 import {MatCard, MatCardHeader} from '@angular/material/card';
-import {NgClass} from '@angular/common';
+
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -22,7 +21,6 @@ import {DataDownloadOrderDownloadUrlPipe} from '../../../pipes/data-download-ord
   imports: [
     MatCard,
     MatCardHeader,
-    NgClass,
     MatIconButton,
     MatIcon,
     MatTooltip,
@@ -32,32 +30,21 @@ import {DataDownloadOrderDownloadUrlPipe} from '../../../pipes/data-download-ord
     DataDownloadOrderDownloadUrlPipe,
   ],
 })
-export class DataDownloadStatusQueueComponent implements OnInit, OnDestroy {
+export class DataDownloadStatusQueueComponent {
   private readonly store = inject(Store);
 
-  public isMinimized = false;
-  public statusJobs: OrderStatusJob[] = [];
-
-  private readonly statusJobs$ = this.store.select(selectIncompleteOrderStatusJobs);
-  private readonly subscriptions = new Subscription();
+  public readonly isMinimized = signal(false);
+  public readonly statusJobs = this.store.selectSignal(selectIncompleteOrderStatusJobs);
 
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
   }
 
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
   public toggleIsMinimized() {
-    this.isMinimized = !this.isMinimized;
+    this.isMinimized.set(!this.isMinimized());
   }
 
-  public trackById(index: number, item: OrderStatusJob): string {
+  public trackById(_: number, item: OrderStatusJob): string {
     return item.id;
   }
 
@@ -71,9 +58,5 @@ export class DataDownloadStatusQueueComponent implements OnInit, OnDestroy {
 
   private removeOrder(orderId: string) {
     this.store.dispatch(DataDownloadOrderStatusJobActions.completeOrderStatus({orderId}));
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.statusJobs$.pipe(tap((statusJobs) => (this.statusJobs = statusJobs))).subscribe());
   }
 }

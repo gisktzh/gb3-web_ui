@@ -182,7 +182,7 @@ describe('Gb3FavouritesService', () => {
     });
     service = TestBed.inject(Gb3FavouritesService);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(service, 'getFullEndpointUrl').and.returnValue('');
+    vi.spyOn(service as any, 'getFullEndpointUrl').mockReturnValue('');
   });
 
   it('should be created', () => {
@@ -190,27 +190,26 @@ describe('Gb3FavouritesService', () => {
   });
 
   describe('loadFavourites', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverDataMock));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverDataMock));
       service.loadFavourites().subscribe((favouritesResponse) => {
         expect(getCallSpy).toHaveBeenCalledTimes(1);
         expect(favouritesResponse).toBeDefined();
         expect(favouritesResponse).toEqual(favouriteItemsMock);
-        done();
       });
     });
   });
 
   describe('createFavourite', () => {
-    it('should send the data and transform it correctly', (done: DoneFn) => {
+    it('should send the data and transform it correctly', () => {
       const httpClient = TestBed.inject(HttpClient);
-      const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of(newSharedFavouriteMock));
+      const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(newSharedFavouriteMock));
       service.createFavourite(newFavouriteItemMock).subscribe((sharedFavourite) => {
-        expect(postCallSpy).toHaveBeenCalledOnceWith('', newPersonalFavourite, {headers: undefined});
+        expect(postCallSpy).toHaveBeenCalledTimes(1);
+        expect(postCallSpy).toHaveBeenCalledWith('', newPersonalFavourite, {headers: undefined});
         expect(sharedFavourite).toBeDefined();
         expect(sharedFavourite).toBe(newSharedFavouriteMock);
-        done();
       });
     });
   });

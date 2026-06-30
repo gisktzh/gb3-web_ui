@@ -123,7 +123,7 @@ describe('Gb3ShareLinkService', () => {
     });
     service = TestBed.inject(Gb3ShareLinkService);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(service, 'getFullEndpointUrl').and.returnValue('');
+    vi.spyOn(service as any, 'getFullEndpointUrl').mockReturnValue('');
   });
 
   it('should be created', () => {
@@ -131,27 +131,27 @@ describe('Gb3ShareLinkService', () => {
   });
 
   describe('loadShareLink', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverDataMock));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverDataMock));
       service.loadShareLink(shareLinkItemIdMock).subscribe((shareLinkItem) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(`/${shareLinkItemIdMock}`);
+        expect(getCallSpy).toHaveBeenCalledTimes(1);
+        expect(getCallSpy).toHaveBeenCalledWith(`/${shareLinkItemIdMock}`);
         expect(shareLinkItem).toBeDefined();
         expect(shareLinkItem).toEqual(shareLinkItemMock);
-        done();
       });
     });
   });
 
   describe('createShareLink', () => {
-    it('should send the data and transform it correctly', (done: DoneFn) => {
+    it('should send the data and transform it correctly', () => {
       const httpClient = TestBed.inject(HttpClient);
-      const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of({id: shareLinkItemIdMock}));
+      const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of({id: shareLinkItemIdMock}));
       service.createShareLink(shareLinkItemMock).subscribe((shareLinkItemId) => {
-        expect(postCallSpy).toHaveBeenCalledOnceWith('', shareLinkItemAsDataMock, {headers: undefined});
+        expect(postCallSpy).toHaveBeenCalledTimes(1);
+        expect(postCallSpy).toHaveBeenCalledWith('', shareLinkItemAsDataMock, {headers: undefined});
         expect(shareLinkItemId).toBeDefined();
         expect(shareLinkItemId).toBe(shareLinkItemIdMock);
-        done();
       });
     });
   });

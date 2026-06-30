@@ -1,5 +1,5 @@
-@if (screenMode !== 'mobile') {
-  <map-tools-desktop></map-tools-desktop>
+@if (screenMode() !== 'mobile') {
+  <map-tools-desktop />
 } @else {
-  <map-tools-mobile></map-tools-mobile>
+  <map-tools-mobile />
 }

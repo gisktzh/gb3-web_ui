@@ -1,57 +1,42 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators} from '@angular/forms';
+import {Component, effect, inject, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {Store} from '@ngrx/store';
-import {combineLatestWith, filter, Subscription, tap} from 'rxjs';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
 import {selectTitle} from '../../../../../state/map/reducers/map-import.reducer';
-import {map} from 'rxjs';
 
-interface DisplayNameFormGroup {
-  name: FormControl<string | null>;
-}
-
-const NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.required, Validators.pattern(/\S/)];
+import {form, minLength, required, pattern, FormField} from '@angular/forms/signals';
 
 @Component({
   selector: 'map-import-display-name',
-  imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, FormField],
   templateUrl: './map-import-display-name.component.html',
   styleUrl: './map-import-display-name.component.scss',
 })
-export class MapImportDisplayNameComponent implements OnInit, OnDestroy {
+export class MapImportDisplayNameComponent {
   private readonly store = inject(Store);
-  private readonly formBuilder = inject(FormBuilder);
-
-  public readonly displayNameFormGroup: FormGroup<DisplayNameFormGroup> = this.formBuilder.group<DisplayNameFormGroup>({
-    name: this.formBuilder.control(null, NAME_CONSTRAINTS),
+  public readonly title = this.store.selectSignal(selectTitle);
+  public readonly nameModel = signal<{name: string}>({
+    name: '',
+  });
+  public nameForm = form(this.nameModel, (fieldPath) => {
+    required(fieldPath.name);
+    minLength(fieldPath.name, 1);
+    pattern(fieldPath.name, /\S/);
   });
 
-  private readonly title$ = this.store.select(selectTitle);
-  private readonly subscriptions = new Subscription();
-
-  public ngOnInit(): void {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.displayNameFormGroup.controls.name.valueChanges
-        .pipe(
-          // prevent race condition where validation is not yet complete
-          combineLatestWith(this.displayNameFormGroup.statusChanges),
-          filter(([_, status]) => status === 'VALID'),
-          map(([name, _]) => name),
-          filter((name): name is string => name !== null),
-          tap((name) => this.store.dispatch(MapImportActions.setTitle({title: name}))),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(this.title$.pipe(tap((title) => this.displayNameFormGroup.controls.name.setValue(title ?? null))).subscribe());
+  constructor() {
+    effect(() => {
+      const title = this.title();
+      queueMicrotask(() => {
+        this.nameModel.set({name: title ?? ''});
+      });
+    });
+    effect(() => {
+      if (this.nameForm().valid()) {
+        this.store.dispatch(MapImportActions.setTitle({title: this.nameModel().name}));
+      }
+    });
   }
 }

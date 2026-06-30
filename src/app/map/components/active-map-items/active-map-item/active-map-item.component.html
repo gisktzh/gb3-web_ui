@@ -1,27 +1,27 @@
 <!-- small connection line between elements - this is the top element -->
-@if (!isFirstActiveMapItem && !activeMapItemExpansionPanel.expanded) {
+@if (!isFirstActiveMapItem() && !activeMapItemExpansionPanel.expanded) {
   <span
     class="active-map-item__connection-line active-map-item__connection-line-top"
-    [ngClass]="{'active-map-item__connection-line--mobile': screenMode === 'mobile'}"
+    [class.active-map-item__connection-line--mobile]="screenMode() === 'mobile'"
   ></span>
 }
 <mat-expansion-panel
   #activeMapItemExpansionPanel
   hideToggle="true"
   class="active-map-item"
-  [ngClass]="{'active-map-item--expanded': activeMapItemExpansionPanel.expanded}"
+  [class.active-map-item--expanded]="activeMapItemExpansionPanel.expanded"
 >
   <mat-expansion-panel-header class="active-map-item__header">
     <!-- the `stopPropagation` prevents the expansion panel from opening by just clicking somewhere on the header -->
     <active-map-item-header
       class="active-map-item__header__item"
-      [activeMapItem]="activeMapItem"
+      [activeMapItem]="activeMapItem()"
       [activeMapItemExpansionPanel]="activeMapItemExpansionPanel"
-      [isDragAndDropDisabled]="isDragAndDropDisabled"
+      [isDragAndDropDisabled]="isDragAndDropDisabled()"
       (click)="$event.stopPropagation()"
     >
       <ng-container activeMapItemDragHandle>
-        <ng-content select="[activeMapItemDragHandle]"></ng-content>
+        <ng-content select="[activeMapItemDragHandle]" />
       </ng-container>
     </active-map-item-header>
   </mat-expansion-panel-header>
@@ -31,34 +31,31 @@
       <div class="active-map-item__tabs__header">
         <div class="active-map-item__tabs__header__buttons">
           <button
-            [ngClass]="{'active-map-item__tabs__header__buttons__button--selected': activeTab === 'layers'}"
+            [class.active-map-item__tabs__header__buttons__button--selected]="activeTab() === 'layers'"
             class="active-map-item__tabs__header__buttons__button"
             mat-flat-button
-            (click)="changeTabs('layers')"
-            [disabled]="activeMapItem.isSingleLayer"
+            (click)="activeTab.set('layers')"
+            [disabled]="activeMapItem().isSingleLayer"
           >
             Ebenen
           </button>
           <button
-            [ngClass]="{'active-map-item__tabs__header__buttons__button--selected': activeTab === 'settings'}"
+            [class.active-map-item__tabs__header__buttons__button--selected]="activeTab() === 'settings'"
             class="active-map-item__tabs__header__buttons__button"
             mat-flat-button
-            (click)="changeTabs('settings')"
+            (click)="activeTab.set('settings')"
           >
             Einstellungen
           </button>
         </div>
       </div>
-      <div
-        class="active-map-item__tabs__content"
-        [ngClass]="{'active-map-item__tabs__content--inverted': activeMapItemExpansionPanel.expanded}"
-      >
-        @switch (activeTab) {
+      <div class="active-map-item__tabs__content" [class.active-map-item__tabs__content--inverted]="activeMapItemExpansionPanel.expanded">
+        @switch (activeTab()) {
           @case ('layers') {
-            <active-map-item-layers [activeMapItem]="activeMapItem"></active-map-item-layers>
+            <active-map-item-layers [activeMapItem]="activeMapItem()" />
           }
           @case ('settings') {
-            <active-map-item-settings [activeMapItem]="activeMapItem"></active-map-item-settings>
+            <active-map-item-settings [activeMapItem]="activeMapItem()" />
           }
         }
       </div>
@@ -66,9 +63,9 @@
   </ng-template>
 </mat-expansion-panel>
 <!-- small connection line between elements - this is the bottom element -->
-@if (!isLastActiveMapItem) {
+@if (!isLastActiveMapItem()) {
   <span
     class="active-map-item__connection-line active-map-item__connection-line-bottom"
-    [ngClass]="{'active-map-item__connection-line--mobile': screenMode === 'mobile'}"
+    [class.active-map-item__connection-line--mobile]="screenMode() === 'mobile'"
   ></span>
 }

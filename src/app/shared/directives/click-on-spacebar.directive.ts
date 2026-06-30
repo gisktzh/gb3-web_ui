@@ -1,14 +1,16 @@
-import {Directive, ElementRef, HostListener, inject} from '@angular/core';
+import {Directive, ElementRef, inject} from '@angular/core';
 
 @Directive({
   selector: '[clickOnSpaceBar]',
   standalone: true,
+  host: {
+    '(keydown.space)': 'onSpaceBar($event)',
+  },
 })
 export class ClickOnSpaceBarDirective {
-  private readonly elementRef = inject(ElementRef);
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
 
-  @HostListener('keydown.space', ['$event'])
-  public clickOnSpaceBar(event: KeyboardEvent): void {
+  public onSpaceBar(event: KeyboardEvent): void {
     event.preventDefault();
     this.elementRef.nativeElement.click();
   }

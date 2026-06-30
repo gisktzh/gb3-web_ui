@@ -1,40 +1,32 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {delay, filter, Subscription, tap} from 'rxjs';
-import {NgClass} from '@angular/common';
+
 import {selectScaleBarConfig} from '../../../../state/map/selectors/scale-bar-config.selector';
-import {ScaleBarConfig} from '../../../../shared/interfaces/scale-bar-config.interface';
 
 @Component({
   selector: 'scale-bar',
   templateUrl: './scale-bar.component.html',
   styleUrls: ['./scale-bar.component.scss'],
-  imports: [NgClass],
 })
-export class ScaleBarComponent implements AfterViewInit, OnDestroy {
+export class ScaleBarComponent {
   private readonly store = inject(Store);
 
-  protected scaleBarLabel: string | undefined;
-  @ViewChild('scaleBar', {static: true}) private scaleBar!: ElementRef;
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly scaleBarConfig$ = this.store.select(selectScaleBarConfig);
+  public readonly scaleBarConfig = this.store.selectSignal(selectScaleBarConfig);
+  public readonly scaleBarLabel = computed(() => {
+    const scaleBarConfig = this.scaleBarConfig();
+    if (!scaleBarConfig) {
+      return '';
+    }
 
-  public ngAfterViewInit() {
-    this.subscriptions.add(
-      this.scaleBarConfig$
-        .pipe(
-          delay(0), // delayed to a separate task run, to avoid NgExpressionChangedAfterChecked
-          filter((scaleBarConfig): scaleBarConfig is ScaleBarConfig => scaleBarConfig !== undefined),
-          tap(({scaleBarWidthInPx, value, unit}) => {
-            this.scaleBar.nativeElement.style.width = `${scaleBarWidthInPx}px`;
-            this.scaleBarLabel = `${value} ${unit}`;
-          }),
-        )
-        .subscribe(),
-    );
-  }
+    return `${scaleBarConfig.value} ${scaleBarConfig.unit}`;
+  });
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+  public readonly scaleBarStyle = computed(() => {
+    const scaleBarConfig = this.scaleBarConfig();
+    if (!scaleBarConfig) {
+      return '';
+    }
+
+    return `width: ${scaleBarConfig.scaleBarWidthInPx}px;`;
+  });
 }

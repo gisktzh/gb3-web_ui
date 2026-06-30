@@ -1,4 +1,4 @@
-@if (!isSimplifiedPage) {
+@if (!isSimplifiedPage()) {
   <mat-toolbar class="navbar-mobile" color="primary">
     <span class="navbar-mobile__item"> Geoportal Kanton Zürich </span>
     <span class="navbar-mobile__spacer"></span>
@@ -18,7 +18,7 @@
 } @else {
   <div class="navbar-mobile-simplified">
     <button (click)="showMenu()" class="navbar-mobile-simplified__button" mat-icon-button>
-      <mat-icon svgIcon="ktzh_menu_mobile"></mat-icon>
+      <mat-icon svgIcon="ktzh_menu_mobile" />
     </button>
   </div>
 }

@@ -24,7 +24,9 @@ const mockBasemapConfig = {
 describe('BasemapImageLinkPipe', () => {
   let pipe: BasemapImageLinkPipe;
   beforeEach(() => {
-    const spy = jasmine.createSpyObj('ConfigService', [], {basemapConfig: mockBasemapConfig});
+    const spy = {
+      basemapConfig: mockBasemapConfig,
+    };
 
     TestBed.configureTestingModule({
       providers: [

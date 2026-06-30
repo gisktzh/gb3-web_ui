@@ -1,9 +1,7 @@
-import {AfterViewInit, Component, Injectable, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
-import {filter, Observable, Subject, Subscription, tap} from 'rxjs';
+import {Component, Injectable, effect, inject, viewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
 import {selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
-import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {selectDataCatalogueItems} from '../../../state/data-catalogue/selectors/data-catalogue-items.selector';
@@ -14,25 +12,26 @@ import {ActiveDataCatalogueFilter} from '../../../shared/interfaces/data-catalog
 import {selectActiveFilterValues} from '../../../state/data-catalogue/selectors/active-filter-values.selector';
 import {SearchActions} from '../../../state/app/actions/search.actions';
 import {ConfigService} from '../../../shared/services/config.service';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
 import {PageSectionComponent} from '../../../shared/components/page-section/page-section.component';
 import {HeroHeaderComponent} from '../../../shared/components/hero-header/hero-header.component';
-import {NgClass} from '@angular/common';
 import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
 import {LoadingAndProcessBarComponent} from '../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
 import {MatChipRow, MatChipRemove} from '@angular/material/chips';
 import {MatIcon} from '@angular/material/icon';
 import {CdkTable, CdkColumnDef, CdkCellDef, CdkCell, CdkRowDef, CdkRow} from '@angular/cdk/table';
 import {OverviewSearchResultItemComponent} from '../../../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
+import {Subject} from 'rxjs';
 
 const GEO_DATA_CATALOGUE_SUMMARY =
   'Im Geodatenkatalog finden Sie detaillierte Informationen zu allen verfügbaren Geodaten des Kantons Zürich: Woher sie stammen, wie aktuell und genau sie sind, wie Sie sie beziehen können und welche Nutzungsregeln gelten.';
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {
-  public readonly changes: Subject<void> = new Subject<void>();
+  // This only exists because the interface requests it. No real need from userland code.
+  public readonly changes: Subject<void> = new Subject();
+
   public firstPageLabel: string = 'Erste Seite';
   public itemsPerPageLabel: string = 'Einträge pro Seite';
   public lastPageLabel: string = 'Letzte Seite';
@@ -60,7 +59,6 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
   imports: [
     PageSectionComponent,
     HeroHeaderComponent,
-    NgClass,
     SearchInputComponent,
     LoadingAndProcessBarComponent,
     MatChipRow,
@@ -76,53 +74,40 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
     MatPaginator,
   ],
 })
-export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DataCatalogueOverviewComponent {
   private readonly store = inject(Store);
   private readonly dialogService = inject(MatDialog);
   private readonly configService = inject(ConfigService);
 
-  public loadingState: LoadingState;
+  public readonly loadingState = this.store.selectSignal(selectLoadingState);
+  public readonly activeFilters = this.store.selectSignal(selectActiveFilterValues);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly dataCatalogueLoadingState = this.store.selectSignal(selectLoadingState);
+  public readonly dataCatalogueItemsFromStore = this.store.selectSignal(selectDataCatalogueItems);
   public dataCatalogueItems: MatTableDataSource<OverviewSearchResultDisplayItem> = new MatTableDataSource<OverviewSearchResultDisplayItem>(
     [],
   );
-  public activeFilters: ActiveDataCatalogueFilter[] = [];
-  public screenMode: ScreenMode = 'regular';
   public heroText = GEO_DATA_CATALOGUE_SUMMARY;
-
-  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly searchConfig = this.configService.searchConfig.dataCatalogPage;
-  private readonly activeFilters$: Observable<ActiveDataCatalogueFilter[]> = this.store.select(selectActiveFilterValues);
-  private readonly dataCatalogueItems$: Observable<OverviewSearchResultDisplayItem[]> = this.store.select(selectDataCatalogueItems);
-  private readonly dataCatalogueLoadingState$: Observable<LoadingState> = this.store.select(selectLoadingState);
-  private readonly subscriptions: Subscription = new Subscription();
-  @ViewChild(MatPaginator) private paginator!: MatPaginator;
+  private readonly paginator = viewChild.required<MatPaginator>(MatPaginator);
 
   constructor() {
     this.store.dispatch(DataCatalogueActions.loadCatalogue());
-  }
+    this.clearSearchTerm();
 
-  public ngAfterViewInit() {
-    // In order for the paginator to correctly work, we need to wait for its rendered state in the DOM.
-    this.subscriptions.add(
-      this.dataCatalogueLoadingState$
-        .pipe(
-          filter((loadingState) => loadingState === 'loaded'),
-          tap(() => {
-            // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
-            setTimeout(() => (this.dataCatalogueItems.paginator = this.paginator), 0);
-          }),
-        )
-        .subscribe(),
-    );
-  }
+    effect(() => {
+      if (this.dataCatalogueLoadingState() === 'loaded') {
+        queueMicrotask(() => {
+          this.dataCatalogueItems.paginator = this.paginator();
+          this.dataCatalogueItems._updateChangeSubscription();
+        });
+      }
+    });
 
-  public ngOnInit() {
-    this.store.dispatch(SearchActions.clearSearchTerm());
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    effect(() => {
+      this.dataCatalogueItems.data = this.dataCatalogueItemsFromStore();
+      this.dataCatalogueItems._updateChangeSubscription();
+    });
   }
 
   public searchForTerm(term: string) {
@@ -142,12 +127,5 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
 
   public toggleFilter({key, value}: ActiveDataCatalogueFilter) {
     this.store.dispatch(DataCatalogueActions.toggleFilter({key, value}));
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.dataCatalogueLoadingState$.pipe(tap((loadingState) => (this.loadingState = loadingState))).subscribe());
-    this.subscriptions.add(this.dataCatalogueItems$.pipe(tap((items) => (this.dataCatalogueItems.data = items))).subscribe());
-    this.subscriptions.add(this.activeFilters$.pipe(tap((activeFilters) => (this.activeFilters = activeFilters))).subscribe());
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

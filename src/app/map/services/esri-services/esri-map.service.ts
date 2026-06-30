@@ -1,9 +1,8 @@
-import {Injectable, OnDestroy, inject} from '@angular/core';
+import {Injectable, computed, effect, inject, signal, untracked} from '@angular/core';
 import esriConfig from '@arcgis/core/config';
 import * as affineTransformOperator from '@arcgis/core/geometry/operators/affineTransformOperator.js';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {Store} from '@ngrx/store';
-import {BehaviorSubject, filter, first, map, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {AuthService} from '../../../auth/auth.service';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -46,7 +45,6 @@ import {InitialMapExtentService} from '../initial-map-extent.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {HitTestSelectionUtils} from './utils/hit-test-selection.utils';
 import * as intl from '@arcgis/core/intl';
-import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {TimeSliderService} from '../time-slider.service';
 import {ZoomExtentMissing} from './errors/esri.errors';
 import {SymbolUnion} from '@arcgis/core/symbols/types';
@@ -65,7 +63,6 @@ import MapView from '@arcgis/core/views/MapView';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import {EsriLoadStatus} from './types/esri-load-status.type';
 import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOperator.js';
-import {MapViewWithMap} from './types/esri-mapview-with-map.type';
 import {TIME_SERVICE} from '../../../app.tokens';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from './utils/esri-graphic-to-internal-drawing-representation.utils';
@@ -93,7 +90,7 @@ enum EsriMouseButtonType {
 @Injectable({
   providedIn: 'root',
 })
-export class EsriMapService implements MapService, OnDestroy {
+export class EsriMapService implements MapService {
   private readonly store = inject(Store);
   private readonly transformationService = inject(TransformationService);
   private readonly geoJSONMapperService = inject(GeoJSONMapperService);
@@ -106,23 +103,28 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly gb3TopicsService = inject(Gb3TopicsService);
   private readonly initialMapExtentService = inject(InitialMapExtentService);
   private readonly timeSliderService = inject(TimeSliderService);
-  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+  private readonly timeService = inject(TIME_SERVICE);
 
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
-  private isEditModeActive = false;
-  private isToolActive = false;
-  private readonly printPreviewHandle$: BehaviorSubject<ResourceHandle | null> = new BehaviorSubject<ResourceHandle | null>(null);
+  private readonly isEditModeActive = signal(false);
+  private readonly isToolActive = computed(() => !!this.activeTool());
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
-  private readonly rotation$ = this.store.select(selectRotation);
-  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly activeBasemapId = this.store.selectSignal(selectActiveBasemapId);
+  private readonly rotation = this.store.selectSignal(selectRotation);
+  private readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  private readonly activeTool = this.store.selectSignal(selectActiveTool);
+  private readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
+  private readonly activeMapItems = this.store.selectSignal(selectAllItems);
+  private readonly drawings = this.store.selectSignal(selectDrawings);
   // starting with Arcgis v5, this cast is necessary since we also supply the mode, which is not exposed by config
   private readonly wmsImageFormatMimeType: WMSLayerFormatType = this.configService.gb2Config.wmsFormatMimeType as WMSLayerFormatType;
-  private mapInitialized = false;
+  public readonly mapInitialized = signal(false);
+  private readonly printPreviewHandle = signal<ResourceHandle | null>(null);
+  private readonly previousPrintPreviewHandle = signal<ResourceHandle | null>(null);
+  public readonly mapContainerElement = signal<HTMLDivElement | null>(null);
 
   constructor() {
     /**
@@ -136,16 +138,97 @@ export class EsriMapService implements MapService, OnDestroy {
      */
     intl.setLocale('de');
 
-    this.initializeInterceptors();
-    this.initializeSubscriptions();
+    effect(() => {
+      /**
+       * This effect tracks the active print preview handle changes and automatically destroys old handles properly.
+       * Otherwise this could result in potential memory leaks as we could lose the reference to
+       * an old (but still active) handle which will be still active in the background forever.
+       */
+      const previousHandle = untracked(() => this.previousPrintPreviewHandle());
+      if (previousHandle) {
+        previousHandle.remove();
+      }
+
+      this.previousPrintPreviewHandle.set(this.printPreviewHandle());
+    });
+
+    effect(() => {
+      // Create dependency on isAuthenticated
+      this.isAuthenticated();
+      // We need several interceptors to trick ESRI Javascript API into working with the intricacies of the ZH GB2 configurations.
+      const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
+      esriConfig.request.interceptors = []; // pop existing as soon as we add more interceptors
+      esriConfig.request.interceptors.push(newInterceptor);
+    });
+
+    effect(() => {
+      const activeBaseMapId = this.activeBasemapId();
+      if (activeBaseMapId && untracked(() => this.esriMapViewService.mapView())) {
+        this.switchBasemap(activeBaseMapId);
+      }
+    });
+
+    effect(() => {
+      const rotation = this.rotation();
+      if (rotation === 0 && untracked(() => this.esriMapViewService.mapView())) {
+        this.setRotationAngle(rotation);
+      }
+    });
+
+    effect(() => {
+      const mapViewContainer = untracked(() => this.esriMapViewService.mapView())?.container;
+      if (mapViewContainer) {
+        mapViewContainer.style.cursor = this.isToolActive() ? 'wait' : 'default';
+      }
+    });
+
+    effect(async () => {
+      const mapContainerElement = this.mapContainerElement();
+      if (!mapContainerElement) {
+        return;
+      }
+
+      const isMapInitialized = untracked(() => this.mapInitialized());
+      if (isMapInitialized) {
+        return;
+      }
+
+      this.mapInitialized.set(true);
+
+      const config = this.mapConfigState();
+      const activeMapItems = untracked(() => this.activeMapItems());
+      const drawings = untracked(() => this.drawings());
+
+      const {x, y} = config.center;
+      const {minScale, maxScale} = config.scaleSettings;
+      const {scale, srsId, activeBasemapId} = config;
+      const mapInstance = this.createMap(activeBasemapId);
+      this.setMapView(mapInstance, {x, y}, srsId, {scale, minScale, maxScale}, mapContainerElement);
+      this.attachMapViewListeners();
+      this.initDrawingLayers();
+      await Promise.all(
+        activeMapItems.map(async (mapItem, position) => {
+          mapItem.addToMap(this, position);
+
+          if (mapItem instanceof DrawingActiveMapItem) {
+            const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.drawingLayer);
+            return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.drawingLayer);
+          }
+        }),
+      );
+      this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+    });
   }
 
-  private get mapView(): MapViewWithMap {
-    return this.esriMapViewService.mapView;
+  public getMapView(): MapView {
+    return this.esriMapViewService.getMapView();
   }
 
-  private set mapView(value: MapView) {
-    this.esriMapViewService.mapView = value;
+  public deInit() {
+    this.esriMapViewService.mapView.set(undefined);
+    this.mapInitialized.set(false);
+    this.mapContainerElement.set(null);
+    this.store.dispatch(MapConfigActions.markMapServiceAsDeinitialized());
   }
 
   public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {
@@ -158,84 +241,36 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public moveLayerToTop(mapItem: ActiveMapItem) {
     const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
+    const map = this.getMapView().map;
 
-    if (esriLayer) {
-      this.mapView.map.layers.reorder(esriLayer, this.mapView.map.layers.length - this.numberOfDrawingLayers - 1);
+    if (esriLayer && map) {
+      map.layers.reorder(esriLayer, map.layers.length - this.numberOfDrawingLayers - 1);
     }
   }
 
   public setScale(scale: number) {
-    this.mapView.scale = scale;
+    this.getMapView().scale = scale;
   }
 
   public handleZoom(zoomType: ZoomType) {
-    const currentZoom = Math.floor(this.mapView.zoom);
+    const currentZoom = Math.floor(this.getMapView().zoom);
     switch (zoomType) {
       case 'zoomIn': {
         const zoomTo = currentZoom + 1;
         if (zoomTo <= this.effectiveMaxZoom) {
-          this.mapView.zoom = zoomTo;
+          this.getMapView().zoom = zoomTo;
         }
         break;
       }
       case 'zoomOut': {
         const zoomTo = currentZoom - 1;
-        const currentScale = this.mapView.scale;
+        const currentScale = this.getMapView().scale;
         // also check for currentscale, because we might be at the lowest zoomlevel, but not yet at the lowest scale
         if (zoomTo >= this.effectiveMinZoom || currentScale <= this.effectiveMinScale) {
-          this.mapView.zoom = zoomTo;
+          this.getMapView().zoom = zoomTo;
         }
       }
     }
-  }
-
-  public init(): void {
-    if (this.mapInitialized) {
-      return;
-    }
-    this.mapInitialized = true;
-
-    this.store
-      .select(selectMapConfigState)
-      .pipe(
-        first(),
-        withLatestFrom(this.store.select(selectAllItems), this.store.select(selectDrawings)),
-        tap(async ([config, activeMapItems, drawings]) => {
-          const {x, y} = config.center;
-          const {minScale, maxScale} = config.scaleSettings;
-          const {scale, srsId, activeBasemapId} = config;
-          const mapInstance = this.createMap(activeBasemapId);
-          this.setMapView(mapInstance, scale, x, y, srsId, minScale, maxScale);
-          this.attachMapViewListeners();
-          this.addBasemapSubscription();
-          this.rotationReset();
-          this.initDrawingLayers();
-          await Promise.all(
-            activeMapItems.map(async (mapItem, position) => {
-              mapItem.addToMap(this, position);
-
-              if (mapItem instanceof DrawingActiveMapItem) {
-                const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.drawingLayer);
-                return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.drawingLayer);
-              }
-            }),
-          );
-          this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
-        }),
-      )
-      .subscribe();
-
-    this.store
-      .select(selectActiveTool)
-      .pipe(
-        tap((value) => {
-          this.isToolActive = value !== undefined;
-          if (this.mapView.container) {
-            this.mapView.container.style.cursor = value === undefined ? 'default' : 'wait';
-          }
-        }),
-      )
-      .subscribe();
   }
 
   public addDrawingLayer(mapItem: DrawingActiveMapItem, position: number) {
@@ -246,7 +281,7 @@ export class EsriMapService implements MapService, OnDestroy {
       id: mapItem.id,
     });
     const index = this.getIndexForPosition(position);
-    this.mapView.map.add(graphicsLayer, index);
+    this.getMapView().map?.add(graphicsLayer, index);
   }
 
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number) {
@@ -312,32 +347,30 @@ export class EsriMapService implements MapService, OnDestroy {
   public removeMapItem(id: string) {
     const esriLayer = this.esriMapViewService.findEsriLayer(id);
     if (esriLayer) {
-      this.mapView.map.remove(esriLayer);
+      this.getMapView().map?.remove(esriLayer);
     }
   }
 
   public removeAllMapItems() {
     // remove all non-internal layers
-    const nonInternalLayers = this.mapView.map.layers.filter(
+    const nonInternalLayers = this.getMapView().map?.layers.filter(
       (layer) => !layer.id.startsWith(this.configService.mapConfig.internalLayerPrefix),
     );
-    this.mapView.map.removeMany(nonInternalLayers.toArray());
+    if (nonInternalLayers) {
+      this.getMapView().map?.removeMany(nonInternalLayers.toArray());
+    }
 
     // clear all internal graphic layers
-    const internalLayers = this.mapView.map.layers.filter(
+    const internalLayers = this.getMapView().map?.layers.filter(
       (layer) => layer.id.startsWith(this.configService.mapConfig.internalLayerPrefix) && layer instanceof GraphicsLayer,
     );
-    internalLayers.forEach((internalLayer) => {
+    internalLayers?.forEach((internalLayer) => {
       (internalLayer as GraphicsLayer).removeAll();
     });
   }
 
   public assignMapElement(container: HTMLDivElement) {
-    this.mapView.container = container;
-  }
-
-  public unassignMapElement() {
-    this.mapView.container = null;
+    this.mapContainerElement.set(container);
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
@@ -356,8 +389,8 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public resetExtent() {
     const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
-    this.mapView.center = new Point({x, y, spatialReference: new SpatialReference({wkid: this.defaultMapConfig.srsId})});
-    this.mapView.scale = scale;
+    this.getMapView().center = new Point({x, y, spatialReference: new SpatialReference({wkid: this.defaultMapConfig.srsId})});
+    this.getMapView().scale = scale;
   }
 
   public setSublayerVisibility(visible: boolean, mapItem: ActiveMapItem, layerId: number) {
@@ -371,7 +404,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public setMapCenter(center: PointWithSrs): Promise<never> {
-    return this.mapView.goTo({
+    return this.getMapView().goTo({
       center: this.createGeoReferencedPoint(center),
     }) as never;
   }
@@ -402,9 +435,9 @@ export class EsriMapService implements MapService, OnDestroy {
     const previousIndex = this.getNumberOfNonDrawingLayers() - 1 - previousPosition;
     const currentIndex = this.getNumberOfNonDrawingLayers() - 1 - currentPosition;
 
-    const layer = this.mapView.map.layers.getItemAt(previousIndex);
+    const layer = this.getMapView().map?.layers.getItemAt(previousIndex);
     if (layer) {
-      this.mapView.map.layers.reorder(layer, currentIndex);
+      this.getMapView().map?.layers.reorder(layer, currentIndex);
     }
   }
 
@@ -428,7 +461,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public zoomToPoint(point: PointWithSrs, scale: number): Promise<never> {
-    return this.mapView.goTo({
+    return this.getMapView().goTo({
       center: this.createGeoReferencedPoint(point),
       scale: scale,
     }) as never;
@@ -438,7 +471,7 @@ export class EsriMapService implements MapService, OnDestroy {
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
 
     if (esriGeometry instanceof Point) {
-      return this.mapView.goTo(
+      return this.getMapView().goTo(
         {
           center: esriGeometry,
           scale: DEFAULT_POINT_ZOOM_EXTENT_SCALE,
@@ -448,7 +481,7 @@ export class EsriMapService implements MapService, OnDestroy {
     }
 
     if (hasNonNullishProperty(esriGeometry, 'extent')) {
-      return this.mapView.goTo(esriGeometry.extent.clone().expand(expandFactor), {duration}) as never;
+      return this.getMapView().goTo(esriGeometry.extent.clone().expand(expandFactor), {duration}) as never;
     }
 
     throw new ZoomExtentMissing();
@@ -491,9 +524,9 @@ export class EsriMapService implements MapService, OnDestroy {
     // listen to any map center changes and redraw the print preview area to keep it in the center of the map
     // the old print preview handle gets removed automatically using a subscription that listens to the value changes and removes old
     // handlers
-    this.printPreviewHandle$.next(
+    this.printPreviewHandle.set(
       reactiveUtils.watch(
-        () => [this.mapView.center.x, this.mapView.center.y],
+        () => [this.getMapView().center.x, this.getMapView().center.y],
         ([x, y]) => {
           // redraw the print preview area if either the x or the y coordinate of the map center changes so that it is always in the center
           this.handlePrintPreview({x, y}, extentWidth, extentHeight, rotation);
@@ -502,7 +535,7 @@ export class EsriMapService implements MapService, OnDestroy {
     );
 
     // draw the new geometry once as it is entirely possible that the map center didn't change yet and then zoom to the geometry.
-    const geometryWithSrs: PolygonWithSrs = this.handlePrintPreview(this.mapView.center, extentWidth, extentHeight, rotation);
+    const geometryWithSrs: PolygonWithSrs = this.handlePrintPreview(this.getMapView().center, extentWidth, extentHeight, rotation);
     await this.zoomToExtent(
       geometryWithSrs,
       this.configService.mapAnimationConfig.zoom.expandFactor,
@@ -511,20 +544,16 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public stopDrawPrintPreview() {
-    this.printPreviewHandle$.next(null);
+    this.printPreviewHandle.set(null);
     this.clearInternalDrawingLayer(InternalDrawingLayer.PrintPreview);
   }
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
   public setRotationAngle(rotation: number) {
-    this.mapView.rotation = rotation;
+    this.getMapView().rotation = rotation;
   }
 
   public cancelEditMode() {
-    this.isEditModeActive = false;
+    this.isEditModeActive.set(false);
     this.esriToolService.cancelTool();
   }
 
@@ -571,7 +600,7 @@ export class EsriMapService implements MapService, OnDestroy {
      * independent from the state/GUI layers.
      */
     const index = this.getIndexForPosition(position);
-    this.mapView.map.add(esriLayer, index);
+    this.getMapView().map?.add(esriLayer, index);
   }
 
   private addEsriGeometryToDrawingLayer(
@@ -633,7 +662,7 @@ export class EsriMapService implements MapService, OnDestroy {
         id: this.createInternalLayerId(drawingLayer),
       });
 
-      this.mapView.map.add(graphicsLayer);
+      this.getMapView().map?.add(graphicsLayer);
     });
   }
 
@@ -647,7 +676,12 @@ export class EsriMapService implements MapService, OnDestroy {
    * @private
    */
   private getNumberOfNonDrawingLayers(): number {
-    return this.mapView.map.layers.length - this.numberOfDrawingLayers;
+    const map = this.getMapView().map;
+    if (!map) {
+      return 0;
+    }
+
+    return map.layers.length - this.numberOfDrawingLayers;
   }
 
   private createGeoReferencedPoint({coordinates, srs}: PointWithSrs): Point {
@@ -745,72 +779,6 @@ export class EsriMapService implements MapService, OnDestroy {
     esriLayer.sublayers = esriSublayers;
   }
 
-  /**
-   * We need several interceptors to trick ESRI Javascript API into working with the intricacies of the ZH GB2 configurations.
-   * @private
-   */
-  private initializeInterceptors() {
-    this.subscriptions.add(
-      this.isAuthenticated$
-        .pipe(
-          tap(() => {
-            const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
-            esriConfig.request.interceptors = []; // pop existing as soon as we add more interceptors
-            esriConfig.request.interceptors.push(newInterceptor);
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
-  private initializeSubscriptions() {
-    this.subscriptions.add(
-      /**
-       * This pipe tracks the active print preview handle changes and automatically destroys old handles properly.
-       * Otherwise this could result in potential memory leaks as we could lose the reference to
-       * an old (but still active) handle which will be still active in the background forever.
-       */
-      this.printPreviewHandle$
-        .pipe(
-          pairwise(),
-          map(([previousHandle, activeHandle]) => {
-            if (previousHandle) {
-              // properly destroy the old handle
-              previousHandle.remove();
-            }
-            return activeHandle;
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
-  private addBasemapSubscription() {
-    this.subscriptions.add(
-      this.activeBasemapId$
-        .pipe(
-          skip(1), // Skip first, because the first is set by init()
-          tap((activeBasemapId) => {
-            this.switchBasemap(activeBasemapId);
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
-  private rotationReset() {
-    this.subscriptions.add(
-      this.rotation$
-        .pipe(
-          filter((rotation) => rotation === 0),
-          tap((rotation) => {
-            this.setRotationAngle(rotation);
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
   private createMap(initialBasemapId: string): EsriMap {
     return new EsriMap({
       basemap: new Basemap({
@@ -843,33 +811,49 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private setMapView(mapInstance: EsriMap, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
+  private setMapView(
+    mapInstance: EsriMap,
+    center: {
+      x: number;
+      y: number;
+    },
+    srsId: number,
+    scaleSettings: {
+      scale: number;
+      minScale: number;
+      maxScale: number;
+    },
+    container: HTMLDivElement,
+  ) {
     const spatialReference = new SpatialReference({wkid: srsId});
-    this.mapView = new MapView({
-      map: mapInstance,
-      scale,
-      center: new Point({x, y, spatialReference}),
-      constraints: {
-        snapToZoom: false,
-        minScale,
-        maxScale,
-        lods: TileInfo.create({
-          /**
-           * This number seems to be required for Esri to generate enough ZoomLevels to also include 1:1. Setting it to anything below 32
-           * will lead to an inversion of levels, only allowing for zooming from 1:1500000 to 1:VERYLARGENUMBER.
-           *
-           * See https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-TileInfo.html#create
-           *
-           * Note that increasing this number will not add anything more; the minimum scale will still be calculated at an approximation of
-           * MAPCONSTANTS.minScale.
-           */
-          numLODs: 32,
-          spatialReference,
-        }).lods,
-      },
-      spatialReference,
-      popupEnabled: false,
-    });
+    this.esriMapViewService.mapView.set(
+      new MapView({
+        container,
+        map: mapInstance,
+        scale: scaleSettings.scale,
+        center: new Point({x: center.x, y: center.y, spatialReference}),
+        constraints: {
+          snapToZoom: false,
+          minScale: scaleSettings.minScale,
+          maxScale: scaleSettings.maxScale,
+          lods: TileInfo.create({
+            /**
+             * This number seems to be required for Esri to generate enough ZoomLevels to also include 1:1. Setting it to anything below 32
+             * will lead to an inversion of levels, only allowing for zooming from 1:1500000 to 1:VERYLARGENUMBER.
+             *
+             * See https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-TileInfo.html#create
+             *
+             * Note that increasing this number will not add anything more; the minimum scale will still be calculated at an approximation of
+             * MAPCONSTANTS.minScale.
+             */
+            numLODs: 32,
+            spatialReference,
+          }).lods,
+        },
+        spatialReference,
+        popupEnabled: false,
+      }),
+    );
   }
 
   private updateReferenceDistance() {
@@ -879,41 +863,43 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private attachMapViewListeners() {
     reactiveUtils.when(
-      () => this.mapView.stationary,
+      () => this.getMapView().stationary,
       () => this.updateMapConfig(),
     );
 
     // ensure that the reference distance is calculated after the map is ready, since the scale listener only fires after the first change
-    reactiveUtils.whenOnce(() => this.mapView.ready).then(() => this.updateReferenceDistance());
+    reactiveUtils.whenOnce(() => this.getMapView().ready).then(() => this.updateReferenceDistance());
     reactiveUtils.watch(
-      () => this.mapView.scale,
+      () => this.getMapView().scale,
       () => this.updateReferenceDistance(),
     );
 
     reactiveUtils.on(
-      () => this.mapView,
+      () => this.esriMapViewService.mapView(),
       'click',
       async (event: ClickEvent) => {
         // Tool handles all clicks, and as long as a tool is active, but hasn't fully initialized yet, we don't want any interaction on the map.
-        if (this.isToolActive) {
+        if (this.isToolActive()) {
           return;
         }
 
         if (event.button === EsriMouseButtonType.LeftClick) {
           const {x, y} = this.transformationService.transform(event.mapPoint);
-          if (this.isEditModeActive) {
-            this.isEditModeActive = false;
+          if (this.isEditModeActive()) {
+            this.isEditModeActive.set(false);
           } else {
-            this.dispatchFeatureInfoRequest(x, y, Math.round(this.mapView.scale));
+            this.dispatchFeatureInfoRequest(x, y, Math.round(this.getMapView().scale));
           }
         } else if (event.button === EsriMouseButtonType.RightClick) {
-          const layersToTest = this.mapView.map.layers
-            .filter((layer) => this.configService.mapConfig.editableLayerIds.includes(layer.id))
-            .toArray();
-          const {results} = await this.mapView.hitTest(event, {include: layersToTest});
+          const map = this.getMapView().map;
+          if (!map) {
+            return;
+          }
+          const layersToTest = map.layers.filter((layer) => this.configService.mapConfig.editableLayerIds.includes(layer.id)).toArray();
+          const {results} = await this.getMapView().hitTest(event, {include: layersToTest});
           const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[]);
           if (selectedFeature) {
-            this.isEditModeActive = true;
+            this.isEditModeActive.set(true);
             this.esriToolService.editDrawing(selectedFeature);
           }
         }
@@ -921,16 +907,16 @@ export class EsriMapService implements MapService, OnDestroy {
     );
 
     reactiveUtils.watch(
-      () => this.mapView.rotation,
+      () => this.getMapView().rotation,
       (rotation) => {
         this.dispatchRotationEvent(rotation);
       },
     );
 
     reactiveUtils
-      .whenOnce(() => this.mapView.ready && this.transformationService.projectionOperatorLoaded)
+      .whenOnce(() => this.getMapView().ready && this.transformationService.projectionOperatorLoaded)
       .then(() => {
-        const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;
+        const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.getMapView().constraints;
 
         this.effectiveMaxZoom = effectiveMaxZoom!;
         this.effectiveMinZoom = effectiveMinZoom!;
@@ -945,7 +931,7 @@ export class EsriMapService implements MapService, OnDestroy {
       });
 
     reactiveUtils.on(
-      () => this.mapView,
+      () => this.esriMapViewService.mapView(),
       'layerview-create',
       (event: LayerViewCreateEvent) => {
         this.attachLayerViewListeners(event.layerView);
@@ -1022,7 +1008,8 @@ export class EsriMapService implements MapService, OnDestroy {
     if (!this.transformationService.projectionOperatorLoaded) {
       return;
     }
-    const {center, scale} = this.mapView;
+
+    const {center, scale} = this.getMapView();
     const {x, y} = this.transformationService.transform(center);
     this.store.dispatch(MapConfigActions.setMapExtent({x, y, scale}));
   }
@@ -1033,15 +1020,15 @@ export class EsriMapService implements MapService, OnDestroy {
    * distance which is known, which can be used by the scale bar to calculate its width.
    */
   private calculateReferenceDistanceInMeters(): number {
-    const screenHeight = this.mapView.height / 2;
-    const pointA = this.mapView.toMap({x: 0, y: screenHeight});
-    const pointB = this.mapView.toMap({x: MapConstants.MAX_SCALE_BAR_WIDTH_PX, y: screenHeight});
+    const screenHeight = this.getMapView().height / 2;
+    const pointA = this.getMapView().toMap({x: 0, y: screenHeight});
+    const pointB = this.getMapView().toMap({x: MapConstants.MAX_SCALE_BAR_WIDTH_PX, y: screenHeight});
 
     return distanceOperator.execute(pointA, pointB, {unit: 'meters'});
   }
 
   private switchBasemap(basemapId: string) {
-    this.mapView.map.basemap?.baseLayers.forEach((baseLayer) => {
+    this.getMapView().map?.basemap?.baseLayers.forEach((baseLayer) => {
       baseLayer.visible = basemapId === baseLayer.id;
     });
   }

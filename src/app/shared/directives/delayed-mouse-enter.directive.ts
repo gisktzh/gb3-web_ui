@@ -1,47 +1,43 @@
-import {Directive, EventEmitter, HostListener, Input, OnDestroy, Output} from '@angular/core';
-import {Subject, Subscription, takeUntil, tap, timer} from 'rxjs';
+import {Directive, input, output, OnDestroy} from '@angular/core';
 
 /**
- * Fires a delayed mouseenter event by the specified amount of miliseconds. If mouseleave occurs before the delay is finished, no event will
- * be fired.
+ * Fires a delayed mouseenter event. If mouseleave happens before the delay,
+ * the event is cancelled.
  */
 @Directive({
   selector: '[delayedMouseEnter]',
   standalone: true,
+  host: {
+    '(mouseenter)': 'onMouseEnter()',
+    '(mouseleave)': 'onMouseLeave()',
+  },
 })
 export class DelayedMouseEnterDirective implements OnDestroy {
-  /**
-   * Defines the duration of the delay in miliseconds, defaults to 1000ms
-   */
-  @Input() public delayDurationInMs: number = 1000;
-  @Output() public readonly delayedMouseEnter = new EventEmitter<void>();
-  private readonly unsubscribe$ = new Subject<void>();
-  private subscription?: Subscription;
+  public readonly delayDurationInMs = input<number>(1000);
+  public readonly delayedMouseEnter = output<void>();
 
-  @HostListener('mouseenter')
-  public onMouseEnter() {
-    this.subscription = timer(this.delayDurationInMs)
-      .pipe(
-        tap(() => this.delayedMouseEnter.emit()),
-        takeUntil(this.unsubscribe$),
-      )
-      .subscribe();
+  private timeoutId?: ReturnType<typeof setTimeout>;
+
+  public onMouseEnter(): void {
+    this.clearTimeout();
+
+    this.timeoutId = setTimeout(() => {
+      this.delayedMouseEnter.emit();
+    }, this.delayDurationInMs());
   }
 
-  @HostListener('mouseleave')
-  public onMouseLeave() {
-    this.handleUnsubscribe();
+  public onMouseLeave(): void {
+    this.clearTimeout();
   }
 
-  public ngOnDestroy() {
-    this.handleUnsubscribe();
+  public ngOnDestroy(): void {
+    this.clearTimeout();
   }
 
-  private handleUnsubscribe() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+  private clearTimeout(): void {
+    if (this.timeoutId !== undefined) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = undefined;
     }
   }
 }

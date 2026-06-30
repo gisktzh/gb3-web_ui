@@ -1,39 +1,47 @@
-<div class="search" [ngClass]="'search--' + mode">
+<!-- eslint-disable @angular-eslint/template/no-autofocus -- ESLint says it's an anti-pattern, but it has been implemented without autofocus. -->
+<div
+  class="search"
+  [class.search--normal]="mode() === 'normal'"
+  [class.search--mobile]="mode() === 'mobile'"
+  [class.search--compact]="mode() === 'compact'"
+>
   <div class="search__bar">
-    <mat-icon class="search__bar__icon" svgIcon="ktzh_search"></mat-icon>
+    <mat-icon class="search__bar__icon" svgIcon="ktzh_search" />
     <input
       #searchInput
-      class="search__bar__input"
-      [ngClass]="{'search__bar__input--mobile': screenMode === 'mobile'}"
-      [placeholder]="placeholderText"
       type="text"
+      [(ngModel)]="searchTerm"
+      class="search__bar__input"
+      [class.search__bar__input--mobile]="screenMode() === 'mobile'"
+      [placeholder]="placeholderText()"
       (focus)="focusEvent.emit()"
-      [disabled]="disabled"
+      [autofocus]="focusOnInit()"
+      [disabled]="disabled()"
     />
-    @if (showFilterButton && (mode === 'compact' || mode === 'mobile')) {
+    @if (showFilterButton() && (mode() === 'compact' || mode() === 'mobile')) {
       <button
         typedTourAnchor="map.search.filter"
         mat-icon-button
         (click)="openFilter()"
-        [ngClass]="{'search__bar__filter-button--active': isAnyFilterActive}"
+        [class.search__bar__filter-button--active]="isAnyFilterActive()"
         matTooltip="Suchresultate verfeinern"
         aria-label="Suchresultate verfeinern"
-        [disabled]="disabled"
+        [disabled]="disabled()"
       >
-        <mat-icon svgIcon="ktzh_filter"></mat-icon>
+        <mat-icon svgIcon="ktzh_filter" />
       </button>
-      <mat-divider [vertical]="true" class="search__bar__divider"></mat-divider>
+      <mat-divider [vertical]="true" class="search__bar__divider" />
     }
 
-    @if (clearButtonLabel) {
+    @if (clearButtonLabel()) {
       <button
         mat-button
         (click)="clearInput()"
         class="search__bar__close-button"
-        [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
+        [disabled]="(!alwaysEnableClearButton() && searchTerm().length === 0) || disabled()"
         aria-label="Sucheingabe löschen"
       >
-        {{ clearButtonLabel }}
+        {{ clearButtonLabel() }}
         <mat-icon>close</mat-icon>
       </button>
     } @else {
@@ -41,10 +49,10 @@
         mat-icon-button
         (click)="clearInput()"
         class="search__bar__close-icon-button"
-        [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
+        [disabled]="(!alwaysEnableClearButton() && searchTerm().length === 0) || disabled()"
         aria-label="Sucheingabe löschen"
       >
-        @if (screenMode === 'mobile') {
+        @if (screenMode() === 'mobile') {
           <mat-icon>cancel</mat-icon>
         } @else {
           <mat-icon>close</mat-icon>
@@ -52,13 +60,13 @@
       </button>
     }
   </div>
-  @if (showFilterButton && mode === 'normal') {
+  @if (showFilterButton() && mode() === 'normal') {
     <button
       class="search__filter-button"
       mat-button
       (click)="openFilter()"
-      [ngClass]="{'search__filter-button--active': isAnyFilterActive}"
-      [disabled]="disabled"
+      [class.search__filter-button--active]="isAnyFilterActive()"
+      [disabled]="disabled()"
     >
       Filter
     </button>

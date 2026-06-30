@@ -1,7 +1,7 @@
-<form [formGroup]="serviceFormGroup" class="map-import-service-and-url">
+<form class="map-import-service-and-url" [formRoot]="serviceAndUrlForm">
   <mat-form-field appearance="outline">
     <mat-label>Kartendienst oder Geodatenformat</mat-label>
-    <mat-select formControlName="serviceType">
+    <mat-select [formField]="serviceAndUrlForm.serviceType">
       <mat-option value="wms">WMS</mat-option>
       <mat-option value="kml">KML</mat-option>
     </mat-select>
@@ -9,16 +9,16 @@
 
   <mat-form-field appearance="outline" class="map-import-service-and-url__url-input">
     <mat-label>URL</mat-label>
-    <input matInput placeholder="Bitte URL zum Kartendienst eingeben" formControlName="url" (keyup)="handleManualValidation($event)" />
-    @if (loadingState === 'loaded') {
+    <input matInput placeholder="Bitte URL zum Kartendienst eingeben" formControlName="url" [formField]="serviceAndUrlForm.url" />
+    @if (loadingState() === 'loaded') {
       <mat-icon color="primary" matSuffix>check</mat-icon>
     }
-    @if (loadingState === 'error') {
+    @if (loadingState() === 'error') {
       <mat-icon color="warn" matSuffix>error</mat-icon>
     }
     <button
       class="map-import-service-and-url__url-input__validate-button"
-      [disabled]="!serviceFormGroup.controls.url.value || loadingState === 'loading'"
+      [disabled]="!validateButtonEnabled()"
       type="button"
       mat-button
       (click)="validateUrl()"
@@ -26,12 +26,11 @@
     >
       URL prüfen
     </button>
-    @if (loadingState === 'error') {
+    @if (loadingState() === 'error') {
       <mat-error class="mat-caption">Fehler beim Laden</mat-error>
     }
-    <mat-hint
-      >Überprüfen Sie die URL hinsichtlich ihrer Importierbarkeit durch Drücken der Enter-Taste oder über die Schaltfläche "URL
-      prüfen".</mat-hint
-    >
+    <mat-hint>
+      Überprüfen Sie die URL hinsichtlich ihrer Importierbarkeit durch Drücken der Enter-Taste oder über die Schaltfläche "URL prüfen".
+    </mat-hint>
   </mat-form-field>
 </form>

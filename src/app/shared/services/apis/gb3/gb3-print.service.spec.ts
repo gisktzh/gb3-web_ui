@@ -68,7 +68,7 @@ describe('Gb3PrintService', () => {
       map: {
         dpi: 9001,
         rotation: 42,
-        scale: 123_456_789,
+        scale: 123456789,
         center: [12.3, 45.6],
         mapItems: [
           {
@@ -126,7 +126,7 @@ describe('Gb3PrintService', () => {
       map: {
         dpi: 9001,
         rotation: 42,
-        scale: 123_456_789,
+        scale: 123456789,
         center: [12.3, 45.6],
         layers: [
           {
@@ -175,53 +175,54 @@ describe('Gb3PrintService', () => {
 
     const printResponseMock: PrintCreateData = {report_url: 'result url mock'};
 
-    it('should transform and send print jobs', (done: DoneFn) => {
-      const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of(printResponseMock));
+    it('should transform and send print jobs', () => {
+      const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(printResponseMock));
 
       service.createPrintJob(printCreationMock).subscribe((response) => {
         expect(response.reportUrl).toBe(printResponseMock.report_url);
-        expect(postCallSpy).toHaveBeenCalledOnceWith(
+        expect(postCallSpy).toHaveBeenCalledTimes(1);
+        expect(postCallSpy).toHaveBeenCalledWith(
           `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/print`,
           transformedPrintCreationMock,
           {
             headers: undefined,
           },
         );
-        done();
       });
     });
   });
 
   describe('printLegend', () => {
-    it('sends the printLegend request correctly', (done: DoneFn) => {
+    it('sends the printLegend request correctly', () => {
       const mockResponse: PrintCreateData = {report_url: 'https://www.example.com'};
-      const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of(mockResponse));
+      const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(mockResponse));
       const items: PrintableOverlayItem[] = [{topic: 'Legolas', layers: ['Has a mighty bow', 'And surfs on a shield']}];
 
       service.printLegend(items).subscribe((response) => {
         expect(response.reportUrl).toBe(mockResponse.report_url);
-        expect(postCallSpy).toHaveBeenCalledOnceWith(
+        expect(postCallSpy).toHaveBeenCalledTimes(1);
+        expect(postCallSpy).toHaveBeenCalledWith(
           `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/print/legend`,
           {legend_topics: items},
           {
             headers: undefined,
           },
         );
-        done();
       });
     });
   });
 
   describe('printFeatureInfo', () => {
-    it('sends the printFeatureInfo request correctly', (done: DoneFn) => {
+    it('sends the printFeatureInfo request correctly', () => {
       const mockResponse: PrintCreateData = {report_url: 'https://www.example.com'};
-      const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of(mockResponse));
+      const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(mockResponse));
       const mockQueryLocation: FeatureInfoQueryLocation = {x: 1337, y: 9001};
       const items: PrintableOverlayItem[] = [{topic: 'Legolas', layers: ['Has a mighty bow', 'And surfs on a shield']}];
 
       service.printFeatureInfo(items, mockQueryLocation.x!, mockQueryLocation.y!).subscribe((response) => {
         expect(response.reportUrl).toBe(mockResponse.report_url);
-        expect(postCallSpy).toHaveBeenCalledOnceWith(
+        expect(postCallSpy).toHaveBeenCalledTimes(1);
+        expect(postCallSpy).toHaveBeenCalledWith(
           `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/print/feature_info`,
           {
             query_topics: items,
@@ -232,16 +233,15 @@ describe('Gb3PrintService', () => {
             headers: undefined,
           },
         );
-        done();
       });
     });
   });
 
   describe('createPrintCreation', () => {
     it('creates a PrintCreation object from given parameters', () => {
-      spyOn(UuidUtils, 'createUuid').and.returnValue('not-a-real-uuid');
+      vi.spyOn(UuidUtils, 'createUuid').mockReturnValue('not-a-real-uuid');
       const basemapConfigService = TestBed.inject(BasemapConfigService);
-      spyOnProperty(basemapConfigService, 'availableBasemaps', 'get').and.returnValue([
+      vi.spyOn(basemapConfigService, 'availableBasemaps', 'get').mockReturnValue([
         {
           type: 'wms',
           id: 'test-basemap',
@@ -391,7 +391,7 @@ describe('Gb3PrintService', () => {
               type: 'Vector',
               geojson: {
                 type: 'FeatureCollection',
-                features: [jasmine.objectContaining({properties: jasmine.objectContaining({style: 'not-a-real-uuid'})})],
+                features: [expect.objectContaining({properties: expect.objectContaining({style: 'not-a-real-uuid'})})],
               },
               styles: {
                 'not-a-real-uuid': {type: 'point'},

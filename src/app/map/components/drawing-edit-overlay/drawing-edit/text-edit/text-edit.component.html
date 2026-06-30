@@ -1,49 +1,16 @@
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Text</h3>
 <mat-form-field appearance="outline" class="label-text">
   <mat-label>Beschriftung</mat-label>
-  <input
-    matInput
-    [value]="labelText"
-    [maxLength]="maxLength"
-    [(ngModel)]="labelText"
-    (ngModelChange)="updateValue('label', labelText)"
-    required
-  />
+  <input matInput [formField]="textStyleForm.label" />
 </mat-form-field>
-<mat-divider class="divider"></mat-divider>
+<mat-divider class="divider" />
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Schrift</h3>
-<slider-edit
-  (updateSliderEvent)="updateValue('fontSize', $event)"
-  [sliderValue]="textStyle.fontSize | number"
-  [min]="8"
-  [max]="48"
-  [step]="1"
-  title="Grösse"
->
-</slider-edit>
-<color-picker-edit (updateColorEvent)="updateValueWithDelay('fontColor', $event)" [fillColor]="textStyle.fontColor" title="Farbe">
-</color-picker-edit>
-<mat-divider class="divider"></mat-divider>
+<slider-edit [formField]="textStyleForm.style.fontSize" [minValue]="8" [maxValue]="48" [step]="1" title="Grösse" />
+<color-picker-edit [formField]="textStyleForm.style.fontColor" title="Farbe" />
+<mat-divider class="divider" />
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Halo</h3>
-<slider-edit
-  (updateSliderEvent)="updateValue('haloRadius', $event)"
-  [sliderValue]="textStyle.haloRadius | number"
-  [min]="1"
-  [max]="12"
-  [step]="1"
-  title="Grösse"
->
-</slider-edit>
-<color-picker-edit (updateColorEvent)="updateValue('haloColor', $event)" [fillColor]="textStyle.haloColor" title="Farbe">
-</color-picker-edit>
-<mat-divider class="divider"></mat-divider>
+<slider-edit [formField]="textStyleForm.style.haloRadius" [minValue]="1" [maxValue]="12" [step]="1" title="Grösse" />
+<color-picker-edit [formField]="textStyleForm.style.haloColor" title="Farbe" />
+<mat-divider class="divider" />
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Versatz</h3>
-<slider-edit
-  (updateSliderEvent)="updateValue('labelYOffset', $event)"
-  [sliderValue]="textStyle.labelYOffset | number"
-  [min]="1"
-  [max]="20"
-  [step]="1"
-  title="Abstand"
->
-</slider-edit>
+<slider-edit [formField]="textStyleForm.style.labelYOffset" [minValue]="1" [maxValue]="20" [step]="1" title="Abstand" />

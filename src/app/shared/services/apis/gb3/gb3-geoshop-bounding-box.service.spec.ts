@@ -25,7 +25,7 @@ describe('Gb3GeoshopBoundingBoxService', () => {
   });
 
   describe('load', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const serverData = {
         boundingbox: {
           type: 'Polygon',
@@ -41,7 +41,7 @@ describe('Gb3GeoshopBoundingBoxService', () => {
         },
       };
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverData));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverData));
 
       const expected: BoundingBoxWithGeometry = {
         boundingBox: {
@@ -59,11 +59,11 @@ describe('Gb3GeoshopBoundingBoxService', () => {
       };
 
       service.load('ZH').subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(
+        expect(getCallSpy).toHaveBeenCalledTimes(1);
+        expect(getCallSpy).toHaveBeenCalledWith(
           `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/canton`,
         );
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });

@@ -1,28 +1,30 @@
-import {Directive, ElementRef, EventEmitter, HostListener, Input, Output, inject} from '@angular/core';
+import {Directive, ElementRef, inject, input, output} from '@angular/core';
 
 @Directive({
   selector: '[searchResultIdentifier]',
   standalone: true,
+  host: {
+    '(focus)': 'addTemporaryMap()',
+    '(blur)': 'removeTemporaryMap()',
+  },
 })
 export class SearchResultIdentifierDirective {
   public readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  @Input() public isMapResult: boolean = false;
-  @Input({required: true}) public text!: string;
-  @Input() public isFocusable: boolean = false;
-  @Output() public readonly addResultFromArrowNavigation = new EventEmitter<void>();
-  @Output() public readonly removeResultFromArrowNavigation = new EventEmitter<void>();
+  public readonly isMapResult = input(false);
+  public readonly isFocusable = input(false);
+  public readonly text = input.required<string>();
+  public readonly addResultFromArrowNavigation = output();
+  public readonly removeResultFromArrowNavigation = output();
 
-  @HostListener('focus')
   public addTemporaryMap() {
-    if (this.isMapResult) {
+    if (this.isMapResult()) {
       this.addResultFromArrowNavigation.emit();
     }
   }
 
-  @HostListener('blur')
   public removeTemporaryMap() {
-    if (this.isMapResult) {
+    if (this.isMapResult()) {
       this.removeResultFromArrowNavigation.emit();
     }
   }

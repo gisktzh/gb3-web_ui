@@ -10,8 +10,7 @@ import {EsriLineMeasurementStrategy} from './esri-line-measurement.strategy';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
-import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 class EsriLineMeasurementStrategyWrapper extends EsriLineMeasurementStrategy {
   public get svm() {
@@ -19,13 +18,17 @@ class EsriLineMeasurementStrategyWrapper extends EsriLineMeasurementStrategy {
   }
 }
 
+const mockResourceHandle = {
+  remove: vi.fn(),
+};
+
 /**
  * Note: The sketchViewModel handling is still a work in progress, as the start event (which adds a graphic) is currently not triggered.
  * As such, we only test for the labels, which are also our custom logic and should be tested. This is why we e.g. assert for a length
  * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
  */
 describe('EsriLineMeasurementStrategy', () => {
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let lineSymbol: SimpleLineSymbol;
   let textSymbol: TextSymbol;
@@ -36,44 +39,64 @@ describe('EsriLineMeasurementStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     lineSymbol = new SimpleLineSymbol();
     textSymbol = new TextSymbol();
   });
 
   describe('cancellation', () => {
     it('does not fire the callback handler on cancel and does not add the label', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
 
-      strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      expect(callbackSpy).not.toHaveBeenCalled();
-      expect(layer.graphics.length).toEqual(0);
+        callback({state: 'cancel', graphic: new Graphic()});
+
+        expect(callbackSpy).not.toHaveBeenCalled();
+        expect(layer.graphics.length).toEqual(0);
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
   });
 
   describe('activation', () => {
     it('calls removeLabelOnEdit on activating the edit mode', () => {
       const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
-      const removeLabelOnEditSpy = spyOn<any>(AbstractEsriMeasurementStrategy.prototype, 'removeLabelOnEdit');
+      const removeLabelOnEditSpy = vi.spyOn(AbstractEsriMeasurementStrategy.prototype as any, 'removeLabelOnEdit');
       const graphic = new Graphic();
 
-      strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'start'} as UpdateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('update');
 
-      expect(removeLabelOnEditSpy).toHaveBeenCalledWith(graphic);
+        callback({state: 'start'});
+
+        expect(removeLabelOnEditSpy).toHaveBeenCalledWith(graphic);
+
+        return mockResourceHandle;
+      });
+
+      strategy.edit(graphic);
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
   });
 
   describe('completion', () => {
     it('adds the label and fires the callback handler on completion', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
       const graphic = new Graphic({
         geometry: new Polyline({
@@ -87,11 +110,21 @@ describe('EsriLineMeasurementStrategy', () => {
         }),
       });
 
-      strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      expect(callbackSpy).toHaveBeenCalled();
-      expect(layer.graphics.length).toEqual(1);
+        callback({state: 'complete', graphic: graphic});
+
+        expect(callbackSpy).toHaveBeenCalled();
+        expect(layer.graphics.length).toEqual(1);
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
 
     it('creates the label at the last point of the line geometry', () => {
@@ -108,14 +141,24 @@ describe('EsriLineMeasurementStrategy', () => {
       });
       const graphic = new Graphic({geometry: location});
 
-      strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      const addedGraphic = layer.graphics.getItemAt(0)!;
-      const numberOfVertices = location.paths[0].length;
-      expect(addedGraphic.geometry?.type).toEqual('point');
-      expect((addedGraphic.geometry as Point).x).toEqual(location.getPoint(0, numberOfVertices - 1)!.x);
-      expect((addedGraphic.geometry as Point).y).toEqual(location.getPoint(0, numberOfVertices - 1)!.y);
+        callback({state: 'complete', graphic: graphic});
+
+        const addedGraphic = layer.graphics.getItemAt(0)!;
+        const numberOfVertices = location.paths[0].length;
+        expect(addedGraphic.geometry?.type).toEqual('point');
+        expect((addedGraphic.geometry as Point).x).toEqual(location.getPoint(0, numberOfVertices - 1)!.x);
+        expect((addedGraphic.geometry as Point).y).toEqual(location.getPoint(0, numberOfVertices - 1)!.y);
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
 
     it('applies the defined styling to the created label', () => {
@@ -133,18 +176,29 @@ describe('EsriLineMeasurementStrategy', () => {
         }),
       });
 
-      strategy.start();
-      strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      const addedGraphic = layer.graphics.getItemAt(0)!;
-      expect((addedGraphic.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
-      expect((addedGraphic.symbol as TextSymbol).xoffset).toEqual(textSymbol.xoffset);
-      expect((addedGraphic.symbol as TextSymbol).color).toEqual(textSymbol.color);
+        strategy.svm.complete();
+
+        callback({state: 'complete', graphic: graphic});
+
+        const addedGraphic = layer.graphics.getItemAt(0)!;
+        expect((addedGraphic.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
+        expect((addedGraphic.symbol as TextSymbol).xoffset).toEqual(textSymbol.xoffset);
+        expect((addedGraphic.symbol as TextSymbol).color).toEqual(textSymbol.color);
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
     it('calls completeEditing on completion for editing drawings', () => {
       const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
-      const completeEditingSpy = spyOn<any>(AbstractEsriMeasurementStrategy.prototype, 'completeEditing');
+      const completeEditingSpy = vi.spyOn(AbstractEsriMeasurementStrategy.prototype as any, 'completeEditing');
       const graphic = new Graphic({
         geometry: new Polyline({
           spatialReference: {wkid: 2056},
@@ -157,10 +211,20 @@ describe('EsriLineMeasurementStrategy', () => {
         }),
       });
 
-      strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('update');
 
-      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+        callback({state: 'complete'});
+
+        expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+
+        return mockResourceHandle;
+      });
+
+      strategy.edit(graphic);
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
   });
 
@@ -179,12 +243,23 @@ describe('EsriLineMeasurementStrategy', () => {
       });
       const graphic = new Graphic({geometry: location});
 
-      strategy.start();
-      strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      const addedGraphic = layer.graphics.getItemAt(0)!;
-      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${lengthOfLine} m`);
+        strategy.svm.complete();
+
+        callback({state: 'complete', graphic: graphic});
+
+        const addedGraphic = layer.graphics.getItemAt(0)!;
+        expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${lengthOfLine} m`);
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
 
     it('rounds the length to 2 decimals', () => {
@@ -204,18 +279,29 @@ describe('EsriLineMeasurementStrategy', () => {
       });
       const graphic = new Graphic({geometry: location});
 
-      strategy.start();
-      strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      const expected = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)).toFixed(2);
-      const addedGraphic = layer.graphics.getItemAt(0)!;
-      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expected} m`);
+        strategy.svm.complete();
+
+        callback({state: 'complete', graphic: graphic});
+
+        const expected = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)).toFixed(2);
+        const addedGraphic = layer.graphics.getItemAt(0)!;
+        expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expected} m`);
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
 
     it('rounds the length to km after 10001 metres', () => {
       const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
-      const lengthOfLine = 10_001;
+      const lengthOfLine = 10001;
       const location = new Polyline({
         spatialReference: {wkid: 2056},
         paths: [
@@ -227,32 +313,47 @@ describe('EsriLineMeasurementStrategy', () => {
       });
       const graphic = new Graphic({geometry: location});
 
-      strategy.start();
-      strategy.svm.complete();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      const addedGraphic = layer.graphics.getItemAt(0)!;
-      const expextedLength = Math.round(lengthOfLine / 1000);
-      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expextedLength} km`);
+        strategy.svm.complete();
+
+        callback({state: 'complete', graphic: graphic});
+
+        const addedGraphic = layer.graphics.getItemAt(0)!;
+        const expextedLength = Math.round(lengthOfLine / 1000);
+        expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expextedLength} km`);
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
   });
 
   describe('mode', () => {
     it('sets mode to click', () => {
       const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
-      const spy = spyOn(strategy.svm, 'create');
+      const spy = vi.spyOn(strategy.svm, 'create');
 
       strategy.start();
 
-      expect(spy).toHaveBeenCalledOnceWith('polyline', {mode: 'click'});
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(spy).toHaveBeenCalledWith('polyline', {mode: 'click'});
     });
     it('sets mode to update', () => {
       const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
-      const spy = spyOn(strategy.svm, 'update');
+      const spy = vi.spyOn(strategy.svm, 'update');
       const graphic = new Graphic();
       strategy.edit(graphic);
 
-      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(spy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
     });
   });
 });

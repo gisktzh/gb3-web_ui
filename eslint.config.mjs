@@ -25,7 +25,7 @@ export default tseslint.config(
   },
   {
     ignores: ['**/*.mock.ts', '**/*.stub.ts'],
-    files: ['src/**/*.ts'],
+    files: ['src/**/*.ts', 'e2e/**/*.ts'],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
@@ -73,6 +73,12 @@ export default tseslint.config(
           style: 'camelCase',
         },
       ],
+
+      '@angular-eslint/prefer-signals': ['error'],
+
+      '@angular-eslint/no-uncalled-signals': ['error'],
+
+      '@angular-eslint/prefer-signal-model': ['warn'],
 
       '@typescript-eslint/explicit-member-accessibility': [
         'error',
@@ -140,6 +146,7 @@ export default tseslint.config(
       semi: 'error',
       'prefer-template': 'warn',
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
+      '@typescript-eslint/require-await': 'error',
 
       'no-console': [
         'error',

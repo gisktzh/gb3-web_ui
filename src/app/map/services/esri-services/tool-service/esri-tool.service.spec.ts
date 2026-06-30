@@ -1,10 +1,4 @@
-/*
-  eslint-disable
-  @typescript-eslint/dot-notation,
-  @typescript-eslint/no-explicit-any,
-  @typescript-eslint/no-unused-vars,
- */
-import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {EsriToolService, HANDLE_GROUP_KEY} from './esri-tool.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layers.selector';
@@ -62,6 +56,7 @@ import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal
 import MapView from '@arcgis/core/views/MapView';
 import EsriMap from '@arcgis/core/Map';
 import {GoToOptions2D, GoToTarget2D} from '@arcgis/core/views/types';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -77,7 +72,7 @@ describe('EsriToolService', () => {
       this.container = container;
     }
 
-    public override goTo(_1: GoToTarget2D, _2?: GoToOptions2D): Promise<any> {
+    public override goTo(_1: GoToTarget2D, _2?: GoToOptions2D) {
       return Promise.resolve();
     }
   }
@@ -104,7 +99,7 @@ describe('EsriToolService', () => {
 
     mapMock = new EsriMapMock([]);
     mapViewService = TestBed.inject(EsriMapViewService);
-    mapViewService.mapView = new EsriMapViewMock(mapMock, container);
+    mapViewService.mapView.set(new EsriMapViewMock(mapMock, container));
   });
 
   it('should be created', () => {
@@ -119,7 +114,7 @@ describe('EsriToolService', () => {
 
     it('forces visibility if layer is present by dispatching an action', () => {
       // add the graphic layer to the view to avoid the initialization
-      mapViewService.mapView.map.layers.add(
+      mapViewService.mapView()!.map!.layers.add(
         new GraphicsLayer({
           id: userDrawingLayerId,
         }),
@@ -161,8 +156,13 @@ describe('EsriToolService', () => {
     });
     it('adds an Esri handle for this service group on drawing start', () => {
       // add the graphic layer to the view to avoid the initialization
-      const spy = spyOn(mapViewService.mapView, 'addHandles');
-      mapViewService.mapView.map.layers.add(
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView is undefined');
+      }
+
+      const spy = vi.spyOn(mapView, 'addHandles');
+      mapView.map!.layers.add(
         new GraphicsLayer({
           id: userDrawingLayerId,
         }),
@@ -170,11 +170,19 @@ describe('EsriToolService', () => {
       store.overrideSelector(selectDrawingLayers, [{id: userDrawingLayerId} as DrawingActiveMapItem]);
       store.refreshState();
 
+      const mockHandle = {
+        someKey: 'someValue',
+        remove: vi.fn(),
+      };
+
+      vi.spyOn(reactiveUtils, 'on').mockReturnValue(mockHandle);
+
       service.initializeMeasurement('measure-point');
 
       expect(spy).toHaveBeenCalledTimes(1);
-      expect((spy.calls.first().args[0] as any).remove).toBeDefined(); // we know that it must be a WatchHandle
-      expect(spy.calls.first().args[1]).toEqual('EsriToolService');
+
+      expect(vi.mocked(spy).mock.calls[0][0]).toEqual(mockHandle); // we know that it must be a WatchHandle
+      expect(vi.mocked(spy).mock.calls[0][1]).toEqual('EsriToolService');
     });
   });
 
@@ -183,7 +191,7 @@ describe('EsriToolService', () => {
       beforeEach(() => {
         const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Measurements;
         // add the graphic layer to the view to avoid the initialization
-        mapViewService.mapView.map.layers.add(
+        mapViewService.mapView()!.map!.layers.add(
           new GraphicsLayer({
             id: userDrawingLayerId,
           }),
@@ -192,22 +200,22 @@ describe('EsriToolService', () => {
         store.refreshState();
       });
       it('sets the correct strategy for point measurement', () => {
-        const pointSpy = spyOn(EsriPointMeasurementStrategy.prototype, 'start');
+        const pointSpy = vi.spyOn(EsriPointMeasurementStrategy.prototype, 'start');
         service.initializeMeasurement('measure-point');
         expect(pointSpy).toHaveBeenCalled();
       });
       it('sets the correct strategy for line measurement', () => {
-        const lineSpy = spyOn(EsriLineMeasurementStrategy.prototype, 'start');
+        const lineSpy = vi.spyOn(EsriLineMeasurementStrategy.prototype, 'start');
         service.initializeMeasurement('measure-line');
         expect(lineSpy).toHaveBeenCalled();
       });
       it('sets the correct strategy for area measurement', () => {
-        const polygonSpy = spyOn(EsriAreaMeasurementStrategy.prototype, 'start');
+        const polygonSpy = vi.spyOn(EsriAreaMeasurementStrategy.prototype, 'start');
         service.initializeMeasurement('measure-area');
         expect(polygonSpy).toHaveBeenCalled();
       });
       it('sets the correct strategy for circle measurement', () => {
-        const circleSpy = spyOn(EsriAreaMeasurementStrategy.prototype, 'start');
+        const circleSpy = vi.spyOn(EsriAreaMeasurementStrategy.prototype, 'start');
         service.initializeMeasurement('measure-circle');
         expect(circleSpy).toHaveBeenCalled();
       });
@@ -217,7 +225,7 @@ describe('EsriToolService', () => {
       beforeEach(() => {
         const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings;
         // add the graphic layer to the view to avoid the initialization
-        mapViewService.mapView.map.layers.add(
+        mapViewService.mapView()!.map!.layers.add(
           new GraphicsLayer({
             id: userDrawingLayerId,
           }),
@@ -226,32 +234,32 @@ describe('EsriToolService', () => {
         store.refreshState();
       });
       it('sets the correct strategy for point drawing', () => {
-        const pointSpy = spyOn(EsriPointDrawingStrategy.prototype, 'start');
+        const pointSpy = vi.spyOn(EsriPointDrawingStrategy.prototype, 'start');
         service.initializeDrawing('draw-point');
         expect(pointSpy).toHaveBeenCalled();
       });
       it('sets the correct strategy for line drawing', () => {
-        const lineSpy = spyOn(EsriLineDrawingStrategy.prototype, 'start');
+        const lineSpy = vi.spyOn(EsriLineDrawingStrategy.prototype, 'start');
         service.initializeDrawing('draw-line');
         expect(lineSpy).toHaveBeenCalled();
       });
       it('sets the correct strategy for polygon drawing', () => {
-        const polygonSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
+        const polygonSpy = vi.spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
         service.initializeDrawing('draw-polygon');
         expect(polygonSpy).toHaveBeenCalled();
       });
       it('sets the correct strategy for text drawing', () => {
-        const polygonSpy = spyOn(EsriTextDrawingStrategy.prototype, 'start');
+        const polygonSpy = vi.spyOn(EsriTextDrawingStrategy.prototype, 'start');
         service.initializeDrawing('draw-text');
         expect(polygonSpy).toHaveBeenCalled();
       });
       it('sets the correct strategy for rectangle drawing', () => {
-        const polygonSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
+        const polygonSpy = vi.spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
         service.initializeDrawing('draw-rectangle');
         expect(polygonSpy).toHaveBeenCalled();
       });
       it('sets the correct strategy for circle drawing', () => {
-        const polygonSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
+        const polygonSpy = vi.spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
         service.initializeDrawing('draw-circle');
         expect(polygonSpy).toHaveBeenCalled();
       });
@@ -261,7 +269,7 @@ describe('EsriToolService', () => {
       beforeEach(() => {
         const internalDrawingLayerId = DrawingLayerPrefix.Internal + InternalDrawingLayer.Selection;
         // add the graphic layer to the view to avoid the initialization
-        mapViewService.mapView.map.layers.add(
+        mapViewService.mapView()!.map!.layers.add(
           new GraphicsLayer({
             id: internalDrawingLayerId,
           }),
@@ -269,37 +277,37 @@ describe('EsriToolService', () => {
         store.refreshState();
       });
       it(`sets the correct strategy for circle selection`, () => {
-        const polygonSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
+        const polygonSpy = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-circle');
         expect(polygonSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for polygon selection`, () => {
-        const polygonSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
+        const polygonSpy = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-polygon');
         expect(polygonSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for rectangle selection`, () => {
-        const polygonSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
+        const polygonSpy = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-rectangle');
         expect(polygonSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for section selection`, () => {
-        const screenExtentSpy = spyOn(EsriScreenExtentSelectionStrategy.prototype, 'start');
+        const screenExtentSpy = vi.spyOn(EsriScreenExtentSelectionStrategy.prototype, 'start').mockImplementation(vi.fn());
         service.initializeDataDownloadSelection('select-section');
         expect(screenExtentSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for federation selection`, () => {
-        const federationSpy = spyOn(EsriBoundingBoxSelectionStrategy.prototype, 'start');
+        const federationSpy = vi.spyOn(EsriBoundingBoxSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-federation');
         expect(federationSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for canton selection`, () => {
-        const cantonSpy = spyOn(EsriBoundingBoxSelectionStrategy.prototype, 'start');
+        const cantonSpy = vi.spyOn(EsriBoundingBoxSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-canton');
         expect(cantonSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for municipality selection`, () => {
-        const municipalitySpy = spyOn(EsriMunicipalitySelectionStrategy.prototype, 'start');
+        const municipalitySpy = vi.spyOn(EsriMunicipalitySelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-municipality');
         expect(municipalitySpy).toHaveBeenCalled();
       });
@@ -309,14 +317,14 @@ describe('EsriToolService', () => {
       beforeEach(() => {
         const elevationProfileLayerId = DrawingLayerPrefix.Internal + InternalDrawingLayer.ElevationProfile;
         // add the graphic layer to the view to avoid the initialization
-        mapViewService.mapView.map.layers.add(
+        mapViewService.mapView()!.map!.layers.add(
           new GraphicsLayer({
             id: elevationProfileLayerId,
           }),
         );
       });
       it(`sets the correct strategy for elevation profile measurement`, () => {
-        const elevationSpy = spyOn(EsriElevationProfileMeasurementStrategy.prototype, 'start');
+        const elevationSpy = vi.spyOn(EsriElevationProfileMeasurementStrategy.prototype, 'start');
         service.initializeElevationProfileMeasurement();
         expect(elevationSpy).toHaveBeenCalled();
       });
@@ -348,8 +356,7 @@ describe('EsriToolService', () => {
     it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing for drawingMode = "add"', () => {
       const labelText = 'labelText';
       const mode: DrawingMode = 'add';
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const storeSpy = vi.spyOn(store, 'dispatch');
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         graphicMock,
         labelText,
@@ -357,19 +364,29 @@ describe('EsriToolService', () => {
         UserDrawingLayer.Drawings,
       );
 
-      const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
+      const expectedAddDrawingAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
 
       service.completeTextDrawing(graphicMock, mode, labelText);
 
-      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
-      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+      expect(storeSpy).toHaveBeenCalledTimes(2);
+
+      expect(storeSpy).toHaveBeenNthCalledWith(1, expectedAddDrawingAction);
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing for drawingMode = "edit"', () => {
       const labelText = 'labelText';
       const mode: DrawingMode = 'edit';
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const storeSpy = vi.spyOn(store, 'dispatch');
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convertLabelText(
         graphicMock,
         labelText,
@@ -377,27 +394,48 @@ describe('EsriToolService', () => {
         UserDrawingLayer.Drawings,
       );
 
-      const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
+      const expectedAddDrawingAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
 
       service.completeTextDrawing(graphicMock, mode, labelText);
 
-      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
-      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+      expect(storeSpy).toHaveBeenCalledTimes(2);
+
+      expect(storeSpy).toHaveBeenNthCalledWith(1, expectedAddDrawingAction);
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('completes drawings by dispatching DrawingActions.deleteDrawing and calling endDrawing', () => {
       const labelText = 'labelText';
       const mode: DrawingMode = 'delete';
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const storeSpy = vi.spyOn(store, 'dispatch');
       const drawingId = graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER];
 
-      const expectedAction = DrawingActions.deleteDrawing({drawingId});
+      const expectedDeleteDrawingAction = DrawingActions.deleteDrawing({drawingId});
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
 
       service.completeTextDrawing(graphicMock, mode, labelText);
 
-      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
-      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+      expect(storeSpy).toHaveBeenCalledTimes(2);
+
+      expect(storeSpy).toHaveBeenNthCalledWith(1, expectedDeleteDrawingAction);
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('completes measurements by dispatching DrawingActions.addDrawings and calling endDrawing for drawingMode = "add"', () => {
@@ -424,8 +462,7 @@ describe('EsriToolService', () => {
           outline: {width: 42, color: new Color('#080085')},
         }),
       });
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const storeSpy = vi.spyOn(store, 'dispatch');
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
         2056,
@@ -438,12 +475,25 @@ describe('EsriToolService', () => {
         UserDrawingLayer.Measurements,
       );
 
-      const expectedAction = DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]});
+      const expectedAddDrawingAction = DrawingActions.addDrawings({
+        drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel],
+      });
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
 
       service.completeMeasurement(graphicMock, labelPoint, labelText, mode);
 
-      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
-      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+      expect(storeSpy).toHaveBeenCalledTimes(2);
+
+      expect(storeSpy).toHaveBeenNthCalledWith(1, expectedAddDrawingAction);
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('completes measurements by dispatching DrawingActions.addDrawings and calling endDrawing for drawingMode = "edit"', () => {
@@ -470,8 +520,7 @@ describe('EsriToolService', () => {
           outline: {width: 42, color: new Color('#080085')},
         }),
       });
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const storeSpy = vi.spyOn(store, 'dispatch');
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
         graphicMock,
         2056,
@@ -484,12 +533,25 @@ describe('EsriToolService', () => {
         UserDrawingLayer.Measurements,
       );
 
-      const expectedAction = DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]});
+      const expectedAddDrawingAction = DrawingActions.addDrawings({
+        drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel],
+      });
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
 
       service.completeMeasurement(graphicMock, labelPoint, labelText, mode);
 
-      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
-      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+      expect(storeSpy).toHaveBeenCalledTimes(2);
+
+      expect(storeSpy).toHaveBeenNthCalledWith(1, expectedAddDrawingAction);
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('completes measurements by dispatching DrawingActions.deleteDrawing and calling endDrawing for drawingMode = "delete"', () => {
@@ -516,16 +578,26 @@ describe('EsriToolService', () => {
           outline: {width: 42, color: new Color('#080085')},
         }),
       });
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const storeSpy = vi.spyOn(store, 'dispatch');
       const drawingId = graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER];
 
-      const expectedAction = DrawingActions.deleteDrawing({drawingId});
+      const expectedDeleteDrawingAction = DrawingActions.deleteDrawing({drawingId});
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
 
       service.completeMeasurement(graphicMock, labelPoint, labelText, mode);
 
-      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
-      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+      expect(storeSpy).toHaveBeenCalledTimes(2);
+
+      expect(storeSpy).toHaveBeenNthCalledWith(1, expectedDeleteDrawingAction);
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('completes selections by dispatching DataDownloadOrderActions.setSelection if the selection is not `undefined`', () => {
@@ -538,31 +610,47 @@ describe('EsriToolService', () => {
         type: 'polygon',
         drawingRepresentation: internalDrawingRepresentation,
       };
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const removeHandlesSpy = spyOn(mapViewService.mapView, 'removeHandles').and.stub();
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
 
       const expectedAction = DataDownloadOrderActions.setSelection({selection});
 
       service.completeSelection(selection);
 
-      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
-      expect(removeHandlesSpy).toHaveBeenCalledOnceWith('EsriToolService');
+      expect(storeSpy).toHaveBeenCalledTimes(1);
+
+      expect(storeSpy).toHaveBeenCalledWith(expectedAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith('EsriToolService');
     });
 
     it('completes selections by dispatching ToolActions.cancelTool if the selection is `undefined`', () => {
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const removeHandlesSpy = spyOn(mapViewService.mapView, 'removeHandles').and.stub();
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
 
       const expectedAction = ToolActions.cancelTool();
 
       service.completeSelection(undefined);
 
-      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
-      expect(removeHandlesSpy).toHaveBeenCalledOnceWith('EsriToolService');
+      expect(storeSpy).toHaveBeenCalledTimes(1);
+
+      expect(storeSpy).toHaveBeenCalledWith(expectedAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith('EsriToolService');
     });
 
     it('should cancel the tool strategy when being cancelled from outside', () => {
-      const toolStrategySpy = spyOn(EsriDefaultStrategy.prototype, 'cancel').and.stub();
+      const toolStrategySpy = vi.spyOn(EsriDefaultStrategy.prototype, 'cancel').mockImplementation(vi.fn());
 
       service.cancelTool();
 
@@ -584,17 +672,25 @@ describe('EsriToolService', () => {
 
       const graphic = new Graphic();
 
-      const convertSpy = spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convert').and.returnValue(
-        mockInternalDrawingRepresentation,
-      );
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const convertSpy = vi
+        .spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convert')
+        .mockReturnValue(mockInternalDrawingRepresentation);
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
 
       service.completeDrawing(graphic, 'add');
 
       expect(convertSpy).toHaveBeenCalledWith(graphic, 2056, UserDrawingLayer.Drawings);
-      expect(storeSpy).toHaveBeenCalledWith(DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
-      expect(endDrawingSpy).toHaveBeenCalled();
+      expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('should convert and dispatch an internal drawing representation on completion for edit from outside', () => {
@@ -612,31 +708,52 @@ describe('EsriToolService', () => {
 
       const graphic = new Graphic();
 
-      const convertSpy = spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convert').and.returnValue(
-        mockInternalDrawingRepresentation,
-      );
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const convertSpy = vi
+        .spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convert')
+        .mockReturnValue(mockInternalDrawingRepresentation);
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
 
       service.completeDrawing(graphic, 'edit');
 
       expect(convertSpy).toHaveBeenCalledWith(graphic, 2056, UserDrawingLayer.Drawings);
-      expect(storeSpy).toHaveBeenCalledWith(DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
-      expect(endDrawingSpy).toHaveBeenCalled();
+      expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('should dispatch a delete drawing action when deleting from outside', () => {
       const graphic = new Graphic();
-      const getAttributeSpy = spyOn(graphic, 'getAttribute');
       const mockDrawingId = 'yes';
-      getAttributeSpy.withArgs(AbstractEsriDrawableToolStrategy.identifierFieldName).and.returnValue(mockDrawingId);
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      vi.spyOn(graphic, 'getAttribute').mockImplementation((arg) => {
+        if (arg === AbstractEsriDrawableToolStrategy.identifierFieldName) {
+          return mockDrawingId;
+        }
+
+        throw new Error(`Mock atrgument ${arg} not implemented in getAttributeSpy()`);
+      });
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
 
       service.completeDrawing(graphic, 'delete');
 
-      expect(storeSpy).toHaveBeenCalledWith(DrawingActions.deleteDrawing({drawingId: mockDrawingId}));
-      expect(endDrawingSpy).toHaveBeenCalled();
+      expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.deleteDrawing({drawingId: mockDrawingId}));
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('should convert and dispatch an internal representation of a map drawing symbol for add from outside', () => {
@@ -659,19 +776,27 @@ describe('EsriToolService', () => {
       };
       const graphic = new Graphic();
 
-      const convertSpy = spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convertMapDrawingSymbol').and.returnValue(
-        mockInternalDrawingRepresentation,
-      );
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.callThrough();
+      const convertSpy = vi
+        .spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convertMapDrawingSymbol')
+        .mockReturnValue(mockInternalDrawingRepresentation);
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
 
-      const mapViewGoToSpy = spyOn(mapViewService.mapView, 'goTo').and.stub();
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+
+      const mapViewGoToSpy = vi.spyOn(mapView, 'goTo').mockImplementation(vi.fn());
       service.completeMapSymbolDrawing(graphic, 'edit', mockMapDrawingSymbol, mockSize, mockRotation);
 
       expect(convertSpy).toHaveBeenCalledWith(graphic, mockMapDrawingSymbol, mockSize, mockRotation, 2056, UserDrawingLayer.Drawings);
-      expect(storeSpy).toHaveBeenCalledWith(DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
-      expect(endDrawingSpy).toHaveBeenCalled();
+      expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
       expect(mapViewGoToSpy).toHaveBeenCalled();
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('should convert and dispatch an internal representation of a map drawing symbol for ediit from outside', () => {
@@ -694,34 +819,55 @@ describe('EsriToolService', () => {
       };
       const graphic = new Graphic();
 
-      const convertSpy = spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convertMapDrawingSymbol').and.returnValue(
-        mockInternalDrawingRepresentation,
-      );
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.callThrough();
+      const convertSpy = vi
+        .spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convertMapDrawingSymbol')
+        .mockReturnValue(mockInternalDrawingRepresentation);
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
 
-      const mapViewGoToSpy = spyOn(mapViewService.mapView, 'goTo').and.stub();
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+
+      const mapViewGoToSpy = vi.spyOn(mapView, 'goTo').mockImplementation(vi.fn());
 
       service.completeMapSymbolDrawing(graphic, 'add', mockMapDrawingSymbol, mockSize, mockRotation);
 
       expect(convertSpy).toHaveBeenCalledWith(graphic, mockMapDrawingSymbol, mockSize, mockRotation, 2056, UserDrawingLayer.Drawings);
-      expect(storeSpy).toHaveBeenCalledWith(DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
-      expect(endDrawingSpy).toHaveBeenCalled();
+      expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
       expect(mapViewGoToSpy).toHaveBeenCalled();
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
 
     it('should dispatch a delete drawing action when deleting a symbol from outside', () => {
       const graphic = new Graphic();
-      const getAttributeSpy = spyOn(graphic, 'getAttribute');
       const mockDrawingId = 'yes';
-      getAttributeSpy.withArgs(AbstractEsriDrawableToolStrategy.identifierFieldName).and.returnValue(mockDrawingId);
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.callThrough();
+      vi.spyOn(graphic, 'getAttribute').mockImplementation((arg) => {
+        if (arg === AbstractEsriDrawableToolStrategy.identifierFieldName) {
+          return mockDrawingId;
+        }
+
+        throw new Error(`Mock atrgument ${arg} not implemented in getAttributeSpy()`);
+      });
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const mapView = mapViewService.mapView();
+      if (!mapView) {
+        expect.fail('MapView not defined');
+      }
+
+      const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
+      const expectedDeactivateToolAction = ToolActions.deactivateTool();
 
       service.completeMapSymbolDrawing(graphic, 'delete', {}, 10, 11);
 
-      expect(storeSpy).toHaveBeenCalledWith(DrawingActions.deleteDrawing({drawingId: mockDrawingId}));
-      expect(endDrawingSpy).toHaveBeenCalled();
+      expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.deleteDrawing({drawingId: mockDrawingId}));
+      expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
+      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
     });
   });
 
@@ -755,13 +901,16 @@ describe('EsriToolService', () => {
     });
 
     it('should call the correct edit method on the strategy and dispatch the correct action', () => {
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const editSpy = spyOn(EsriPointDrawingStrategy.prototype, 'edit').and.stub();
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const editSpy = vi.spyOn(EsriPointDrawingStrategy.prototype, 'edit').mockImplementation(vi.fn());
       service.editDrawing(graphicMock);
       const expectedAction = DrawingActions.selectDrawing({drawingId: graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER]});
 
-      expect(editSpy).toHaveBeenCalledOnceWith(graphicMock);
-      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+      expect(editSpy).toHaveBeenCalledTimes(1);
+
+      expect(editSpy).toHaveBeenCalledWith(graphicMock);
+      expect(storeSpy).toHaveBeenCalledTimes(1);
+      expect(storeSpy).toHaveBeenCalledWith(expectedAction);
     });
     it('should throw an error when the graphic has a nullish layer', () => {
       // We exeplicitly do not set anything here.
@@ -770,24 +919,29 @@ describe('EsriToolService', () => {
       expect(() => service.editDrawing(graphic)).toThrow(new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.'));
     });
     it('should call the correct edit method on the strategy and not dispatch an action for measurements', () => {
-      (graphicMock.layer!.id as any) = 'USER_DRAWING__measurements';
-      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
-      const editSpy = spyOn(EsriPointMeasurementStrategy.prototype, 'edit').and.stub();
+      (graphicMock.layer!.id as string) = 'USER_DRAWING__measurements';
+      const storeSpy = vi.spyOn(store, 'dispatch');
+      const editSpy = vi.spyOn(EsriPointMeasurementStrategy.prototype, 'edit').mockImplementation(vi.fn());
       service.editDrawing(graphicMock);
 
-      expect(editSpy).toHaveBeenCalledOnceWith(graphicMock);
+      expect(editSpy).toHaveBeenCalledTimes(1);
+
+      expect(editSpy).toHaveBeenCalledWith(graphicMock);
       expect(storeSpy).not.toHaveBeenCalled();
     });
     it('should do nothing if the graphic has no id', () => {
       graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER] = undefined;
       service.editDrawing(graphicMock);
-      const setToolStrategySpy = spyOn<any>(service, 'setToolStrategyForEditingFeature').and.stub();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const setToolStrategySpy = vi.spyOn(service as any, 'setToolStrategyForEditingFeature').mockImplementation(vi.fn());
       expect(setToolStrategySpy).not.toHaveBeenCalled();
     });
   });
 
   describe('Import', () => {
-    it('should add many existing graphics to a given drawing layer', fakeAsync(() => {
+    it('should add many existing graphics to a given drawing layer', async () => {
+      vi.useFakeTimers();
+
       const mockDrawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [
         {
           properties: {
@@ -811,19 +965,21 @@ describe('EsriToolService', () => {
       const mockFullLayerIdentifier = 'yes';
       const mockGraphicsLayer = new GraphicsLayer();
 
-      spyOn(DrawingActiveMapItem, 'getFullLayerIdentifier').and.returnValue(mockFullLayerIdentifier);
-      spyOn(mapViewService, 'findEsriLayer').and.returnValue(mockGraphicsLayer);
-      spyOn(InternalDrawingRepresentationToEsriGraphicUtils, 'convert').and.resolveTo(new Graphic());
-      const addManySpy = spyOn(mockGraphicsLayer, 'addMany').and.stub();
+      vi.spyOn(DrawingActiveMapItem, 'getFullLayerIdentifier').mockReturnValue(mockFullLayerIdentifier);
+      vi.spyOn(mapViewService, 'findEsriLayer').mockReturnValue(mockGraphicsLayer);
+      vi.spyOn(InternalDrawingRepresentationToEsriGraphicUtils, 'convert').mockResolvedValue(new Graphic());
+      const addManySpy = vi.spyOn(mockGraphicsLayer, 'addMany').mockImplementation(vi.fn());
 
       service.addExistingDrawingsToLayer(mockDrawingsToAdd, UserDrawingLayer.Drawings);
 
-      flushMicrotasks();
+      await vi.runAllTimersAsync();
 
       expect(addManySpy).toHaveBeenCalled();
-    }));
 
-    it('should throw an appropriate error if the drawing layer is not initialized yet', fakeAsync(() => {
+      vi.useRealTimers();
+    });
+
+    it('should throw an appropriate error if the drawing layer is not initialized yet', async () => {
       const mockDrawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [
         {
           properties: {
@@ -846,13 +1002,13 @@ describe('EsriToolService', () => {
       ];
       const mockFullLayerIdentifier = 'yes';
 
-      spyOn(DrawingActiveMapItem, 'getFullLayerIdentifier').and.returnValue(mockFullLayerIdentifier);
-      spyOn(mapViewService, 'findEsriLayer').and.returnValue(undefined);
+      vi.spyOn(DrawingActiveMapItem, 'getFullLayerIdentifier').mockReturnValue(mockFullLayerIdentifier);
+      vi.spyOn(mapViewService, 'findEsriLayer').mockReturnValue(undefined);
 
-      expectAsync(service.addExistingDrawingsToLayer(mockDrawingsToAdd, UserDrawingLayer.Drawings)).toBeRejectedWithError(
+      await expect(service.addExistingDrawingsToLayer(mockDrawingsToAdd, UserDrawingLayer.Drawings)).rejects.toThrowError(
         DrawingLayerNotInitialized,
       );
-    }));
+    });
   });
 
   describe('Update Drawing Style', () => {
@@ -895,10 +1051,10 @@ describe('EsriToolService', () => {
       } as Gb3StyledInternalDrawingRepresentation;
     });
     it('should call the convert method on if the drawingLayer is found', () => {
-      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
+      const convertSpy = vi.spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').mockImplementation(vi.fn());
       const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings;
       // add the graphic layer to the view to avoid the initialization
-      mapViewService.mapView.map.layers.add(
+      mapViewService.mapView()!.map!.layers.add(
         new GraphicsLayer({
           id: userDrawingLayerId,
           graphics: [graphicMock],
@@ -907,13 +1063,14 @@ describe('EsriToolService', () => {
       const style = {} as Gb3StyleRepresentation;
       const labelText = 'some Text';
       service.updateDrawingStyles(drawingMock, style, labelText);
-      expect(convertSpy).toHaveBeenCalledOnceWith(style, labelText, undefined);
+      expect(convertSpy).toHaveBeenCalledTimes(1);
+      expect(convertSpy).toHaveBeenCalledWith(style, labelText, undefined);
     });
     it('should update the internals of the given tool strategy when it is an abstract esri drawing strategy', () => {
-      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
+      const convertSpy = vi.spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').mockImplementation(vi.fn());
       const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings;
       // add the graphic layer to the view to avoid the initialization
-      mapViewService.mapView.map.layers.add(
+      mapViewService.mapView()!.map!.layers.add(
         new GraphicsLayer({
           id: userDrawingLayerId,
           graphics: [graphicMock],
@@ -921,30 +1078,41 @@ describe('EsriToolService', () => {
       );
       const style = {} as Gb3StyleRepresentation;
       const labelText = 'some Text';
-      spyOn(EsriTextDrawingStrategy.prototype, 'edit').and.stub();
-      const updateInternalsSpy = spyOn(EsriTextDrawingStrategy.prototype, 'updateInternals').and.stub();
-      const layer = {} as Layer;
-      layer.id = 'yes_drawings_please';
+      vi.spyOn(EsriTextDrawingStrategy.prototype, 'edit').mockImplementation(vi.fn());
+      const updateInternalsSpy = vi.spyOn(EsriTextDrawingStrategy.prototype, 'updateInternals').mockImplementation(vi.fn());
+      const layer = {
+        id: 'yes_drawings_please',
+      } as Layer;
 
       const graphic = new Graphic();
-      const getAttributeSpy = spyOn(graphic, 'getAttribute');
-      getAttributeSpy.withArgs(AbstractEsriDrawableToolStrategy.identifierFieldName).and.returnValue('yes');
-      getAttributeSpy.withArgs('__tool').and.returnValue('point');
-      spyOnProperty(graphic, 'symbol').and.returnValue(new TextSymbol());
-      spyOnProperty(graphic, 'layer').and.returnValue(layer);
-      spyOnProperty(graphic, 'geometry').and.returnValue(new Point());
+      vi.spyOn(graphic, 'getAttribute').mockImplementation((arg) => {
+        if (arg === AbstractEsriDrawableToolStrategy.identifierFieldName) {
+          return 'yes';
+        }
+
+        if (arg === '__tool') {
+          return 'point';
+        }
+
+        throw new Error(`Mock atrgument ${arg} not implemented in getAttributeSpy()`);
+      });
+
+      vi.spyOn(graphic, 'symbol', 'get').mockReturnValue(new TextSymbol());
+      vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
+      vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
 
       service.editDrawing(graphic);
 
       service.updateDrawingStyles(drawingMock, style, labelText);
-      expect(convertSpy).toHaveBeenCalledOnceWith(style, labelText, undefined);
+      expect(convertSpy).toHaveBeenCalledTimes(1);
+      expect(convertSpy).toHaveBeenCalledWith(style, labelText, undefined);
       expect(updateInternalsSpy).toHaveBeenCalledWith(style, labelText, undefined);
     });
     it('should not call the convert method if the drawing layer does not contain a graphic', () => {
-      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
+      const convertSpy = vi.spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').mockImplementation(vi.fn());
       const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings;
       // add the graphic layer to the view to avoid the initialization
-      mapViewService.mapView.map.layers.add(
+      mapViewService.mapView()!.map!.layers.add(
         new GraphicsLayer({
           id: userDrawingLayerId,
           graphics: [],
@@ -956,94 +1124,140 @@ describe('EsriToolService', () => {
       expect(convertSpy).not.toHaveBeenCalled();
     });
     it('should throw an error if the given graphic has no geometry', () => {
-      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
-      const layer = {} as Layer;
-      layer.id = 'yes_drawings_please';
+      const convertSpy = vi.spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').mockImplementation(vi.fn());
+      const layer = {
+        id: 'yes_drawings_please',
+      } as Layer;
 
       const graphic = new Graphic();
-      const getAttributeSpy = spyOn(graphic, 'getAttribute');
-      getAttributeSpy.withArgs(AbstractEsriDrawableToolStrategy.identifierFieldName).and.returnValue('yes');
-      getAttributeSpy.withArgs('__tool').and.returnValue('point');
-      spyOnProperty(graphic, 'symbol').and.returnValue(new TextSymbol());
-      spyOnProperty(graphic, 'layer').and.returnValue(layer);
+      vi.spyOn(graphic, 'getAttribute').mockImplementation((arg) => {
+        if (arg === AbstractEsriDrawableToolStrategy.identifierFieldName) {
+          return 'yes';
+        }
+
+        if (arg === '__tool') {
+          return 'point';
+        }
+
+        throw new Error(`Mock atrgument ${arg} not implemented in getAttributeSpy()`);
+      });
+      vi.spyOn(graphic, 'symbol', 'get').mockReturnValue(new TextSymbol());
+      vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
 
       expect(() => service.editDrawing(graphic)).toThrow(new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten'));
 
-      expect(convertSpy).not.toHaveBeenCalledOnceWith();
+      expect(convertSpy).not.toHaveBeenCalledTimes(1);
+
+      expect(convertSpy).not.toHaveBeenCalledWith();
     });
     it('should throw an error if the given graphic has no layer', () => {
-      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
-      const layer = {} as Layer;
-      layer.id = 'yes_drawings_please';
+      const convertSpy = vi.spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').mockImplementation(vi.fn());
 
       const graphic = new Graphic();
-      const getAttributeSpy = spyOn(graphic, 'getAttribute');
-      getAttributeSpy.withArgs(AbstractEsriDrawableToolStrategy.identifierFieldName).and.returnValue('yes');
-      getAttributeSpy.withArgs('__tool').and.returnValue('point');
-      spyOnProperty(graphic, 'symbol').and.returnValue(new TextSymbol());
-      spyOnProperty(graphic, 'geometry').and.returnValue(new Point());
-      spyOnProperty(graphic, 'layer').and.returnValue(null);
+      vi.spyOn(graphic, 'getAttribute').mockImplementation((arg) => {
+        if (arg === AbstractEsriDrawableToolStrategy.identifierFieldName) {
+          return 'yes';
+        }
+
+        if (arg === '__tool') {
+          return 'point';
+        }
+
+        throw new Error(`Mock atrgument ${arg} not implemented in getAttributeSpy()`);
+      });
+      vi.spyOn(graphic, 'symbol', 'get').mockReturnValue(new TextSymbol());
+      vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
+      vi.spyOn(graphic, 'layer', 'get').mockReturnValue(null);
 
       expect(() => service.editDrawing(graphic)).toThrow(new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.'));
 
-      expect(convertSpy).not.toHaveBeenCalledOnceWith();
+      expect(convertSpy).not.toHaveBeenCalledTimes(1);
+
+      expect(convertSpy).not.toHaveBeenCalledWith();
     });
     it('should select the correct drawing tool for circles', () => {
-      const polygonStratEditSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'edit').and.stub();
-      const layer = {} as Layer;
-      layer.id = 'yes_drawings_please';
+      const polygonStratEditSpy = vi.spyOn(EsriPolygonDrawingStrategy.prototype, 'edit').mockImplementation(vi.fn());
+      const layer = {
+        id: 'yes_drawings_please',
+      } as Layer;
 
       const graphic = new Graphic();
-      const getAttributeSpy = spyOn(graphic, 'getAttribute');
-      getAttributeSpy.withArgs(AbstractEsriDrawableToolStrategy.identifierFieldName).and.returnValue('yes');
-      getAttributeSpy.withArgs('__tool').and.returnValue('circle');
-      spyOnProperty(graphic, 'symbol').and.returnValue(new TextSymbol());
-      spyOnProperty(graphic, 'layer').and.returnValue(layer);
-      spyOnProperty(graphic, 'geometry').and.returnValue(new Point());
+      vi.spyOn(graphic, 'getAttribute').mockImplementation((arg) => {
+        if (arg === AbstractEsriDrawableToolStrategy.identifierFieldName) {
+          return 'yes';
+        }
+
+        if (arg === '__tool') {
+          return 'circle';
+        }
+
+        throw new Error(`Mock atrgument ${arg} not implemented in getAttributeSpy()`);
+      });
+      vi.spyOn(graphic, 'symbol', 'get').mockReturnValue(new TextSymbol());
+      vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
+      vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
 
       service.editDrawing(graphic);
 
       expect(polygonStratEditSpy).toHaveBeenCalled();
-      expect(service['toolStrategy']).toBeInstanceOf(EsriPolygonDrawingStrategy);
+      expect(service.getToolStrategy()).toBeInstanceOf(EsriPolygonDrawingStrategy);
     });
     it('should select the correct drawing tool for rectangles', () => {
-      const polygonStratEditSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'edit').and.stub();
-      const layer = {} as Layer;
-      layer.id = 'yes_drawings_please';
+      const polygonStratEditSpy = vi.spyOn(EsriPolygonDrawingStrategy.prototype, 'edit').mockImplementation(vi.fn());
+      const layer = {
+        id: 'yes_drawings_please',
+      } as Layer;
 
       const graphic = new Graphic();
-      const getAttributeSpy = spyOn(graphic, 'getAttribute');
-      getAttributeSpy.withArgs(AbstractEsriDrawableToolStrategy.identifierFieldName).and.returnValue('yes');
-      getAttributeSpy.withArgs('__tool').and.returnValue('rectangle');
-      spyOnProperty(graphic, 'symbol').and.returnValue(new TextSymbol());
-      spyOnProperty(graphic, 'layer').and.returnValue(layer);
-      spyOnProperty(graphic, 'geometry').and.returnValue(new Point());
+      vi.spyOn(graphic, 'getAttribute').mockImplementation((arg) => {
+        if (arg === AbstractEsriDrawableToolStrategy.identifierFieldName) {
+          return 'yes';
+        }
+
+        if (arg === '__tool') {
+          return 'rectangle';
+        }
+
+        throw new Error(`Mock atrgument ${arg} not implemented in getAttributeSpy()`);
+      });
+      vi.spyOn(graphic, 'symbol', 'get').mockReturnValue(new TextSymbol());
+      vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
+      vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
 
       service.editDrawing(graphic);
 
       expect(polygonStratEditSpy).toHaveBeenCalled();
-      expect(service['toolStrategy']).toBeInstanceOf(EsriPolygonDrawingStrategy);
+      expect(service.getToolStrategy()).toBeInstanceOf(EsriPolygonDrawingStrategy);
     });
     it('should select the correct drawing tool for symbols', () => {
-      const polygonStratEditSpy = spyOn(EsriSymbolDrawingStrategy.prototype, 'edit').and.stub();
-      const layer = {} as Layer;
-      layer.id = 'yes_drawings_please';
+      const polygonStratEditSpy = vi.spyOn(EsriSymbolDrawingStrategy.prototype, 'edit').mockImplementation(vi.fn());
+      const layer = {
+        id: 'yes_drawings_please',
+      } as Layer;
 
       const graphic = new Graphic();
-      const getAttributeSpy = spyOn(graphic, 'getAttribute');
-      getAttributeSpy.withArgs(AbstractEsriDrawableToolStrategy.identifierFieldName).and.returnValue('yes');
-      getAttributeSpy.withArgs('__tool').and.returnValue('point');
-      spyOnProperty(graphic, 'symbol').and.returnValue(new CIMSymbol());
-      spyOnProperty(graphic, 'layer').and.returnValue(layer);
-      spyOnProperty(graphic, 'geometry').and.returnValue(new Point());
+      vi.spyOn(graphic, 'getAttribute').mockImplementation((arg) => {
+        if (arg === AbstractEsriDrawableToolStrategy.identifierFieldName) {
+          return 'yes';
+        }
+
+        if (arg === '__tool') {
+          return 'point';
+        }
+
+        throw new Error(`Mock atrgument ${arg} not implemented in getAttributeSpy()`);
+      });
+      vi.spyOn(graphic, 'symbol', 'get').mockReturnValue(new CIMSymbol());
+      vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
+      vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
 
       service.editDrawing(graphic);
 
       expect(polygonStratEditSpy).toHaveBeenCalled();
-      expect(service['toolStrategy']).toBeInstanceOf(EsriSymbolDrawingStrategy);
+      expect(service.getToolStrategy()).toBeInstanceOf(EsriSymbolDrawingStrategy);
     });
     it('should not call the convert method if the drawingLayer does not exist', () => {
-      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
+      const convertSpy = vi.spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').mockImplementation(vi.fn());
 
       const style = {} as Gb3StyleRepresentation;
       const labelText = 'some Text';
@@ -1081,55 +1295,62 @@ describe('EsriToolService', () => {
       });
     });
     it('should set the correct strategy for a point drawing', () => {
-      const setDrawingStrategySpy = spyOn<any>(service, 'setDrawingStrategy').and.stub();
-      service['setToolStrategyForEditingFeature'](mockGraphic);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
+      const setDrawingStrategySpy = vi.spyOn(service as any, 'setDrawingStrategy').mockImplementation(vi.fn());
+      service.setToolStrategyForEditingFeature(mockGraphic);
       expect(setDrawingStrategySpy).toHaveBeenCalledWith('draw-point', mockGraphic.layer);
     });
     it('should set the correct strategy for a polygon drawing', () => {
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
-      const setDrawingStrategySpy = spyOn<any>(service, 'setDrawingStrategy').and.stub();
-      service['setToolStrategyForEditingFeature'](mockGraphic);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
+      const setDrawingStrategySpy = vi.spyOn(service as any, 'setDrawingStrategy').mockImplementation(vi.fn());
+      service.setToolStrategyForEditingFeature(mockGraphic);
       expect(setDrawingStrategySpy).toHaveBeenCalledWith('draw-polygon', mockGraphic.layer);
     });
     it('should set the correct strategy for a polyline drawing', () => {
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
-      const setDrawingStrategySpy = spyOn<any>(service, 'setDrawingStrategy').and.stub();
-      service['setToolStrategyForEditingFeature'](mockGraphic);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
+      const setDrawingStrategySpy = vi.spyOn(service as any, 'setDrawingStrategy').mockImplementation(vi.fn());
+      service.setToolStrategyForEditingFeature(mockGraphic);
       expect(setDrawingStrategySpy).toHaveBeenCalledWith('draw-line', mockGraphic.layer);
     });
 
     it('should set the correct strategy for a point measurement', () => {
-      (mockGraphic.layer!.id as any) = 'USER_DRAWING__measurements';
-      const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
-      service['setToolStrategyForEditingFeature'](mockGraphic);
+      mockGraphic.layer = {id: 'USER_DRAWING__measurements'} as Layer;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
+      const setMeasurementStrategySpy = vi.spyOn(service as any, 'setMeasurementStrategy').mockImplementation(vi.fn());
+      service.setToolStrategyForEditingFeature(mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-point', mockGraphic.layer);
     });
     it('should set the correct strategy for a polygon measurement', () => {
-      (mockGraphic.layer!.id as any) = 'USER_DRAWING__measurements';
+      mockGraphic.layer = {id: 'USER_DRAWING__measurements'} as Layer;
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
-      const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
-      service['setToolStrategyForEditingFeature'](mockGraphic);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
+      const setMeasurementStrategySpy = vi.spyOn(service as any, 'setMeasurementStrategy').mockImplementation(vi.fn());
+      service.setToolStrategyForEditingFeature(mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-area', mockGraphic.layer);
     });
     it('should set the correct strategy for a polyline measurement', () => {
-      (mockGraphic.layer!.id as any) = 'USER_DRAWING__measurements';
+      mockGraphic.layer = {id: 'USER_DRAWING__measurements'} as Layer;
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
-      const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
-      service['setToolStrategyForEditingFeature'](mockGraphic);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
+      const setMeasurementStrategySpy = vi.spyOn(service as any, 'setMeasurementStrategy').mockImplementation(vi.fn());
+      service.setToolStrategyForEditingFeature(mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-line', mockGraphic.layer);
     });
     it('should set the correct strategy for a elevation profile', () => {
-      (mockGraphic.layer!.id as any) = 'INTERNAL_DRAWING__elevation_profile';
+      mockGraphic.layer = {id: 'INTERNAL_DRAWING__elevation_profile'} as Layer;
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
-      const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
-      service['setToolStrategyForEditingFeature'](mockGraphic);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
+      const setMeasurementStrategySpy = vi.spyOn(service as any, 'setMeasurementStrategy').mockImplementation(vi.fn());
+      service.setToolStrategyForEditingFeature(mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-elevation-profile', mockGraphic.layer);
     });
     it('should throw an error for nonEditableLayers', () => {
-      (mockGraphic.layer!.id as any) = 'INTERNAL_DRAWING__selection';
+      mockGraphic.layer = {id: 'INTERNAL_DRAWING__selection'} as Layer;
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
 
-      expect(() => service['setToolStrategyForEditingFeature'](mockGraphic)).toThrow(new NonEditableLayerType());
+      expect(() => service.setToolStrategyForEditingFeature(mockGraphic)).toThrow(new NonEditableLayerType());
     });
   });
 });

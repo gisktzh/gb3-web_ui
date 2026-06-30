@@ -77,21 +77,9 @@ jobs:
           path: './coverage/gb3-frontend/lcov.info'
           key: ${{ inputs.cache_key }}
 
-      - name: Install dependencies and puppeteer's browsers
+      - name: Install dependencies
         run: |
           npm ci --ignore-scripts
-          node ./node_modules/.bin/puppeteer browsers install
-
-      - name: Fix Chrome sandbox permissions
-        run: |
-          SANDBOX_PATH=$(find ~/.cache/puppeteer -name chrome_sandbox | head -n 1)
-
-          echo "Using sandbox at $SANDBOX_PATH"
-
-          sudo chown root:root "$SANDBOX_PATH"
-          sudo chmod 4755 "$SANDBOX_PATH"
-
-          echo "CHROME_DEVEL_SANDBOX=$SANDBOX_PATH" >> $GITHUB_ENV
 
       - name: Run tests
         run: |
@@ -99,3 +87,41 @@ jobs:
         env:
           # note: this is required with @arcgis/core >=4.32 due to increased memory usage for type checking
           NODE_OPTIONS: '--max-old-space-size=8192'
+
+  e2e:
+    name: Run end-to-end tests
+    runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies and playwright browsers
+        run: |
+          npm ci --ignore-scripts
+          sudo apt-get update
+          sudo apt-get install -y \
+            xvfb \
+            mesa-utils \
+            libgl1-mesa-dri
+          ./node_modules/.bin/playwright install --with-deps
+
+      - name: Run tests
+        run: |
+          xvfb-run --auto-servernum npm run e2e
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

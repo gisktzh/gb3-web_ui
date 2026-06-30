@@ -1,5 +1,6 @@
+import type {Mock} from 'vitest';
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -26,11 +27,11 @@ describe('ElevationProfileEffects', () => {
   let actions$: Observable<Action>;
   let effects: ElevationProfileEffects;
   let mapService: MapService;
-  let mapServiceSpy: jasmine.Spy;
+  let mapServiceSpy: Mock;
   let mapDrawingService: MapDrawingService;
-  let mapDrawingServiceSpy: jasmine.Spy;
+  let mapDrawingServiceSpy: Mock;
   let swisstopoApiService: SwisstopoApiService;
-  let swisstopoApiServiceSpy: jasmine.Spy;
+  let swisstopoApiServiceSpy: Mock;
   let store: MockStore;
 
   beforeEach(() => {
@@ -61,47 +62,53 @@ describe('ElevationProfileEffects', () => {
   });
 
   describe('clearExistingElevationProfilesOnNew$', () => {
-    it('does nothing for other tools', fakeAsync(() => {
+    it('does nothing for other tools', async () => {
+      vi.useFakeTimers();
+
       actions$ = of(ToolActions.activateTool({tool: 'measure-line'}));
 
       effects.clearExistingElevationProfilesOnNew$.subscribe();
-      tick();
+      await vi.runAllTimersAsync();
 
       actions$.subscribe((action) => expect(action).toEqual(ToolActions.activateTool({tool: 'measure-line'})));
-    }));
 
-    it('dispatches ElevationProfileActions.clearProfile', (done: DoneFn) => {
+      vi.useRealTimers();
+    });
+
+    it('dispatches ElevationProfileActions.clearProfile', () => {
       actions$ = of(ToolActions.activateTool({tool: 'measure-elevation-profile'}));
 
       effects.clearExistingElevationProfilesOnNew$.subscribe((action) => {
         expect(action).toEqual(ElevationProfileActions.clearProfile());
-        done();
       });
     });
   });
 
   describe('clearExistingElevationProfileOnClose$', () => {
-    it('does nothing if elevation profile is being set to visible', fakeAsync(() => {
+    it('does nothing if elevation profile is being set to visible', async () => {
+      vi.useFakeTimers();
+
       actions$ = of(MapUiActions.setElevationProfileOverlayVisibility({isVisible: true}));
 
       effects.clearExistingElevationProfileOnClose$.subscribe();
-      tick();
+      await vi.runAllTimersAsync();
 
       actions$.subscribe((action) => expect(action).toEqual(MapUiActions.setElevationProfileOverlayVisibility({isVisible: true})));
-    }));
 
-    it('dispatches ElevationProfileActions.clearProfile if is set to invisible', (done: DoneFn) => {
+      vi.useRealTimers();
+    });
+
+    it('dispatches ElevationProfileActions.clearProfile if is set to invisible', () => {
       actions$ = of(MapUiActions.setElevationProfileOverlayVisibility({isVisible: false}));
 
       effects.clearExistingElevationProfileOnClose$.subscribe((action) => {
         expect(action).toEqual(ElevationProfileActions.clearProfile());
-        done();
       });
     });
   });
 
   describe('clearExistingElevationProfileOnMapUiReset$', () => {
-    it('dispatches ElevationProfileActions.clearProfile if mapUi is reset and elevationProfileData is not undefined', (done: DoneFn) => {
+    it('dispatches ElevationProfileActions.clearProfile if mapUi is reset and elevationProfileData is not undefined', () => {
       store.overrideSelector(selectData, {
         dataPoints: [{altitude: 1, distance: 250, location: {type: 'Point', coordinates: [1, 2], srs: 2056}}],
         statistics: {groundDistance: 666, linearDistance: 42, elevationDifference: 1337, lowestPoint: 9000, highestPoint: 9001},
@@ -111,55 +118,58 @@ describe('ElevationProfileEffects', () => {
 
       effects.clearExistingElevationProfileOnMapUiReset$.subscribe((action) => {
         expect(action).toEqual(ElevationProfileActions.clearProfile());
-        done();
       });
     });
 
-    it('does nothing if elevationProfileData is undefined', fakeAsync(() => {
+    it('does nothing if elevationProfileData is undefined', async () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectData, undefined);
       actions$ = of(MapUiActions.resetMapUiState());
 
       effects.clearExistingElevationProfileOnMapUiReset$.subscribe();
-      tick();
+      await vi.runAllTimersAsync();
 
       actions$.subscribe((action) => expect(action).toEqual(MapUiActions.resetMapUiState()));
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('requestElevationProfile$', () => {
-    it('calls the swisstopo API and returns the data', (done: DoneFn) => {
+    it('calls the swisstopo API and returns the data', () => {
       const mockData: ElevationProfileData = {
         dataPoints: [{altitude: 1, distance: 250, location: {type: 'Point', coordinates: [1, 2], srs: 2056}}],
         statistics: {groundDistance: 666, linearDistance: 42, elevationDifference: 1337, lowestPoint: 9000, highestPoint: 9001},
         csvRequest: {url: '', params: new URLSearchParams()},
       };
       const mockGeometry = MinimalGeometriesUtils.getMinimalLineString(2056);
-      swisstopoApiServiceSpy = spyOn(swisstopoApiService, 'loadElevationProfile').and.returnValue(of(mockData));
+      swisstopoApiServiceSpy = vi.spyOn(swisstopoApiService, 'loadElevationProfile').mockReturnValue(of(mockData));
       actions$ = of(ElevationProfileActions.loadProfile({geometry: mockGeometry}));
 
       effects.requestElevationProfile$.subscribe((action) => {
-        expect(swisstopoApiServiceSpy).toHaveBeenCalledOnceWith(mockGeometry);
+        expect(swisstopoApiServiceSpy).toHaveBeenCalledTimes(1);
+        expect(swisstopoApiServiceSpy).toHaveBeenCalledWith(mockGeometry);
         expect(action).toEqual(ElevationProfileActions.setProfile({data: mockData}));
-        done();
       });
     });
 
-    it('dispatches ElevationProfileActions.setError on API error', (done: DoneFn) => {
+    it('dispatches ElevationProfileActions.setError on API error', () => {
       const mockGeometry = MinimalGeometriesUtils.getMinimalLineString(2056);
       const expectedError = new Error('oh no! butterfingers');
-      swisstopoApiServiceSpy = spyOn(swisstopoApiService, 'loadElevationProfile').and.returnValue(throwError(() => expectedError));
+      swisstopoApiServiceSpy = vi.spyOn(swisstopoApiService, 'loadElevationProfile').mockReturnValue(throwError(() => expectedError));
       actions$ = of(ElevationProfileActions.loadProfile({geometry: mockGeometry}));
 
       effects.requestElevationProfile$.subscribe((action) => {
-        expect(swisstopoApiServiceSpy).toHaveBeenCalledOnceWith(mockGeometry);
+        expect(swisstopoApiServiceSpy).toHaveBeenCalledTimes(1);
+        expect(swisstopoApiServiceSpy).toHaveBeenCalledWith(mockGeometry);
         expect(action).toEqual(ElevationProfileActions.setProfileError({error: expectedError}));
-        done();
       });
     });
   });
 
   describe('setElevationProfileError$', () => {
-    it('throws a ElevationProfileCouldNotBeLoaded error', (done: DoneFn) => {
+    it('throws a ElevationProfileCouldNotBeLoaded error', () => {
       const expectedOriginalError = new Error('oh no! butterfingers');
 
       actions$ = of(ElevationProfileActions.setProfileError({error: expectedOriginalError}));
@@ -168,7 +178,6 @@ describe('ElevationProfileEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new ElevationProfileCouldNotBeLoaded(expectedOriginalError);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -177,44 +186,44 @@ describe('ElevationProfileEffects', () => {
   });
 
   describe('resetProfileDrawing$', () => {
-    it('clears the drawing layer, does not dispatch', (done: DoneFn) => {
-      mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer');
+    it('clears the drawing layer, does not dispatch', () => {
+      mapServiceSpy = vi.spyOn(mapService, 'clearInternalDrawingLayer');
 
       actions$ = of(ElevationProfileActions.clearProfile());
 
       effects.resetProfileDrawing$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.ElevationProfile);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(InternalDrawingLayer.ElevationProfile);
         expect(action).toEqual(ElevationProfileActions.clearProfile());
-        done();
       });
     });
   });
 
   describe('drawElevationProfileLocation$', () => {
-    it('calls MapDrawingService.drawElevationProfileHoverLocation, does not dispatch', (done: DoneFn) => {
+    it('calls MapDrawingService.drawElevationProfileHoverLocation, does not dispatch', () => {
       const mockLocation: PointWithSrs = {type: 'Point', coordinates: [1, 2], srs: 2056};
-      mapDrawingServiceSpy = spyOn(mapDrawingService, 'drawElevationProfileHoverLocation');
+      mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'drawElevationProfileHoverLocation');
 
       actions$ = of(ElevationProfileActions.drawElevationProfileHoverLocation({location: mockLocation}));
 
       effects.drawElevationProfileLocation$.subscribe((action) => {
-        expect(mapDrawingServiceSpy).toHaveBeenCalledOnceWith(mockLocation);
+        expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapDrawingServiceSpy).toHaveBeenCalledWith(mockLocation);
         expect(action).toEqual(ElevationProfileActions.drawElevationProfileHoverLocation({location: mockLocation}));
-        done();
       });
     });
   });
 
   describe('removeElevationProfileLocation$', () => {
-    it('calls MapDrawingService.removeElevationProfileHoverLocation, does not dispatch', (done: DoneFn) => {
-      mapDrawingServiceSpy = spyOn(mapDrawingService, 'removeElevationProfileHoverLocation');
+    it('calls MapDrawingService.removeElevationProfileHoverLocation, does not dispatch', () => {
+      mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'removeElevationProfileHoverLocation');
 
       actions$ = of(ElevationProfileActions.removeElevationProfileHoverLocation());
 
       effects.removeElevationProfileLocation$.subscribe((action) => {
-        expect(mapDrawingServiceSpy).toHaveBeenCalledOnceWith();
+        expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapDrawingServiceSpy).toHaveBeenCalledWith();
         expect(action).toEqual(ElevationProfileActions.removeElevationProfileHoverLocation());
-        done();
       });
     });
   });

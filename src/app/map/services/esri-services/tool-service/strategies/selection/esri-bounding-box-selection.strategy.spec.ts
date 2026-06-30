@@ -2,7 +2,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {EsriBoundingBoxSelectionStrategy} from './esri-bounding-box-selection.strategy';
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {ConfigService} from '../../../../../../shared/services/config.service';
 import {Observable, of} from 'rxjs';
 import {BoundingBoxWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
@@ -32,7 +32,7 @@ describe('EsriCantonSelectionStrategy', () => {
 
   describe('cancellation', () => {
     it('does clear the layer and does not dispatch anything', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       cantonWithGeometry$ = of(undefined);
       const strategy = new EsriBoundingBoxSelectionStrategy(
         layer,
@@ -42,7 +42,7 @@ describe('EsriCantonSelectionStrategy', () => {
         'canton',
         configService,
       );
-      const layerRemoveAllSpy = spyOn(layer, 'removeAll');
+      const layerRemoveAllSpy = vi.spyOn(layer, 'removeAll');
 
       strategy.cancel();
       expect(layerRemoveAllSpy).toHaveBeenCalledTimes(1);
@@ -51,8 +51,10 @@ describe('EsriCantonSelectionStrategy', () => {
   });
 
   describe('completion', () => {
-    it('dispatches a new selection', fakeAsync(() => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+    it('dispatches a new selection', async () => {
+      vi.useFakeTimers();
+
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       cantonWithGeometry$ = of({boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)});
       const strategy = new EsriBoundingBoxSelectionStrategy(
         layer,
@@ -64,9 +66,11 @@ describe('EsriCantonSelectionStrategy', () => {
       );
 
       strategy.start();
-      tick();
+      await vi.runAllTimersAsync();
 
-      expect(callbackSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'canton'}));
-    }));
+      expect(callbackSpy).toHaveBeenCalledWith(expect.objectContaining({type: 'canton'}));
+
+      vi.useRealTimers();
+    });
   });
 });

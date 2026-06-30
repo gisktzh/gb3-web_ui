@@ -191,21 +191,21 @@ describe('Gb3MetadataService', () => {
   });
 
   describe('services', () => {
-    it('creates correct url', (done: DoneFn) => {
+    it('creates correct url', () => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(of(mockServiceDetailResponse));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(mockServiceDetailResponse));
 
       const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/services/${testId}`;
 
       service.loadServiceDetail(testId).subscribe(() => {
-        expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
-        done();
+        expect(httpClient.get).toHaveBeenCalledTimes(1);
+        expect(httpClient.get).toHaveBeenCalledWith(expected);
       });
     });
 
-    it('maps the response correctly', (done: DoneFn) => {
+    it('maps the response correctly', () => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(of(mockServiceDetailResponse));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(mockServiceDetailResponse));
 
       const expected: ServiceMetadata = {
         version: mockServiceDetailResponse.service.version,
@@ -230,39 +230,37 @@ describe('Gb3MetadataService', () => {
 
       service.loadServiceDetail(testId).subscribe((result) => {
         expect(result).toEqual(expected);
-        done();
       });
     });
 
-    it('handles missing url correctly', (done: DoneFn) => {
+    it('handles missing url correctly', () => {
       const testId = 'my-test-id';
       const response = structuredClone(mockServiceDetailResponse);
       response.service.url = null;
-      spyOn(httpClient, 'get').and.returnValue(of(response));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(response));
 
       service.loadServiceDetail(testId).subscribe((result) => {
         expect(result.url).toBeNull();
-        done();
       });
     });
   });
 
   describe('maps', () => {
-    it('creates correct url', (done: DoneFn) => {
+    it('creates correct url', () => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(of(mockMapDetailResponse));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(mockMapDetailResponse));
 
       const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/maps/${testId}`;
 
       service.loadMapDetail(testId).subscribe(() => {
-        expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
-        done();
+        expect(httpClient.get).toHaveBeenCalledTimes(1);
+        expect(httpClient.get).toHaveBeenCalledWith(expected);
       });
     });
 
-    it('maps the response correctly', (done: DoneFn) => {
+    it('maps the response correctly', () => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(of(mockMapDetailResponse));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(mockMapDetailResponse));
 
       const expected: MapMetadata = {
         topic: mockMapDetailResponse.map.topic,
@@ -288,27 +286,26 @@ describe('Gb3MetadataService', () => {
 
       service.loadMapDetail(testId).subscribe((result) => {
         expect(result).toEqual(expected);
-        done();
       });
     });
   });
 
   describe('products', () => {
-    it('creates correct url', (done: DoneFn) => {
+    it('creates correct url', () => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(of(mockProductDetailResponse));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(mockProductDetailResponse));
 
       const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/products/${testId}`;
 
       service.loadProductDetail(testId).subscribe(() => {
-        expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
-        done();
+        expect(httpClient.get).toHaveBeenCalledTimes(1);
+        expect(httpClient.get).toHaveBeenCalledWith(expected);
       });
     });
 
-    it('maps the response correctly', (done: DoneFn) => {
+    it('maps the response correctly', () => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(of(mockProductDetailResponse));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(mockProductDetailResponse));
 
       const expected: ProductMetadata = {
         imageUrl: mockProductDetailResponse.product.image_url,
@@ -329,27 +326,26 @@ describe('Gb3MetadataService', () => {
 
       service.loadProductDetail(testId).subscribe((result) => {
         expect(result).toEqual(expected);
-        done();
       });
     });
   });
 
   describe('datasets', () => {
-    it('creates correct url', (done: DoneFn) => {
+    it('creates correct url', () => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(of(mockDatasetDetailResponse));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(mockDatasetDetailResponse));
 
       const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/datasets/${testId}`;
 
       service.loadDatasetDetail(testId).subscribe(() => {
-        expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
-        done();
+        expect(httpClient.get).toHaveBeenCalledTimes(1);
+        expect(httpClient.get).toHaveBeenCalledWith(expected);
       });
     });
 
-    it('maps the response correctly with relative pdf url', (done: DoneFn) => {
+    it('maps the response correctly with relative pdf url', () => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(of(mockDatasetDetailResponse));
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(mockDatasetDetailResponse));
 
       const expected: DatasetMetadata = {
         keywords: mockDatasetDetailResponse.dataset.keywords,
@@ -408,13 +404,12 @@ describe('Gb3MetadataService', () => {
 
       service.loadDatasetDetail(testId).subscribe((result) => {
         expect(result).toEqual(expected);
-        done();
       });
     });
 
-    it('maps the response correctly with absolute pdf url', (done: DoneFn) => {
+    it('maps the response correctly with absolute pdf url', () => {
       const testId = 'my-test-id';
-      spyOn(httpClient, 'get').and.returnValue(
+      vi.spyOn(httpClient, 'get').mockReturnValue(
         of({
           dataset: {
             ...mockDatasetDetailResponse.dataset,
@@ -483,13 +478,12 @@ describe('Gb3MetadataService', () => {
 
       service.loadDatasetDetail(testId).subscribe((result) => {
         expect(result).toEqual(expected);
-        done();
       });
     });
   });
 
   describe('load all', () => {
-    it('calls all 4 overview endpoints once and groups the result into a flat map, using the correct properties', (done: DoneFn) => {
+    it('calls all 4 overview endpoints once and groups the result into a flat map, using the correct properties', () => {
       const httpTestingController = TestBed.inject(HttpTestingController);
 
       service
@@ -525,8 +519,7 @@ describe('Gb3MetadataService', () => {
             ),
           ];
           httpTestingController.verify();
-          expect(result).toEqual(jasmine.arrayWithExactContents(expected));
-          done();
+          expect(result).toEqual(expect.arrayContaining(expected));
         });
 
       const datasetsRequest = httpTestingController.expectOne(

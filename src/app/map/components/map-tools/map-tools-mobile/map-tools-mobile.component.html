@@ -1,35 +1,35 @@
 <div class="map-tools-mobile">
   <button (click)="showShareLink()" class="map-tools-mobile__button" data-test-id="map-share" mat-icon-button matTooltip="Teilen">
-    <mat-icon svgIcon="ktzh_share"></mat-icon>
+    <mat-icon svgIcon="ktzh_share" />
   </button>
-  <mat-divider class="map-tools-mobile__divider" vertical></mat-divider>
+  <mat-divider class="map-tools-mobile__divider" vertical />
   <button
     (click)="showLegend()"
     class="map-tools-mobile__button"
     data-test-id="map-legend"
     mat-icon-button
-    [disabled]="numberOfQueryLegends === 0"
+    [disabled]="numberOfQueryLegends() === 0"
     matTooltip="Legende"
   >
-    <mat-icon svgIcon="ktzh_legend_mobile"></mat-icon>
+    <mat-icon svgIcon="ktzh_legend_mobile" />
   </button>
-  <mat-divider class="map-tools-mobile__divider" vertical></mat-divider>
+  <mat-divider class="map-tools-mobile__divider" vertical />
   <button
     (click)="locateClient()"
     class="map-tools-mobile__button"
     data-test-id="map-locate-me"
     mat-icon-button
-    [disabled]="this.geolocationState.loadingState === 'loading'"
+    [disabled]="geolocationState().loadingState === 'loading'"
     [matTooltip]="
-      this.geolocationState.loadingState === 'error'
-        ? this.geolocationState.errorReason || 'Ein Fehler ist aufgetreten'
+      geolocationState().loadingState === 'error'
+        ? geolocationState().errorReason || 'Ein Fehler ist aufgetreten'
         : 'Deinen Standort anzeigen'
     "
   >
-    <mat-icon svgIcon="ktzh_locate_me"></mat-icon>
-    <loading-and-process-bar [loadingState]="this.geolocationState.loadingState"></loading-and-process-bar>
+    <mat-icon svgIcon="ktzh_locate_me" />
+    <loading-and-process-bar [loadingState]="geolocationState().loadingState" />
   </button>
-  <mat-divider class="map-tools-mobile__divider" vertical></mat-divider>
+  <mat-divider class="map-tools-mobile__divider" vertical />
   <button
     (click)="toggleBasemapSelection()"
     class="map-tools-mobile__button"
@@ -37,6 +37,6 @@
     mat-icon-button
     matTooltip="Hintergrundkarte wählen"
   >
-    <mat-icon svgIcon="ktzh_background_map_mobile"></mat-icon>
+    <mat-icon svgIcon="ktzh_background_map_mobile" />
   </button>
 </div>

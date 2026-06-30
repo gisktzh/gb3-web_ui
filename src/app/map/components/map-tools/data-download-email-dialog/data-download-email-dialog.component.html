@@ -5,17 +5,17 @@
         Die Vorbereitung Ihrer Bestellung kann lange dauern. Während der Vorbereitung darf das Browser-Fenster nicht geschlossen werden.
         Alternativ können wir Ihnen die Daten auch per Mail zusenden.
       </p>
-      <mat-checkbox class="data-download-email-dialog__checkbox" [(ngModel)]="isEmailActive">
+      <mat-checkbox class="data-download-email-dialog__checkbox" [(ngModel)]="emailRequested">
         Daten per Mail beziehen (optional)
       </mat-checkbox>
       <mat-form-field
         appearance="fill"
         class="data-download-email-dialog__form"
-        [ngClass]="{'data-download-email-dialog__form--hidden': !isEmailActive}"
+        [class.data-download-email-dialog__form--hidden]="!isEmailActive()"
       >
         <mat-label>Email</mat-label>
-        <input [formControl]="emailFormControl" type="email" matInput />
-        @if (emailFormControl.invalid && (emailFormControl.dirty || emailFormControl.touched)) {
+        <input [formField]="emailForm.email" type="email" matInput />
+        @if (emailForm().invalid() && (emailForm().dirty() || emailForm().touched())) {
           <mat-error> Geben Sie bitte eine gültige Email Adresse ein. </mat-error>
         }
       </mat-form-field>
@@ -23,6 +23,6 @@
   </ng-container>
   <ng-container actions>
     <button (click)="cancel()" mat-button>Abbrechen</button>
-    <button (click)="download()" mat-button [disabled]="isEmailActive && emailFormControl.invalid">Download</button>
+    <button (click)="download()" mat-button [disabled]="isEmailActive() && emailForm().invalid()">Download</button>
   </ng-container>
 </api-dialog-wrapper>

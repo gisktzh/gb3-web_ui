@@ -12,10 +12,9 @@ import {of} from 'rxjs';
 import {TextDrawingToolInputComponent} from '../../../../../components/text-drawing-tool-input/text-drawing-tool-input.component';
 import Point from '@arcgis/core/geometry/Point';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
-import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 class EsriTextDrawingStrategyWrapper extends EsriTextDrawingStrategy {
   public get svm() {
@@ -27,15 +26,21 @@ class EsriTextDrawingStrategyWrapper extends EsriTextDrawingStrategy {
   }
 }
 
+const mockResourceHandle = {
+  remove: vi.fn(),
+};
+
 /**
  * Note: The sketchViewModel handling is still a work in progress, as the start event (which adds a graphic) is currently not triggered.
  * As such, we do not test for the addition of the graphics which should be handled by the Esri framework any way.
  */
 describe('EsriTextDrawingStrategy', () => {
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let textSymbol: TextSymbol;
-  const callbackHandler: {handle: DrawingCallbackHandler<'completeTextDrawing'>} = {
+  const callbackHandler: {
+    handle: DrawingCallbackHandler<'completeTextDrawing'>;
+  } = {
     handle(_1: Graphic | undefined, _2: DrawingMode, _3: string | undefined) {
       return undefined;
     },
@@ -49,29 +54,39 @@ describe('EsriTextDrawingStrategy', () => {
     });
     dialog = TestBed.inject(MatDialog);
 
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     textSymbol = new TextSymbol();
   });
 
   describe('cancellation', () => {
     it('does not fire the callback handler on cancel', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
 
-      strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      expect(callbackSpy).not.toHaveBeenCalled();
+        callback({state: 'cancel', graphic: new Graphic()});
+
+        expect(callbackSpy).not.toHaveBeenCalled();
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
   });
 
   describe('completion', () => {
     it('fires the callback handler on completion after the dialog is confirmed', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
       const graphic = new Graphic({
         geometry: new Point({
@@ -81,14 +96,24 @@ describe('EsriTextDrawingStrategy', () => {
         }),
         symbol: new TextSymbol(),
       });
-      spyOn(dialog, 'open').and.returnValue({
+      vi.spyOn(dialog, 'open').mockReturnValue({
         afterClosed: () => of(undefined),
       } as MatDialogRef<typeof TextDrawingToolInputComponent, string>);
 
-      strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      expect(callbackSpy).toHaveBeenCalled();
+        callback({state: 'complete', graphic});
+
+        expect(callbackSpy).toHaveBeenCalled();
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
 
     it('sets the label on the graphic to the input from the dialog', () => {
@@ -102,20 +127,30 @@ describe('EsriTextDrawingStrategy', () => {
         }),
         symbol: new TextSymbol(),
       });
-      spyOn(dialog, 'open').and.returnValue({
+      vi.spyOn(dialog, 'open').mockReturnValue({
         afterClosed: () => of(expectedText),
       } as MatDialogRef<typeof TextDrawingToolInputComponent, string>);
 
-      strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      expect((graphic.symbol as TextSymbol).text).toEqual(expectedText);
+        callback({state: 'complete', graphic});
+
+        expect((graphic.symbol as TextSymbol).text).toEqual(expectedText);
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
 
     it('calls completeEditing on completion for editing drawings', () => {
       const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- spy on private method of prototype
-      const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
+      const completeEditingSpy = vi.spyOn(AbstractEsriDrawingStrategy.prototype as any, 'completeEditing');
       const graphic = new Graphic({
         geometry: new Point({
           spatialReference: {wkid: 2056},
@@ -125,33 +160,47 @@ describe('EsriTextDrawingStrategy', () => {
         symbol: new TextSymbol(),
       });
 
-      strategy.edit(graphic);
-      strategy.svm.emit('update', {state: 'complete'} as UpdateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('update');
 
-      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+        callback({state: 'complete', graphic});
+
+        expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+
+        return mockResourceHandle;
+      });
+
+      strategy.edit(graphic);
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
   });
 
   describe('mode', () => {
     it('sets mode to click', () => {
       const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
-      const spy = spyOn(strategy.svm, 'create');
+      const spy = vi.spyOn(strategy.svm, 'create');
 
       strategy.start();
 
-      expect(spy).toHaveBeenCalledOnceWith('point', {mode: 'click'});
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(spy).toHaveBeenCalledWith('point', {mode: 'click'});
     });
 
     it('sets mode to update and completes without dialog', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
-      const dialogSpy = spyOn(dialog, 'open');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
+      const dialogSpy = vi.spyOn(dialog, 'open');
       const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, callbackHandler.handle, dialog);
-      const svmSpy = spyOn(strategy.svm, 'update');
+      const svmSpy = vi.spyOn(strategy.svm, 'update');
       const graphic = new Graphic();
       const mockLabelText = 'new text';
       strategy.edit(graphic);
 
-      expect(svmSpy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
+      expect(svmSpy).toHaveBeenCalledTimes(1);
+
+      expect(svmSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
       strategy.updateInternals(undefined, mockLabelText);
 
       strategy.handleComplete(graphic, 'edit');

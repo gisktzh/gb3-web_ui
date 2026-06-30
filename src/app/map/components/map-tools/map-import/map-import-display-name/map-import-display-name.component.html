@@ -1,6 +1,6 @@
-<form [formGroup]="displayNameFormGroup" class="map-import-display-name">
+<form class="map-import-display-name">
   <mat-form-field class="map-import-display-name__form-field" appearance="outline">
     <mat-label>Anzeigenamen</mat-label>
-    <input matInput placeholder="Bitte einen Namen eingeben" formControlName="name" />
+    <input matInput placeholder="Bitte einen Namen eingeben" [formField]="nameForm.name" />
   </mat-form-field>
 </form>

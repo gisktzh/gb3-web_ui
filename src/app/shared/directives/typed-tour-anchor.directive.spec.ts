@@ -42,7 +42,7 @@ describe('TypedTourAnchorDirective', () => {
     component.anchor = 'map.search.input';
     fixture.detectChanges();
 
-    expect(directiveInstance.typedTourAnchor).toBe('map.search.input');
+    expect(directiveInstance.typedTourAnchor()).toBe('map.search.input');
   });
 
   it('should set tourAnchor signal value to the typedTourAnchor value on init', () => {
@@ -52,7 +52,7 @@ describe('TypedTourAnchorDirective', () => {
   });
 
   it('should call super.ngOnInit()', () => {
-    const superNgOnInitSpy = spyOn(TourAnchorMatMenuDirective.prototype, 'ngOnInit');
+    const superNgOnInitSpy = vi.spyOn(TourAnchorMatMenuDirective.prototype, 'ngOnInit');
     fixture.detectChanges();
 
     expect(superNgOnInitSpy).toHaveBeenCalled();

@@ -1,7 +1,7 @@
-import {Injectable, OnDestroy, inject} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
-import {Observable, Subscription, switchMap, tap, withLatestFrom} from 'rxjs';
+import {Observable} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {
@@ -16,7 +16,6 @@ import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.facto
 import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-item-configuration.interface';
 import {selectActiveMapItemConfigurations} from '../../state/map/selectors/active-map-item-configuration.selector';
 import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfaces';
-
 import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
 import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
@@ -28,49 +27,33 @@ import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeSliderService} from './time-slider.service';
-import {TimeService} from '../../shared/interfaces/time-service.interface';
-
 import {TIME_SERVICE} from '../../app.tokens';
 
 @Injectable({
   providedIn: 'root',
 })
-export class FavouritesService implements OnDestroy {
+export class FavouritesService {
   private readonly store = inject(Store);
   private readonly gb3FavouritesService = inject(Gb3FavouritesService);
   private readonly timeSliderService = inject(TimeSliderService);
-  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+  private readonly timeService = inject(TIME_SERVICE);
 
-  private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
-  private availableMaps: Map[] = [];
-  private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
-  private readonly availableMaps$ = this.store.select(selectMaps);
-  private readonly favouriteBaseConfig$ = this.store.select(selectFavouriteBaseConfig);
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly userDrawingsVectorLayers$ = this.store.select(selectUserDrawingsVectorLayers);
+  private readonly activeMapItemConfigurations = this.store.selectSignal(selectActiveMapItemConfigurations);
+  public readonly availableMaps = this.store.selectSignal(selectMaps);
+  private readonly favouriteBaseConfig = this.store.selectSignal(selectFavouriteBaseConfig);
+  private readonly userDrawingsVectorLayers = this.store.selectSignal(selectUserDrawingsVectorLayers);
   private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
-  constructor() {
-    this.initSubscriptions();
-  }
-
   public createFavourite(title: string): Observable<FavoritesDetailData> {
-    return this.userDrawingsVectorLayers$.pipe(
-      withLatestFrom(this.favouriteBaseConfig$),
-      switchMap(([{measurements, drawings}, baseConfig]) => {
-        return this.gb3FavouritesService.createFavourite({
-          title,
-          content: this.activeMapItemConfigurations,
-          baseConfig,
-          measurements: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(measurements),
-          drawings: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawings),
-        });
-      }),
-    );
-  }
+    const userDrawingLayers = this.userDrawingsVectorLayers();
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    return this.gb3FavouritesService.createFavourite({
+      title,
+      content: this.activeMapItemConfigurations(),
+      baseConfig: this.favouriteBaseConfig()!,
+      measurements: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(userDrawingLayers?.measurements || []),
+      drawings: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(userDrawingLayers?.drawings || []),
+    });
   }
 
   public loadFavourites(): Observable<FavouritesResponse> {
@@ -96,7 +79,7 @@ export class FavouritesService implements OnDestroy {
     const activeMapItems: ActiveMapItem[] = [];
 
     activeMapItemConfigurations.forEach((configuration) => {
-      const existingMap = this.availableMaps.find((availableMap) => availableMap.id === configuration.mapId);
+      const existingMap = this.availableMaps().find((availableMap) => availableMap.id === configuration.mapId);
 
       if (existingMap) {
         if (configuration.isSingleLayer) {
@@ -157,15 +140,6 @@ export class FavouritesService implements OnDestroy {
       drawingActiveMapItems,
       drawingsToAdd,
     };
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.availableMaps$.pipe(tap((value) => (this.availableMaps = value))).subscribe());
-    this.subscriptions.add(
-      this.activeMapItemConfigurations$
-        .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
-        .subscribe(),
-    );
   }
 
   private createSingleLayerMapItem(

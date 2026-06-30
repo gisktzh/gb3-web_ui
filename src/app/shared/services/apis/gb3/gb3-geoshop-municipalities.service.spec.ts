@@ -26,7 +26,7 @@ describe('Gb3GeoshopMunicipalitiesService', () => {
   });
 
   describe('loadMunicipalities', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const serverData = {
         timestamp: '2023-11-27T08:57:53.906390',
         municipalities: [
@@ -49,7 +49,7 @@ describe('Gb3GeoshopMunicipalitiesService', () => {
         ],
       };
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverData));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverData));
 
       const expected: Municipality[] = [
         {
@@ -71,17 +71,17 @@ describe('Gb3GeoshopMunicipalitiesService', () => {
       ];
 
       service.loadMunicipalities().subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(
+        expect(getCallSpy).toHaveBeenCalledTimes(1);
+        expect(getCallSpy).toHaveBeenCalledWith(
           `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/municipalities`,
         );
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });
 
   describe('loadMunicipalityWithGeometry', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const serverData = {
         timestamp: '2023-11-27T09:37:53.025239',
         municipality: {
@@ -103,7 +103,7 @@ describe('Gb3GeoshopMunicipalitiesService', () => {
       };
       const bfsNo = 1;
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverData));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverData));
 
       const expected: MunicipalityWithGeometry = {
         bfsNo: 1,
@@ -123,11 +123,11 @@ describe('Gb3GeoshopMunicipalitiesService', () => {
       };
 
       service.loadMunicipalityWithGeometry(bfsNo).subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(
+        expect(getCallSpy).toHaveBeenCalledTimes(1);
+        expect(getCallSpy).toHaveBeenCalledWith(
           `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/municipalities/${bfsNo}`,
         );
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });

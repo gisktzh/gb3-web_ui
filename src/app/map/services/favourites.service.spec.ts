@@ -54,48 +54,49 @@ describe('FavouritesService', () => {
       drawings: [],
       measurements: [],
     });
-    service = TestBed.inject(FavouritesService);
     gb3FavouritesService = TestBed.inject(Gb3FavouritesService);
     symbolizationToGb3ConverterUtils = TestBed.inject(SymbolizationToGb3ConverterUtils);
+    store.refreshState();
   });
 
   it('should be created', () => {
+    service = TestBed.inject(FavouritesService);
     expect(service).toBeTruthy();
   });
 
   describe('createFavourite', () => {
-    it('calls the Gb3FavouritesService.createFavourite using the given title and returns the result', (done: DoneFn) => {
+    it('calls the Gb3FavouritesService.createFavourite using the given title and returns the result', () => {
       const title = 'test title';
       const createFavouriteResult = {id: 'a'} as SharedFavorite;
-      const gb3FavouritesServiceSpy = spyOn(gb3FavouritesService, 'createFavourite').and.returnValue(of(createFavouriteResult));
+      const gb3FavouritesServiceSpy = vi.spyOn(gb3FavouritesService, 'createFavourite').mockReturnValue(of(createFavouriteResult));
 
-      const expectedServiceCallObject = jasmine.objectContaining<CreateFavourite>({title});
-
+      const expectedServiceCallObject = expect.objectContaining<CreateFavourite>({title} as CreateFavourite);
+      service = TestBed.inject(FavouritesService);
       service.createFavourite(title).subscribe((actual) => {
-        expect(gb3FavouritesServiceSpy).toHaveBeenCalledOnceWith(expectedServiceCallObject);
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledWith(expectedServiceCallObject);
         expect(actual).toEqual(createFavouriteResult);
-        done();
       });
     });
   });
 
   describe('loadFavourites', () => {
-    it('calls the Gb3FavouritesService.loadFavourites and returns the result', (done: DoneFn) => {
+    it('calls the Gb3FavouritesService.loadFavourites and returns the result', () => {
       const favouriteResponse = [] as FavouritesResponse;
-      const gb3FavouritesServiceSpy = spyOn(gb3FavouritesService, 'loadFavourites').and.returnValue(of(favouriteResponse));
-
+      const gb3FavouritesServiceSpy = vi.spyOn(gb3FavouritesService, 'loadFavourites').mockReturnValue(of(favouriteResponse));
+      service = TestBed.inject(FavouritesService);
       service.loadFavourites().subscribe((actual) => {
-        expect(gb3FavouritesServiceSpy).toHaveBeenCalledOnceWith();
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledWith();
         expect(actual).toEqual(favouriteResponse);
-        done();
       });
     });
   });
 
   describe('getActiveMapItemsForFavourite', () => {
     let availableMaps: Map[];
-
-    beforeEach(() => {
+    beforeEach(async () => {
+      vi.useFakeTimers();
       availableMaps = [
         {
           id: 'FaBoFFFZH',
@@ -343,10 +344,13 @@ describe('FavouritesService', () => {
           ],
         },
       ];
-      service['availableMaps'] = availableMaps; // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
+      store.overrideSelector(selectMaps, availableMaps);
+      store.refreshState();
+
+      await vi.runAllTimersAsync();
     });
 
-    it('converts the given active map item configurations to active map items', () => {
+    it('converts the given active map item configurations to active map items', async () => {
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'FaBoFFFZH_fff',
@@ -439,7 +443,8 @@ describe('FavouritesService', () => {
           attributeFilters: undefined,
         },
       ];
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       const actual = service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false);
       const expected: ActiveMapItem[] = [
         ActiveMapItemFactory.createGb2WmsMapItem(availableMaps[0], availableMaps[0].layers[0], true, 1),
@@ -462,7 +467,7 @@ describe('FavouritesService', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('throws an "FavouriteIsInvalid" if a map is missing', () => {
+    it('throws an "FavouriteIsInvalid" if a map is missing', async () => {
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'missing_id',
@@ -477,11 +482,12 @@ describe('FavouritesService', () => {
       ];
 
       const expectedError = new FavouriteIsInvalid(`Die Karte '${activeMapItemConfigurations[0].mapId}' existiert nicht (mehr).`);
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('returns a list where all missing maps are skipped if "ignoreErrors" is true', () => {
+    it('returns a list where all missing maps are skipped if "ignoreErrors" is true', async () => {
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'missing_id',
@@ -558,7 +564,8 @@ describe('FavouritesService', () => {
           },
         },
       ];
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       const actual = service.getActiveMapItemsForFavourite(activeMapItemConfigurations, true);
       const expected: ActiveMapItem[] = [
         ActiveMapItemFactory.createGb2WmsMapItem(availableMaps[0], availableMaps[0].layers[0], true, 1),
@@ -568,7 +575,7 @@ describe('FavouritesService', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('throws an "FavouriteIsInvalid" if a single layer is missing', () => {
+    it('throws an "FavouriteIsInvalid" if a single layer is missing', async () => {
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'AVfarbigZH_missing_layer',
@@ -589,11 +596,12 @@ describe('FavouritesService', () => {
       ];
 
       const expectedError = new FavouriteIsInvalid(`Der Layer '${activeMapItemConfigurations[0].layers[0].layer}' existiert nicht (mehr).`);
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('returns a list where all missing single layers are skipped if "ignoreErrors" is true', () => {
+    it('returns a list where all missing single layers are skipped if "ignoreErrors" is true', async () => {
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'AVfarbigZH_missing_layer',
@@ -676,7 +684,8 @@ describe('FavouritesService', () => {
           },
         },
       ];
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       const actual = service.getActiveMapItemsForFavourite(activeMapItemConfigurations, true);
       const expected: ActiveMapItem[] = [
         ActiveMapItemFactory.createGb2WmsMapItem(availableMaps[0], availableMaps[0].layers[0], true, 1),
@@ -686,7 +695,7 @@ describe('FavouritesService', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('returns the filterConfigurations with the respective flags from the FavouriteFilterConfiguration', () => {
+    it('returns the filterConfigurations with the respective flags from the FavouriteFilterConfiguration', async () => {
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'StatGebAlterZH',
@@ -760,7 +769,8 @@ describe('FavouritesService', () => {
           ],
         },
       ];
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       const actual = service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false);
       const expected: ActiveMapItem[] = [
         ActiveMapItemFactory.createGb2WmsMapItem(
@@ -776,7 +786,7 @@ describe('FavouritesService', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('throws a FavouriteIsInvalidError if the parameter in the Favourite does not exist anymore', () => {
+    it('throws a FavouriteIsInvalidError if the parameter in the Favourite does not exist anymore', async () => {
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'StatGebAlterZH',
@@ -831,11 +841,12 @@ describe('FavouritesService', () => {
       const expectedError = new FavouriteIsInvalid(
         `Die Filterkonfiguration mit dem Parameter 'Anzeigeoptionen nach Hauptnutzung (FILTER_GEBART_OLD)' existiert nicht mehr auf der Karte 'Gebäudealter'.`,
       );
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('throws a FavouriteIsInvalidError if the name of a Filter in the Favourite does not exist anymore', () => {
+    it('throws a FavouriteIsInvalidError if the name of a Filter in the Favourite does not exist anymore', async () => {
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'StatGebAlterZH',
@@ -890,13 +901,13 @@ describe('FavouritesService', () => {
       const expectedError = new FavouriteIsInvalid(
         `Der Filter mit dem Namen 'Wohngebäude' existiert nicht mehr in der Filterkonfiguration 'Anzeigeoptionen nach Hauptnutzung' der Karte 'Gebäudealter'.`,
       );
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('throws a FavouriteIsInvalidError if a new filterConfiguration has been added', () => {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      service['availableMaps'] = [
+    it('throws a FavouriteIsInvalidError if a new filterConfiguration has been added', async () => {
+      store.overrideSelector(selectMaps, [
         {
           id: 'StatGebAlterZH',
           uuid: '246fe226-ead7-4f91-b735-d294994913e0',
@@ -1018,7 +1029,8 @@ describe('FavouritesService', () => {
             },
           ],
         },
-      ];
+      ]);
+      store.refreshState();
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'StatGebAlterZH',
@@ -1073,13 +1085,13 @@ describe('FavouritesService', () => {
       const expectedError = new FavouriteIsInvalid(
         `Eine neue Filterkonfiguration mit dem Parameter 'Anzeigeoptionen nach Hauptnutzung neu (FILTER_GEBART_2)' wurde zur Karte 'Gebäudealter' hinzugefügt.`,
       );
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('throws a FavouriteIsInvalidError if a new filter has been added', () => {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      service['availableMaps'] = [
+    it('throws a FavouriteIsInvalidError if a new filter has been added', async () => {
+      store.overrideSelector(selectMaps, [
         {
           id: 'StatGebAlterZH',
           uuid: '246fe226-ead7-4f91-b735-d294994913e0',
@@ -1181,7 +1193,8 @@ describe('FavouritesService', () => {
             },
           ],
         },
-      ];
+      ]);
+      store.refreshState();
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'StatGebAlterZH',
@@ -1236,13 +1249,13 @@ describe('FavouritesService', () => {
       const expectedError = new FavouriteIsInvalid(
         `Ein neuer Filter mit dem Namen 'Sonstige' wurde zur Filterkonfiguration 'Anzeigeoptionen nach Hauptnutzung' der Karte 'Gebäudealter' hinzugefügt.`,
       );
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start < minimumDate)', () => {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      service['availableMaps'] = [
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start < minimumDate)', async () => {
+      store.overrideSelector(selectMaps, [
         {
           id: 'StatGebAlterZH',
           uuid: '246fe226-ead7-4f91-b735-d294994913e0',
@@ -1343,7 +1356,8 @@ describe('FavouritesService', () => {
             },
           ],
         },
-      ];
+      ]);
+      store.refreshState();
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'StatGebAlterZH',
@@ -1396,13 +1410,13 @@ describe('FavouritesService', () => {
       ];
 
       const expectedError = new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte 'Gebäudealter' ist ungültig.`);
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (range to small)', () => {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      service['availableMaps'] = [
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (range to small)', async () => {
+      store.overrideSelector(selectMaps, [
         {
           id: 'StatGebAlterZH',
           uuid: '246fe226-ead7-4f91-b735-d294994913e0',
@@ -1503,7 +1517,8 @@ describe('FavouritesService', () => {
             },
           ],
         },
-      ];
+      ]);
+      store.refreshState();
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'StatGebAlterZH',
@@ -1556,13 +1571,13 @@ describe('FavouritesService', () => {
       ];
 
       const expectedError = new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte 'Gebäudealter' ist ungültig.`);
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start and end date mixed up)', () => {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      service['availableMaps'] = [
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start and end date mixed up)', async () => {
+      store.overrideSelector(selectMaps, [
         {
           id: 'StatGebAlterZH',
           uuid: '246fe226-ead7-4f91-b735-d294994913e0',
@@ -1663,7 +1678,8 @@ describe('FavouritesService', () => {
             },
           ],
         },
-      ];
+      ]);
+      store.refreshState();
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'StatGebAlterZH',
@@ -1716,13 +1732,13 @@ describe('FavouritesService', () => {
       ];
 
       const expectedError = new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte 'Gebäudealter' ist ungültig.`);
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (not max range if Flag is set)', () => {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      service['availableMaps'] = [
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (not max range if Flag is set)', async () => {
+      store.overrideSelector(selectMaps, [
         {
           id: 'StatGebAlterZH',
           uuid: '246fe226-ead7-4f91-b735-d294994913e0',
@@ -1823,7 +1839,8 @@ describe('FavouritesService', () => {
             },
           ],
         },
-      ];
+      ]);
+      store.refreshState();
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'StatGebAlterZH',
@@ -1876,13 +1893,13 @@ describe('FavouritesService', () => {
       ];
 
       const expectedError = new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte 'Gebäudealter' ist ungültig.`);
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a layer configuration is invalid', () => {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      service['availableMaps'] = [
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a layer configuration is invalid', async () => {
+      store.overrideSelector(selectMaps, [
         {
           id: 'OrthoFCIRZH',
           uuid: '246fe226-ead7-4f91-b735-d294994913e0',
@@ -2078,7 +2095,8 @@ describe('FavouritesService', () => {
           },
           filterConfigurations: undefined,
         },
-      ];
+      ]);
+      store.refreshState();
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'OrthoFCIRZH',
@@ -2147,13 +2165,13 @@ describe('FavouritesService', () => {
       ];
 
       const expectedError = new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte 'Orthofoto' ist ungültig.`);
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('returns the initalTimsliderExtent if the timeExtent is invalid but ignoreErrors is set to true', () => {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      service['availableMaps'] = [
+    it('returns the initalTimsliderExtent if the timeExtent is invalid but ignoreErrors is set to true', async () => {
+      store.overrideSelector(selectMaps, [
         {
           id: 'OrthoFCIRZH',
           uuid: '246fe226-ead7-4f91-b735-d294994913e0',
@@ -2349,7 +2367,8 @@ describe('FavouritesService', () => {
           },
           filterConfigurations: undefined,
         },
-      ];
+      ]);
+      store.refreshState();
       const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
         {
           id: 'OrthoFCIRZH',
@@ -2416,20 +2435,25 @@ describe('FavouritesService', () => {
           },
         },
       ];
-
+      service = TestBed.inject(FavouritesService);
+      await vi.runAllTimersAsync();
       const result = service.getActiveMapItemsForFavourite(activeMapItemConfigurations, true);
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      const initialTimeExtent = timeSliderService.createInitialTimeSliderExtent(service['availableMaps'][0].timeSliderConfiguration!);
+
+      const timeSliderConfiguration = service.availableMaps()[0].timeSliderConfiguration;
+      if (!timeSliderConfiguration) {
+        expect.fail('timeSliderConfiguration not defined');
+      }
+
+      const initialTimeExtent = timeSliderService.createInitialTimeSliderExtent(timeSliderConfiguration);
       const activeMapItems: ActiveMapItem[] = [
         ActiveMapItemFactory.createGb2WmsMapItem(
-          // eslint-disable-next-line @typescript-eslint/dot-notation
-          service['availableMaps'][0],
+          service.availableMaps()[0],
           undefined,
           true,
           1,
           initialTimeExtent,
-          // eslint-disable-next-line @typescript-eslint/dot-notation
-          service['availableMaps'][0].filterConfigurations,
+
+          service.availableMaps()[0].filterConfigurations,
         ),
       ];
 
@@ -2438,13 +2462,15 @@ describe('FavouritesService', () => {
   });
 
   describe('deleteFavourite', () => {
-    it('calls the Gb3FavouritesService.deleteFavourite using the given favourite', (done: DoneFn) => {
+    it('calls the Gb3FavouritesService.deleteFavourite using the given favourite', () => {
+      service = TestBed.inject(FavouritesService);
+
       const favourite = {id: 'a'} as Favourite;
-      const gb3FavouritesServiceSpy = spyOn(gb3FavouritesService, 'deleteFavourite').and.returnValue(of(void 0));
+      const gb3FavouritesServiceSpy = vi.spyOn(gb3FavouritesService, 'deleteFavourite').mockReturnValue(of(void 0));
 
       service.deleteFavourite(favourite).subscribe(() => {
-        expect(gb3FavouritesServiceSpy).toHaveBeenCalledOnceWith(favourite);
-        done();
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3FavouritesServiceSpy).toHaveBeenCalledWith(favourite);
       });
     });
   });
@@ -2606,18 +2632,23 @@ describe('FavouritesService', () => {
           ],
         },
       };
-      const converterSpy = spyOn(symbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.callFake(
-        (gb3VectorLayer: Gb3VectorLayer, source: UserDrawingLayer) => {
+      const converterSpy = vi
+        .spyOn(symbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation')
+        .mockImplementation((gb3VectorLayer: Gb3VectorLayer, source: UserDrawingLayer) => {
           return Promise.resolve([
             {
               id: `id_${gb3VectorLayer.geojson.features.length}_${source}`,
             } as Gb3StyledInternalDrawingRepresentation,
           ]);
-        },
-      );
+        });
+
+      service = TestBed.inject(FavouritesService);
 
       const actual = await service.getDrawingsForFavourite(drawings, measurements);
-      const expected: {drawingsToAdd: Gb3StyledInternalDrawingRepresentation[]; drawingActiveMapItems: DrawingActiveMapItem[]} = {
+      const expected: {
+        drawingsToAdd: Gb3StyledInternalDrawingRepresentation[];
+        drawingActiveMapItems: DrawingActiveMapItem[];
+      } = {
         drawingsToAdd: [
           {id: 'id_2_measurements'} as Gb3StyledInternalDrawingRepresentation,
           {id: 'id_4_drawings'} as Gb3StyledInternalDrawingRepresentation,

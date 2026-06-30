@@ -22,7 +22,7 @@ describe('ActiveMapItemFactory', () => {
       const timeExtent = {} as TimeExtent;
       const attributeFilters = [] as FilterConfiguration[];
 
-      const createGb2WmsMapItemSpy = spyOn(ActiveMapItemFactory, 'createGb2WmsMapItem');
+      const createGb2WmsMapItemSpy = vi.spyOn(ActiveMapItemFactory, 'createGb2WmsMapItem');
 
       ActiveMapItemFactory.createTemporaryGb2WmsMapItem(map, layer, visible, opacity, timeExtent, attributeFilters);
 
@@ -82,7 +82,9 @@ describe('ActiveMapItemFactory', () => {
 
   describe('create active map drawings', () => {
     it('should create a DrawingActiveMapItem with passed values and correct title', () => {
-      const combos: (DrawingActiveMapItemConstructorArgs & {id: DrawingLayer})[] = [
+      const combos: (DrawingActiveMapItemConstructorArgs & {
+        id: DrawingLayer;
+      })[] = [
         {
           id: UserDrawingLayer.Drawings,
           userDrawingLayer: UserDrawingLayer.Drawings,

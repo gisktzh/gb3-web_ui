@@ -35,6 +35,9 @@ export const mapConfigFeature = createFeature({
     on(MapConfigActions.markMapServiceAsInitialized, (state): MapConfigState => {
       return {...state, isMapServiceInitialized: true};
     }),
+    on(MapConfigActions.markMapServiceAsDeinitialized, (state): MapConfigState => {
+      return {...state, isMapServiceInitialized: false};
+    }),
     on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId, initialMaps}): MapConfigState => {
       const initialExtent = {
         center: {

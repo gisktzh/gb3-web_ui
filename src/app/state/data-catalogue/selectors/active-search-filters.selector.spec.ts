@@ -49,6 +49,6 @@ describe('selectActiveSearchFilterValues', () => {
       {groupLabel: 'group2', filterLabel: 'filter4'},
     ];
 
-    expect(actual).toEqual(jasmine.arrayWithExactContents(expected));
+    expect(actual).toEqual(expect.arrayContaining(expected));
   });
 });

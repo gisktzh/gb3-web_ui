@@ -15,7 +15,6 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {StyleRepresentationToEsriSymbolUtils} from './style-representation-to-esri-symbol.utils';
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 import {EsriMapDrawingSymbol} from '../types/esri-map-drawing-symbol.type';
-import {DrawingSymbolDescriptorMatcher} from 'src/app/testing/matchers/drawing-symbol-descriptor.matcher';
 import {EsriDrawingSymbolDefinition} from '../tool-service/strategies/drawing/drawing-symbol/esri-drawing-symbol-definition';
 import {WebStyleSymbolProperties} from '@arcgis/core/symbols/WebStyleSymbol';
 import {CIMSymbolProperties} from '@arcgis/core/symbols/CIMSymbol';
@@ -73,10 +72,6 @@ class MockDrawingSymbolDefinition implements DrawingSymbolDefinition {
 }
 
 describe('StyleRepresentationToEsriSymbolUtils', () => {
-  beforeEach(() => {
-    jasmine.addMatchers(DrawingSymbolDescriptorMatcher);
-  });
-
   it('returns a TextSymbol for a Gb3TextStyle', async () => {
     const mockStyle: Gb3TextStyle = {
       fontSize: '12',
@@ -161,6 +156,7 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
       type: 'symbol',
       symbolSize: 10,
       symbolRotation: 10,
+      symbolDefinition: null,
     };
 
     const mockEsriDrawingSymbolDescriptor = new EsriDrawingSymbolDescriptor({
@@ -188,6 +184,7 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
       type: 'symbol',
       symbolSize: 10,
       symbolRotation: 10,
+      symbolDefinition: null,
     };
 
     const mockDrawingSymbolDescriptor = new MockDrawingSymbolDesciptor({
@@ -244,9 +241,9 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
       symbolDefinition: mockEsriDrawingSymbolDefinition,
     };
 
-    const fetchSymbolSpy = spyOn(mockEsriDrawingSymbolDefinition, 'fetchDrawingSymbolDescriptor').and.resolveTo(
-      transformedDrawingSymbolDescriptor,
-    );
+    const fetchSymbolSpy = vi
+      .spyOn(mockEsriDrawingSymbolDefinition, 'fetchDrawingSymbolDescriptor')
+      .mockResolvedValue(transformedDrawingSymbolDescriptor);
 
     const actual = await StyleRepresentationToEsriSymbolUtils.convert(mockStyle, undefined, mockMapDrawingSymbol);
 
@@ -296,10 +293,10 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
 
     const mockEsriDrawingSymbolDefinition = new EsriDrawingSymbolDefinition();
 
-    const fromJsonSpy = spyOn(EsriDrawingSymbolDefinition, 'fromJSON').and.returnValue(mockEsriDrawingSymbolDefinition);
-    const fetchSymbolSpy = spyOn(mockEsriDrawingSymbolDefinition, 'fetchDrawingSymbolDescriptor').and.resolveTo(
-      transformedDrawingSymbolDescriptor,
-    );
+    const fromJsonSpy = vi.spyOn(EsriDrawingSymbolDefinition, 'fromJSON').mockReturnValue(mockEsriDrawingSymbolDefinition);
+    const fetchSymbolSpy = vi
+      .spyOn(mockEsriDrawingSymbolDefinition, 'fetchDrawingSymbolDescriptor')
+      .mockResolvedValue(transformedDrawingSymbolDescriptor);
 
     const actual = await StyleRepresentationToEsriSymbolUtils.convert(mockStyle, undefined, mockMapDrawingSymbol);
 
@@ -331,10 +328,10 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
       symbolDefinition: mockEsriDrawingSymbolDefinition,
     };
 
-    const fromJsonSpy = spyOn(EsriDrawingSymbolDefinition, 'fromJSON').and.returnValue(mockEsriDrawingSymbolDefinition);
-    const fetchSymbolSpy = spyOn(mockEsriDrawingSymbolDefinition, 'fetchDrawingSymbolDescriptor').and.resolveTo(
-      transformedDrawingSymbolDescriptor,
-    );
+    const fromJsonSpy = vi.spyOn(EsriDrawingSymbolDefinition, 'fromJSON').mockReturnValue(mockEsriDrawingSymbolDefinition);
+    const fetchSymbolSpy = vi
+      .spyOn(mockEsriDrawingSymbolDefinition, 'fetchDrawingSymbolDescriptor')
+      .mockResolvedValue(transformedDrawingSymbolDescriptor);
 
     const actual = await StyleRepresentationToEsriSymbolUtils.convert(mockStyle, undefined, mockMapDrawingSymbol);
 
@@ -349,6 +346,7 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
       type: 'symbol',
       symbolSize: 10,
       symbolRotation: 11,
+      symbolDefinition: null,
     };
 
     const expected = new EsriDrawingSymbolDescriptor();

@@ -3,14 +3,14 @@
     <search-input
       mode="mobile"
       placeholderText="Suchen nach Adressen, Orten, Karten und mehr..."
-      [focusOnInit]="focusOnInit"
+      [focusOnInit]="focusOnInit()"
       (changeSearchTermEvent)="searchForTerm($event)"
       (clearSearchTermEvent)="clearSearchTerm()"
       (openFilterEvent)="openFilterMenu()"
-      [isAnyFilterActive]="isAnySearchFilterActive"
-    ></search-input>
+      [isAnyFilterActive]="isAnySearchFilterActive()"
+    />
   </div>
   <div class="search-window-mobile__results-container">
-    <result-groups [showMultiplePanels]="false"></result-groups>
+    <result-groups [showMultiplePanels]="false" />
   </div>
 </div>

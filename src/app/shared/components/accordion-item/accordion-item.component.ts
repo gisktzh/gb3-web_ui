@@ -1,10 +1,8 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
+import {Component, computed, inject, input, viewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {ScreenMode} from '../../types/screen-size.type';
 import {CdkAccordionItem} from '@angular/cdk/accordion';
-import {NgClass} from '@angular/common';
+
 import {MatIcon} from '@angular/material/icon';
 
 /**
@@ -14,9 +12,9 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'accordion-item',
   templateUrl: './accordion-item.component.html',
   styleUrls: ['./accordion-item.component.scss'],
-  imports: [CdkAccordionItem, NgClass, MatIcon],
+  imports: [CdkAccordionItem, MatIcon],
 })
-export class AccordionItemComponent implements OnInit, OnDestroy {
+export class AccordionItemComponent {
   private readonly store = inject(Store);
 
   /**
@@ -24,24 +22,11 @@ export class AccordionItemComponent implements OnInit, OnDestroy {
    * * Light = white borders, white font
    * * Dark = dark borders, black font
    */
-  @Input() public variant: 'light' | 'dark' | 'grey' = 'light';
-  @Input() public header!: string;
-  public ariaIdentifier!: string;
-  public screenMode: ScreenMode = 'regular';
-
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly subscriptions: Subscription = new Subscription();
-  @ViewChild('accordionItem') private accordionItem!: CdkAccordionItem;
-
-  public ngOnInit() {
-    // generate identifier without custom characters and stuff for aria identification
-    this.ariaIdentifier = btoa(this.header);
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+  public readonly variant = input<'light' | 'dark' | 'grey'>('light');
+  public readonly header = input.required<string>();
+  public readonly ariaIdentifier = computed(() => btoa(this.header()));
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  private readonly accordionItem = viewChild.required<CdkAccordionItem>(CdkAccordionItem);
 
   public toggle(event: Event) {
     event.preventDefault();
@@ -50,7 +35,7 @@ export class AccordionItemComponent implements OnInit, OnDestroy {
     if (event.target instanceof HTMLAnchorElement) {
       event.target.click();
     } else {
-      this.accordionItem.toggle();
+      this.accordionItem().toggle();
     }
   }
 }

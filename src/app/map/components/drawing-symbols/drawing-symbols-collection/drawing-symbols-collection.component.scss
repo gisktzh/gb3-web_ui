@@ -33,6 +33,11 @@
   transform: scale(1.25);
 }
 
+.drawing-symbols-collection__grid__thumbnail--placeholder {
+  width: 64px;
+  height: 64px;
+}
+
 .sr-only {
   /* sr = Screen Reader. Courtesy of Tailwind. */
   position: absolute;

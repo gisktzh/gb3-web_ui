@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -56,7 +56,7 @@ describe('SearchEffects', () => {
   });
 
   describe('throwSearchApiError$', () => {
-    it('throws a SearchResultsCouldNotBeLoaded error', (done: DoneFn) => {
+    it('throws a SearchResultsCouldNotBeLoaded error', () => {
       store.overrideSelector(selectIsAuthenticated, true);
       const originalError = new Error('error');
       actions$ = of(SearchActions.setSearchApiError({error: originalError}));
@@ -65,7 +65,6 @@ describe('SearchEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new SearchResultsCouldNotBeLoaded(true, originalError);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -74,11 +73,11 @@ describe('SearchEffects', () => {
   });
 
   describe('zoomToAndHighlightSelectedSearchResult$', () => {
-    it('calls mapService.zoomToExtent and MapDrawingSerivce.drawSearchResultHighlight', (done: DoneFn) => {
+    it('calls mapService.zoomToExtent and MapDrawingSerivce.drawSearchResultHighlight', () => {
       const mapService = TestBed.inject(MAP_SERVICE);
-      const mapServiceSpy = spyOn(mapService, 'zoomToExtent').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'zoomToExtent');
       const mapDrawingService = TestBed.inject(MapDrawingService);
-      const mapDrawingServiceSpy = spyOn(mapDrawingService, 'drawSearchResultHighlight').and.callThrough();
+      const mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'drawSearchResultHighlight');
       store.overrideSelector(selectReady, true);
 
       const searchResultsMock: GeometryWithSrsSearchApiResultMatch = {
@@ -96,33 +95,35 @@ describe('SearchEffects', () => {
         expect(mapServiceSpy).toHaveBeenCalledTimes(1);
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('clearSearchTermAfterFeatureInfoOpened$', () => {
-    it('dispatches SearchActions.clearSearchTerm() if FeatureInfo is opened', (done: DoneFn) => {
+    it('dispatches SearchActions.clearSearchTerm() if FeatureInfo is opened', () => {
       actions$ = of(MapUiActions.setFeatureInfoVisibility({isVisible: true}));
       effects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => {
         expect(action).toEqual(SearchActions.clearSearchTerm());
-        done();
       });
     });
 
-    it('dispatches nothing when FeatureINfo is closed', fakeAsync(async () => {
+    it('dispatches nothing when FeatureINfo is closed', async () => {
+      vi.useFakeTimers();
+
       let newAction;
 
       actions$ = of(MapUiActions.setFeatureInfoVisibility({isVisible: false}));
       effects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('removeHighlightAfterChangingSearchTermOrClearingSearchResult$', () => {
-    it('calls mapDrawingService.clearSearchResultHighlight() if on map-page', (done: DoneFn) => {
+    it('calls mapDrawingService.clearSearchResultHighlight() if on map-page', () => {
       store.overrideSelector(selectUrlState, {
         mainPage: MainPage.Maps,
         isHeadlessPage: false,
@@ -132,16 +133,17 @@ describe('SearchEffects', () => {
       });
 
       const mapDrawingService = TestBed.inject(MapDrawingService);
-      const mapDrawingServiceSpy = spyOn(mapDrawingService, 'clearSearchResultHighlight').and.callThrough();
+      const mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'clearSearchResultHighlight');
 
       actions$ = of(SearchActions.clearSearchTerm());
       effects.removeHighlightAfterChangingSearchTermOrClearingSearchResult$.subscribe(() => {
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
-        done();
       });
     });
 
-    it('dispatches nothing when on any other page than map-page', fakeAsync(async () => {
+    it('dispatches nothing when on any other page than map-page', async () => {
+      vi.useFakeTimers();
+
       store.overrideSelector(selectUrlState, {
         mainPage: MainPage.Start,
         isHeadlessPage: false,
@@ -153,14 +155,16 @@ describe('SearchEffects', () => {
       let newAction;
       actions$ = of(MapUiActions.setFeatureInfoVisibility({isVisible: false}));
       effects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('validateSearchUrlParameters$', () => {
-    it('dispatches SearchActions.handleInvalidParameters() if search term is undefined', (done: DoneFn) => {
+    it('dispatches SearchActions.handleInvalidParameters() if search term is undefined', () => {
       const searchIndexString = 'index';
       const searchTerm = undefined;
       const basemapId = 'base';
@@ -170,10 +174,9 @@ describe('SearchEffects', () => {
       actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, initialMaps, basemapId}));
       effects.validateSearchUrlParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
-    it('dispatches SearchActions.handleInvalidParameters() if search index is undefined', (done: DoneFn) => {
+    it('dispatches SearchActions.handleInvalidParameters() if search index is undefined', () => {
       const searchIndexString = undefined;
       const searchTerm = 'term';
       const basemapId = 'base';
@@ -183,10 +186,9 @@ describe('SearchEffects', () => {
       actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, initialMaps, basemapId}));
       effects.validateSearchUrlParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
-    it('dispatches SearchActions.searchForTermFromUrlParams() if search index and search term are defined', (done: DoneFn) => {
+    it('dispatches SearchActions.searchForTermFromUrlParams() if search index and search term are defined', () => {
       const searchIndexString = 'index';
       const searchTerm = 'term';
       const basemapId = 'base';
@@ -202,12 +204,11 @@ describe('SearchEffects', () => {
       actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, initialMaps, basemapId}));
       effects.validateSearchUrlParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
   describe('handleSearchUrlParameter$', () => {
-    it('dispatches SeacrchActions.handleEmptyResultsFromUrlSearch if no results are found', (done: DoneFn) => {
+    it('dispatches SeacrchActions.handleEmptyResultsFromUrlSearch if no results are found', () => {
       const searchIndexString = 'index';
       const searchTerm = 'term';
       const searchIndex: SearchIndex = {
@@ -216,16 +217,16 @@ describe('SearchEffects', () => {
         active: true,
         indexType: 'activeMapItems',
       };
-      const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(of([]));
+      const searchServiceSpy = vi.spyOn(searchService, 'searchIndexes').mockReturnValue(of([]));
       const expectedAction = SearchActions.handleEmptyResultsFromUrlSearch({searchTerm});
       actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
       effects.handleSearchUrlParameter$.subscribe((action) => {
-        expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
+        expect(searchServiceSpy).toHaveBeenCalledTimes(1);
+        expect(searchServiceSpy).toHaveBeenCalledWith(searchTerm, [searchIndex]);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
-    it('dispatches SeacrchActions.handleEmptyResultsFromUrlSearch if no geometry exist on the best results', (done: DoneFn) => {
+    it('dispatches SeacrchActions.handleEmptyResultsFromUrlSearch if no geometry exist on the best results', () => {
       const searchIndexString = 'index';
       const searchTerm = 'term';
       const searchIndex: SearchIndex = {
@@ -234,18 +235,18 @@ describe('SearchEffects', () => {
         active: true,
         indexType: 'activeMapItems',
       };
-      const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(
-        of([{indexType: 'index'} as unknown as GeometryWithSrsSearchApiResultMatch]),
-      );
+      const searchServiceSpy = vi
+        .spyOn(searchService, 'searchIndexes')
+        .mockReturnValue(of([{indexType: 'index'} as unknown as GeometryWithSrsSearchApiResultMatch]));
       const expectedAction = SearchActions.handleEmptyResultsFromUrlSearch({searchTerm});
       actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
       effects.handleSearchUrlParameter$.subscribe((action) => {
-        expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
+        expect(searchServiceSpy).toHaveBeenCalledTimes(1);
+        expect(searchServiceSpy).toHaveBeenCalledWith(searchTerm, [searchIndex]);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
-    it('dispatches SearchActions.selectMapSearchResult if a GeometrySearchApiResultMatch is found', (done: DoneFn) => {
+    it('dispatches SearchActions.selectMapSearchResult if a GeometrySearchApiResultMatch is found', () => {
       const searchIndexString = 'index';
       const searchTerm = 'term';
       const searchIndex: SearchIndex = {
@@ -260,16 +261,16 @@ describe('SearchEffects', () => {
         geometry: {} as GeometryWithSrs,
         score: 100,
       } as GeometryWithSrsSearchApiResultMatch;
-      const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(of([expectedResult]));
+      const searchServiceSpy = vi.spyOn(searchService, 'searchIndexes').mockReturnValue(of([expectedResult]));
       const expectedAction = SearchActions.selectMapSearchResult({searchResult: expectedResult});
       actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
       effects.handleSearchUrlParameter$.subscribe((action) => {
-        expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
+        expect(searchServiceSpy).toHaveBeenCalledTimes(1);
+        expect(searchServiceSpy).toHaveBeenCalledWith(searchTerm, [searchIndex]);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
-    it('dispatches SearchActions.setSearchApiError if an error occurs', (done: DoneFn) => {
+    it('dispatches SearchActions.setSearchApiError if an error occurs', () => {
       const searchIndexString = 'index';
       const searchTerm = 'term';
       const searchIndex: SearchIndex = {
@@ -279,25 +280,24 @@ describe('SearchEffects', () => {
         indexType: 'activeMapItems',
       };
       const expectedError = new Error('error');
-      const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(throwError(() => expectedError));
+      const searchServiceSpy = vi.spyOn(searchService, 'searchIndexes').mockReturnValue(throwError(() => expectedError));
       const expectedAction = SearchActions.setSearchApiError({error: expectedError});
       actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
       effects.handleSearchUrlParameter$.subscribe((action) => {
-        expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
+        expect(searchServiceSpy).toHaveBeenCalledTimes(1);
+        expect(searchServiceSpy).toHaveBeenCalledWith(searchTerm, [searchIndex]);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
   describe('throwErrorForInvalidSearchParameters$', () => {
-    it('throws an InvalidSearchParameters error', (done: DoneFn) => {
+    it('throws an InvalidSearchParameters error', () => {
       actions$ = of(SearchActions.handleInvalidParameters());
       effects.throwErrorForInvalidSearchParameters$
         .pipe(
           catchError((error: unknown) => {
             const expectedError = new InvalidSearchParameters();
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -305,7 +305,7 @@ describe('SearchEffects', () => {
     });
   });
   describe('throwErrorForEmptySearchResults$', () => {
-    it('throws an NoSearchResultsFoundForParameters error', (done: DoneFn) => {
+    it('throws an NoSearchResultsFoundForParameters error', () => {
       const searchTerm = 'Empty Results';
       actions$ = of(SearchActions.handleEmptyResultsFromUrlSearch({searchTerm}));
       effects.throwErrorForEmptySearchResults$
@@ -313,7 +313,6 @@ describe('SearchEffects', () => {
           catchError((error: unknown) => {
             const expectedError = new NoSearchResultsFoundForParameters(searchTerm);
             expect(error).toEqual(expectedError);
-            done();
             return EMPTY;
           }),
         )
@@ -321,21 +320,19 @@ describe('SearchEffects', () => {
     });
   });
   describe('resetSearchLoadingState$', () => {
-    it('dispatches SeacrchActions.resetLoadingState on SearchActions.handleEmptyResultsFromUrlSearch', (done: DoneFn) => {
+    it('dispatches SeacrchActions.resetLoadingState on SearchActions.handleEmptyResultsFromUrlSearch', () => {
       const expectedAction = SearchActions.resetLoadingState();
       const searchTerm = 'Empty Results';
       actions$ = of(SearchActions.handleEmptyResultsFromUrlSearch({searchTerm}));
       effects.resetSearchLoadingState$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
-    it('dispatches SeacrchActions.resetLoadingState on SearchActions.handleInvalidParameters', (done: DoneFn) => {
+    it('dispatches SeacrchActions.resetLoadingState on SearchActions.handleInvalidParameters', () => {
       const expectedAction = SearchActions.resetLoadingState();
       actions$ = of(SearchActions.handleInvalidParameters());
       effects.resetSearchLoadingState$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });

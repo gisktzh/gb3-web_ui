@@ -78,7 +78,7 @@ describe('OverviewSearchResult', () => {
     it('creates the correct OverviewSearchResultDisplayItem for OverviewLinkItem', () => {
       const actual = new OverviewLinkItem('TestTitel', 'https://www.example.com').createDisplayRepresentationForList();
 
-      expect(validateUuid(actual.uuid)).toBeTrue();
+      expect(validateUuid(actual.uuid)).toBe(true);
       expect(actual.url).toEqual({path: 'https://www.example.com', isInternal: false});
       expect(actual.title).toEqual('TestTitel');
       expect(actual.fields).toEqual([]);

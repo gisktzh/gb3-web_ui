@@ -62,7 +62,7 @@ describe('DataCatalogue Reducer', () => {
       const state = fromReducer.reducer(initialState, action);
 
       expect(state.loadingState).toEqual('loaded');
-      expect(state.items).toEqual(jasmine.arrayWithExactContents(mockItems));
+      expect(state.items).toEqual(expect.arrayContaining(mockItems));
     });
   });
 

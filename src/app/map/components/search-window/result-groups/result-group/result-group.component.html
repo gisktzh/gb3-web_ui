@@ -1,14 +1,14 @@
 <expandable-list-item
-  [expanded]="screenMode !== 'mobile' || isExpanded"
-  [header]="header"
+  [expanded]="screenMode() !== 'mobile' || isExpanded()"
+  [header]="header()"
   class="result-group"
-  [numberOfItems]="filteredMaps.length || searchResults.length"
+  [numberOfItems]="filteredMaps().length || searchResults().length"
   [showBadge]="true"
   [allowTabFocus]="false"
 >
-  <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
+  <div class="result-group__container" [class.result-group__container--mobile]="screenMode() === 'mobile'">
     <ul class="result-group-list">
-      @for (result of searchResults; track result; let first = $first) {
+      @for (result of searchResults(); track result; let first = $first) {
         <li class="result-group-list__list-item">
           <button
             matRipple
@@ -25,18 +25,18 @@
               }
               <div
                 class="result-group__container__element__content result-group__container__element__text"
-                [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
+                [innerHTML]="result.displayString | highlightSearchQuery: searchTerms()"
               ></div>
             </div>
-            <mat-divider></mat-divider>
+            <mat-divider />
           </button>
         </li>
       }
     </ul>
   </div>
-  <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
+  <div class="result-group__container" [class.result-group__container--mobile]="screenMode() === 'mobile'">
     <ul class="result-group-list">
-      @for (map of filteredMaps; track map; let first = $first) {
+      @for (map of filteredMaps(); track map; let first = $first) {
         <li class="result-group-list__list-item">
           <div class="result-group__container__element">
             @if (map.gb2Url) {
@@ -47,24 +47,24 @@
                 searchResultIdentifier
                 [text]="map.title"
                 [isFocusable]="first"
-                [href]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
+                [href]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState()"
                 rel="noopener noreferrer"
                 target="_blank"
-                [attr.aria-label]="'Karte ' + map.title + ' öffnen. ' + toolTip"
+                [aria-label]="'Karte ' + map.title + ' öffnen. ' + toolTip"
                 [matTooltip]="'Karte ' + map.title + ' öffnen. ' + toolTip"
               >
                 <div class="result-group__container__element__link__icon-wrapper">
-                  <mat-icon svgIcon="ktzh_arrow_right" class="result-group__container__element__link__icon-wrapper__icon"></mat-icon>
+                  <mat-icon svgIcon="ktzh_arrow_right" class="result-group__container__element__link__icon-wrapper__icon" />
                 </div>
 
-                <ng-container *ngTemplateOutlet="content"></ng-container>
+                <ng-container *ngTemplateOutlet="content" />
               </a>
             } @else {
               <button
                 matRipple
                 class="result-group__container__element__button"
                 (delayedMouseEnter)="addActiveMap(map, true)"
-                [delayDurationInMs]="this.hoverDelay"
+                [delayDurationInMs]="hoverDelay"
                 (mouseleave)="removeTemporaryMap(map)"
                 (click)="addActiveMap(map)"
                 searchResultIdentifier
@@ -73,24 +73,24 @@
                 [isFocusable]="first"
                 (addResultFromArrowNavigation)="addActiveMap(map, true)"
                 (removeResultFromArrowNavigation)="removeTemporaryMap(map)"
-                [attr.data-index]="filteredMaps.indexOf(map)"
+                [attr.data-index]="filteredMaps().indexOf(map)"
                 [tabIndex]="first ? 0 : -1"
-                [attr.aria-label]="'Karte ' + map.title + ' öffnen.'"
+                [aria-label]="'Karte ' + map.title + ' öffnen.'"
                 [matTooltip]="'Karte ' + map.title + ' öffnen.'"
               >
                 <mat-icon class="result-group__container__element__button__icon">add</mat-icon>
-                <ng-container *ngTemplateOutlet="content"></ng-container>
+                <ng-container *ngTemplateOutlet="content" />
               </button>
             }
             <ng-template #content>
               <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
               <p
-                [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
+                [innerHTML]="map.title | highlightSearchQuery: searchTerms()"
                 class="result-group__container__element__map-content__title result-group__container__element__text"
               ></p>
             </ng-template>
 
-            <mat-divider></mat-divider>
+            <mat-divider />
           </div>
         </li>
       }

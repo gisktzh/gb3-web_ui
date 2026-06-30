@@ -1,12 +1,12 @@
-@if (!hideUiElementsButton) {
+@if (!hideUiElementsButton()) {
   <button
     mat-icon-button
     (click)="toggleUiElementsVisibility()"
     class="ui-toggle"
     data-test-id="ui-toggle"
-    [matTooltip]="checked ? 'Ui-Elemente anzeigen' : 'Ui-Elemente verbergen'"
-    [attr.aria-label]="checked ? 'Ui-Elemente anzeigen' : 'Ui-Elemente verbergen'"
+    [matTooltip]="checked() ? 'Ui-Elemente anzeigen' : 'Ui-Elemente verbergen'"
+    [aria-label]="checked() ? 'Ui-Elemente anzeigen' : 'Ui-Elemente verbergen'"
   >
-    <mat-slide-toggle [checked]="checked" hideIcon color="primary" tabindex="-1"></mat-slide-toggle>
+    <mat-slide-toggle [checked]="checked()" hideIcon color="primary" tabindex="-1" />
   </button>
 }

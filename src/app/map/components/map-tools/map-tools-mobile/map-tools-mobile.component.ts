@@ -1,11 +1,9 @@
-import {Component, OnInit, OnDestroy, inject} from '@angular/core';
+import {Component, inject, computed} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
 import {GeolocationActions} from 'src/app/state/map/actions/geolocation.actions';
 import {selectQueryLegends} from 'src/app/state/map/selectors/query-legends.selector';
-import {GeolocationState} from 'src/app/state/map/states/geolocation.state';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
-import {initialState as initialGeolocationState, selectGeolocationState} from '../../../../state/map/reducers/geolocation.reducer';
+import {selectGeolocationState} from '../../../../state/map/reducers/geolocation.reducer';
 import {MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
@@ -18,23 +16,12 @@ import {LoadingAndProcessBarComponent} from '../../../../shared/components/loadi
   styleUrls: ['./map-tools-mobile.component.scss'],
   imports: [MatIconButton, MatTooltip, MatIcon, MatDivider, LoadingAndProcessBarComponent],
 })
-export class MapToolsMobileComponent implements OnInit, OnDestroy {
+export class MapToolsMobileComponent {
   private readonly store = inject(Store);
 
-  public numberOfQueryLegends: number = 0;
-  public geolocationState: GeolocationState = initialGeolocationState;
-
-  private readonly queryLegends$ = this.store.select(selectQueryLegends);
-  private readonly geolocationState$ = this.store.select(selectGeolocationState);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+  public readonly geolocationState = this.store.selectSignal(selectGeolocationState);
+  public readonly currentActiveMapItems = this.store.selectSignal(selectQueryLegends);
+  public readonly numberOfQueryLegends = computed(() => this.currentActiveMapItems().length);
 
   public showShareLink() {
     this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
@@ -50,18 +37,5 @@ export class MapToolsMobileComponent implements OnInit, OnDestroy {
 
   public toggleBasemapSelection() {
     this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'basemap'}));
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.queryLegends$
-        .pipe(
-          tap((currentActiveMapItems) => {
-            this.numberOfQueryLegends = currentActiveMapItems.length;
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(this.geolocationState$.pipe(tap((value) => (this.geolocationState = value))).subscribe());
   }
 }

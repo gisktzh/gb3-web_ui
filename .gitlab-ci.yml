@@ -7,41 +7,79 @@ variables:
   DOCKER_TLS_CERTDIR: ''
   CA_CERTIFICATE: '$ZS_CERTIFICATE'
   WORK_DIR: gb3-web_ui
-  STAGE: staging
 
 build:
-  image: docker:29.4.0
+  image: docker:29.6.1
   stage: build
   tags: [docker]
   services:
-    - name: docker:29.4.0-dind
+    - name: docker:29.6.1-dind
       command:
         - /bin/sh
         - -c
-        - echo "$ZS_CERTIFICATE" > /usr/local/share/ca-certificates/proxyzs.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
+        - echo "$CA_CERTIFICATE" > /usr/local/share/ca-certificates/proxyzs.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
   before_script:
     - docker info
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - . scripts/pipeline/prepare_image_tag.sh
   script:
     - docker compose -f docker-compose.ktzh.yml build --pull
     - docker compose -f docker-compose.ktzh.yml push
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_TAG
+      when: manual
+    - when: never
 
-deploy:
-  image: ubuntu:24.04
+build:staging:
+  extends: .build
+  variables:
+    TARGET_ENV: staging
+
+build:uat:
+  extends: .build
+  variables:
+    TARGET_ENV: uat
+
+# TODO: Comment in once config is set up
+# build:production:
+#   extends: .build
+#   variables:
+#     TARGET_ENV: production
+
+.deploy:
+  image: alpine:3.24
   stage: deploy
   tags: [docker]
   before_script:
-    - apt-get -yq update
-    - apt-get -yqq install openssh-client
-    - install -m 600 -D /dev/null ~/.ssh/id_rsa
-    - echo "$SSH_KEY_STAGING_FRONTEND" | base64 -d > ~/.ssh/id_rsa
-    - ssh-keyscan -H $SSH_HOST_STAGING_FRONTEND > ~/.ssh/known_hosts
-    - ssh $SSH_USER@$SSH_HOST_STAGING_FRONTEND "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - . scripts/pipeline/prepare_ssh_key_for_target_env.sh
+    - . scripts/pipeline/prepare_image_tag.sh
   script:
-    - scp docker-compose.ktzh.yml $SSH_USER@$SSH_HOST_STAGING_FRONTEND:~/$WORK_DIR/
-    - ssh $SSH_USER@$SSH_HOST_STAGING_FRONTEND "cd $WORK_DIR && docker compose -f docker-compose.ktzh.yml up -d --pull always && exit"
+    - . scripts/pipeline/deploy_to_target_env.sh
   after_script:
     - rm -rf ~/.ssh
-  when: manual
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: on_success
+    - when: never
+
+deploy:staging:
+  extends: .deploy
+  variables:
+    TARGET_ENV: staging
+  needs:
+    - build:staging
+
+deploy:uat:
+  extends: .deploy
+  variables:
+    TARGET_ENV: uat
+  needs:
+    - build:uat
+
+# TODO: Comment in once config is set up
+# deploy:production:
+#   extends: .deploy
+#   variables:
+#     TARGET_ENV: production
+#   needs:
+#     - build:production

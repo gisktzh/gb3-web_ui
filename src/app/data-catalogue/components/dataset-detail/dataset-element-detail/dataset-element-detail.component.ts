@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, computed, input} from '@angular/core';
 import {DatasetLayer} from '../../../../shared/interfaces/dataset-layer.interface';
 import {DataDisplayElement} from '../../../types/data-display-element.type';
 import {DataDisplayComponent} from '../../data-display/data-display.component';
@@ -12,22 +12,14 @@ import {DatasetElementTableComponent} from '../dataset-element-table/dataset-ele
   templateUrl: './dataset-element-detail.component.html',
   styleUrl: './dataset-element-detail.component.scss',
 })
-export class DatasetElementDetailComponent implements OnInit {
-  @Input() public layer!: DatasetLayer;
-  public layerListData: DataDisplayElement[] = [];
-
-  public ngOnInit() {
-    this.layerListData = this.extractLayerListData(this.layer);
-  }
-
-  private extractLayerListData(layer: DatasetLayer): DataDisplayElement[] {
-    return [
-      {title: 'GIS-ZH Nr.', value: layer.id, type: 'text'},
-      {title: 'Beschreibung', value: layer.description, type: 'text'},
-      {title: 'Geometrietyp', value: layer.geometryType, type: 'text'},
-      {title: 'Pfad/Filename', value: layer.path, type: 'text'},
-      {title: 'Metadaten Sichtbarkeit', value: layer.metadataVisibility, type: 'text'},
-      {title: 'Datenbezugsart', value: layer.dataProcurementType, type: 'text'},
-    ];
-  }
+export class DatasetElementDetailComponent {
+  public readonly layer = input.required<DatasetLayer>();
+  public readonly layerListData = computed<DataDisplayElement[]>(() => [
+    {title: 'GIS-ZH Nr.', value: this.layer().id, type: 'text'},
+    {title: 'Beschreibung', value: this.layer().description, type: 'text'},
+    {title: 'Geometrietyp', value: this.layer().geometryType, type: 'text'},
+    {title: 'Pfad/Filename', value: this.layer().path, type: 'text'},
+    {title: 'Metadaten Sichtbarkeit', value: this.layer().metadataVisibility, type: 'text'},
+    {title: 'Datenbezugsart', value: this.layer().dataProcurementType, type: 'text'},
+  ]);
 }

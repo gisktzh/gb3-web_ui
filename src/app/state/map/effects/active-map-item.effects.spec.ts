@@ -1,5 +1,6 @@
+import type {Mock} from 'vitest';
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -71,39 +72,39 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('addMapItem$', () => {
-    it('adds the given map item using the map service, no further action dispatch', (done: DoneFn) => {
+    it('adds the given map item using the map service, no further action dispatch', () => {
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
       const expectedPosition = 1337;
-      const activeMapItemSpy = spyOn(expectedActiveMapItem, 'addToMap').and.callThrough();
+      const activeMapItemSpy = vi.spyOn(expectedActiveMapItem, 'addToMap');
 
       const expectedAction = ActiveMapItemActions.addActiveMapItem({activeMapItem: expectedActiveMapItem, position: expectedPosition});
       actions$ = of(expectedAction);
       effects.addMapItem$.subscribe((action) => {
-        expect(activeMapItemSpy).toHaveBeenCalledOnceWith(mapService, expectedPosition);
+        expect(activeMapItemSpy).toHaveBeenCalledTimes(1);
+        expect(activeMapItemSpy).toHaveBeenCalledWith(mapService, expectedPosition);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('removeMapItem$', () => {
-    it('removes the given map item using the map service, no further action dispatch', (done: DoneFn) => {
+    it('removes the given map item using the map service, no further action dispatch', () => {
       const expectedId = 'mapMock';
       const activeMapItem = createGb2WmsMapItemMock(expectedId);
-      const mapServiceSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'removeMapItem');
 
       const expectedAction = ActiveMapItemActions.removeActiveMapItem({activeMapItem});
       actions$ = of(expectedAction);
       effects.removeMapItem$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedId);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedId);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('removeTemporaryActiveMapItem$', () => {
-    it('dispatches ActiveMapItemActions.removeActiveMapItem if the active map item is not yet added to the map', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.removeActiveMapItem if the active map item is not yet added to the map', () => {
       const expectedId = 'mapMock';
       const activeMapItem = createGb2WmsMapItemMock(expectedId, undefined, undefined, undefined, undefined, true);
 
@@ -113,11 +114,12 @@ describe('ActiveMapItemEffects', () => {
       actions$ = of(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem}));
       effects.removeTemporaryActiveMapItem$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
 
-    it('does not dispatch anything if the item is already added as permanent item', fakeAsync(async () => {
+    it('does not dispatch anything if the item is already added as permanent item', async () => {
+      vi.useFakeTimers();
+
       const expectedId = 'mapMock';
       const temporaryActiveMapItem = createGb2WmsMapItemMock(expectedId, undefined, undefined, undefined, undefined, true);
       const activeMapItem = createGb2WmsMapItemMock(expectedId);
@@ -127,9 +129,11 @@ describe('ActiveMapItemEffects', () => {
       let actualAction;
       actions$ = of(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem: temporaryActiveMapItem}));
       effects.removeTemporaryActiveMapItem$.subscribe((action) => (actualAction = action));
-      flush();
+      await vi.runAllTimersAsync();
       expect(actualAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('removeAllTemporaryMapItems$', () => {
@@ -139,11 +143,11 @@ describe('ActiveMapItemEffects', () => {
       {name: 'SearchActions.searchForTerm', action: SearchActions.searchForTerm},
       {name: 'SearchActions.clearSearchTerm', action: SearchActions.clearSearchTerm},
     ].forEach(({name, action}) => {
-      it(`reacts on ${name} and removes all temporary map items using the map service and dispatches ActiveMapItemActions.removeAllTemporaryActiveMapItems()`, (done: DoneFn) => {
+      it(`reacts on ${name} and removes all temporary map items using the map service and dispatches ActiveMapItemActions.removeAllTemporaryActiveMapItems()`, () => {
         const activeMapItem1 = createGb2WmsMapItemMock('temp-1', 0, true, 1.0, 'uuid-1', true);
         const activeMapItem2 = createGb2WmsMapItemMock('temp-2', 0, true, 1.0, 'uuid-2', true);
         store.overrideSelector(selectTemporaryMapItems, [activeMapItem1, activeMapItem2]);
-        const mapServiceSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
+        const mapServiceSpy = vi.spyOn(mapService, 'removeMapItem');
 
         const expectedAction = ActiveMapItemActions.removeAllTemporaryActiveMapItems();
         actions$ = of(action);
@@ -152,28 +156,26 @@ describe('ActiveMapItemEffects', () => {
           expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem1.id);
           expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem2.id);
           expect(actualAction).toEqual(expectedAction);
-          done();
         });
       });
     });
   });
 
   describe('removeAllMapItems$', () => {
-    it('removes all map items using the map service, no further action dispatch', (done: DoneFn) => {
-      const mapServiceSpy = spyOn(mapService, 'removeAllMapItems').and.callThrough();
+    it('removes all map items using the map service, no further action dispatch', () => {
+      const mapServiceSpy = vi.spyOn(mapService, 'removeAllMapItems');
 
       const expectedAction = ActiveMapItemActions.removeAllActiveMapItems();
       actions$ = of(expectedAction);
       effects.removeAllMapItems$.subscribe((action) => {
         expect(mapServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('cancelToolAfterRemovingAllCorrespondingMapItems$', () => {
-    it('dispatches ToolActions.cancelTool() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
+    it('dispatches ToolActions.cancelTool() if removeAllActiveMapItems action is executed', () => {
       const activeMapItems: ActiveMapItem[] = [
         createDrawingMapItemMock(UserDrawingLayer.Measurements),
         createDrawingMapItemMock(UserDrawingLayer.Drawings),
@@ -185,11 +187,10 @@ describe('ActiveMapItemEffects', () => {
       actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
       effects.cancelToolAfterRemovingAllCorrespondingMapItems$.subscribe((action) => {
         expect(action).toEqual(ToolActions.cancelTool());
-        done();
       });
     });
 
-    it('dispatches ToolActions.cancelTool() if removeActiveMapItem action is executed and there are no more items of that type', (done: DoneFn) => {
+    it('dispatches ToolActions.cancelTool() if removeActiveMapItem action is executed and there are no more items of that type', () => {
       // note that the measurement item is not in the state
       const activeMapItems: ActiveMapItem[] = [createDrawingMapItemMock(UserDrawingLayer.Drawings), createGb2WmsMapItemMock('mapMock')];
       store.overrideSelector(selectItems, activeMapItems);
@@ -199,11 +200,12 @@ describe('ActiveMapItemEffects', () => {
       actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem: measurementActiveMapItem}));
       effects.cancelToolAfterRemovingAllCorrespondingMapItems$.subscribe((action) => {
         expect(action).toEqual(ToolActions.cancelTool());
-        done();
       });
     });
 
-    it('dispatches nothing if removeActiveMapItem action is executed and there are more items of that type', fakeAsync(async () => {
+    it('dispatches nothing if removeActiveMapItem action is executed and there are more items of that type', async () => {
+      vi.useFakeTimers();
+
       const activeMapItems: ActiveMapItem[] = [
         createDrawingMapItemMock(UserDrawingLayer.Measurements),
         createDrawingMapItemMock(UserDrawingLayer.Drawings),
@@ -215,113 +217,113 @@ describe('ActiveMapItemEffects', () => {
       let actualAction;
       actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem: activeMapItems[1]}));
       effects.cancelToolAfterRemovingAllCorrespondingMapItems$.subscribe((action) => (actualAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(actualAction).toBeUndefined();
-    }));
+
+      vi.useRealTimers();
+    });
   });
 
   describe('hideLegendAfterRemovingAllMapItems$', () => {
-    it('dispatches MapUiActions.setLegendOverlayVisibility() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
+    it('dispatches MapUiActions.setLegendOverlayVisibility() if removeAllActiveMapItems action is executed', () => {
       actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
       effects.hideLegendAfterRemovingAllMapItems$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.setLegendOverlayVisibility({isVisible: false}));
-        done();
       });
     });
   });
 
   describe('hideMapAttributeFilterAfterRemovingAllMapItems$', () => {
-    it('dispatches MapUiActions.setAttributeFilterVisibility() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() if removeAllActiveMapItems action is executed', () => {
       actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
       effects.hideMapAttributeFilterAfterRemovingAllMapItems$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.setAttributeFilterVisibility({isVisible: false}));
-        done();
       });
     });
   });
 
   describe('clearFeatureInfoContentAfterRemovingAllMapItems$', () => {
-    it('dispatches FeatureInfoActions.clearContent() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
+    it('dispatches FeatureInfoActions.clearContent() if removeAllActiveMapItems action is executed', () => {
       actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
       effects.clearFeatureInfoContentAfterRemovingAllMapItems$.subscribe((action) => {
         expect(action).toEqual(FeatureInfoActions.clearContent());
-        done();
       });
     });
   });
 
   describe('moveToTop$', () => {
-    it('moves the given map item to the top using the map service, no further action dispatch', (done: DoneFn) => {
+    it('moves the given map item to the top using the map service, no further action dispatch', () => {
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
-      const mapServiceSpy = spyOn(mapService, 'moveLayerToTop').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'moveLayerToTop');
 
       const expectedAction = ActiveMapItemActions.moveToTop({activeMapItem: expectedActiveMapItem});
       actions$ = of(expectedAction);
       effects.moveToTop$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedActiveMapItem);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedActiveMapItem);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('forceFullVisibility$', () => {
-    it('dispatches ActiveMapItemActions.moveToTop() and calls the map service twice', (done: DoneFn) => {
+    it('dispatches ActiveMapItemActions.moveToTop() and calls the map service twice', () => {
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
-      const mapServiceOpacitySpy = spyOn(mapService, 'setOpacity').and.callThrough();
-      const mapServiceVisibilitySpy = spyOn(mapService, 'setVisibility').and.callThrough();
+      const mapServiceOpacitySpy = vi.spyOn(mapService, 'setOpacity');
+      const mapServiceVisibilitySpy = vi.spyOn(mapService, 'setVisibility');
       const expectedOpacity = 1;
       const expectedVisibility = true;
 
       actions$ = of(ActiveMapItemActions.forceFullVisibility({activeMapItem: expectedActiveMapItem}));
       effects.forceFullVisibility$.subscribe((action) => {
-        expect(mapServiceOpacitySpy).toHaveBeenCalledOnceWith(expectedOpacity, expectedActiveMapItem);
-        expect(mapServiceVisibilitySpy).toHaveBeenCalledOnceWith(expectedVisibility, expectedActiveMapItem);
+        expect(mapServiceOpacitySpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceOpacitySpy).toHaveBeenCalledWith(expectedOpacity, expectedActiveMapItem);
+        expect(mapServiceVisibilitySpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceVisibilitySpy).toHaveBeenCalledWith(expectedVisibility, expectedActiveMapItem);
         expect(action).toEqual(ActiveMapItemActions.moveToTop({activeMapItem: expectedActiveMapItem}));
-        done();
       });
     });
   });
 
   describe('setOpacity$', () => {
-    it('sets the opacity of the given map item using the map service, no further action dispatch', (done: DoneFn) => {
+    it('sets the opacity of the given map item using the map service, no further action dispatch', () => {
       const expectedOpacity = 0.1234;
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
-      const mapServiceSpy = spyOn(mapService, 'setOpacity').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'setOpacity');
 
       const expectedAction = ActiveMapItemActions.setOpacity({opacity: expectedOpacity, activeMapItem: expectedActiveMapItem});
       actions$ = of(expectedAction);
       effects.setOpacity$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedOpacity, expectedActiveMapItem);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedOpacity, expectedActiveMapItem);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('setItemVisibility$', () => {
-    it('sets the visibility of the given map item using the map service, no further action dispatch', (done: DoneFn) => {
+    it('sets the visibility of the given map item using the map service, no further action dispatch', () => {
       const expectedVisibility = false;
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
-      const mapServiceSpy = spyOn(mapService, 'setVisibility').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'setVisibility');
 
       const expectedAction = ActiveMapItemActions.setVisibility({visible: expectedVisibility, activeMapItem: expectedActiveMapItem});
       actions$ = of(expectedAction);
       effects.setItemVisibility$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedVisibility, expectedActiveMapItem);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedVisibility, expectedActiveMapItem);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('setSublayerVisibility$', () => {
-    it('sets the visibility of the given map item layer using the map service, no further action dispatch', (done: DoneFn) => {
+    it('sets the visibility of the given map item layer using the map service, no further action dispatch', () => {
       const expectedVisibility = false;
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock', 1);
       const expectedLayerId = expectedActiveMapItem.settings.layers[0].id;
-      const mapServiceSpy = spyOn(mapService, 'setSublayerVisibility').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'setSublayerVisibility');
 
       const expectedAction = ActiveMapItemActions.setSublayerVisibility({
         visible: expectedVisibility,
@@ -330,18 +332,18 @@ describe('ActiveMapItemEffects', () => {
       });
       actions$ = of(expectedAction);
       effects.setSublayerVisibility$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedVisibility, expectedActiveMapItem, expectedLayerId);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedVisibility, expectedActiveMapItem, expectedLayerId);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('reorderItem$', () => {
-    it('reorders the given map item using the map service, no further action dispatch', (done: DoneFn) => {
+    it('reorders the given map item using the map service, no further action dispatch', () => {
       const expectedPreviousPosition = 123;
       const expectedCurrentPosition = 456;
-      const mapServiceSpy = spyOn(mapService, 'reorderMapItem').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'reorderMapItem');
 
       const expectedAction = ActiveMapItemActions.reorderActiveMapItem({
         previousPosition: expectedPreviousPosition,
@@ -349,19 +351,19 @@ describe('ActiveMapItemEffects', () => {
       });
       actions$ = of(expectedAction);
       effects.reorderItem$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedPreviousPosition, expectedCurrentPosition);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedPreviousPosition, expectedCurrentPosition);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('reorderSublayer$', () => {
-    it('reorders the given map item layer using the map service, no further action dispatch', (done: DoneFn) => {
+    it('reorders the given map item layer using the map service, no further action dispatch', () => {
       const expectedPreviousPosition = 123;
       const expectedCurrentPosition = 456;
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
-      const mapServiceSpy = spyOn(mapService, 'reorderSublayer').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'reorderSublayer');
 
       const expectedAction = ActiveMapItemActions.reorderSublayer({
         activeMapItem: expectedActiveMapItem,
@@ -370,18 +372,18 @@ describe('ActiveMapItemEffects', () => {
       });
       actions$ = of(expectedAction);
       effects.reorderSublayer$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedActiveMapItem, expectedPreviousPosition, expectedCurrentPosition);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedActiveMapItem, expectedPreviousPosition, expectedCurrentPosition);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('setTimeSliderExtentOnMap$', () => {
-    it('sets the time extent using the map service, no further action dispatch', (done: DoneFn) => {
+    it('sets the time extent using the map service, no further action dispatch', () => {
       const expectedTimeExtent: TimeExtent = {start: new Date(666), end: new Date(1337)};
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
-      const mapServiceSpy = spyOn(mapService, 'setTimeSliderExtent').and.callThrough();
+      const mapServiceSpy = vi.spyOn(mapService, 'setTimeSliderExtent');
 
       const expectedAction = ActiveMapItemActions.setTimeSliderExtent({
         activeMapItem: expectedActiveMapItem,
@@ -389,9 +391,9 @@ describe('ActiveMapItemEffects', () => {
       });
       actions$ = of(expectedAction);
       effects.setTimeSliderExtentOnMap$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedTimeExtent, expectedActiveMapItem);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedTimeExtent, expectedActiveMapItem);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
@@ -423,7 +425,7 @@ describe('ActiveMapItemEffects', () => {
 
     const mapMock = {id: 'test', title: 'test_title', layers: [], filterConfigurations: filterConfigurationsMock} as Partial<Map>;
 
-    it('transforms the filters using the topics service and then sets it on the active map using the map service, no further action dispatch', (done: DoneFn) => {
+    it('transforms the filters using the topics service and then sets it on the active map using the map service, no further action dispatch', () => {
       const expectedActiveMapItem = ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock);
       const activeMapItems: ActiveMapItem[] = [
         createDrawingMapItemMock(UserDrawingLayer.Measurements),
@@ -432,8 +434,8 @@ describe('ActiveMapItemEffects', () => {
         expectedActiveMapItem,
       ];
       store.overrideSelector(selectItems, activeMapItems);
-      const gb3TopicsServiceSpy = spyOn(gb3TopicsService, 'transformFilterConfigurationToParameters').and.callThrough();
-      const mapServiceSpy = spyOn(mapService, 'setAttributeFilters').and.callThrough();
+      const gb3TopicsServiceSpy = vi.spyOn(gb3TopicsService, 'transformFilterConfigurationToParameters');
+      const mapServiceSpy = vi.spyOn(mapService, 'setAttributeFilters');
 
       const expectedAction = ActiveMapItemActions.setAttributeFilterValueState({
         isFilterValueActive: true,
@@ -443,17 +445,18 @@ describe('ActiveMapItemEffects', () => {
       });
       actions$ = of(expectedAction);
       effects.setActiveFilters$.subscribe(([action, _]) => {
-        expect(gb3TopicsServiceSpy).toHaveBeenCalledOnceWith(filterConfigurationsMock);
+        expect(gb3TopicsServiceSpy).toHaveBeenCalledTimes(1);
+        expect(gb3TopicsServiceSpy).toHaveBeenCalledWith(filterConfigurationsMock);
         const expectedAttributeFilterParameters = gb3TopicsService.transformFilterConfigurationToParameters(filterConfigurationsMock);
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedAttributeFilterParameters, expectedActiveMapItem);
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(mapServiceSpy).toHaveBeenCalledWith(expectedAttributeFilterParameters, expectedActiveMapItem);
         expect(action).toEqual(expectedAction);
-        done();
       });
     });
   });
 
   describe('addFavourite$', () => {
-    it('dispatches DrawingActions.overwriteDrawingLayersWithDrawings() after adding all favourite map items using the map service', (done: DoneFn) => {
+    it('dispatches DrawingActions.overwriteDrawingLayersWithDrawings() after adding all favourite map items using the map service', () => {
       const expectedFavouriteActiveMapItems: ActiveMapItem[] = [
         createGb2WmsMapItemMock('favouriteOne'),
         createGb2WmsMapItemMock('favouriteTwo'),
@@ -466,7 +469,7 @@ describe('ActiveMapItemEffects', () => {
         coordinates: [1337, 9000.0001],
       };
       const expectedFavouriteBaseConfig: FavouriteBaseConfig = {
-        scale: 1_500_000,
+        scale: 1500000,
         center: {x: expectedCenter.coordinates[0], y: expectedCenter.coordinates[1]},
         basemap: "I have come here to chew bubblegum and kick ass. And I'm all out of bubblegum.",
       };
@@ -494,11 +497,14 @@ describe('ActiveMapItemEffects', () => {
           __tool: 'point',
         },
       };
-      const activeMapItemSpies: {spy: jasmine.Spy; expectedPosition: number}[] = expectedFavouriteActiveMapItems.map((item, index) => ({
-        spy: spyOn(item, 'addToMap').and.callThrough(),
+      const activeMapItemSpies: {
+        spy: Mock;
+        expectedPosition: number;
+      }[] = expectedFavouriteActiveMapItems.map((item, index) => ({
+        spy: vi.spyOn(item, 'addToMap'),
         expectedPosition: index,
       }));
-      const mapServiceRemoveMapItemSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
+      const mapServiceRemoveMapItemSpy = vi.spyOn(mapService, 'removeMapItem');
 
       actions$ = of(
         ActiveMapItemActions.addFavourite({
@@ -509,7 +515,8 @@ describe('ActiveMapItemEffects', () => {
       );
       effects.addFavourite$.subscribe((action) => {
         activeMapItemSpies.forEach((itemSpy) => {
-          expect(itemSpy.spy).toHaveBeenCalledOnceWith(mapService, itemSpy.expectedPosition);
+          expect(itemSpy.spy).toHaveBeenCalledTimes(1);
+          expect(itemSpy.spy).toHaveBeenCalledWith(mapService, itemSpy.expectedPosition);
         });
         expect(mapServiceRemoveMapItemSpy).toHaveBeenCalledTimes(expectedFavouriteActiveMapItems.length);
         expectedFavouriteActiveMapItems.forEach((item) => {
@@ -521,20 +528,19 @@ describe('ActiveMapItemEffects', () => {
             drawingsToAdd: [expectedDrawing],
           }),
         );
-        done();
       });
     });
   });
 
   describe('updateBasemapForFavourite$', () => {
-    it('dispatches MapConfigActions.setBasemap()', (done: DoneFn) => {
+    it('dispatches MapConfigActions.setBasemap()', () => {
       const expectedCenter: PointWithSrs = {
         type: 'Point',
         srs: MapConstants.DEFAULT_SRS,
         coordinates: [1337, 9000.0001],
       };
       const expectedFavouriteBaseConfig: FavouriteBaseConfig = {
-        scale: 1_500_000,
+        scale: 1500000,
         center: {x: expectedCenter.coordinates[0], y: expectedCenter.coordinates[1]},
         basemap: 'favMap',
       };
@@ -548,36 +554,38 @@ describe('ActiveMapItemEffects', () => {
       );
       effects.updateBasemapForFavourite$.subscribe((action) => {
         expect(action).toEqual(MapConfigActions.setBasemap({activeBasemapId: expectedFavouriteBaseConfig.basemap}));
-        done();
       });
     });
   });
 
   describe('addInitialMapItems$', () => {
-    it('adds all initial map items using the map service when it is initialized', (done: DoneFn) => {
+    it('adds all initial map items using the map service when it is initialized', () => {
       store.overrideSelector(selectIsMapServiceInitialized, true);
       const expectedInitialActiveMapItems: ActiveMapItem[] = [
         createGb2WmsMapItemMock('initialItemOne'),
         createGb2WmsMapItemMock('initialItemTwo'),
       ];
-      const activeMapItemSpies: {spy: jasmine.Spy; expectedPosition: number}[] = expectedInitialActiveMapItems.map((item, index) => ({
-        spy: spyOn(item, 'addToMap').and.callThrough(),
+      const activeMapItemSpies: {
+        spy: Mock;
+        expectedPosition: number;
+      }[] = expectedInitialActiveMapItems.map((item, index) => ({
+        spy: vi.spyOn(item, 'addToMap'),
         expectedPosition: index,
       }));
 
       actions$ = of(ActiveMapItemActions.addInitialMapItems({initialMapItems: expectedInitialActiveMapItems}));
       effects.addInitialMapItems$.subscribe(() => {
         activeMapItemSpies.forEach((itemSpy) => {
-          expect(itemSpy.spy).toHaveBeenCalledOnceWith(mapService, itemSpy.expectedPosition);
+          expect(itemSpy.spy).toHaveBeenCalledTimes(1);
+          expect(itemSpy.spy).toHaveBeenCalledWith(mapService, itemSpy.expectedPosition);
         });
-        done();
       });
     });
 
-    it('waits for map service initialization and then adds items', (done: DoneFn) => {
+    it('waits for map service initialization and then adds items', () => {
       const isInitialized$ = new BehaviorSubject<boolean>(false);
       store.overrideSelector(selectIsMapServiceInitialized, false);
-      store.select = jasmine.createSpy().and.callFake((selector: unknown) => {
+      store.select = vi.fn().mockImplementation((selector: unknown) => {
         if (selector === selectIsMapServiceInitialized) {
           return isInitialized$;
         }
@@ -588,17 +596,20 @@ describe('ActiveMapItemEffects', () => {
         createGb2WmsMapItemMock('initialItemOne'),
         createGb2WmsMapItemMock('initialItemTwo'),
       ];
-      const activeMapItemSpies: {spy: jasmine.Spy; expectedPosition: number}[] = expectedInitialActiveMapItems.map((item, index) => ({
-        spy: spyOn(item, 'addToMap').and.callThrough(),
+      const activeMapItemSpies: {
+        spy: Mock;
+        expectedPosition: number;
+      }[] = expectedInitialActiveMapItems.map((item, index) => ({
+        spy: vi.spyOn(item, 'addToMap'),
         expectedPosition: index,
       }));
 
       actions$ = of(ActiveMapItemActions.addInitialMapItems({initialMapItems: expectedInitialActiveMapItems}));
       effects.addInitialMapItems$.subscribe(() => {
         activeMapItemSpies.forEach((itemSpy) => {
-          expect(itemSpy.spy).toHaveBeenCalledOnceWith(mapService, itemSpy.expectedPosition);
+          expect(itemSpy.spy).toHaveBeenCalledTimes(1);
+          expect(itemSpy.spy).toHaveBeenCalledWith(mapService, itemSpy.expectedPosition);
         });
-        done();
       });
 
       // Simulate map service becoming initialized after a delay
@@ -607,7 +618,9 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('setTimeSliderExtent$', () => {
-    it('dispatches nothing if item does not exist', fakeAsync(() => {
+    it('dispatches nothing if item does not exist', async () => {
+      vi.useFakeTimers();
+
       const timeExtent: TimeExtent = {
         start: new Date(2023, 0, 1),
         end: new Date(2023, 11, 31),
@@ -618,12 +631,14 @@ describe('ActiveMapItemEffects', () => {
       let newAction;
       actions$ = of(ActiveMapItemActions.setTimeSliderExtent({timeExtent, activeMapItem}));
       effects.setTimeSliderExtent$.subscribe((action) => (newAction = action));
-      flush();
+      await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
-    }));
 
-    it('sets the time extent and reevaluates all layer visibilities, dispatches replaceActiveMapItem', (done: DoneFn) => {
+      vi.useRealTimers();
+    });
+
+    it('sets the time extent and reevaluates all layer visibilities, dispatches replaceActiveMapItem', () => {
       const timeExtent: TimeExtent = {
         start: new Date(2023, 0, 1),
         end: new Date(2023, 11, 31),
@@ -663,8 +678,6 @@ describe('ActiveMapItemEffects', () => {
         expect(modifiedActiveMapItem).toBeInstanceOf(Gb2WmsActiveMapItem);
         expect((<Gb2WmsActiveMapItem>modifiedActiveMapItem).settings.timeSliderExtent).toEqual(expectedTimeExtent);
         expect((<Gb2WmsActiveMapItem>modifiedActiveMapItem).settings.layers).toEqual(<MapLayer[]>expectedLayers);
-
-        done();
       });
     });
   });

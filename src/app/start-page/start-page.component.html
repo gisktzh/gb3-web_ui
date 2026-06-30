@@ -1,29 +1,29 @@
 <div class="start-page">
-  <page-section [background]="'primary'" [pageTitle]="true">
-    <hero-header [heroText]="screenMode === 'mobile' ? '' : heroText" heroTitle="Geoportal"></hero-header>
+  <page-section background="primary" [pageTitle]="true">
+    <hero-header [heroText]="screenMode() === 'mobile' ? '' : heroText" heroTitle="Geoportal" />
   </page-section>
 
-  <div class="start-page__search" [ngClass]="{'start-page__search--mobile': screenMode === 'mobile'}">
-    <start-page-search></start-page-search>
+  <div class="start-page__search" [class.start-page__search--mobile]="screenMode() === 'mobile'">
+    <start-page-search />
   </div>
 
   <page-section [hideBottomPadding]="true">
-    <gis-browser-teaser></gis-browser-teaser>
+    <gis-browser-teaser />
   </page-section>
 
   <page-section sectionTitle="Häufig verwendet">
-    <frequently-used-items></frequently-used-items>
+    <frequently-used-items />
   </page-section>
 
-  <page-section [background]="'accent'" [titleLink]="this.externalNewsFeedLink" sectionTitle="News">
-    <news-feed></news-feed>
+  <page-section background="accent" [titleLink]="externalNewsFeedLink" sectionTitle="News">
+    <news-feed />
   </page-section>
 
   <page-section [hideBottomPadding]="true" sectionTitle="Karten entdecken">
-    <discover-maps></discover-maps>
+    <discover-maps />
   </page-section>
 
   <page-section sectionTitle="Weiterführende Informationen">
-    <link-list [linksGroups]="additionalInformationLinksGroups"></link-list>
+    <link-list [linksGroups]="additionalInformationLinksGroups()" />
   </page-section>
 </div>

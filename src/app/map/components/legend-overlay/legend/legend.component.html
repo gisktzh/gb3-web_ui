@@ -1,6 +1,6 @@
-<loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
-@if (loadingState === 'loaded') {
-  @for (legendItem of legendItems; track trackById($index, legendItem)) {
-    <legend-item [legendItem]="legendItem" [showInteractiveElements]="showInteractiveElements"></legend-item>
+<loading-and-process-bar [loadingState]="loadingState()" />
+@if (loadingState() === 'loaded') {
+  @for (legendItem of legendItems(); track trackById($index, legendItem)) {
+    <legend-item [legendItem]="legendItem" [showInteractiveElements]="showInteractiveElements()" />
   }
 }

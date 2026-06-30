@@ -25,7 +25,7 @@ export abstract class AbstractEsriDrawingStrategy<
     reactiveUtils.on(
       () => this.sketchViewModel,
       'create',
-      async ({state, graphic}: CreateEvent) => {
+      ({state, graphic}: CreateEvent) => {
         switch (state) {
           case 'active':
           case 'start':

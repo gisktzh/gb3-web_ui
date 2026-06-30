@@ -123,6 +123,10 @@ export class ShareLinkItemTestUtils {
     };
   }
 
+  public static createShareLinkItemJsonString(timeExtentStart: Date, timeExtentEnd: Date, mockStyleUuid: string): string {
+    return JSON.stringify(ShareLinkItemTestUtils.createShareLinkItem(timeExtentStart, timeExtentEnd, mockStyleUuid));
+  }
+
   public static createInternalShareLinkItem(timeExtentStart: Date, timeExtentEnd: Date): InternalShareLinkItem {
     const minimalGeometry = MinimalGeometriesUtils.getMinimalPolygon(2056);
     return {

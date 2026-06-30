@@ -1,29 +1,29 @@
 <div class="product">
   <mat-checkbox
     class="product__checkbox"
-    [ngClass]="{'product__checkbox--hidden': !product.ogd}"
+    [class.product__checkbox--hidden]="!product().ogd"
     [(ngModel)]="isProductSelected"
     (change)="toggleProduct()"
-    [disabled]="(disabled$ | async) || !product.ogd"
-  ></mat-checkbox>
+    [disabled]="disabled() || !product().ogd"
+  />
   <div class="product__description">
-    <p class="product__description__header" [matTooltip]="product.name" showTooltipIfTruncated>{{ product.name }}</p>
+    <p class="product__description__header" [matTooltip]="product().name" showTooltipIfTruncated>{{ product().name }}</p>
     <p class="product__description__content">
       <span class="product__description__content__title">Verfügbarkeit:</span>
-      <span>{{ product.ogd ? 'Frei (OGD)' : 'Eingeschränkt (NOGD)' }}</span>
+      <span>{{ product().ogd ? 'Frei (OGD)' : 'Eingeschränkt (NOGD)' }}</span>
     </p>
   </div>
-  @if (product.ogd && isProductSelected) {
+  @if (product().ogd && isProductSelected()) {
     <mat-form-field class="product__select" subscriptSizing="dynamic">
       <mat-label>Dateiformate</mat-label>
       <mat-select
         #formatsSelect
-        [formControl]="formatsFormControl"
+        [formField]="formatsForm.formats"
         placeholder="Bitte auswählen"
         [multiple]="true"
         (selectionChange)="updateOrderProducts()"
       >
-        @for (format of product.formats; track format) {
+        @for (format of product().formats; track format) {
           <mat-option [value]="format">
             {{ format.description }}
           </mat-option>
@@ -31,13 +31,9 @@
       </mat-select>
     </mat-form-field>
   }
-  @if (!product.ogd && product.nonOgdProductUrl) {
-    <external-link-button
-      [color]="'accent'"
-      [highlighted]="true"
-      [size]="'small'"
-      [url]="product.nonOgdProductUrl"
-      toolTip="Geodatenshop öffnen"
-    ></external-link-button>
+  @if (!product().ogd) {
+    @if (product().nonOgdProductUrl; as productUrl) {
+      <external-link-button color="accent" [highlighted]="true" size="small" [url]="productUrl" toolTip="Geodatenshop öffnen" />
+    }
   }
 </div>

@@ -1,6 +1,6 @@
-@if (mapAttributeFiltersItem) {
-  <mat-card appearance="raised" class="attribute-filter no-box-shadow" [ngClass]="{'attribute-filter--mobile': screenMode === 'mobile'}">
-    <div class="attribute-filter__content" [ngClass]="{'attribute-filter__content--mobile': screenMode === 'mobile'}">
+@if (mapAttributeFiltersItem(); as mapAttributeFiltersItem) {
+  <mat-card appearance="raised" class="attribute-filter no-box-shadow" [class.attribute-filter--mobile]="screenMode() === 'mobile'">
+    <div class="attribute-filter__content" [class.attribute-filter__content--mobile]="screenMode() === 'mobile'">
       @for (filterConfiguration of mapAttributeFiltersItem.settings.filterConfigurations; track filterConfiguration) {
         <mat-card class="no-box-shadow">
           <mat-card-header>
@@ -14,10 +14,11 @@
           @for (filterValue of filterConfiguration.filterValues; track filterValue) {
             <mat-checkbox
               class="attribute-filter__content__checkbox"
-              [ngClass]="{'attribute-filter__content__checkbox--unchecked': filterValue.isActive}"
+              [class.attribute-filter__content__checkbox--unchecked]="filterValue.isActive"
               [checked]="!filterValue.isActive"
               (change)="updateFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
-              >{{ filterValue.name }}
+            >
+              {{ filterValue.name }}
             </mat-checkbox>
           }
         </mat-card>

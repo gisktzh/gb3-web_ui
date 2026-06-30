@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy, inject} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {ToolService} from '../../../interfaces/tool.service';
 import {EsriMapViewService} from '../esri-map-view.service';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
@@ -6,7 +6,6 @@ import {Store} from '@ngrx/store';
 import {ActiveMapItemFactory} from '../../../../shared/factories/active-map-item.factory';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layers.selector';
-import {Subscription, tap} from 'rxjs';
 import {EsriToolStrategy} from './interfaces/strategy.interface';
 import {EsriDefaultStrategy} from './strategies/esri-default.strategy';
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
@@ -77,7 +76,7 @@ export const HANDLE_GROUP_KEY = 'EsriToolService';
 @Injectable({
   providedIn: 'root',
 })
-export class EsriToolService implements ToolService, OnDestroy {
+export class EsriToolService implements ToolService {
   private readonly esriMapViewService = inject(EsriMapViewService);
   private readonly store = inject(Store);
   private readonly esriSymbolizationService = inject(EsriSymbolizationService);
@@ -86,20 +85,14 @@ export class EsriToolService implements ToolService, OnDestroy {
   private readonly geoshopMunicipalitiesService = inject(Gb3GeoshopMunicipalitiesService);
 
   private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
-  private drawingLayers: DrawingActiveMapItem[] = [];
-  private readonly drawingLayers$ = this.store.select(selectDrawingLayers);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  constructor() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+  private readonly drawingLayers = this.store.selectSignal(selectDrawingLayers);
 
   public cancelTool() {
     this.toolStrategy.cancel();
+  }
+
+  public getToolStrategy() {
+    return this.toolStrategy;
   }
 
   public editDrawing(graphic: Graphic) {
@@ -212,7 +205,7 @@ export class EsriToolService implements ToolService, OnDestroy {
         );
 
         // Gently poke the map view into rerendering itself, thus also reliably render the new text graphic.
-        const mapView = this.esriMapViewService.mapView;
+        const mapView = this.esriMapViewService.getMapView();
         mapView.goTo(mapView.extent);
 
         this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
@@ -247,7 +240,7 @@ export class EsriToolService implements ToolService, OnDestroy {
         );
 
         // Gently poke the map view into rerendering itself, thus also reliably render the new symbol graphic.
-        const mapView = this.esriMapViewService.mapView;
+        const mapView = this.esriMapViewService.getMapView();
         mapView.goTo(mapView.extent);
 
         this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
@@ -296,7 +289,7 @@ export class EsriToolService implements ToolService, OnDestroy {
     } else {
       this.store.dispatch(ToolActions.cancelTool());
     }
-    this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
+    this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
   }
 
   public async addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: DrawingLayer) {
@@ -366,17 +359,13 @@ export class EsriToolService implements ToolService, OnDestroy {
     }
   }
 
-  private initSubscriptions() {
-    this.subscriptions.add(this.drawingLayers$.pipe(tap((drawingLayers) => (this.drawingLayers = drawingLayers))).subscribe());
-  }
-
   private startDrawing() {
     this.registerEscapeEventHandler();
     this.toolStrategy.start();
   }
 
   private endDrawing() {
-    this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
+    this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
     this.store.dispatch(ToolActions.deactivateTool());
   }
 
@@ -387,7 +376,7 @@ export class EsriToolService implements ToolService, OnDestroy {
    */
   private registerEscapeEventHandler() {
     const handle = reactiveUtils.on(
-      () => this.esriMapViewService.mapView,
+      () => this.esriMapViewService.mapView(),
       'key-down',
       (event) => {
         if (event.key === 'Escape') {
@@ -396,7 +385,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       },
     );
 
-    this.esriMapViewService.mapView.addHandles(handle, HANDLE_GROUP_KEY);
+    this.esriMapViewService.getMapView().addHandles(handle, HANDLE_GROUP_KEY);
   }
 
   /**
@@ -404,14 +393,14 @@ export class EsriToolService implements ToolService, OnDestroy {
    * @private
    */
   private forceVisibility(fullLayerIdentifier: string) {
-    const activeMapItem = this.drawingLayers.find((l) => l.id === fullLayerIdentifier);
+    const activeMapItem = this.drawingLayers().find((l) => l.id === fullLayerIdentifier);
 
     if (activeMapItem) {
       this.store.dispatch(ActiveMapItemActions.forceFullVisibility({activeMapItem}));
     }
   }
 
-  private setToolStrategyForEditingFeature(graphic: Graphic) {
+  public setToolStrategyForEditingFeature(graphic: Graphic) {
     if (!hasNonNullishProperty(graphic, 'geometry')) {
       throw new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten');
     }
@@ -476,7 +465,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'measure-area':
         this.toolStrategy = new EsriAreaMeasurementStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           areaStyle,
           labelStyle,
           (geometry, label, labelText, mode) => this.completeMeasurement(geometry, label, labelText, mode),
@@ -486,7 +475,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'measure-circle':
         this.toolStrategy = new EsriAreaMeasurementStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           areaStyle,
           labelStyle,
           (geometry, label, labelText, mode) => this.completeMeasurement(geometry, label, labelText, mode),
@@ -496,7 +485,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'measure-line':
         this.toolStrategy = new EsriLineMeasurementStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           lineStyle,
           labelStyle,
           (geometry, label, labelText, mode) => this.completeMeasurement(geometry, label, labelText, mode),
@@ -505,19 +494,24 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'measure-point':
         this.toolStrategy = new EsriPointMeasurementStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           pointStyle,
           labelStyle,
           (geometry, label, labelText, mode) => this.completeMeasurement(geometry, label, labelText, mode),
         );
         break;
       case 'measure-elevation-profile':
-        this.toolStrategy = new EsriElevationProfileMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) => {
-          // geometry is always defined here, as this is only called when the drawing is completed within the strategy. The assertion had
-          // to be added after updating @arcgis/core to 4.32 which added this possibility, which did not (and cannot) happen actually.
-          this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry!)}));
-          this.endDrawing();
-        });
+        this.toolStrategy = new EsriElevationProfileMeasurementStrategy(
+          layer,
+          this.esriMapViewService.getMapView(),
+          lineStyle,
+          (geometry) => {
+            // geometry is always defined here, as this is only called when the drawing is completed within the strategy. The assertion had
+            // to be added after updating @arcgis/core to 4.32 which added this possibility, which did not (and cannot) happen actually.
+            this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry!)}));
+            this.endDrawing();
+          },
+        );
         break;
     }
   }
@@ -530,19 +524,19 @@ export class EsriToolService implements ToolService, OnDestroy {
 
     switch (drawingType) {
       case 'draw-point':
-        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, (geometry, mode) =>
+        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.getMapView(), pointStyle, (geometry, mode) =>
           this.completeDrawing(geometry, mode),
         );
         break;
       case 'draw-line':
-        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry, mode) =>
+        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.getMapView(), lineStyle, (geometry, mode) =>
           this.completeDrawing(geometry, mode),
         );
         break;
       case 'draw-polygon':
         this.toolStrategy = new EsriPolygonDrawingStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           areaStyle,
           (geometry, mode) => this.completeDrawing(geometry, mode),
           'polygon',
@@ -551,7 +545,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'draw-rectangle':
         this.toolStrategy = new EsriPolygonDrawingStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           areaStyle,
           (geometry, mode) => this.completeDrawing(geometry, mode),
           'rectangle',
@@ -560,7 +554,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'draw-circle':
         this.toolStrategy = new EsriPolygonDrawingStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           areaStyle,
           (geometry, mode) => this.completeDrawing(geometry, mode),
           'circle',
@@ -569,7 +563,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'draw-text':
         this.toolStrategy = new EsriTextDrawingStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           textStyle,
           (geometry, mode, labelText) => (labelText ? this.completeTextDrawing(geometry, mode, labelText) : this.endDrawing()),
           this.dialogService,
@@ -578,7 +572,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'draw-symbol':
         this.toolStrategy = new EsriSymbolDrawingStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           (geometry, mode, mapDrawingSymbol, symbolSize, symbolRotation) =>
             mapDrawingSymbol && symbolSize !== undefined && symbolRotation !== undefined && geometry
               ? this.completeMapSymbolDrawing(geometry, mode, mapDrawingSymbol, symbolSize, symbolRotation)
@@ -596,7 +590,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'select-circle':
         this.toolStrategy = new EsriPolygonSelectionStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           areaStyle,
           (selection) => this.completeSelection(selection),
           'circle',
@@ -606,7 +600,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'select-polygon':
         this.toolStrategy = new EsriPolygonSelectionStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           areaStyle,
           (selection) => this.completeSelection(selection),
           'polygon',
@@ -616,7 +610,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       case 'select-rectangle':
         this.toolStrategy = new EsriPolygonSelectionStrategy(
           layer,
-          this.esriMapViewService.mapView,
+          this.esriMapViewService.getMapView(),
           areaStyle,
           (selection) => this.completeSelection(selection),
           'rectangle',
@@ -628,7 +622,7 @@ export class EsriToolService implements ToolService, OnDestroy {
           layer,
           areaStyle,
           (selection) => this.completeSelection(selection),
-          this.esriMapViewService.mapView.extent,
+          this.esriMapViewService.getMapView().extent,
         );
         break;
       case 'select-federation':

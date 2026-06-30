@@ -9,15 +9,18 @@ import {EsriPolygonSelectionStrategy} from './esri-polygon-selection.strategy';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/esri-graphic-to-internal-drawing-representation.utils';
-import {CreateEvent} from '@arcgis/core/widgets/Sketch/types';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 class EsriPolygonSelectionStrategyWrapper extends EsriPolygonSelectionStrategy {
   public get svm() {
     return this.sketchViewModel;
   }
 }
+
+const mockResourceHandle = {
+  remove: vi.fn(),
+};
 
 /**
  * Note: The sketchViewModel handling is still a work in progress, as the start event (which adds a graphic) is currently not triggered.
@@ -31,7 +34,7 @@ describe('EsriPolygonSelectionStrategy', () => {
     },
   };
 
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
 
@@ -40,17 +43,17 @@ describe('EsriPolygonSelectionStrategy', () => {
       imports: [],
       providers: [provideMockStore({})],
     });
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: InternalDrawingLayer.Selection,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     fillSymbol = new SimpleFillSymbol();
   });
 
   describe('cancellation', () => {
     it('does not fire the callback handler on cancel', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const strategy = new EsriPolygonSelectionStrategyWrapper(
         layer,
         mapView,
@@ -60,17 +63,27 @@ describe('EsriPolygonSelectionStrategy', () => {
         2056,
       );
 
-      strategy.start();
-      strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      expect(callbackSpy).not.toHaveBeenCalled();
+        callback({state: 'cancel', graphic: new Graphic()});
+
+        expect(callbackSpy).not.toHaveBeenCalled();
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
   });
 
   describe('start', () => {
     it('removes all existing layers on start', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
-      const layerRemoveAllSpy = spyOn(layer, 'removeAll');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
+      const layerRemoveAllSpy = vi.spyOn(layer, 'removeAll');
       const strategy = new EsriPolygonSelectionStrategyWrapper(
         layer,
         mapView,
@@ -80,19 +93,28 @@ describe('EsriPolygonSelectionStrategy', () => {
         2056,
       );
 
-      strategy.start();
-      strategy.svm.emit('create', {state: 'start'} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      // Called once by constructor and a second time during `start`.
-      expect(layerRemoveAllSpy).toHaveBeenCalledTimes(2);
-      expect(callbackSpy).not.toHaveBeenCalled();
+        callback({state: 'start'});
+
+        expect(layerRemoveAllSpy).toHaveBeenCalledTimes(2);
+        expect(callbackSpy).not.toHaveBeenCalled();
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
   });
 
   describe('completion', () => {
     it('fires the callback handler on completion', () => {
-      const callbackSpy = spyOn(callbackHandler, 'handle');
-      const converterSpy = spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convert');
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
+      const converterSpy = vi.spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convert');
       const strategy = new EsriPolygonSelectionStrategyWrapper(
         layer,
         mapView,
@@ -115,11 +137,21 @@ describe('EsriPolygonSelectionStrategy', () => {
         }),
       });
 
-      strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic} as CreateEvent);
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('create');
 
-      expect(callbackSpy).toHaveBeenCalledOnceWith(jasmine.objectContaining({type: 'polygon'}));
-      expect(converterSpy).toHaveBeenCalledWith(graphic, 2056, InternalDrawingLayer.Selection);
+        callback({state: 'complete', graphic});
+
+        expect(callbackSpy).toHaveBeenCalledWith(expect.objectContaining({type: 'polygon'}));
+        expect(converterSpy).toHaveBeenCalledWith(graphic, 2056, InternalDrawingLayer.Selection);
+
+        return mockResourceHandle;
+      });
+
+      strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
     });
   });
 
@@ -133,11 +165,13 @@ describe('EsriPolygonSelectionStrategy', () => {
         'rectangle',
         2056,
       );
-      const spy = spyOn(strategy.svm, 'create');
+      const spy = vi.spyOn(strategy.svm, 'create');
 
       strategy.start();
 
-      expect(spy).toHaveBeenCalledOnceWith('rectangle', {mode: 'click'});
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(spy).toHaveBeenCalledWith('rectangle', {mode: 'click'});
     });
 
     it('sets polygon type to circle', () => {
@@ -149,11 +183,13 @@ describe('EsriPolygonSelectionStrategy', () => {
         'circle',
         2056,
       );
-      const spy = spyOn(strategy.svm, 'create');
+      const spy = vi.spyOn(strategy.svm, 'create');
 
       strategy.start();
 
-      expect(spy).toHaveBeenCalledOnceWith('circle', {mode: 'click'});
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(spy).toHaveBeenCalledWith('circle', {mode: 'click'});
     });
 
     it('sets polygon type to polygon', () => {
@@ -165,11 +201,13 @@ describe('EsriPolygonSelectionStrategy', () => {
         'polygon',
         2056,
       );
-      const spy = spyOn(strategy.svm, 'create');
+      const spy = vi.spyOn(strategy.svm, 'create');
 
       strategy.start();
 
-      expect(spy).toHaveBeenCalledOnceWith('polygon', {mode: 'click'});
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(spy).toHaveBeenCalledWith('polygon', {mode: 'click'});
     });
   });
 });

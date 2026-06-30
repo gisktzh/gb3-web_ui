@@ -1,20 +1,8 @@
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Umrandung</h3>
-<slider-edit
-  (updateSliderEvent)="updateValue('strokeWidth', $event)"
-  [sliderValue]="polygonStyle.strokeWidth"
-  [min]="1"
-  [max]="12"
-  [step]="1"
-  title="Strichstärke"
->
-</slider-edit>
-<slider-edit (updateSliderEvent)="updateValue('strokeOpacity', $event)" [sliderValue]="polygonStyle.strokeOpacity" title="Deckkraft">
-</slider-edit>
-<color-picker-edit (updateColorEvent)="updateValue('strokeColor', $event)" [fillColor]="polygonStyle.strokeColor" title="Strichfarbe">
-</color-picker-edit>
-<mat-divider class="divider"></mat-divider>
+<slider-edit [formField]="polygonStyleForm.strokeWidth" [minValue]="1" [maxValue]="12" [step]="1" title="Strichstärke" />
+<slider-edit [formField]="polygonStyleForm.strokeOpacity" title="Deckkraft" />
+<color-picker-edit [formField]="polygonStyleForm.strokeColor" title="Strichfarbe" />
+<mat-divider class="divider" />
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Füllung</h3>
-<slider-edit (updateSliderEvent)="updateValue('fillOpacity', $event)" [sliderValue]="polygonStyle.fillOpacity" title="Deckkraft">
-</slider-edit>
-<color-picker-edit (updateColorEvent)="updateValue('fillColor', $event)" [fillColor]="polygonStyle.fillColor" title="Füllfarbe">
-</color-picker-edit>
+<slider-edit [formField]="polygonStyleForm.fillOpacity" title="Deckkraft" />
+<color-picker-edit [formField]="polygonStyleForm.fillColor" title="Füllfarbe" />

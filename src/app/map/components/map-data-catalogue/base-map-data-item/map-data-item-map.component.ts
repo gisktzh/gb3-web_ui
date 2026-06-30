@@ -1,15 +1,13 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject} from '@angular/core';
+import {Component, computed, inject, input} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
-import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
 import {BaseMapDataItemComponent} from './base-map-data-item.component';
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelContent} from '@angular/material/expansion';
 import {MatTooltip} from '@angular/material/tooltip';
 import {DelayedMouseEnterDirective} from '../../../../shared/directives/delayed-mouse-enter.directive';
 import {MatIconButton} from '@angular/material/button';
-import {NgClass} from '@angular/common';
+
 import {MatIcon} from '@angular/material/icon';
 import {MatBadge} from '@angular/material/badge';
 import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
@@ -29,7 +27,6 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
     MatTooltip,
     DelayedMouseEnterDirective,
     MatIconButton,
-    NgClass,
     MatIcon,
     MatBadge,
     ShowTooltipIfTruncatedDirective,
@@ -41,29 +38,21 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
     AppendMapConfigurationToUrlPipe,
   ],
 })
-export class MapDataItemMapComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
+export class MapDataItemMapComponent extends BaseMapDataItemComponent {
   private readonly store = inject(Store);
 
-  @Input() public override layers: MapLayer[] = [];
-  @Input() public override imageUrl!: string;
-  @Input() public override gb2Url: string | null = null;
-
-  @Output() public override readonly addLayerEvent = new EventEmitter<MapLayer>();
-
-  public override loadingState: LoadingState = 'loaded';
-
-  private readonly mapConfigState$ = this.store.select(selectMapConfigState);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    // only add subscription if the item is a gb2-only item
-    if (this.gb2Url) {
-      this.showExpandButton = false;
-      this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
+  public override readonly layers = input<MapLayer[]>([]);
+  public override readonly imageUrl = input.required<string | undefined>();
+  public override readonly gb2Url = input<string | null>(null);
+  public readonly internalMapConfigState = this.store.selectSignal(selectMapConfigState);
+  public override readonly mapConfigState = computed(() => {
+    if (!this.gb2Url()) {
+      return undefined;
     }
-  }
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+    return this.internalMapConfigState();
+  });
+  public override readonly showExpandButton = computed(() => {
+    return !this.gb2Url();
+  });
 }

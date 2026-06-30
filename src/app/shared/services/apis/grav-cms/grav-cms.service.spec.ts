@@ -29,7 +29,7 @@ describe('GravCmsService', () => {
   });
 
   describe('loadDiscoverMapsData', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const serverData = {
         'discover-maps': [
           {
@@ -66,7 +66,7 @@ describe('GravCmsService', () => {
         ],
       };
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverData));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverData));
 
       const expected: DiscoverMapsItem[] = [
         {
@@ -106,15 +106,15 @@ describe('GravCmsService', () => {
       ];
 
       service.loadDiscoverMapsData().subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.gravCms.baseUrl}/discovermaps.json`);
+        expect(getCallSpy).toHaveBeenCalledTimes(1);
+        expect(getCallSpy).toHaveBeenCalledWith(`${configService.apiConfig.gravCms.baseUrl}/discovermaps.json`);
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });
 
   describe('loadPageInfosData', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const serverData = {
         'page-infos': [
           {
@@ -135,7 +135,7 @@ describe('GravCmsService', () => {
         ],
       };
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverData));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverData));
 
       const expected: PageNotification[] = [
         {
@@ -152,15 +152,15 @@ describe('GravCmsService', () => {
       ];
 
       service.loadPageInfosData().subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.gravCms.baseUrl}/pageinfos.json`);
+        expect(getCallSpy).toHaveBeenCalledTimes(1);
+        expect(getCallSpy).toHaveBeenCalledWith(`${configService.apiConfig.gravCms.baseUrl}/pageinfos.json`);
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });
 
   describe('loadFrequentlyUsedData', () => {
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
+    it('should receive the data and transform it correctly', () => {
       const serverData = {
         'frequently-used': [
           {
@@ -204,7 +204,7 @@ describe('GravCmsService', () => {
         ],
       };
       const httpClient = TestBed.inject(HttpClient);
-      const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverData));
+      const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(serverData));
 
       const expected: FrequentlyUsedItem[] = [
         {
@@ -250,9 +250,9 @@ describe('GravCmsService', () => {
       ];
 
       service.loadFrequentlyUsedData().subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.gravCms.baseUrl}/frequentlyused.json`);
+        expect(getCallSpy).toHaveBeenCalledTimes(1);
+        expect(getCallSpy).toHaveBeenCalledWith(`${configService.apiConfig.gravCms.baseUrl}/frequentlyused.json`);
         expect(actual).toEqual(expected);
-        done();
       });
     });
   });

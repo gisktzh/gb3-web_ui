@@ -53,7 +53,7 @@ describe('data download order reducer', () => {
         },
         submittedDateString: 'always',
         finishedDateString: 'never',
-        internalId: 42_1337,
+        internalId: 421337,
       },
       consecutiveErrorsCount: 0,
       isCompleted: false,

@@ -1,15 +1,15 @@
 <slider-wrapper
   class="time-slider"
-  title="{{ timeSliderConfiguration.name }}"
-  description="{{ timeSliderConfiguration.description }}"
-  [value]="timeExtent | timeExtentToString: timeSliderConfiguration.dateFormat : hasSimpleCurrentValue"
-  [minValue]="availableDates[minimumDateIndex] | dateToString: timeSliderConfiguration.dateFormat"
-  [maxValue]="availableDates[maximumDateIndex] | dateToString: timeSliderConfiguration.dateFormat"
-  [overwriteFooter]="hasDatePicker"
+  [title]="timeSliderConfiguration().name"
+  [description]="timeSliderConfiguration().description"
+  [value]="timeExtent() | timeExtentToString: timeSliderConfiguration().dateFormat : hasSimpleCurrentValue()"
+  [minValue]="availableDates()[minimumDateIndex()] | dateToString: timeSliderConfiguration().dateFormat"
+  [maxValue]="availableDates()[maximumDateIndex()] | dateToString: timeSliderConfiguration().dateFormat"
+  [overwriteFooter]="hasDatePicker()"
 >
   <ng-container content>
-    <mat-slider [min]="minimumDateIndex" [max]="maximumDateIndex" [step]="1" color="primary" class="time-slider__slider">
-      @if (this.timeSliderConfiguration.range) {
+    <mat-slider [min]="minimumDateIndex()" [max]="maximumDateIndex()" [step]="1" color="primary" class="time-slider__slider">
+      @if (timeSliderConfiguration().range) {
         <input matSliderThumb (valueChange)="setValidTimeExtent(true)" [(ngModel)]="firstSliderPosition" />
       } @else {
         <input matSliderStartThumb (valueChange)="setValidTimeExtent(true)" [(ngModel)]="firstSliderPosition" />
@@ -25,24 +25,24 @@
             matInput
             (dateChange)="selectedDatePickerDate($event.value, true)"
             [matDatepicker]="minDatePicker"
-            [min]="availableDates[0]"
-            [max]="availableDates[maximumDateIndex - 1]"
+            [min]="availableDates()[0]"
+            [max]="availableDates()[maximumDateIndex() - 1]"
           />
           <mat-datepicker
             #minDatePicker
-            [startView]="datePickerStartView"
-            [startAt]="availableDates[firstSliderPosition]"
+            [startView]="datePickerStartView()"
+            [startAt]="availableDates()[firstSliderPosition()]"
             (yearSelected)="yearOrMonthSelected($event, minDatePicker, true, 'years')"
             (monthSelected)="yearOrMonthSelected($event, minDatePicker, true, 'months')"
-          ></mat-datepicker>
+          />
         </mat-form-field>
         <button
           mat-button
-          [ngClass]="{'time-slider__footer__button--modified': minimumDateIndex !== 0}"
+          [class.time-slider__footer__button--modified]="minimumDateIndex() !== 0"
           class="time-slider__footer__button"
           (click)="minDatePicker.open()"
         >
-          {{ availableDates[minimumDateIndex] | dateToString: timeSliderConfiguration.dateFormat }}
+          {{ availableDates()[minimumDateIndex()] | dateToString: timeSliderConfiguration().dateFormat }}
         </button>
       </div>
       <div>
@@ -51,24 +51,24 @@
             matInput
             (dateChange)="selectedDatePickerDate($event.value, false)"
             [matDatepicker]="maxDatePicker"
-            [min]="availableDates[minimumDateIndex + 1]"
-            [max]="availableDates[availableDates.length - 1]"
+            [min]="availableDates()[minimumDateIndex() + 1]"
+            [max]="availableDates()[availableDates().length - 1]"
           />
           <mat-datepicker
             #maxDatePicker
-            [startView]="datePickerStartView"
-            [startAt]="availableDates[secondSliderPosition || 0]"
+            [startView]="datePickerStartView()"
+            [startAt]="availableDates()[secondSliderPosition() || 0]"
             (yearSelected)="yearOrMonthSelected($event, maxDatePicker, false, 'years')"
             (monthSelected)="yearOrMonthSelected($event, maxDatePicker, false, 'months')"
-          ></mat-datepicker>
+          />
         </mat-form-field>
         <button
           mat-button
-          [ngClass]="{'time-slider__footer__button--modified': maximumDateIndex !== availableDates.length - 1}"
+          [class.time-slider__footer__button--modified]="maximumDateIndex() !== availableDates().length - 1"
           class="time-slider__footer__button"
           (click)="maxDatePicker.open()"
         >
-          {{ availableDates[maximumDateIndex] | dateToString: timeSliderConfiguration.dateFormat }}
+          {{ availableDates()[maximumDateIndex()] | dateToString: timeSliderConfiguration().dateFormat }}
         </button>
       </div>
     </div>

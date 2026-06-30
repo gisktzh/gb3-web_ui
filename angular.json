@@ -24,7 +24,7 @@
             "outputPath": "dist",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["src/polyfills.ts", "@angular/localize/init"],
+            "polyfills": ["@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -193,6 +193,22 @@
                   "with": "src/app/shared/configs/runtime.local-gb2.config.ts"
                 }
               ]
+            },
+            "test": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "src/app/shared/configs/runtime.config.ts",
+                  "with": "src/app/shared/configs/runtime.testing.config.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "development"
@@ -220,69 +236,35 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": ["src/polyfills.ts", "@angular/localize/init"],
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets/",
-                "output": "/assets/"
-              },
-              {
-                "glob": "favicon.ico",
-                "input": "src/",
-                "output": "/"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/@arcgis/core/assets",
-                "output": "/"
-              }
-            ],
-            "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
-            "stylePreprocessorOptions": {
-              "includePaths": ["src/styles"]
-            },
-            "scripts": [],
-            "codeCoverage": true,
-            "codeCoverageExclude": [
-              "**/main.ts",
-              "**/configs/*.config.ts",
-              "**/*.module.ts",
-              "**/*.mock.ts",
-              "**/*.stub.ts",
-              "**/app/testing/**",
-              "**/*.component.ts",
-              "**/environments/environment*.ts"
-            ]
+            "runnerConfig": "vitest.config.ts",
+            "providersFile": "./src/app/testing/providers.ts"
           },
           "configurations": {
             "test": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                },
-                {
-                  "replace": "src/app/shared/configs/runtime.config.ts",
-                  "with": "src/app/shared/configs/runtime.testing.config.ts"
-                }
-              ]
+              "buildTarget": "gb3-frontend:build:test"
             }
           },
           "defaultConfiguration": "test"
+        },
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "options": {
+            "devServerTarget": "gb3-frontend:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "gb3-frontend:serve:production"
+            }
+          }
         }
       }
     }
   },
   "cli": {
     "analytics": false,
-    "schematicCollections": ["@ngrx/schematics"]
+    "schematicCollections": ["@ngrx/schematics", "playwright-ng-schematics"]
   },
   "schematics": {
     "@angular-eslint/schematics:application": {

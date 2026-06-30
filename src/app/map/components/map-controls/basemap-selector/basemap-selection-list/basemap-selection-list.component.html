@@ -1,23 +1,24 @@
 <div
   class="basemap-selection-list"
-  [ngClass]="{'basemap-selection-list--mobile': screenMode === 'mobile', 'basemap-selection-list--desktop': screenMode !== 'mobile'}"
+  [class.basemap-selection-list--mobile]="screenMode() === 'mobile'"
+  [class.basemap-selection-list--desktop]="screenMode() !== 'mobile'"
 >
   @for (availableBasemap of availableBasemaps; track availableBasemap) {
     <button
       mat-flat-button
       (click)="switchBasemap(availableBasemap.id)"
       class="basemap-selection-list__item"
-      [ngClass]="{'basemap-selection-list__item--active': availableBasemap.id === activeBasemap?.id}"
+      [class.basemap-selection-list__item--active]="availableBasemap.id === activeBasemapId()"
     >
       @switch (availableBasemap.type) {
         @case ('wms') {
           <img
             [alt]="availableBasemap.title"
-            [ngSrc]="availableBasemap.id | basemapImageLink"
+            [src]="availableBasemap.id | basemapImageLink"
             class="basemap-selection-list__item__image"
             height="48"
             width="96"
-            [attr.aria-label]="availableBasemap.title"
+            [aria-label]="availableBasemap.title"
           />
         }
         @case ('blank') {

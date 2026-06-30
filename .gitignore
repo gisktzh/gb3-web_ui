@@ -104,3 +104,8 @@ environment.local.ts
 
 # local development certificate
 *.crt
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

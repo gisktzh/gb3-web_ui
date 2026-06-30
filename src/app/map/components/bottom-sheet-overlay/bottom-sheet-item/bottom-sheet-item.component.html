@@ -1,25 +1,23 @@
 <mat-card
+  [style]="resizeableStyle()"
   class="bottom-sheet-item"
-  [style]="resizeableStyle"
-  [ngClass]="filterString !== undefined ? 'bottom-sheet-item--large' : 'bottom-sheet-item--' + bottomSheetHeight"
+  [class.bottom-sheet-item--large]="filterString() !== undefined || bottomSheetHeight() === 'large'"
+  [class.bottom-sheet-item--medium]="filterString() === undefined && bottomSheetHeight() === 'medium'"
+  [class.bottom-sheet-item--small]="filterString() === undefined && bottomSheetHeight() === 'small'"
 >
-  <mat-card-header class="bottom-sheet-item__header" [ngClass]="{'bottom-sheet-item__header--primary-color': usePrimaryColor}">
+  <mat-card-header class="bottom-sheet-item__header" [class.bottom-sheet-item__header--primary-color]="usePrimaryColor()">
     <div class="bottom-sheet-item__header__container">
-      <button
-        (click)="close()"
-        mat-icon-button
-        [ngClass]="{'bottom-sheet-item__header__container__button--primary--color': usePrimaryColor}"
-      >
+      <button (click)="close()" mat-icon-button [class.bottom-sheet-item__header__container__button--primary--color]="usePrimaryColor()">
         <mat-icon>close</mat-icon>
       </button>
-      @if (showHeader) {
-        <h1 class="bottom-sheet-item__header__container__title">{{ overlayTitle }} {{ mapAttributeFiltersItemTitle }}</h1>
+      @if (showHeader()) {
+        <h1 class="bottom-sheet-item__header__container__title">{{ overlayTitle() }} {{ mapAttributeFiltersItemTitle() }}</h1>
         <hr class="bottom-sheet-item__header__container__hr" />
       }
     </div>
   </mat-card-header>
   <mat-card-content class="bottom-sheet-item__content" cdkScrollable>
-    <ng-content select="[body]"></ng-content>
+    <ng-content select="[body]" />
   </mat-card-content>
-  <resize-handler (resizeEvent)="resizeOverlay($event)" [location]="location" [usePrimaryColor]="usePrimaryColor"></resize-handler>
+  <resize-handler (resizeEvent)="resizeableStyle.set($event)" location="top" [usePrimaryColor]="usePrimaryColor()" />
 </mat-card>

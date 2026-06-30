@@ -1,8 +1,6 @@
-import {ScreenMode} from '../../shared/types/screen-size.type';
 import {selectScreenMode} from '../../state/app/reducers/app-layout.reducer';
-import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {Injectable, OnDestroy, inject} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {MapConstants} from '../../shared/constants/map.constants';
 import {defaultMapConfig} from '../../shared/configs/map.config';
 import {Coordinate} from '../../shared/interfaces/coordinate.interface';
@@ -11,20 +9,10 @@ import {BoundingBox, InitialMapPadding} from '../../state/map/states/map-config.
 @Injectable({
   providedIn: 'root',
 })
-export class InitialMapExtentService implements OnDestroy {
+export class InitialMapExtentService {
   private readonly store = inject(Store);
 
-  public screenMode: ScreenMode = 'regular';
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  constructor() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
   public calculateInitialExtent(): {x: number; y: number; scale: number} {
     const min = defaultMapConfig.initialBoundingBox.min;
@@ -33,10 +21,11 @@ export class InitialMapExtentService implements OnDestroy {
     const boundingBoxWidth = max.x - min.x;
     const boundingBoxHeight = max.y - min.y;
 
-    const viewExtentPadding = this.screenMode !== 'mobile' ? defaultMapConfig.initialMapPadding : defaultMapConfig.initialMapPaddingMobile;
+    const viewExtentPadding =
+      this.screenMode() === 'mobile' ? defaultMapConfig.initialMapPaddingMobile : defaultMapConfig.initialMapPadding;
 
     const mapWidth = window.innerWidth;
-    const mapHeight = this.screenMode !== 'mobile' ? window.innerHeight - MapConstants.NAV_BAR_HEIGHT : window.innerHeight;
+    const mapHeight = this.screenMode() === 'mobile' ? window.innerHeight : window.innerHeight - MapConstants.NAV_BAR_HEIGHT;
 
     const viewportWidth = mapWidth - viewExtentPadding.left - viewExtentPadding.right;
     const viewportHeight = mapHeight - viewExtentPadding.top - viewExtentPadding.bottom;
@@ -66,9 +55,5 @@ export class InitialMapExtentService implements OnDestroy {
     const y = (extentBottom + extentTop) / 2;
 
     return {x, y};
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

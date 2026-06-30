@@ -1,15 +1,17 @@
 import {InitialMapExtentService} from './initial-map-extent.service';
 import {TestBed} from '@angular/core/testing';
-import {provideMockStore} from '@ngrx/store/testing';
+import {MockStore, provideMockStore} from '@ngrx/store/testing';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 describe('InitialMapExtentService', () => {
   let service: InitialMapExtentService;
+  let store: MockStore;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideMockStore()],
     });
-
+    store = TestBed.inject(MockStore);
     service = TestBed.inject(InitialMapExtentService);
   });
 
@@ -37,7 +39,6 @@ describe('InitialMapExtentService', () => {
           get: () => mockWindow.innerHeight,
         });
 
-        service.screenMode = 'regular';
         const initialExtent = service.calculateInitialExtent();
 
         expect(Math.round(initialExtent.x)).toEqual(2681446);
@@ -45,6 +46,7 @@ describe('InitialMapExtentService', () => {
         expect(Math.round(initialExtent.scale)).toEqual(298744);
       });
     });
+
     [
       {innerWidth: 1000, innerHeight: 700},
       {innerWidth: 1000, innerHeight: 1000},
@@ -64,7 +66,6 @@ describe('InitialMapExtentService', () => {
           get: () => mockWindow.innerHeight,
         });
 
-        service.screenMode = 'regular';
         const initialExtent = service.calculateInitialExtent();
 
         expect(Math.round(initialExtent.x)).toEqual(2672821);
@@ -72,6 +73,7 @@ describe('InitialMapExtentService', () => {
         expect(Math.round(initialExtent.scale)).toEqual(520505);
       });
     });
+
     [
       {innerWidth: 400, innerHeight: 400},
       {innerWidth: 1000, innerHeight: 400},
@@ -91,14 +93,17 @@ describe('InitialMapExtentService', () => {
           get: () => mockWindow.innerHeight,
         });
 
-        service.screenMode = 'mobile';
-        const initialExtent = service.calculateInitialExtent();
+        store.overrideSelector(selectScreenMode, 'mobile');
+        queueMicrotask(() => {
+          const initialExtent = service.calculateInitialExtent();
 
-        expect(Math.round(initialExtent.x)).toEqual(2693065);
-        expect(Math.round(initialExtent.y)).toEqual(1251419);
-        expect(Math.round(initialExtent.scale)).toEqual(1040071);
+          expect(Math.round(initialExtent.x)).toEqual(2693065);
+          expect(Math.round(initialExtent.y)).toEqual(1251419);
+          expect(Math.round(initialExtent.scale)).toEqual(1040071);
+        });
       });
     });
+
     [
       {innerWidth: 400, innerHeight: 700},
       {innerWidth: 400, innerHeight: 1000},
@@ -118,12 +123,14 @@ describe('InitialMapExtentService', () => {
           get: () => mockWindow.innerHeight,
         });
 
-        service.screenMode = 'mobile';
-        const initialExtent = service.calculateInitialExtent();
+        store.overrideSelector(selectScreenMode, 'mobile');
+        queueMicrotask(() => {
+          const initialExtent = service.calculateInitialExtent();
 
-        expect(Math.round(initialExtent.x)).toEqual(2693065);
-        expect(Math.round(initialExtent.y)).toEqual(1252606);
-        expect(Math.round(initialExtent.scale)).toEqual(478975);
+          expect(Math.round(initialExtent.x)).toEqual(2693065);
+          expect(Math.round(initialExtent.y)).toEqual(1252606);
+          expect(Math.round(initialExtent.scale)).toEqual(478975);
+        });
       });
     });
   });

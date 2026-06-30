@@ -1,59 +1,59 @@
 <div class="zoom-controls">
-  @if (showLocateMeButton) {
+  @if (showLocateMeButton()) {
     <button
       mat-icon-button
-      (click)="this.locateClient()"
+      (click)="locateClient()"
       color="accent"
       class="zoom-controls__button"
       data-test-id="map-locate-me"
-      [matTooltip]="locationButtonTooltipText"
-      [attr.aria-label]="locationButtonTooltipText"
-      [disabled]="this.geolocationState.loadingState === 'loading'"
-      [ngClass]="{'zoom-controls--hidden': mapUiState?.hideUiElements}"
+      [matTooltip]="locationButtonTooltipText()"
+      [aria-label]="locationButtonTooltipText()"
+      [disabled]="geolocationState().loadingState === 'loading'"
+      [class.zoom-controls--hidden]="mapUiState().hideUiElements"
     >
-      <mat-icon svgIcon="ktzh_locate_me"></mat-icon>
-      <loading-and-process-bar [loadingState]="this.geolocationState.loadingState"></loading-and-process-bar>
+      <mat-icon svgIcon="ktzh_locate_me" />
+      <loading-and-process-bar [loadingState]="geolocationState().loadingState" />
     </button>
     <mat-divider
       class="zoom-controls__divider"
-      [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons || mapUiState?.hideUiElements || screenHeight === 'small'}"
-    ></mat-divider>
+      [class.zoom-controls--hidden]="mapUiState().hideZoomButtons || mapUiState().hideUiElements || screenHeight() === 'small'"
+    />
   }
-  <div [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons || screenHeight === 'small'}">
+  <div [class.zoom-controls--hidden]="mapUiState().hideZoomButtons || screenHeight() === 'small'">
     <button
       mat-icon-button
-      (click)="this.goToInitialExtent()"
+      (click)="goToInitialExtent()"
       color="accent"
       class="zoom-controls__button"
       data-test-id="map-home"
       [matTooltip]="tooltipText.home"
-      [attr.aria-label]="tooltipText.home"
+      [aria-label]="tooltipText.home"
     >
-      <mat-icon svgIcon="ktzh_home_extent"></mat-icon>
+      <mat-icon svgIcon="ktzh_home_extent" />
     </button>
     <button
       mat-icon-button
-      (click)="this.handleZoom('zoomIn')"
+      (click)="handleZoom('zoomIn')"
       color="accent"
-      [disabled]="this.isMaxZoomedIn"
+      [disabled]="isMaxZoomedIn()"
       class="zoom-controls__button"
       data-test-id="map-add"
       [matTooltip]="tooltipText.zoomIn"
-      [attr.aria-label]="tooltipText.zoomIn"
+      [aria-label]="tooltipText.zoomIn"
     >
-      <mat-icon svgIcon="ktzh_add"></mat-icon>
+      <mat-icon svgIcon="ktzh_add" />
     </button>
     <button
       mat-icon-button
-      (click)="this.handleZoom('zoomOut')"
+      (click)="handleZoom('zoomOut')"
       color="accent"
-      [disabled]="this.isMaxZoomedOut"
+      [disabled]="isMaxZoomedOut()"
       class="zoom-controls__button"
       data-test-id="map-remove"
       [matTooltip]="tooltipText.zoomOut"
-      [attr.aria-label]="tooltipText.zoomOut"
+      [aria-label]="tooltipText.zoomOut"
     >
-      <mat-icon svgIcon="ktzh_remove"></mat-icon>
+      <mat-icon svgIcon="ktzh_remove" />
     </button>
   </div>
 </div>

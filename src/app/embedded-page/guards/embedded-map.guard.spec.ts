@@ -20,6 +20,6 @@ describe('embeddedMapGuard', () => {
   });
 
   it('should always return `false`', () => {
-    expect(executeGuard(dummyComponent, dummyRoute, dummyState, dummyState)).toBeFalse();
+    expect(executeGuard(dummyComponent, dummyRoute, dummyState, dummyState)).toBe(false);
   });
 });

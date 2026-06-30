@@ -1,16 +1,16 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
-import {Observable, Subscription, tap} from 'rxjs';
+import {Component, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectCenter, selectRotation, selectScale} from '../../../../state/map/reducers/map-config.reducer';
+import {selectRotation} from '../../../../state/map/reducers/map-config.reducer';
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {CoordinateParserService} from '../../../services/coordinate-parser.service';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
-import {Coordinate} from '../../../../shared/interfaces/coordinate.interface';
 import {TypedTourAnchorDirective} from '../../../../shared/directives/typed-tour-anchor.directive';
 import {DataInputComponent} from '../data-input/data-input.component';
 import {FormsModule} from '@angular/forms';
 import {MapRotationButtonComponent} from '../map-rotation-button/map-rotation-button.component';
+
+import {selectCenterReadable, selectRoundedScale} from 'src/app/state/map/selectors/map-config.selector';
 
 /**
  * Note that for scale and mapCenter, we have two properties - one mimicks the state and one mimicks the input. The input value is used in
@@ -28,33 +28,24 @@ import {MapRotationButtonComponent} from '../map-rotation-button/map-rotation-bu
   styleUrls: ['./coordinate-scale-inputs.component.scss'],
   imports: [TypedTourAnchorDirective, DataInputComponent, FormsModule, MapRotationButtonComponent],
 })
-export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
+export class CoordinateScaleInputsComponent {
   private readonly coordinateParserService = inject(CoordinateParserService);
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
 
-  public scale: number = 0;
-  public scaleInput: string = '';
-  public mapCenter: string = '';
-  public mapCenterInput: string = '';
-
-  public rotation: number = 0;
+  public readonly scale = this.store.selectSignal(selectRoundedScale);
+  public readonly mapCenter = this.store.selectSignal(selectCenterReadable);
+  public readonly rotation = this.store.selectSignal(selectRotation);
 
   public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
   public readonly minScale = this.configService.mapConfig.mapScaleConfig.minScale;
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly rotation$ = this.store.select(selectRotation);
-  private readonly scaleState$: Observable<number> = this.store.select(selectScale);
-  private readonly centerState$: Observable<Coordinate> = this.store.select(selectCenter);
 
   public setScale(event: Event) {
     const input = (event.target as HTMLInputElement).value;
     const newScale = NumberUtils.parseNumberFromMixedString(input);
 
-    if (newScale && newScale !== this.scale) {
+    if (newScale && newScale !== this.scale()) {
       this.store.dispatch(MapConfigActions.setScale({scale: newScale}));
-    } else {
-      this.scaleInput = this.scale.toString();
     }
   }
 
@@ -64,40 +55,6 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
 
     if (center) {
       this.store.dispatch(MapConfigActions.setMapCenterAndDrawHighlight({center}));
-    } else {
-      input.value = this.mapCenter;
     }
-  }
-
-  public ngOnInit(): void {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.scaleState$.pipe(tap((value) => this.updateScaleValues(value))).subscribe());
-    this.subscriptions.add(this.rotation$.pipe(tap((value) => (this.rotation = value))).subscribe());
-    this.subscriptions.add(
-      this.centerState$
-        .pipe(
-          tap(({x, y}) => {
-            this.updateMapCenterValues(x, y);
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
-  private updateMapCenterValues(x: number, y: number) {
-    this.mapCenter = `${NumberUtils.roundToDecimals(x)} / ${NumberUtils.roundToDecimals(y)}`;
-    this.mapCenterInput = this.mapCenter;
-  }
-
-  private updateScaleValues(value: number) {
-    this.scale = NumberUtils.roundToDecimals(value);
-    this.scaleInput = this.scale.toString();
   }
 }

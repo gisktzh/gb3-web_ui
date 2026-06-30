@@ -1,7 +1,6 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
+import {Component, effect, inject, input, untracked, viewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
 import {SearchFilterDialogComponent} from 'src/app/shared/components/search-filter-dialog/search-filter-dialog.component';
 import {PanelClass} from 'src/app/shared/enums/panel-class.enum';
 import {ConfigService} from 'src/app/shared/services/config.service';
@@ -9,7 +8,6 @@ import {SearchActions} from 'src/app/state/app/actions/search.actions';
 import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selectors/is-any-search-filter-active.selector';
 import {selectSelectedSearchResult, selectTerm} from '../../../state/app/reducers/search.reducer';
 import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
-import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {ResultGroupsComponent} from '../search-window/result-groups/result-groups.component';
 
 @Component({
@@ -18,63 +16,38 @@ import {ResultGroupsComponent} from '../search-window/result-groups/result-group
   styleUrls: ['./search-window-mobile.component.scss'],
   imports: [SearchInputComponent, ResultGroupsComponent],
 })
-export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SearchWindowMobileComponent {
   private readonly store = inject(Store);
   private readonly dialogService = inject(MatDialog);
   private readonly configService = inject(ConfigService);
 
-  @Input() public focusOnInit: boolean = true;
-  public isAnySearchFilterActive: boolean = false;
-  public selectedSearchResult?: GeometrySearchApiResultMatch;
-
-  @ViewChild(SearchInputComponent) private readonly searchComponent!: SearchInputComponent;
-
+  public readonly focusOnInit = input(true);
+  public readonly isAnySearchFilterActive = this.store.selectSignal(selectIsAnySearchFilterActiveSelector);
+  public readonly selectedSearchResult = this.store.selectSignal(selectSelectedSearchResult);
+  public readonly searchTerm = this.store.selectSignal(selectTerm);
+  private readonly searchComponent = viewChild.required<SearchInputComponent>(SearchInputComponent);
   private readonly searchConfig = this.configService.searchConfig.mapPage;
-  private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
-  private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
-  private readonly term$ = this.store.select(selectTerm);
-  private readonly subscriptions: Subscription = new Subscription();
 
-  public ngOnInit() {
+  constructor() {
     this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));
-    this.initSubscriptions();
-  }
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+    effect(() => {
+      const selectedSearchresult = this.selectedSearchResult();
+      if (selectedSearchresult) {
+        queueMicrotask(() => {
+          this.searchComponent().setTerm(selectedSearchresult.displayString ?? '', false);
+        });
+      }
+    });
 
-  public ngAfterViewInit() {
-    this.subscriptions.add(
-      this.selectedSearchResult$
-        .pipe(
-          tap((selectedSearchResult) => {
-            this.selectedSearchResult = selectedSearchResult;
-            if (selectedSearchResult) {
-              // This is necessary to avoid NG100 ExpressionChangedAfterItHasBeenCheckedError
-              setTimeout(() => {
-                this.searchComponent.setTerm(selectedSearchResult?.displayString ?? '', false);
-              }, 0);
-            }
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.term$
-        .pipe(
-          tap((term) => {
-            if (!this.selectedSearchResult) {
-              // This is necessary to avoid NG100 ExpressionChangedAfterItHasBeenCheckedError
-              setTimeout(() => {
-                this.searchComponent.setTerm(term, false);
-              }, 0);
-            }
-          }),
-        )
-        .subscribe(),
-    );
+    effect(() => {
+      if (!untracked(() => this.selectedSearchResult())) {
+        const searchTerm = this.searchTerm();
+        queueMicrotask(() => {
+          this.searchComponent().setTerm(searchTerm ?? '', false);
+        });
+      }
+    });
   }
 
   public searchForTerm(term: string) {
@@ -90,9 +63,5 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterView
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
     });
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.isAnySearchFilterActive$.pipe(tap((value) => (this.isAnySearchFilterActive = value))).subscribe());
   }
 }

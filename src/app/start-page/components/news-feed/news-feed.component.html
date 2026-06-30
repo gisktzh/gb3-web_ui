@@ -1,12 +1,12 @@
 <content-loading-state
   class="news-feed__loader"
-  [loadingState]="loadingState"
+  [loadingState]="loadingState()"
   loadingText="Lade Neuigkeiten aus dem GIS-Team..."
   loadingCompletedText="Fehler beim Laden der News."
-></content-loading-state>
+/>
 <link-grid-list>
-  @for (newsEntry of this.news; track $index) {
-    <link-grid-list-item [url]="newsEntry.link" [title]="newsEntry.title" [entryType]="'Mitteilung'" [entryDate]="newsEntry.date">
+  @for (newsEntry of news(); track $index) {
+    <link-grid-list-item [url]="newsEntry.link" [title]="newsEntry.title" entryType="Mitteilung" [entryDate]="newsEntry.date">
       {{ newsEntry.teaserText }}
     </link-grid-list-item>
   }

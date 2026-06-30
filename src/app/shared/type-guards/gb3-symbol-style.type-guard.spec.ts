@@ -13,9 +13,10 @@ describe('isGb3SymbolStyle', () => {
       type: 'symbol',
       symbolSize: 12,
       symbolRotation: 90,
+      symbolDefinition: null,
     };
 
-    expect(isGb3SymbolStyle(style)).toBeTrue();
+    expect(isGb3SymbolStyle(style)).toBe(true);
   });
 
   it('should return false for any other style', () => {
@@ -57,9 +58,9 @@ describe('isGb3SymbolStyle', () => {
       haloRadius: 'yes',
     };
 
-    expect(isGb3SymbolStyle(lineStringStyle)).toBeFalse();
-    expect(isGb3SymbolStyle(pointStyle)).toBeFalse();
-    expect(isGb3SymbolStyle(polygonStyle)).toBeFalse();
-    expect(isGb3SymbolStyle(textStyle)).toBeFalse();
+    expect(isGb3SymbolStyle(lineStringStyle)).toBe(false);
+    expect(isGb3SymbolStyle(pointStyle)).toBe(false);
+    expect(isGb3SymbolStyle(polygonStyle)).toBe(false);
+    expect(isGb3SymbolStyle(textStyle)).toBe(false);
   });
 });

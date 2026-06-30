@@ -14,7 +14,7 @@ describe('selectUsefulInformationLinksWithDynamicUrls', () => {
   });
 
   it('calls DynamicBaseUrlUtils.convertRelativeLinkObjectToLinkObject for each link and returns the mapped links', () => {
-    const serviceSpy = spyOn(DynamicBaseUrlUtils, 'convertRelativeLinkObjectToLinkObject');
+    const serviceSpy = vi.spyOn(DynamicBaseUrlUtils, 'convertRelativeLinkObjectToLinkObject');
     const usefulInformationLinks: AbstractLinksGroup[] = [
       {
         label: 'a',

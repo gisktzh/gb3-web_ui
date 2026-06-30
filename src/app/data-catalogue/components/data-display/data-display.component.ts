@@ -1,6 +1,5 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {DataDisplayElement} from '../../types/data-display-element.type';
-
 import {TextOrPlaceholderPipe} from '../../../shared/pipes/text-or-placeholder.pipe';
 
 @Component({
@@ -10,5 +9,5 @@ import {TextOrPlaceholderPipe} from '../../../shared/pipes/text-or-placeholder.p
   styleUrls: ['./data-display.component.scss'],
 })
 export class DataDisplayComponent {
-  @Input() public elements: DataDisplayElement[] = [];
+  public readonly elements = input<DataDisplayElement[]>([]);
 }

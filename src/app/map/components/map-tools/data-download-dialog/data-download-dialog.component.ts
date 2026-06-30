@@ -1,10 +1,7 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
-import {Subscription, tap} from 'rxjs';
 import {selectOrder, selectSavingState} from '../../../../state/map/reducers/data-download-order.reducer';
-import {LoadingState} from '../../../../shared/types/loading-state.type';
-import {Order} from '../../../../shared/interfaces/geoshop-order.interface';
 import {
   selectProductsLoadingState,
   selectRelevantProductIdsLoadingState,
@@ -12,7 +9,7 @@ import {
 import {Product} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {selectFilteredRelevantProducts} from '../../../../state/map/selectors/filtered-relevant-products.selector';
 import {DataDownloadProductActions} from '../../../../state/map/actions/data-download-product.actions';
-import {ActiveDataDownloadFilterGroup, DataDownloadFilterCategory} from '../../../../shared/interfaces/data-download-filter.interface';
+import {DataDownloadFilterCategory} from '../../../../shared/interfaces/data-download-filter.interface';
 import {MatDialog} from '@angular/material/dialog';
 import {DataDownloadFilterDialogComponent} from '../data-download-filter-dialog/data-download-filter-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
@@ -42,36 +39,19 @@ import {LoadingAndProcessBarComponent} from '../../../../shared/components/loadi
     MatButton,
   ],
 })
-export class DataDownloadDialogComponent implements OnInit, OnDestroy {
+export class DataDownloadDialogComponent {
   private readonly store = inject(Store);
   private readonly dialogService = inject(MatDialog);
 
-  public order?: Order;
-  public savingState: LoadingState;
-  public relevantProducts: Product[] = [];
-  public relevantProductsLoadingState: LoadingState;
-  public filteredProducts: Product[] = [];
-  public productsLoadingState: LoadingState;
-  public activeDataDownloadFiltersPerCategory: ActiveDataDownloadFilterGroup[] = [];
+  public readonly order = this.store.selectSignal(selectOrder);
+  public readonly savingState = this.store.selectSignal(selectSavingState);
+  public readonly relevantProducts = this.store.selectSignal(selectFilteredRelevantProducts);
+  public readonly relevantProductsLoadingState = this.store.selectSignal(selectRelevantProductIdsLoadingState);
+  public readonly filteredProducts = this.store.selectSignal(selectFilteredProducts);
+  public readonly productsLoadingState = this.store.selectSignal(selectProductsLoadingState);
+  public readonly activeDataDownloadFiltersPerCategory = this.store.selectSignal(selectActiveDataDownloadFiltersPerCategory);
 
-  private readonly order$ = this.store.select(selectOrder);
-  private readonly savingState$ = this.store.select(selectSavingState);
-  private readonly relevantProducts$ = this.store.select(selectFilteredRelevantProducts);
-  private readonly relevantProductsLoadingState$ = this.store.select(selectRelevantProductIdsLoadingState);
-  private readonly filteredProducts$ = this.store.select(selectFilteredProducts);
-  private readonly productsLoadingState$ = this.store.select(selectProductsLoadingState);
-  private readonly activeDataDownloadFiltersPerCategory$ = this.store.select(selectActiveDataDownloadFiltersPerCategory);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  public trackByProductId(index: number, item: Product) {
+  public trackByProductId(_: number, item: Product) {
     return item.id;
   }
 
@@ -96,7 +76,7 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
 
   public openDownloadDialog() {
     this.dialogService.open<DataDownloadEmailDialogComponent, {orderEmail: string | undefined}>(DataDownloadEmailDialogComponent, {
-      data: {orderEmail: this.order?.email},
+      data: {orderEmail: this.order()?.email},
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
     });
@@ -104,19 +84,5 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
 
   public cancel() {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.order$.pipe(tap((order) => (this.order = order))).subscribe());
-    this.subscriptions.add(this.savingState$.pipe(tap((savingState) => (this.savingState = savingState))).subscribe());
-    this.subscriptions.add(this.relevantProducts$.pipe(tap((relevantProducts) => (this.relevantProducts = relevantProducts))).subscribe());
-    this.subscriptions.add(
-      this.relevantProductsLoadingState$.pipe(tap((loadingState) => (this.relevantProductsLoadingState = loadingState))).subscribe(),
-    );
-    this.subscriptions.add(this.filteredProducts$.pipe(tap((filteredProducts) => (this.filteredProducts = filteredProducts))).subscribe());
-    this.subscriptions.add(this.productsLoadingState$.pipe(tap((loadingState) => (this.productsLoadingState = loadingState))).subscribe());
-    this.subscriptions.add(
-      this.activeDataDownloadFiltersPerCategory$.pipe(tap((value) => (this.activeDataDownloadFiltersPerCategory = value))).subscribe(),
-    );
   }
 }

@@ -70,7 +70,7 @@ describe('ConfigService', () => {
         providers: [provideMockStore(), testingHostProvider, {provide: DOCUMENT, useFactory: documentFactory, deps: [HOST_TOKEN]}],
       });
       const store = TestBed.inject(MockStore);
-      const setDynamicInternalUrlConfigurationSpy = spyOn(store, 'dispatch');
+      const setDynamicInternalUrlConfigurationSpy = vi.spyOn(store, 'dispatch');
       service = TestBed.inject(ConfigService);
 
       const expectedDynamicInternalUrlsConfiguration = {
@@ -80,7 +80,7 @@ describe('ConfigService', () => {
       };
 
       expect(setDynamicInternalUrlConfigurationSpy).toHaveBeenCalledWith(
-        jasmine.objectContaining({
+        expect.objectContaining({
           type: AppActions.setDynamicInternalUrlConfiguration.type,
           dynamicInternalUrlsConfiguration: expectedDynamicInternalUrlsConfiguration,
         }),
@@ -105,15 +105,15 @@ describe('ConfigService', () => {
       const searchIndexType: SearchIndexType = 'metadata-services';
       const result = service.filterSearchIndexes([searchIndexType]);
 
-      expect(result).toHaveSize(1);
+      expect(result).toHaveLength(1);
       expect(result[0].indexType).toEqual(searchIndexConfig.find((config) => (config.indexType = searchIndexType))!.indexType);
     });
 
     describe('configuration values', () => {
       it('merges default and runtime feature flags', () => {
         // we know this works because we set the testing runtime configuration to be the opposite of the default
-        expect(service.featureFlags).toEqual(jasmine.objectContaining({oerebExtract: defaultRuntimeConfig[0].featureFlags.oerebExtract}));
-        expect(service.featureFlags).toEqual(jasmine.objectContaining({ownershipInformation: defaultFeatureFlags.ownershipInformation}));
+        expect(service.featureFlags).toEqual(expect.objectContaining({oerebExtract: defaultRuntimeConfig[0].featureFlags.oerebExtract}));
+        expect(service.featureFlags).toEqual(expect.objectContaining({ownershipInformation: defaultFeatureFlags.ownershipInformation}));
       });
 
       // test values which are dependent on the loaded runtime configuration

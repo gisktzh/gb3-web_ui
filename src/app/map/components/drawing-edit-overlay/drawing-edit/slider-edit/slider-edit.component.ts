@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, numberAttribute, Output} from '@angular/core';
+import {Component, input, model} from '@angular/core';
 import {SliderWrapperComponent} from '../../../../../shared/components/slider-wrapper/slider-wrapper.component';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {FormsModule} from '@angular/forms';
@@ -10,16 +10,10 @@ import {FormsModule} from '@angular/forms';
   imports: [SliderWrapperComponent, MatSlider, MatSliderThumb, FormsModule],
 })
 export class SliderEditComponent {
-  @Input({transform: numberAttribute}) public sliderValue: number = 0;
-  @Input() public min: number = 0;
-  @Input() public max: number = 1;
-  @Input() public step: number = 0.01;
-  @Input() public title: string = '';
-  @Input() public showLineWidth: boolean = false;
-
-  @Output() public readonly updateSliderEvent = new EventEmitter<number>();
-
-  public updateSlider() {
-    this.updateSliderEvent.emit(this.sliderValue);
-  }
+  public readonly value = model<number | string>(0);
+  public readonly minValue = input(0);
+  public readonly maxValue = input(1);
+  public readonly step = input(0.01);
+  public readonly title = input('');
+  public readonly showLineWidth = input(false);
 }
