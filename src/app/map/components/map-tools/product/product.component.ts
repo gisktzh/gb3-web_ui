@@ -29,7 +29,6 @@ import {disabled, form, FormField} from '@angular/forms/signals';
     ReactiveFormsModule,
     MatOption,
     ExternalLinkButtonComponent,
-    FormField,
   ],
 })
 export class ProductComponent {
