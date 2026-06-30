@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-apk add --no-cache openssh-client
+apt-get -yqq install openssh-client
+install -m 600 -D /dev/null ~/.ssh/id_rsa
 
 mkdir -p ~/.ssh
 
