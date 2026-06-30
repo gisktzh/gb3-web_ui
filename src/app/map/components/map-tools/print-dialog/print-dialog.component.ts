@@ -31,7 +31,7 @@ import {MapService} from 'src/app/map/interfaces/map.service';
 import {DrawingLayerPrefix, InternalDrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from 'src/app/shared/factories/active-map-item.factory';
 
-import {form, max, min, required, validate, FormField} from '@angular/forms/signals';
+import {form, max, min, required, validate, FormField, FormRoot} from '@angular/forms/signals';
 import {printConfig} from 'src/app/shared/configs/print.config';
 
 const AVAILABLE_VALUES_CHECK_PRIORITY: PrintFormAvailableCheckPriorityList = [
@@ -65,6 +65,7 @@ const AVAILABLE_VALUES_CHECK_PRIORITY: PrintFormAvailableCheckPriorityList = [
     MatCheckbox,
     LoadingAndProcessBarComponent,
     FormField,
+    FormRoot,
   ],
 })
 export class PrintDialogComponent {
@@ -87,52 +88,62 @@ export class PrintDialogComponent {
     showLegend: printConfig.defaultPrintValues.legend,
   });
 
-  public printForm = form(this.printFormModel, (fieldPath) => {
-    required(fieldPath.layout);
-    required(fieldPath.dpi);
-    required(fieldPath.scale);
-    required(fieldPath.fileFormat);
-    required(fieldPath.showLegend);
+  public printForm = form(
+    this.printFormModel,
+    (fieldPath) => {
+      required(fieldPath.layout);
+      required(fieldPath.dpi);
+      required(fieldPath.scale);
+      required(fieldPath.fileFormat);
+      required(fieldPath.showLegend);
 
-    min(fieldPath.rotation, -90);
-    max(fieldPath.rotation, 90);
+      min(fieldPath.rotation, -90);
+      max(fieldPath.rotation, 90);
 
-    validate(fieldPath.fileFormat, (field) => {
-      const value = field.value();
-      return value && this.availableFileFormats().includes(value)
-        ? null
-        : {
-            kind: 'incorrect',
-          };
-    });
+      validate(fieldPath.fileFormat, (field) => {
+        const value = field.value();
+        return value && this.availableFileFormats().includes(value)
+          ? null
+          : {
+              kind: 'incorrect',
+            };
+      });
 
-    validate(fieldPath.dpi, (field) => {
-      const value = field.value();
-      return value && this.availableDpiSettings().includes(value)
-        ? null
-        : {
-            kind: 'incorrect',
-          };
-    });
+      validate(fieldPath.dpi, (field) => {
+        const value = field.value();
+        return value && this.availableDpiSettings().includes(value)
+          ? null
+          : {
+              kind: 'incorrect',
+            };
+      });
 
-    validate(fieldPath.layout, (field) => {
-      const value = field.value();
-      return value && this.availableLayouts().includes(value)
-        ? null
-        : {
-            kind: 'incorrect',
-          };
-    });
+      validate(fieldPath.layout, (field) => {
+        const value = field.value();
+        return value && this.availableLayouts().includes(value)
+          ? null
+          : {
+              kind: 'incorrect',
+            };
+      });
 
-    validate(fieldPath.reportOrientation, (field) => {
-      const value = field.value();
-      return value && this.availableOrientations().includes(value)
-        ? null
-        : {
-            kind: 'incorrect',
-          };
-    });
-  });
+      validate(fieldPath.reportOrientation, (field) => {
+        const value = field.value();
+        return value && this.availableOrientations().includes(value)
+          ? null
+          : {
+              kind: 'incorrect',
+            };
+      });
+    },
+    {
+      submission: {
+        action: () => {
+          return Promise.resolve(this.print());
+        },
+      },
+    },
+  );
 
   public readonly printCreationLoadingState = this.store.selectSignal(selectCreationLoadingState);
   public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
