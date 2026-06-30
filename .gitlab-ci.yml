@@ -9,11 +9,11 @@ variables:
   WORK_DIR: gb3-web_ui
 
 build:
-  image: docker:29.5.3
+  image: docker:29.6.1
   stage: build
   tags: [docker]
   services:
-    - name: docker:29.5.3-dind
+    - name: docker:29.6.1-dind
       command:
         - /bin/sh
         - -c
