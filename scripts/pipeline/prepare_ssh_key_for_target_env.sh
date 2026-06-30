@@ -18,5 +18,3 @@ ssh-keyscan "$SSH_HOST" >> ~/.ssh/known_hosts
 
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
-
-

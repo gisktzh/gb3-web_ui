@@ -47,10 +47,13 @@ build:uat:
 #     TARGET_ENV: production
 
 .deploy:
-  image: alpine:3.24
+  image: ubuntu:26.04
   stage: deploy
   tags: [docker]
   before_script:
+    - apt-get -yq update
+    - apt-get -yqq install openssh-client
+    - install -m 600 -D /dev/null ~/.ssh/id_rsa
     - . scripts/pipeline/prepare_ssh_key_for_target_env.sh
     - . scripts/pipeline/prepare_image_tag.sh
   script:
