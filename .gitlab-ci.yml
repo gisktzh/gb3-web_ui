@@ -8,7 +8,7 @@ variables:
   CA_CERTIFICATE: '$ZS_CERTIFICATE'
   WORK_DIR: gb3-web_ui
 
-build:
+.build:
   image: docker:29.6.1
   stage: build
   tags: [docker]
