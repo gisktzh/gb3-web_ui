@@ -28,13 +28,15 @@ export class DataDownloadEmailDialogComponent {
     email: '',
   });
   public emailForm = form(this.emailModel, (fieldPath) => {
-    required(fieldPath.email);
+    required(fieldPath.email, {
+      when: () => this.emailRequested(),
+    });
     email(fieldPath.email);
   });
   public readonly userEmail = this.store.selectSignal(selectUserEmail);
   public readonly emailRequested = signal(false);
   public readonly isEmailActive = computed(() => {
-    return this.data.orderEmail || !(this.data.orderEmail && this.userEmail());
+    return !!this.data.orderEmail || !!(this.data.orderEmail && this.userEmail()) || this.emailRequested();
   });
 
   constructor() {
