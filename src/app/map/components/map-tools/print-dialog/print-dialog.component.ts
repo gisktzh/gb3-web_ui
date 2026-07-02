@@ -95,7 +95,6 @@ export class PrintDialogComponent {
       required(fieldPath.dpi);
       required(fieldPath.scale);
       required(fieldPath.fileFormat);
-      required(fieldPath.showLegend);
 
       min(fieldPath.rotation, -90);
       max(fieldPath.rotation, 90);
