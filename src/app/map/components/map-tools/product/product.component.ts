@@ -6,13 +6,12 @@ import {DataDownloadOrderActions} from '../../../../state/map/actions/data-downl
 import {Order} from '../../../../shared/interfaces/geoshop-order.interface';
 import {MatSelect} from '@angular/material/select';
 import {MatCheckbox} from '@angular/material/checkbox';
-
 import {MatTooltip} from '@angular/material/tooltip';
 import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
 import {MatFormField, MatLabel} from '@angular/material/input';
 import {MatOption} from '@angular/material/autocomplete';
 import {ExternalLinkButtonComponent} from '../../../../shared/components/external-link-button/external-link-button.component';
-import {disabled, form, FormField} from '@angular/forms/signals';
+import {disabled, form} from '@angular/forms/signals';
 
 @Component({
   selector: 'product',
@@ -29,7 +28,6 @@ import {disabled, form, FormField} from '@angular/forms/signals';
     ReactiveFormsModule,
     MatOption,
     ExternalLinkButtonComponent,
-    FormField,
   ],
 })
 export class ProductComponent {

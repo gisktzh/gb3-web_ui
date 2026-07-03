@@ -9,14 +9,14 @@
             placeholder="Bitte auswählen"
             aria-label="Gemeinde"
             matInput
+            (input)="filterValue.set($event.target.value)"
             [matAutocomplete]="municipalityAutocomplete"
-            [formField]="municipalityForm.filter"
           />
           <mat-autocomplete
             requireSelection
             #municipalityAutocomplete="matAutocomplete"
             [displayWith]="getMunicipalityName"
-            [formField]="municipalityForm.municipality"
+            (optionSelected)="municipalityForm.municipality().value.set($event.option.value)"
           >
             @for (municipality of filteredMunicipalities(); track municipality) {
               <mat-option [value]="municipality">

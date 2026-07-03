@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-apk add --no-cache openssh-client
+apt-get -yqq install openssh-client
+install -m 600 -D /dev/null ~/.ssh/id_rsa
 
 mkdir -p ~/.ssh
 
@@ -18,5 +19,3 @@ ssh-keyscan "$SSH_HOST" >> ~/.ssh/known_hosts
 
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
-
-

@@ -7,7 +7,8 @@ import {ApiDialogWrapperComponent} from '../../api-dialog-wrapper/api-dialog-wra
 import {MatFormField, MatLabel, MatInput} from '@angular/material/input';
 import {MatAutocompleteTrigger, MatAutocomplete, MatOption} from '@angular/material/autocomplete';
 import {MatButton} from '@angular/material/button';
-import {form, required, FormField} from '@angular/forms/signals';
+import {form, required, disabled} from '@angular/forms/signals';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'data-download-select-municipality-dialog',
@@ -22,7 +23,7 @@ import {form, required, FormField} from '@angular/forms/signals';
     MatAutocomplete,
     MatOption,
     MatButton,
-    FormField,
+    FormsModule,
   ],
 })
 export class DataDownloadSelectMunicipalityDialogComponent {
@@ -31,17 +32,16 @@ export class DataDownloadSelectMunicipalityDialogComponent {
 
   public readonly municipalities = this.store.selectSignal(selectMunicipalities);
   public readonly loadingState = this.store.selectSignal(selectMunicipalitiesLoadingState);
-
-  public readonly municipalityModel = signal<{municipality: Municipality | null; filter: string}>({
+  public readonly municipalityModel = signal<{municipality: Municipality | null}>({
     municipality: null,
-    filter: '',
   });
+  public readonly filterValue = signal<string | null>('');
   public municipalityForm = form(this.municipalityModel, (fieldPath) => {
     required(fieldPath.municipality);
+    disabled(fieldPath.municipality, () => this.loadingState() !== 'loaded');
   });
-  public readonly isMunicipalityFieldDisabled = computed(() => this.loadingState() !== 'loaded');
   public readonly filteredMunicipalities = computed(() => {
-    const filterValue = this.municipalityForm.filter().value().toLowerCase().trim();
+    const filterValue = (this.filterValue() || '').toLowerCase().trim();
     if (filterValue.length === 0) {
       return this.municipalities();
     }

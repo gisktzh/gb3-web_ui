@@ -8,12 +8,12 @@ variables:
   CA_CERTIFICATE: '$ZS_CERTIFICATE'
   WORK_DIR: gb3-web_ui
 
-build:
-  image: docker:29.5.3
+.build:
+  image: docker:29.6.1
   stage: build
   tags: [docker]
   services:
-    - name: docker:29.5.3-dind
+    - name: docker:29.6.1-dind
       command:
         - /bin/sh
         - -c
@@ -47,10 +47,11 @@ build:uat:
 #     TARGET_ENV: production
 
 .deploy:
-  image: alpine:3.22
+  image: ubuntu:26.04
   stage: deploy
   tags: [docker]
   before_script:
+    - apt-get -yq update
     - . scripts/pipeline/prepare_ssh_key_for_target_env.sh
     - . scripts/pipeline/prepare_image_tag.sh
   script:
