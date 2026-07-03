@@ -22,7 +22,7 @@
     width: 100%;
 
     .api-dialog-wrapper__content__error {
-      color: functions.get-color-from-palette(ktzh-variables.$zh-warn, 500);
+      color: functions.get-color-from-palette('warn', 500);
     }
   }
 }

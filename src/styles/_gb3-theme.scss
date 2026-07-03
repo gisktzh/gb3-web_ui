@@ -1,6 +1,7 @@
 // CSS GLOBAL
 @use '@angular/material' as mat;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
 
 /* Theme
 ========================== */
@@ -10,10 +11,10 @@ body {
 }
 
 // For usage, refer to: https://material.angular.io/guide/theming
-$zh-light-theme: mat.m2-define-light-theme(
+$zh-blue-theme: mat.m2-define-light-theme(
   (
     color: (
-      primary: ktzh-variables.$zh-primary,
+      primary: ktzh-variables.$zh-primary-blue,
       accent: ktzh-variables.$zh-accent,
       warn: ktzh-variables.$zh-warn,
     ),
@@ -21,11 +22,36 @@ $zh-light-theme: mat.m2-define-light-theme(
   )
 );
 
-$theme: $zh-light-theme;
+$zh-cyan-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: ktzh-variables.$zh-primary-cyan,
+      accent: ktzh-variables.$zh-accent,
+      warn: ktzh-variables.$zh-warn,
+    ),
+    typography: ktzh-variables.$zh-typography-config,
+  )
+);
 
 // Emit theme-dependent styles for common features used across multiple components.
 @include mat.elevation-classes();
 @include mat.app-background();
-@include mat.all-component-themes($theme);
-@include mat.all-component-typographies($theme);
 @include mat.typography-hierarchy(ktzh-variables.$zh-typography-config);
+
+body {
+  @include mat.all-component-themes($zh-blue-theme);
+  @include mat.all-component-typographies($zh-blue-theme);
+  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-blue, 'primary');
+  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-light-blue, 'primary-light');
+  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-secondary-accent-blue, 'secondary-accent');
+  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-accent, 'accent');
+  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-warn, 'warn');
+}
+
+body.body--is-intranet {
+  @include mat.all-component-themes($zh-cyan-theme);
+  @include mat.all-component-typographies($zh-cyan-theme);
+  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-cyan, 'primary');
+  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-light-cyan, 'primary-light');
+  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-secondary-accent-cyan, 'secondary-accent');
+}

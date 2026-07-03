@@ -13,7 +13,7 @@
   padding: 12px;
 
   &--hovered {
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+    background-color: functions.get-color-from-palette('accent', 50);
   }
 
   .drop-zone__input {
