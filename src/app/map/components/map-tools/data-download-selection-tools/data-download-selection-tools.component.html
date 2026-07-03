@@ -1,80 +1,80 @@
 <div class="data-download-selection-tools">
   <button
-    (click)="this.toggleCircleSelecting()"
-    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-circle'}"
+    (click)="toggleCircleSelecting()"
+    [class.data-download-selection-tools__button--active]="activeTool() === 'select-circle'"
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.circleSelecting"
-    [attr.aria-label]="tooltipText.circleSelecting"
+    [aria-label]="tooltipText.circleSelecting"
   >
-    <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
+    <mat-icon svgIcon="ktzh_drawing_symbol_circle" />
   </button>
   <button
-    (click)="this.togglePolygonSelecting()"
-    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-polygon'}"
+    (click)="togglePolygonSelecting()"
+    [class.data-download-selection-tools__button--active]="activeTool() === 'select-polygon'"
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.polygonSelecting"
-    [attr.aria-label]="tooltipText.polygonSelecting"
+    [aria-label]="tooltipText.polygonSelecting"
   >
-    <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
+    <mat-icon svgIcon="ktzh_drawing_symbol_polygon" />
   </button>
   <button
-    (click)="this.toggleRectangleSelecting()"
-    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-rectangle'}"
+    (click)="toggleRectangleSelecting()"
+    [class.data-download-selection-tools__button--active]="activeTool() === 'select-rectangle'"
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.rectangleSelecting"
-    [attr.aria-label]="tooltipText.rectangleSelecting"
+    [aria-label]="tooltipText.rectangleSelecting"
   >
-    <mat-icon svgIcon="ktzh_drawing_symbol_rectangle"></mat-icon>
+    <mat-icon svgIcon="ktzh_drawing_symbol_rectangle" />
   </button>
-  <mat-divider class="data-download-selection-tools__divider"></mat-divider>
+  <mat-divider class="data-download-selection-tools__divider" />
   <button
-    (click)="this.toggleSectionSelecting()"
-    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-section'}"
+    (click)="toggleSectionSelecting()"
+    [class.data-download-selection-tools__button--active]="activeTool() === 'select-section'"
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.sectionSelecting"
-    [attr.aria-label]="tooltipText.sectionSelecting"
+    [aria-label]="tooltipText.sectionSelecting"
   >
-    <mat-icon svgIcon="ktzh_select_section"></mat-icon>
+    <mat-icon svgIcon="ktzh_select_section" />
   </button>
   <button
-    (click)="this.toggleFederationSelecting()"
-    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-federation'}"
+    (click)="toggleFederationSelecting()"
+    [class.data-download-selection-tools__button--active]="activeTool() === 'select-federation'"
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.federationSelecting"
-    [attr.aria-label]="tooltipText.federationSelecting"
+    [aria-label]="tooltipText.federationSelecting"
   >
-    <mat-icon svgIcon="ktzh_select_federation"></mat-icon>
+    <mat-icon svgIcon="ktzh_select_federation" />
   </button>
   <button
-    (click)="this.toggleCantonSelecting()"
-    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-canton'}"
+    (click)="toggleCantonSelecting()"
+    [class.data-download-selection-tools__button--active]="activeTool() === 'select-canton'"
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.cantonSelecting"
-    [attr.aria-label]="tooltipText.cantonSelecting"
+    [aria-label]="tooltipText.cantonSelecting"
   >
-    <mat-icon svgIcon="ktzh_select_canton"></mat-icon>
+    <mat-icon svgIcon="ktzh_select_canton" />
   </button>
   <button
-    (click)="this.toggleMunicipalitySelecting()"
-    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-municipality'}"
+    (click)="toggleMunicipalitySelecting()"
+    [class.data-download-selection-tools__button--active]="activeTool() === 'select-municipality'"
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.municipalitySelecting"
-    [attr.aria-label]="tooltipText.municipalitySelecting"
+    [aria-label]="tooltipText.municipalitySelecting"
   >
-    <mat-icon svgIcon="ktzh_select_municipality"></mat-icon>
+    <mat-icon svgIcon="ktzh_select_municipality" />
   </button>
 </div>

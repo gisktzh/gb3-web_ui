@@ -1,4 +1,4 @@
-import {Component, inject, input, output} from '@angular/core';
+import {Component, inject, input, model} from '@angular/core';
 import {ExpandableListItemComponent} from 'src/app/shared/components/expandable-list-item/expandable-list-item.component';
 import {DrawingSymbolsCollectionComponent} from './drawing-symbols-collection/drawing-symbols-collection.component';
 import {SliderEditComponent} from '../drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
@@ -15,15 +15,11 @@ import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.consta
   imports: [DrawingSymbolsCollectionComponent, ExpandableListItemComponent, SliderEditComponent, MatAccordion],
 })
 export class DrawingSymbolsComponent {
-  public readonly groupName = input<string>('');
-  public readonly fullHeight = input<boolean>(false);
-  public readonly symbolValue = input<DrawingSymbolDefinition | undefined>(undefined);
-  public readonly sizeValue = input<number>(SymbolStyleConstants.DEFAULT_SYMBOL_SIZE);
-  public readonly rotationValue = input<number>(0);
-
-  public readonly symbolChange = output<DrawingSymbolDefinition>();
-  public readonly sizeChange = output<number>();
-  public readonly rotationChange = output<number>();
+  public readonly groupName = input('');
+  public readonly fullHeight = input(false);
+  public readonly symbol = model<DrawingSymbolDefinition | null>(null);
+  public readonly size = model(SymbolStyleConstants.DEFAULT_SYMBOL_SIZE);
+  public readonly rotation = model(0);
 
   private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 

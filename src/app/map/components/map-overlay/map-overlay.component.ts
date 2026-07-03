@@ -1,29 +1,28 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, input, output, signal} from '@angular/core';
 import {ResizeHandlerLocation} from '../../../shared/types/resize-handler-location.type';
 import {StyleExpression} from '../../../shared/types/style-expression.type';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {SharedModule} from '../../../shared/shared.module';
-import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'map-overlay',
   templateUrl: './map-overlay.component.html',
   styleUrls: ['./map-overlay.component.scss'],
-  imports: [SharedModule, CommonModule],
+  imports: [SharedModule],
 })
 export class MapOverlayComponent {
-  @Input() public showPrintButton: boolean = true;
-  @Input() public isPrintButtonEnabled: boolean = false;
-  @Input() public printLoadingState: LoadingState;
-  @Input() public isVisible: boolean = false;
-  @Input() public overlayTitle: string = '';
-  @Input() public location: ResizeHandlerLocation = 'left';
-  @Output() public readonly closeEvent = new EventEmitter<void>();
-  @Output() public readonly printButtonEvent = new EventEmitter<void>();
-  public resizeableStyle: StyleExpression = {};
+  public readonly showPrintButton = input(true);
+  public readonly isPrintButtonEnabled = input(false);
+  public readonly printLoadingState = input<LoadingState>();
+  public readonly isVisible = input(false);
+  public readonly overlayTitle = input('');
+  public readonly location = input<ResizeHandlerLocation>('left');
+  public readonly closeEvent = output();
+  public readonly printButtonEvent = output();
+  public readonly resizeableStyle = signal<StyleExpression>({});
 
   public onClose() {
-    this.resizeableStyle = {};
+    this.resizeableStyle.set({});
     this.closeEvent.emit();
   }
 
@@ -32,6 +31,6 @@ export class MapOverlayComponent {
   }
 
   public resizeOverlay(newStyle: StyleExpression) {
-    this.resizeableStyle = newStyle;
+    this.resizeableStyle.set(newStyle);
   }
 }

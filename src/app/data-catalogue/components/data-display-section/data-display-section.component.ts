@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 
 @Component({
   selector: 'data-display-section',
@@ -6,5 +6,5 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./data-display-section.component.scss'],
 })
 export class DataDisplaySectionComponent {
-  @Input() public sectionTitle: string = '';
+  public readonly sectionTitle = input('');
 }

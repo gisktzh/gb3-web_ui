@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {
+  PrintFormAvailableCheckPriorityList,
   PrintFormAvailableOptionsFromCapabilities,
   PrintFormCapabilitiesCombination,
   PrintFormValues,
@@ -11,16 +12,16 @@ import {PrintCapabilitiesCombination} from 'src/app/shared/models/gb3-api-genera
 })
 export class PrintSettingsOptionsProviderService {
   public getUnqiueOptions<T extends keyof PrintCapabilitiesCombination>(
-    allCombinations: PrintCapabilitiesCombination[],
+    allCombinations: PrintCapabilitiesCombination[] | undefined,
     key: T,
   ): Array<PrintCapabilitiesCombination[typeof key]> {
-    return [...new Set(allCombinations.map((c) => c[key]).filter((v) => v !== undefined && v !== null))];
+    return allCombinations ? [...new Set(allCombinations.map((c) => c[key]).filter((v) => v !== undefined && v !== null))] : [];
   }
 
   public filterOptions(
     formValue: PrintFormValues,
     allCombinations: PrintCapabilitiesCombination[],
-    checkPriority: (keyof PrintFormCapabilitiesCombination)[],
+    checkPriority: PrintFormAvailableCheckPriorityList,
   ): PrintFormAvailableOptionsFromCapabilities {
     const allFormCombinations = this.mapAllCombinationsToFormFormat(allCombinations);
 

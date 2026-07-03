@@ -7,7 +7,7 @@ import {MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
 import {MatDivider} from '@angular/material/divider';
-import {NgClass} from '@angular/common';
+
 import {DrawingDownloadButtonComponent} from '../drawing-download-button/drawing-download-button.component';
 
 const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
@@ -27,7 +27,7 @@ const TOOLTIP_TEXT = {
   selector: 'drawing-tools',
   templateUrl: './drawing-tools.component.html',
   styleUrls: ['./drawing-tools.component.scss'],
-  imports: [MatIconButton, MatTooltip, MatIcon, MatDivider, NgClass, DrawingDownloadButtonComponent],
+  imports: [MatIconButton, MatTooltip, MatIcon, MatDivider, DrawingDownloadButtonComponent],
 })
 export class DrawingToolsComponent extends AbstractToolsComponent {
   public tooltipText = TOOLTIP_TEXT;

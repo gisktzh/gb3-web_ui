@@ -2,20 +2,20 @@
   <div class="map-controls__inputs">
     <basemap-selector
       class="map-controls__inputs__basemap-selector"
-      [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"
-    ></basemap-selector>
+      [class.map-controls__map-element--hidden]="mapUiState().hideUiElements"
+    />
     <div class="map-controls__inputs__bottom">
-      <scale-bar [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"></scale-bar>
+      <scale-bar [class.map-controls__map-element--hidden]="mapUiState().hideUiElements" />
       <coordinate-scale-inputs
         class="map-controls__inputs__bottom__data-inputs"
-        [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"
-      ></coordinate-scale-inputs>
+        [class.map-controls__map-element--hidden]="mapUiState().hideUiElements"
+      />
     </div>
   </div>
   <div class="map-controls__buttons">
-    <zoom-controls class="map-controls__buttons__group" [showLocateMeButton]="true"></zoom-controls>
-    @if (screenMode !== 'mobile') {
-      <ui-toggle class="map-controls__buttons__group"></ui-toggle>
+    <zoom-controls class="map-controls__buttons__group" [showLocateMeButton]="true" />
+    @if (screenMode() !== 'mobile') {
+      <ui-toggle class="map-controls__buttons__group" />
     }
   </div>
 </div>

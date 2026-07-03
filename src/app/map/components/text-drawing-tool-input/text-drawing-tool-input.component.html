@@ -2,13 +2,13 @@
   <ng-container content>
     <mat-form-field appearance="fill" class="text-drawing-tool-input__content">
       <mat-label>Text</mat-label>
-      <input [formControl]="textFormControl" [maxLength]="maxLength" id="name" matInput />
-      @if (textFormControl.invalid && (textFormControl.dirty || textFormControl.touched)) {
-        <mat-error>Geben Sie einen gültigen, nicht leeren Text (<= 50 Zeichen) ein. </mat-error>
+      <input [formField]="textForm.text" id="name" matInput />
+      @if (textForm().invalid() && (textForm().dirty() || textForm().touched())) {
+        <mat-error>Geben Sie einen gültigen, nicht leeren Text (<= {{ maxLength }} Zeichen) ein. </mat-error>
       }
     </mat-form-field>
   </ng-container>
   <ng-container actions>
-    <button [disabled]="!textFormControl.valid" mat-button [matDialogClose]="textFormControl.value">Hinzufügen</button>
+    <button [disabled]="textForm().invalid()" mat-button [matDialogClose]="textModel().text">Hinzufügen</button>
   </ng-container>
 </api-dialog-wrapper>

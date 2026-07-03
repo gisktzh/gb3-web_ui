@@ -1,4 +1,4 @@
-import {Component, Input, inject} from '@angular/core';
+import {Component, computed, inject, input} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
@@ -16,16 +16,26 @@ import {ActiveMapItemLayerComponent} from './active-map-item-layer/active-map-it
 export class ActiveMapItemLayersComponent {
   private readonly store = inject(Store);
 
-  @Input() public activeMapItem!: ActiveMapItem;
+  public readonly activeMapItem = input.required<ActiveMapItem>();
 
-  public trackByLayerId(index: number, item: MapLayer) {
+  public readonly shownLayers = computed(() => {
+    const activeMapItem = this.activeMapItem();
+
+    if (activeMapItem.settings.type !== 'gb2Wms') {
+      return [];
+    }
+
+    return activeMapItem.settings.layers.filter((layer) => !layer.isHidden);
+  });
+
+  public trackByLayerId(_: number, item: MapLayer) {
     return item.id;
   }
 
   public dropSublayer($event: CdkDragDrop<CdkDrag>) {
     this.store.dispatch(
       ActiveMapItemActions.reorderSublayer({
-        activeMapItem: this.activeMapItem,
+        activeMapItem: this.activeMapItem(),
         previousPosition: $event.previousIndex,
         currentPosition: $event.currentIndex,
       }),

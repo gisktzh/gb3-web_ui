@@ -1,37 +1,37 @@
 <mat-expansion-panel
   #expansionPanel
-  [disabled]="disabled"
-  [expanded]="forceExpanded"
-  [ngClass]="{'list-item--no-content-indent': removeContentIndent}"
+  [disabled]="disabled()"
+  [expanded]="forceExpanded()"
+  [class.list-item--no-content-indent]="removeContentIndent()"
   class="list-item"
   hideToggle
 >
-  <mat-expansion-panel-header class="list-item__header" [ngClass]="{'list-item__header--no-background': !hasBackgroundColor}">
+  <mat-expansion-panel-header class="list-item__header" [class.list-item__header--no-background]="!hasBackgroundColor()">
     <div class="list-item__header__content">
       <mat-icon
         [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
-        [ngClass]="{'list-item__header__content__toggle--position-end': toggleButtonPosition === 'end'}"
+        [class.list-item__header__content__toggle--position-end]="toggleButtonPosition() === 'end'"
         class="list-item__header__content__toggle"
-      ></mat-icon>
-      <ng-content select="[header-icon]"></ng-content>
-      <p class="list-item__header__content__title" [matTooltip]="overlayTitle" showTooltipIfTruncated>
-        {{ overlayTitle }}
+      />
+      <ng-content select="[header-icon]" />
+      <p class="list-item__header__content__title" [matTooltip]="overlayTitle()" showTooltipIfTruncated>
+        {{ overlayTitle() }}
       </p>
-      @if (metaDataLink && showInteractiveElements) {
+      @if (metaDataLink() && showInteractiveElements()) {
         <a
           (click)="$event.stopPropagation()"
           class="list-item__header__content__info-link"
-          [routerLink]="metaDataLink"
+          [routerLink]="metaDataLink()"
           title="Metadaten anzeigen"
         >
           <span class="list-item__header__content__info-link__icon">
-            <mat-icon svgIcon="ktzh_info"></mat-icon>
+            <mat-icon svgIcon="ktzh_info" />
           </span>
         </a>
       }
     </div>
   </mat-expansion-panel-header>
   <ng-template matExpansionPanelContent>
-    <ng-content></ng-content>
+    <ng-content />
   </ng-template>
 </mat-expansion-panel>

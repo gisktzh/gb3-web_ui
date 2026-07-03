@@ -9,7 +9,6 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {MapViewWithMap} from '../../types/esri-mapview-with-map.type';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
@@ -28,7 +27,7 @@ class EsriPointDrawingStrategyWrapper extends EsriPointDrawingStrategy {
 }
 
 describe('AbstractEsriDrawingStrategy', () => {
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let pointSymbol: SimpleMarkerSymbol;
   let strategy: EsriPointDrawingStrategyWrapper;
@@ -39,11 +38,11 @@ describe('AbstractEsriDrawingStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     pointSymbol = new SimpleMarkerSymbol();
     strategy = new EsriPointDrawingStrategyWrapper(layer, mapView, pointSymbol, () => callbackHandler.handle());
   });

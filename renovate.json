@@ -66,14 +66,11 @@
       ]
     },
     {
-      "matchManagers": ["npm"],
-      "matchPackageNames": ["@types/node"],
-      "allowedVersions": "<24"
-    },
-    {
-      "matchManagers": ["dockerfile"],
-      "matchDepNames": ["node"],
-      "allowedVersions": "<24"
+      "matchDepNames": ["node", "@types/node"],
+      "matchManagers": ["npm", "nvm", "dockerfile"],
+      "groupName": "nodejs",
+      "automerge": false,
+      "description": "Keep Node.js runtime, engines.node, @types/node, .nvmrc and Docker base images aligned."
     }
   ]
 }

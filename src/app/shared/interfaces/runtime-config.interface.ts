@@ -28,7 +28,6 @@ export interface ApiConfig {
   geoLion: ApiBaseUrlConfig;
   ktzhWebsite: MockedApiBaseUrlConfig;
   gravCms: MockedApiBaseUrlConfig;
-  twitterWidget: ApiBaseUrlConfig;
   geoshopApi: ApiBaseUrlConfig;
   ownershipInformationApi: ApiBaseUrlConfig;
   swisstopoRestApi: ApiBaseUrlConfig;

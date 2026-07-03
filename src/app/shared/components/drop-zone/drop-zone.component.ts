@@ -1,5 +1,5 @@
-import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
-import {NgClass} from '@angular/common';
+import {Component, ElementRef, output, signal, viewChild} from '@angular/core';
+
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {FileUploadRestrictionsConfig} from '../../configs/file-upload-restrictions.config';
@@ -11,20 +11,20 @@ import {validateUploadedFileList} from '../../utils/validate-uploaded-file-list.
  */
 @Component({
   selector: 'drop-zone',
-  imports: [NgClass, MatButton, MatIcon],
+  imports: [MatButton, MatIcon],
   templateUrl: './drop-zone.component.html',
   styleUrl: './drop-zone.component.scss',
 })
 export class DropZoneComponent {
-  @Output() public readonly addedFileEvent = new EventEmitter<Blob | File>();
-  @Output() public readonly uploadErrorEvent = new EventEmitter<string>();
-  @ViewChild('fileUploadField') public readonly fileUploadField!: ElementRef<HTMLInputElement>;
-  public acceptedFileTypes = FileUploadRestrictionsConfig.allowedFileTypes.join(', ');
-  protected isHovered = false;
+  public readonly addedFileEvent = output<Blob | File>();
+  public readonly uploadErrorEvent = output<string>();
+  public readonly fileUploadField = viewChild.required<ElementRef>('fileUploadField');
+  public readonly acceptedFileTypes = FileUploadRestrictionsConfig.allowedFileTypes.join(', ');
+  protected readonly isHovered = signal(false);
 
   protected handleDragOver(e: DragEvent) {
     e.stopPropagation();
-    this.isHovered = true;
+    this.isHovered.set(true);
 
     if (e.dataTransfer?.items.length) {
       e.preventDefault();
@@ -34,7 +34,7 @@ export class DropZoneComponent {
 
   protected handleDragLeave(e: DragEvent) {
     e.stopPropagation();
-    this.isHovered = false;
+    this.isHovered.set(false);
   }
 
   protected handleDrop(e: DragEvent) {
@@ -45,8 +45,9 @@ export class DropZoneComponent {
   }
 
   protected inputValueChange() {
-    if (this.fileUploadField.nativeElement.files !== null) {
-      this.handleFileUpload(this.fileUploadField.nativeElement.files);
+    const files = this.fileUploadField().nativeElement.files;
+    if (files !== null) {
+      this.handleFileUpload(files);
     }
   }
 
@@ -56,7 +57,7 @@ export class DropZoneComponent {
       this.addedFileEvent.emit(files[0]);
     } catch (e) {
       this.uploadErrorEvent.emit((e as FileValidationError).message);
-      this.isHovered = false;
+      this.isHovered.set(false);
     }
   }
 }

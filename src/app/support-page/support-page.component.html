@@ -1,14 +1,14 @@
-<page-section [background]="'primary'" [pageTitle]="true">
-  <hero-header [heroText]="screenMode === 'mobile' ? '' : heroText" heroTitle="Hilfe & Support"></hero-header>
+<page-section background="primary" [pageTitle]="true">
+  <hero-header [heroText]="screenMode() === 'mobile' ? '' : heroText" heroTitle="Hilfe & Support" />
 </page-section>
 
 <page-section [hideBottomPadding]="true">
-  <support-page-navigation></support-page-navigation>
+  <support-page-navigation />
 </page-section>
 
 <page-section>
-  <router-outlet></router-outlet>
+  <router-outlet />
 </page-section>
 <page-section sectionTitle="Weiterführende Informationen">
-  <link-list [linksGroups]="additionalInformationLinksGroups"></link-list>
+  <link-list [linksGroups]="additionalInformationLinksGroups()" />
 </page-section>

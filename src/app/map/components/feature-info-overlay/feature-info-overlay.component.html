@@ -1,12 +1,12 @@
 <map-overlay
   (closeEvent)="close()"
   (printButtonEvent)="print()"
-  [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded' && featureInfoData.length > 0"
-  [printLoadingState]="printLoadingState"
-  [showPrintButton]="showInteractiveElements"
-  [isVisible]="isVisible"
+  [isPrintButtonEnabled]="showInteractiveElements() && loadingState() === 'loaded' && featureInfoData().length > 0"
+  [printLoadingState]="printLoadingState()"
+  [showPrintButton]="showInteractiveElements()"
+  [isVisible]="isVisible()"
   overlayTitle="Info"
   location="right"
 >
-  <feature-info [showInteractiveElements]="showInteractiveElements"></feature-info>
+  <feature-info [showInteractiveElements]="showInteractiveElements()" />
 </map-overlay>

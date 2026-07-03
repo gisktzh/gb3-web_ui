@@ -27,6 +27,13 @@
     &.navbar__item--active {
       font-family: ktzh-variables.$zh-font-family-bold;
     }
+
+    &.navbar__logo {
+      color: ktzh-variables.$zh-white;
+      text-decoration: none;
+      font-family: ktzh-variables.$zh-font-family-bold;
+      font-weight: bold;
+    }
   }
 
   .navbar__item {

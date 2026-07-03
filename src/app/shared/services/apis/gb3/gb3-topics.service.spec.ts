@@ -32,7 +32,9 @@ describe('Gb3TopicsService', () => {
   });
 
   describe('loadTopics', () => {
-    it('should receive the data and transform it correctly', () => {
+    it('should receive the data and transform it correctly', async () => {
+      vi.useFakeTimers();
+
       const data: TopicsListData = {
         categories: [
           {
@@ -262,9 +264,14 @@ describe('Gb3TopicsService', () => {
         expect(httpGetSpy).toHaveBeenCalledWith(expectedUrl);
         expect(actual).toEqual(expected);
       });
+
+      await vi.runAllTimersAsync();
+      vi.useRealTimers();
     });
 
-    it('should sort topics alphabetically ascending by title', () => {
+    it('should sort topics alphabetically ascending by title', async () => {
+      vi.useFakeTimers();
+
       const randomOrder = ['B-2', 'B-3', 'A-1', 'AA 2', 'AA 1', '-1'];
       const data: TopicsListData = {
         categories: [
@@ -316,6 +323,9 @@ describe('Gb3TopicsService', () => {
         const actualTitles = actual.topics.map((topic) => topic.maps.map((map) => map.title)).flat();
         expect(actualTitles).toEqual(expectedOrder);
       });
+
+      await vi.runAllTimersAsync();
+      vi.useRealTimers();
     });
   });
 
@@ -895,6 +905,109 @@ describe('Gb3TopicsService', () => {
                   ],
                 },
               ],
+            },
+          },
+        },
+      ];
+
+      service.loadFeatureInfos(x, y, scale, queryTopics).subscribe((actual) => {
+        expect(httpGetSpy).toHaveBeenCalledTimes(1);
+        expect(httpGetSpy).toHaveBeenCalledWith(expectedUrl);
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    it('should build feature info URL for StatGebAlterZH with FILTER_GEBART and FILTER_VON and FILTER_BIS', () => {
+      const data: TopicsFeatureInfoDetailData = {
+        feature_info: {
+          query_position: {
+            x: 2683132.068846092,
+            y: 1248044.3199714134,
+            srid: 2056,
+          },
+          results: {
+            topic: 'StatGebAlterZH',
+            geolion_gdd: null,
+            geolion_karten_uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+            report: {
+              url: null,
+              description: null,
+            },
+            layers: [],
+          },
+        },
+      };
+      const httpGetSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(data));
+      const x = 2683202.3636068064;
+      const y = 1248035.113590044;
+      const scale = 2570;
+      const queryTopics: QueryTopic[] = [
+        {
+          topic: 'StatGebAlterZH',
+          isSingleLayer: false,
+          layersToQuery: 'geb-alter_wohnen',
+          filterConfigurations: [
+            {
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              parameter: 'FILTER_GEBART',
+              description: 'Gebäudeart',
+              filterValues: [
+                {
+                  isActive: false,
+                  name: 'Wohnen',
+                  values: [''],
+                },
+                {
+                  isActive: false,
+                  name: 'Gewerbe und Verwaltung',
+                  values: ['Gebäude Landwirtschaft', 'Gebäude Industrie', 'Gebäude Verwaltung'],
+                },
+                {
+                  isActive: false,
+                  name: 'Andere',
+                  values: ['', '', '', '', ''],
+                },
+              ],
+            },
+          ],
+          timeSliderConfiguration: {
+            name: 'Baujahr',
+            description: 'Gebäudealter Zeitauswahl',
+            dateFormat: 'YYYY',
+            minimumDate: '1000',
+            maximumDate: '3000',
+            alwaysMaxRange: false,
+            sourceType: 'parameter',
+            source: {
+              startRangeParameter: 'FILTER_VON',
+              endRangeParameter: 'FILTER_BIS',
+              layerIdentifiers: ['geb-alter_wohnen'],
+            },
+          },
+          timeSliderExtent: {
+            start: new Date('1291-01-01T00:00:00Z'),
+            end: new Date('1776-12-31T23:59:59Z'),
+          },
+        },
+      ];
+
+      const expectedUrl =
+        `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/` +
+        `topics/StatGebAlterZH/feature_info?x=${x}&y=${y}&scale=${scale}&queryLayers=geb-alter_wohnen&FILTER_GEBART=%27%27%2C%27Geb%C3%A4ude+Landwirtschaft%27%2C%27Geb%C3%A4ude+Industrie%27%2C%27Geb%C3%A4ude+Verwaltung%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27&FILTER_VON=1291&FILTER_BIS=1776`;
+      const expected: FeatureInfoResponse[] = [
+        {
+          featureInfo: {
+            x: 2683132.068846092,
+            y: 1248044.3199714134,
+            results: {
+              isSingleLayer: false,
+              topic: 'StatGebAlterZH',
+              metaDataLink: '/data/maps/246fe226-ead7-4f91-b735-d294994913e0',
+              report: {
+                url: null,
+                description: null,
+              },
+              layers: [],
             },
           },
         },

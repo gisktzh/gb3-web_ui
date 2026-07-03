@@ -1,5 +1,5 @@
 <div class="data-display">
-  @for (element of elements; track element) {
+  @for (element of elements(); track element) {
     <div class="data-display__item">
       <span class="data-display__item__title">{{ element.title }}</span>
       <span class="data-display__item__value">
@@ -9,9 +9,7 @@
           }
           @case ('url') {
             @if (element.value) {
-              <a href="{{ element.value.href }}" rel="noopener noreferrer" target="_blank">{{
-                element.value.title ?? element.value.href
-              }}</a>
+              <a [href]="element.value.href" rel="noopener noreferrer" target="_blank">{{ element.value.title ?? element.value.href }}</a>
             } @else {
               <span>-</span>
             }

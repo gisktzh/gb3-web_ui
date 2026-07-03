@@ -8,8 +8,8 @@ services:
     build:
       context: ./
       args:
-        - TARGET_ENVIRONMENT=$STAGE
-    image: gitlab.ktzh.ch:5050/gis/gb3-web_ui/gb3-frontend:latest
+        TARGET_ENVIRONMENT: ${TARGET_ENV}
+    image: gitlab.ktzh.ch:5050/gis/gb3-web_ui/gb3-frontend:${IMAGE_TAG:-latest}
     container_name: gb3-frontend
     volumes:
       - type: bind

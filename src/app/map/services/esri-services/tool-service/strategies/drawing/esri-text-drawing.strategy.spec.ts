@@ -12,7 +12,6 @@ import {of} from 'rxjs';
 import {TextDrawingToolInputComponent} from '../../../../../components/text-drawing-tool-input/text-drawing-tool-input.component';
 import Point from '@arcgis/core/geometry/Point';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
@@ -36,7 +35,7 @@ const mockResourceHandle = {
  * As such, we do not test for the addition of the graphics which should be handled by the Esri framework any way.
  */
 describe('EsriTextDrawingStrategy', () => {
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let textSymbol: TextSymbol;
   const callbackHandler: {
@@ -55,11 +54,11 @@ describe('EsriTextDrawingStrategy', () => {
     });
     dialog = TestBed.inject(MatDialog);
 
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     textSymbol = new TextSymbol();
   });
 

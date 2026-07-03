@@ -1,16 +1,17 @@
 <a
-  [href]="url"
+  [href]="url()"
   class="external-link-button"
-  [ngClass]="{'external-link-button--small': size === 'small', 'external-link-button--highlighted': highlighted}"
-  [color]="color === 'primary' ? 'primary' : 'accent'"
+  [class.external-link-button--small]="size() === 'small'"
+  [class.external-link-button--highlighted]="highlighted()"
+  [color]="color() === 'primary' ? 'primary' : 'accent'"
   mat-icon-button
-  [matTooltip]="toolTip ?? ''"
+  [matTooltip]="toolTip() ?? ''"
   [matTooltipShowDelay]="0"
   rel="noopener noreferrer"
   target="_blank"
   clickOnSpaceBar
-  [attr.aria-label]="toolTip"
-  [tabIndex]="disableTabFocus ? -1 : 0"
+  [aria-label]="toolTip()"
+  [tabIndex]="disableTabFocus() ? -1 : 0"
 >
-  <mat-icon svgIcon="ktzh_arrow_right" class="external-link-button__icon"></mat-icon>
+  <mat-icon svgIcon="ktzh_arrow_right" class="external-link-button__icon" />
 </a>

@@ -1,15 +1,12 @@
 @if (isEmbedded) {
   <div class="embedded-map-page">
-    @if (initializeApplicationLoadingState === 'loaded') {
-      <map-container></map-container>
+    @if (initializeApplicationLoadingState() === 'loaded') {
+      <map-container />
     }
-    <legend-overlay class="embedded-map-page__overlay" [showInteractiveElements]="false"></legend-overlay>
-    <feature-info-overlay
-      [showInteractiveElements]="false"
-      class="embedded-map-page__overlay embedded-map-page__overlay--right"
-    ></feature-info-overlay>
-    <button mat-flat-button (click)="showLegend()" [disabled]="numberOfQueryLegends === 0" class="embedded-map-page__legend-button">
-      <mat-icon svgIcon="ktzh_legend"></mat-icon>
+    <legend-overlay class="embedded-map-page__overlay" [showInteractiveElements]="false" />
+    <feature-info-overlay class="embedded-map-page__overlay embedded-map-page__overlay--right" [showInteractiveElements]="false" />
+    <button mat-flat-button (click)="showLegend()" [disabled]="numberOfQueryLegends() === 0" class="embedded-map-page__legend-button">
+      <mat-icon svgIcon="ktzh_legend" />
       Legende
     </button>
     <a
@@ -20,10 +17,10 @@
       target="_blank"
       rel="noopener noreferrer"
     >
-      <mat-icon svgIcon="ktzh_logo"></mat-icon>
+      <mat-icon svgIcon="ktzh_logo" />
       GIS Browser Zürich
     </a>
-    <zoom-controls class="embedded-map-page__zoom-controls" [showLocateMeButton]="false"></zoom-controls>
+    <zoom-controls class="embedded-map-page__zoom-controls" [showLocateMeButton]="false" />
   </div>
 } @else {
   <p>Diese Karte des GIS Browser Zürich muss in einem <i>iframe</i> verwendet werden.</p>

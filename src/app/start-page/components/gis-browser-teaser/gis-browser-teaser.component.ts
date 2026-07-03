@@ -1,11 +1,13 @@
 import {Component} from '@angular/core';
-import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
+import {MainPage} from 'src/app/shared/enums/main-page.enum';
 
 @Component({
   selector: 'gis-browser-teaser',
   templateUrl: './gis-browser-teaser.component.html',
   styleUrls: ['./gis-browser-teaser.component.scss'],
-  imports: [MatButton, RouterLink],
+  imports: [RouterLink],
 })
-export class GisBrowserTeaserComponent {}
+export class GisBrowserTeaserComponent {
+  protected readonly mainPageEnum = MainPage;
+}

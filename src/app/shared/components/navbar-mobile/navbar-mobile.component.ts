@@ -1,7 +1,6 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
 import {selectUrlState} from 'src/app/state/app/reducers/url.reducer';
 import {PanelClass} from '../../enums/panel-class.enum';
 import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-dialog.component';
@@ -15,22 +14,18 @@ import {MatIcon} from '@angular/material/icon';
   styleUrls: ['./navbar-mobile.component.scss'],
   imports: [MatToolbar, MatButton, MatIcon, MatIconButton],
 })
-export class NavbarMobileComponent implements OnInit, OnDestroy {
+export class NavbarMobileComponent {
   private readonly dialog = inject(MatDialog);
   private readonly store = inject(Store);
+  private readonly urlState = this.store.selectSignal(selectUrlState);
+  public readonly isSimplifiedPage = computed(() => {
+    const urlState = this.urlState();
+    if (!urlState) {
+      return false;
+    }
 
-  public isSimplifiedPage: boolean = false;
-
-  private readonly urlState$ = this.store.select(selectUrlState);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+    return urlState.isSimplifiedPage;
+  });
 
   public showMenu() {
     this.dialog.open(NavbarMobileDialogComponent, {
@@ -41,9 +36,5 @@ export class NavbarMobileComponent implements OnInit, OnDestroy {
       panelClass: PanelClass.ApiWrapperDialog,
       autoFocus: false,
     });
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(this.urlState$.pipe(tap(({isSimplifiedPage}) => (this.isSimplifiedPage = isSimplifiedPage))).subscribe());
   }
 }

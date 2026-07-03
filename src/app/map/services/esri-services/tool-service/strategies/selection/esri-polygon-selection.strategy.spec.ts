@@ -9,7 +9,6 @@ import {EsriPolygonSelectionStrategy} from './esri-polygon-selection.strategy';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/esri-graphic-to-internal-drawing-representation.utils';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
@@ -35,7 +34,7 @@ describe('EsriPolygonSelectionStrategy', () => {
     },
   };
 
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
 
@@ -44,11 +43,11 @@ describe('EsriPolygonSelectionStrategy', () => {
       imports: [],
       providers: [provideMockStore({})],
     });
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: InternalDrawingLayer.Selection,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     fillSymbol = new SimpleFillSymbol();
   });
 

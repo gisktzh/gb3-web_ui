@@ -3,7 +3,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["twitter-for-web", "@angular/localize", "vitest/globals", "vitest/importMeta"],
+    "types": ["@angular/localize", "vitest/globals", "vitest/importMeta"],
     "lib": ["es2022", "dom", "esnext.disposable"]
   },
   "files": ["src/test-setup.ts", "src/app/testing/providers.ts"],

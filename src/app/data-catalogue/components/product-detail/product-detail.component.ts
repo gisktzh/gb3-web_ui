@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, computed} from '@angular/core';
 import {ProductMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {DataDisplayElement} from '../../types/data-display-element.type';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
@@ -34,23 +34,20 @@ import {MatIcon} from '@angular/material/icon';
   ],
 })
 export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductMetadata> {
-  public baseMetadataInformation?: BaseMetadataInformation;
-  public informationElements: DataDisplayElement[] = [];
-  public metadataContactElements: DataDisplayElement[] = [];
-  public linkedDatasets: MetadataLink[] = [];
+  public readonly metadataContactElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? DataExtractionUtils.extractContactElements(baseDetailMetaData.contact.metadata) : [];
+  });
+  public readonly linkedDatasets = computed<MetadataLink[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? baseDetailMetaData.datasets : [];
+  });
 
   protected loadMetadata(id: string) {
     return this.gb3MetadataService.loadProductDetail(id);
   }
 
-  protected handleMetadata(productMetadata: ProductMetadata) {
-    this.baseMetadataInformation = this.extractBaseMetadataInformation(productMetadata);
-    this.informationElements = this.extractInformationElements(productMetadata);
-    this.metadataContactElements = DataExtractionUtils.extractContactElements(productMetadata.contact.metadata);
-    this.linkedDatasets = productMetadata.datasets;
-  }
-
-  private extractBaseMetadataInformation(productMetadata: ProductMetadata): BaseMetadataInformation {
+  protected extractBaseMetadataInformation(productMetadata: ProductMetadata): BaseMetadataInformation {
     return {
       itemTitle: productMetadata.name,
       category: 'Produkt',
@@ -59,7 +56,7 @@ export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductM
     };
   }
 
-  private extractInformationElements(productMetadata: ProductMetadata): DataDisplayElement[] {
+  protected extractInformationElements(productMetadata: ProductMetadata): DataDisplayElement[] {
     return [{title: 'Nr.', value: productMetadata.gisZHNr.toString(), type: 'text'}];
   }
 }

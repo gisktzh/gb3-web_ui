@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {LinkObject} from '../../../../interfaces/link-object.interface';
 import {MatIcon} from '@angular/material/icon';
 
@@ -9,5 +9,5 @@ import {MatIcon} from '@angular/material/icon';
   imports: [MatIcon],
 })
 export class LinkListItemComponent {
-  @Input() public links: LinkObject[] = [];
+  public readonly links = input<LinkObject[]>([]);
 }

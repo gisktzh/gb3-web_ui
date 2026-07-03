@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, computed, Signal} from '@angular/core';
 import {DatasetMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {DataDisplayElement} from '../../types/data-display-element.type';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
@@ -46,52 +46,65 @@ interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   ],
 })
 export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetMetadata> {
-  public baseMetadataInformation?: BaseMetadataInformation;
-  public informationElements: DataDisplayElement[] = [];
-  public geoSpatialElements: DataDisplayElement[] = [];
-  public updateElements: DataDisplayElement[] = [];
-  public legislationElements: DataDisplayElement[] = [];
-  public geodataContactElements: DataDisplayElement[] = [];
-  public externalLinksElements: DataDisplayElement[] = [];
-  public arcGISElements: DataDisplayElement[] = [];
-  public metadataContactElements: DataDisplayElement[] = [];
-  public dataBasisElements: DataDisplayElement[] = [];
-  public dataProcurement: DataDisplayElement[] = [];
-  public datasetLayers: DatasetLayer[] = [];
-  public linkedData: {
+  public readonly geoSpatialElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? this.extractGeospatialElements(baseDetailMetaData) : [];
+  });
+  public readonly updateElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? this.extractUpdateElements(baseDetailMetaData) : [];
+  });
+  public readonly legislationElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? this.extractLegislationElements(baseDetailMetaData) : [];
+  });
+  public readonly geodataContactElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? DataExtractionUtils.extractContactElements(baseDetailMetaData.contact.geodata) : [];
+  });
+  public readonly externalLinksElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? this.extractExternalLinkElements(baseDetailMetaData) : [];
+  });
+  public readonly arcGISElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? this.extractArcGISElements(baseDetailMetaData) : [];
+  });
+  public readonly metadataContactElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? DataExtractionUtils.extractContactElements(baseDetailMetaData.contact.metadata) : [];
+  });
+  public readonly dataBasisElements = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? this.extractDataBasisElements(baseDetailMetaData) : [];
+  });
+  public readonly dataProcurement = computed<DataDisplayElement[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? this.extractDataProcurementElements(baseDetailMetaData) : [];
+  });
+  public readonly datasetLayers = computed<DatasetLayer[]>(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+    return baseDetailMetaData ? baseDetailMetaData.layers : [];
+  });
+  public readonly linkedData: Signal<{
     maps: MetadataLinkWithTopicId[];
     services: MetadataLinkWithoutDescription[];
     products: MetadataLinkWithoutDescription[];
-  } = {
-    maps: [],
-    services: [],
-    products: [],
-  };
+  }> = computed(() => {
+    const baseDetailMetaData = this.baseDetailMetaData();
+
+    return {
+      maps: baseDetailMetaData ? [...baseDetailMetaData.maps] : [],
+      services: baseDetailMetaData ? [...baseDetailMetaData.services] : [],
+      products: baseDetailMetaData ? [...baseDetailMetaData.products] : [],
+    };
+  });
 
   protected loadMetadata(id: string) {
     return this.gb3MetadataService.loadDatasetDetail(id);
   }
 
-  protected handleMetadata(datasetMetadata: DatasetMetadata) {
-    this.baseMetadataInformation = this.extractBaseMetadataInformation(datasetMetadata);
-    this.informationElements = this.extractInformationElements(datasetMetadata);
-    this.geoSpatialElements = this.extractGeospatialElements(datasetMetadata);
-    this.updateElements = this.extractUpdateElements(datasetMetadata);
-    this.legislationElements = this.extractLegislationElements(datasetMetadata);
-    this.geodataContactElements = DataExtractionUtils.extractContactElements(datasetMetadata.contact.geodata);
-    this.metadataContactElements = DataExtractionUtils.extractContactElements(datasetMetadata.contact.metadata);
-    this.dataBasisElements = this.extractDataBasisElements(datasetMetadata);
-    this.dataProcurement = this.extractDataProcurementElements(datasetMetadata);
-    this.externalLinksElements = this.extractExternalLinkElements(datasetMetadata);
-    this.arcGISElements = this.extractArcGISElements(datasetMetadata);
-
-    this.datasetLayers = datasetMetadata.layers;
-    this.linkedData.maps = [...datasetMetadata.maps];
-    this.linkedData.services = [...datasetMetadata.services];
-    this.linkedData.products = [...datasetMetadata.products];
-  }
-
-  private extractBaseMetadataInformation(datasetMetadata: DatasetMetadata): BaseMetadataInformation {
+  protected extractBaseMetadataInformation(datasetMetadata: DatasetMetadata): BaseMetadataInformation {
     return {
       itemTitle: datasetMetadata.name,
       shortDescription: datasetMetadata.description,
@@ -100,7 +113,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     };
   }
 
-  private extractInformationElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
+  protected extractInformationElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
       {title: 'GIS-ZH Nr.', value: datasetMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'eCH Geokategorien / Themen', value: datasetMetadata.topics, type: 'textList'},

@@ -1,19 +1,19 @@
 <main class="app">
-  @if (!isHeadlessPage && !isSimplifiedPage) {
-    <skip-link [skipLinks]="skipLinks" (skipToLocationEvent)="skipToDomElement($event)"></skip-link>
+  @if (!isHeadlessPage() && !isSimplifiedPage()) {
+    <skip-link [skipLinks]="skipLinks" (skipToLocationEvent)="skipToDomElement($event)" />
   }
-  @if (screenMode === 'mobile' && !isHeadlessPage && !mapUiState?.hideUiElements) {
-    <navbar-mobile #navigation [id]="templateVariable.Navigation"></navbar-mobile>
-  } @else if (!isHeadlessPage && screenMode !== 'mobile') {
-    <navbar class="app__navbar" [isSimplifiedPage]="isSimplifiedPage" #navigation [id]="templateVariable.Navigation"></navbar>
+  @if (screenMode() === 'mobile' && !isHeadlessPage() && !mapUiState().hideUiElements) {
+    <navbar-mobile #navigation [id]="templateVariable.Navigation" />
+  } @else if (!isHeadlessPage() && screenMode() !== 'mobile') {
+    <navbar class="app__navbar" [isSimplifiedPage]="isSimplifiedPage()" #navigation [id]="templateVariable.Navigation" />
   }
-  <article [ngClass]="{'app__headless-page': isHeadlessPage}">
-    <router-outlet #mainContent [id]="templateVariable.MainContent"></router-outlet>
-    @if (!isHeadlessPage && !isSimplifiedPage) {
-      <main-footer #footer [id]="templateVariable.Footer"></main-footer>
+  <article [class.app__headless-page]="isHeadlessPage()">
+    <router-outlet #mainContent [id]="templateVariable.MainContent" />
+    @if (!isHeadlessPage() && !isSimplifiedPage()) {
+      <main-footer #footer [id]="templateVariable.Footer" />
     }
   </article>
-  @if (scrollbarWidth === undefined) {
-    <scrollbar-width-calculation class="app__scrollbar-width-calculation"></scrollbar-width-calculation>
+  @if (scrollbarWidth() === undefined) {
+    <scrollbar-width-calculation class="app__scrollbar-width-calculation" />
   }
 </main>

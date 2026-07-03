@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {ElevationProfileStatistics} from '../../../../shared/interfaces/elevation-profile.interface';
 import {DecimalPipe} from '@angular/common';
 
@@ -9,5 +9,5 @@ import {DecimalPipe} from '@angular/common';
   imports: [DecimalPipe],
 })
 export class ElevationProfileStatisticsComponent {
-  @Input() public statistics!: ElevationProfileStatistics;
+  public readonly statistics = input.required<ElevationProfileStatistics>();
 }

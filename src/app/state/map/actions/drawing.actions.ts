@@ -20,7 +20,7 @@ export const DrawingActions = createActionGroup({
       drawing: Gb3StyledInternalDrawingRepresentation;
       style: Gb3StyleRepresentation;
       labelText?: string;
-      mapDrawingSymbol?: MapDrawingSymbol;
+      mapDrawingSymbol?: MapDrawingSymbol | null;
     }>(),
     /**
      * This action can be used to remove one (or more) DrawingLayer's drawings from the state and add new layers. This is useful

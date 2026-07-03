@@ -55,8 +55,50 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ### Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a
-package that implements end-to-end testing capabilities.
+#### Installing browsers
+
+To install all necessary browsers, execute:
+
+```
+npx playwright install --with-deps
+```
+
+This will install all dependencies and browsers necessary.
+
+#### Running the tests
+
+```
+ng e2e
+```
+
+or
+
+```
+npm run e2e
+```
+
+#### Running tests with HAR mocks
+
+HAR stands for Http ARchive. Playwright is able to use HAR files to play back API responses and make tests more deterministic while allowing for adaptions to test data without having to deploy any environment first.
+
+HAR mocks get written per test file. To update the current ones or create new ones, we need to specify a username and password for any tests that need a logged in user. To specify user and password and tell Playwright to write new HAR files, we execute `ng e2e` with three environment variables:
+
+```
+WRITE_HAR=1 TEST_EIAM_USERNAME=[some user] TEST_EIAM_PASSWORD=[some password] ng e2e
+```
+
+Keep in mind that you need to replace `[some user]` and `[some password]` with a valid test user. Any credentials passed here are automatically redacted from the HAR files afterwards. Additionally, we use a mocked login page when HAR files are used, since we can't 100% replicate the backend flow.
+
+#### Debugging
+
+To enable "debug mode", do the following steps in order:
+
+1. Go to playwright.config.ts and comment in the debugging part (i.e. everything below `// DEBUGGING`)
+2. Execute `PWDEBUG=1 ng e2e`
+
+This will now start one window per specified .spec.ts file. An additional window is Playwrights own debugger window. From there, you can follow the official docs. If you want to execute a single specific test, you can adjust pass the `--files` parameter.
+
+If you also want to capture browser console out, you can use the `CAPTURE_CONSOLE` env var: `CAPTURE_CONSOLE=1 ng e2e`.
 
 ### Further help
 

@@ -1,35 +1,16 @@
-<slider-edit
-  (updateSliderEvent)="sizeChange.emit($event)"
-  [sliderValue]="sizeValue()"
-  [min]="1"
-  [max]="50"
-  [step]="1"
-  title="Size"
-></slider-edit>
-<slider-edit
-  (updateSliderEvent)="rotationChange.emit($event)"
-  [sliderValue]="rotationValue()"
-  [min]="0"
-  [max]="360"
-  [step]="1"
-  title="Rotation"
-></slider-edit>
+<slider-edit [(value)]="size" [minValue]="1" [maxValue]="50" [step]="1" title="Size" />
+<slider-edit [(value)]="rotation" [minValue]="0" [maxValue]="360" [step]="1" title="Rotation" />
 <div class="symbols-list" [class.symbols-list--full-height]="fullHeight()">
   <mat-accordion class="symbol-list__collections-container">
-    @for (collection of this.collections; track $index) {
+    @for (collection of collections; track $index) {
       <expandable-list-item
         [header]="collection.label"
         [stickyHeader]="true"
         [noPadding]="true"
         [renderContentEagerly]="false"
-        [expanded]="!!symbolValue()?.belongsToCollection(collection.id)"
+        [expanded]="!!symbol()?.belongsToCollection(collection.id)"
       >
-        <drawing-symbols-collection
-          [collectionId]="collection.id"
-          [groupName]="groupName()"
-          [value]="symbolValue()"
-          (valueChange)="symbolChange.emit($event)"
-        ></drawing-symbols-collection>
+        <drawing-symbols-collection [collectionId]="collection.id" [groupName]="groupName()" [(value)]="symbol" />
       </expandable-list-item>
     }
   </mat-accordion>

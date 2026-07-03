@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {forkJoin, map, Observable} from 'rxjs';
+import {forkJoin, map, Observable, timer, switchMap} from 'rxjs';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
 import {FeatureInfoResponse, FeatureInfoResultFeatureField} from '../../../interfaces/feature-info.interface';
@@ -18,6 +18,7 @@ import {
   TopicsResponse,
   WmsFilterValue,
 } from '../../../interfaces/topic.interface';
+import {TimeExtent} from '../../../../map/interfaces/time-extent.interface';
 import {
   Geometry,
   InfoFeatureField,
@@ -49,8 +50,11 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
-    const topicsListData = this.get<TopicsListData>(requestUrl);
-    return topicsListData.pipe(map((data) => this.transformTopicsListDataToTopicsResponse(data)));
+    return timer(25).pipe(
+      switchMap(() => this.get<TopicsListData>(requestUrl)),
+      map((data) => data ?? ({categories: []} as TopicsListData)),
+      map((data) => this.transformTopicsListDataToTopicsResponse(data)),
+    );
   }
 
   public loadLegends(queryTopics: QueryTopic[]): Observable<LegendResponse[]> {
@@ -64,9 +68,18 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   public loadFeatureInfos(x: number, y: number, scale: number, queryTopics: QueryTopic[]): Observable<FeatureInfoResponse[]> {
     const featureInfoRequests = queryTopics.map((queryTopic) =>
-      this.get<TopicsFeatureInfoDetailData>(this.createFeatureInfoUrl(queryTopic.topic, x, y, scale, queryTopic.layersToQuery)).pipe(
-        map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data, queryTopic.isSingleLayer)),
-      ),
+      this.get<TopicsFeatureInfoDetailData>(
+        this.createFeatureInfoUrl(
+          queryTopic.topic,
+          x,
+          y,
+          scale,
+          queryTopic.layersToQuery,
+          queryTopic.filterConfigurations,
+          queryTopic.timeSliderConfiguration,
+          queryTopic.timeSliderExtent,
+        ),
+      ).pipe(map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data, queryTopic.isSingleLayer))),
     );
     return forkJoin(featureInfoRequests);
   }
@@ -298,12 +311,38 @@ export class Gb3TopicsService extends Gb3ApiService {
     return url.toString();
   }
 
-  private createFeatureInfoUrl(topicName: string, x: number, y: number, scale: number, queryLayers: string): string {
+  private createFeatureInfoUrl(
+    topicName: string,
+    x: number,
+    y: number,
+    scale: number,
+    queryLayers: string,
+    filterConfigurations?: FilterConfiguration[],
+    timeSliderConfiguration?: TimeSliderConfiguration,
+    timeSliderExtent?: TimeExtent,
+  ): string {
     const url = new URL(`${this.getFullEndpointUrl()}/${topicName}/feature_info`);
     url.searchParams.append('x', x.toString());
     url.searchParams.append('y', y.toString());
     url.searchParams.append('scale', scale.toString());
     url.searchParams.append('queryLayers', queryLayers);
+    if (filterConfigurations?.length) {
+      this.transformFilterConfigurationToParameters(filterConfigurations).forEach((filterParameter) => {
+        url.searchParams.append(filterParameter.name, filterParameter.value);
+      });
+    }
+    if (timeSliderConfiguration && timeSliderExtent && timeSliderConfiguration.sourceType === 'parameter') {
+      const timeSliderParameterSource = timeSliderConfiguration.source as TimeSliderParameterSource;
+      const dateFormat = timeSliderConfiguration.dateFormat;
+      url.searchParams.set(
+        timeSliderParameterSource.startRangeParameter,
+        this.timeService.getDateAsUTCString(timeSliderExtent.start, dateFormat),
+      );
+      url.searchParams.set(
+        timeSliderParameterSource.endRangeParameter,
+        this.timeService.getDateAsUTCString(timeSliderExtent.end, dateFormat),
+      );
+    }
     return url.toString();
   }
 

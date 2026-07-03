@@ -1,6 +1,6 @@
 <api-dialog-wrapper title="Kartenhinweise" (closeEvent)="close()">
   <ng-container content>
-    <mat-divider></mat-divider>
+    <mat-divider />
     @for (activeMapItemWithNotice of activeMapItemsWithNotices; track activeMapItemWithNotice) {
       <div class="map-notice">
         @if (!activeMapItemWithNotice.isSingleLayer && activeMapItemWithNotice.mapImageUrl) {
@@ -11,7 +11,7 @@
           <p class="mat-body map-notice__text-section__text">{{ activeMapItemWithNotice.settings.notice }}</p>
         </section>
       </div>
-      <mat-divider></mat-divider>
+      <mat-divider />
     }
   </ng-container>
   <ng-container actions>

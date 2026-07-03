@@ -1,7 +1,6 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
 import {DataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
-import {Observable, Subscription, tap} from 'rxjs';
 import {selectFilters} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
@@ -27,25 +26,12 @@ import {MatButton} from '@angular/material/button';
     MatButton,
   ],
 })
-export class DataCatalogueFilterDialogComponent implements OnInit, OnDestroy {
+export class DataCatalogueFilterDialogComponent {
   private readonly dialogRef = inject<MatDialogRef<DataCatalogueFilterDialogComponent>>(MatDialogRef);
   private readonly store = inject(Store);
+  public readonly dataCatalogueFilters = this.store.selectSignal(selectFilters);
 
-  public dataCatalogueFilters: DataCatalogueFilter[] = [];
-  private readonly dataCatalogueFilters$: Observable<DataCatalogueFilter[]> = this.store.select(selectFilters);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  public ngOnInit() {
-    this.subscriptions.add(
-      this.dataCatalogueFilters$.pipe(tap((dataCatalogueFilters) => (this.dataCatalogueFilters = dataCatalogueFilters))).subscribe(),
-    );
-  }
-
-  public trackByFilterLabel(index: number, item: DataCatalogueFilter) {
+  public trackByFilterLabel(_: number, item: DataCatalogueFilter) {
     return item.label;
   }
 

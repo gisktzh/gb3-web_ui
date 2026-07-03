@@ -1,7 +1,5 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, OnDestroy, computed, inject, signal} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
-import {ActiveMapItem} from 'src/app/map/models/active-map-item.model';
 import {isActiveMapItemOfType} from 'src/app/shared/type-guards/active-map-item-type.type-guard';
 import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from 'src/app/state/map/actions/active-map-item.actions';
@@ -11,7 +9,7 @@ import {selectItems} from 'src/app/state/map/selectors/active-map-items.selector
 import {selectFilterString} from 'src/app/state/map/reducers/layer-catalog.reducer';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {NgClass} from '@angular/common';
+
 import {MatBadge} from '@angular/material/badge';
 import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
 import {NotificationIndicatorComponent} from '../notification-indicator/notification-indicator.component';
@@ -35,7 +33,6 @@ const FAVOURITE_HELPER_MESSAGES = {
   styleUrls: ['./map-management-mobile.component.scss'],
   imports: [
     MatButton,
-    NgClass,
     MatBadge,
     SearchInputComponent,
     MatIconButton,
@@ -47,37 +44,36 @@ const FAVOURITE_HELPER_MESSAGES = {
     MapDataCatalogueComponent,
   ],
 })
-export class MapManagementMobileComponent implements OnInit, OnDestroy {
+export class MapManagementMobileComponent implements OnDestroy {
   private readonly store = inject(Store);
 
-  public activeMapItems: ActiveMapItem[] = [];
-  public numberOfNotices: number = 0;
-  public numberOfUnreadNotices: number = 0;
-  public activeTab: TabType = 'mapsCatalogue';
-  public isAuthenticated: boolean = false;
-  public filterString: string | undefined = undefined;
+  public readonly activeMapItems = this.store.selectSignal(selectItems);
+  public readonly activeTab = signal<TabType>('mapsCatalogue');
+  public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  public readonly filterString = this.store.selectSignal(selectFilterString);
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly activeMapItems$ = this.store.select(selectItems);
-  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-  private readonly filterString$ = this.store.select(selectFilterString);
+  public readonly gb2ActiveMapItems = computed(() => {
+    return this.activeMapItems().filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
+  });
+  public readonly numberOfNotices = computed(() => {
+    return this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice).length;
+  });
+  public readonly numberOfUnreadNotices = computed(() => {
+    return this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice && !activeMapItem.settings.isNoticeMarkedAsRead)
+      .length;
+  });
 
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
   }
 
-  public ngOnInit(): void {
-    this.initSubscriptions();
-  }
-
   public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
     this.clearInput();
   }
 
   public changeTabs(tab: TabType) {
-    this.activeTab = tab;
+    this.activeTab.set(tab);
   }
 
   public removeAllActiveMapItems() {
@@ -96,41 +92,11 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy {
     this.store.dispatch(LayerCatalogActions.setFilterString({filterString}));
   }
 
-  private updateNumberOfNotices(currentActiveMapItems: Gb2WmsActiveMapItem[]) {
-    const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.settings.notice);
-    this.numberOfNotices = activeMapItemsWithNotices.length;
-    this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
-  }
-
   public clearInput() {
     this.store.dispatch(LayerCatalogActions.clearFilterString());
   }
 
   public startFiltering() {
     this.store.dispatch(LayerCatalogActions.setFilterString({filterString: ''}));
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.activeMapItems$
-        .pipe(
-          tap((currentActiveMapItems) => {
-            this.activeMapItems = currentActiveMapItems;
-            const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
-            this.updateNumberOfNotices(gb2ActiveMapItems);
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.isAuthenticated$
-        .pipe(
-          tap((isAuthenticated) => {
-            this.isAuthenticated = isAuthenticated;
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(this.filterString$.pipe(tap((filterString) => (this.filterString = filterString))).subscribe());
   }
 }

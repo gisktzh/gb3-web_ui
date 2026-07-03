@@ -2,17 +2,17 @@
   class="search-result-groups"
   displayMode="flat"
   multi="true"
-  [ngClass]="{'search-result-groups--mobile': screenMode === 'mobile'}"
+  [class.search-result-groups--mobile]="screenMode() === 'mobile'"
 >
-  @if (filteredMaps.length > 0 || layerCatalogLoadingState === 'loading' || layerCatalogLoadingState === 'error') {
+  @if (filteredMaps().length > 0 || layerCatalogLoadingState() === 'loading' || layerCatalogLoadingState() === 'error') {
     <search-result-group
       class="search-result-groups__group"
       header="Karten"
-      [loadingState]="layerCatalogLoadingState"
-      [numberOfItems]="filteredMaps.length"
+      [loadingState]="layerCatalogLoadingState()"
+      [numberOfItems]="filteredMaps().length"
     >
       <ul class="search-result-groups__group__list">
-        @for (filteredMap of filteredMaps; track filteredMap; let first = $first) {
+        @for (filteredMap of filteredMaps(); track filteredMap; let first = $first) {
           <li class="search-result-groups__group__list__list-item">
             <search-result-entry-map
               [tabIndex]="first ? 0 : -1"
@@ -20,25 +20,25 @@
               searchResultIdentifier
               [isFocusable]="first"
               [text]="filteredMap.title"
-            ></search-result-entry-map>
+            />
           </li>
         }
       </ul>
     </search-result-group>
   }
   @if (
-    filteredMetadataItems.length > 0 ||
-    combinedSearchAndDataCatalogLoadingState === 'loading' ||
-    combinedSearchAndDataCatalogLoadingState === 'error'
+    filteredMetadataItems().length > 0 ||
+    combinedSearchAndDataCatalogLoadingState() === 'loading' ||
+    combinedSearchAndDataCatalogLoadingState() === 'error'
   ) {
     <search-result-group
       class="search-result-groups__group"
       header="Geodatenkatalog"
-      [loadingState]="combinedSearchAndDataCatalogLoadingState"
-      [numberOfItems]="filteredMetadataItems.length"
+      [loadingState]="combinedSearchAndDataCatalogLoadingState()"
+      [numberOfItems]="filteredMetadataItems().length"
     >
       <ul class="search-result-groups__group__list">
-        @for (filteredMetadataItem of filteredMetadataItems; track filteredMetadataItem; let first = $first) {
+        @for (filteredMetadataItem of filteredMetadataItems(); track filteredMetadataItem; let first = $first) {
           <li class="search-result-groups__group__list__list-item">
             <overview-search-result-item
               [tabIndex]="first ? 0 : -1"
@@ -46,16 +46,16 @@
               searchResultIdentifier
               [text]="filteredMetadataItem.title"
               [isFocusable]="first"
-            ></overview-search-result-item>
+            />
           </li>
         }
       </ul>
     </search-result-group>
   }
-  @if (filteredFaqItems.length > 0) {
-    <search-result-group class="search-result-groups__group" header="Häufige Fragen" [numberOfItems]="filteredFaqItems.length">
+  @if (filteredFaqItems().length > 0) {
+    <search-result-group class="search-result-groups__group" header="Häufige Fragen" [numberOfItems]="filteredFaqItems().length">
       <ul class="search-result-groups__group__list">
-        @for (filteredFaqItem of filteredFaqItems; track filteredFaqItem; let first = $first) {
+        @for (filteredFaqItem of filteredFaqItems(); track filteredFaqItem; let first = $first) {
           <li class="search-result-groups__group__list__list-item">
             <overview-search-result-item
               [tabIndex]="first ? 0 : -1"
@@ -63,16 +63,20 @@
               searchResultIdentifier
               [text]="filteredFaqItem.title"
               [isFocusable]="first"
-            ></overview-search-result-item>
+            />
           </li>
         }
       </ul>
     </search-result-group>
   }
-  @if (filteredUsefulLinks.length > 0) {
-    <search-result-group class="search-result-groups__group" header="Hilfreiche Informationen" [numberOfItems]="filteredUsefulLinks.length">
+  @if (filteredUsefulLinks().length > 0) {
+    <search-result-group
+      class="search-result-groups__group"
+      header="Hilfreiche Informationen"
+      [numberOfItems]="filteredUsefulLinks().length"
+    >
       <ul class="search-result-groups__group__list">
-        @for (filteredUsefulLink of filteredUsefulLinks; track filteredUsefulLink; let first = $first) {
+        @for (filteredUsefulLink of filteredUsefulLinks(); track filteredUsefulLink; let first = $first) {
           <li class="search-result-groups__group__list__list-item">
             <overview-search-result-item
               [tabIndex]="first ? 0 : -1"
@@ -80,7 +84,7 @@
               searchResultIdentifier
               [text]="filteredUsefulLink.title"
               [isFocusable]="first"
-            ></overview-search-result-item>
+            />
           </li>
         }
       </ul>

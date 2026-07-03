@@ -7,7 +7,6 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriPolygonDrawingStrategy} from './esri-polygon-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 class EsriPolygonDrawingStrategyWrapper extends EsriPolygonDrawingStrategy {
@@ -26,7 +25,7 @@ const mockResourceHandle = {
  * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
  */
 describe('EsriPolygonDrawingStrategy', () => {
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
   const callbackHandler = {
@@ -36,11 +35,11 @@ describe('EsriPolygonDrawingStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     fillSymbol = new SimpleFillSymbol();
   });
 

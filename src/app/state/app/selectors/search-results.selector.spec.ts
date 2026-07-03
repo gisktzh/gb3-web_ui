@@ -1,4 +1,6 @@
 import {
+  selectFilteredActiveMapMatches,
+  selectFilteredAddressesAndPlacesMatches,
   selectFilteredFaqItems,
   selectFilteredLayerCatalogMaps,
   selectFilteredMetadataItems,
@@ -7,7 +9,10 @@ import {
 } from './search-results.selector';
 import {SearchFilterGroup} from '../../../shared/interfaces/search-filter-group.interface';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
-import {SearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {
+  GeometryWithSrsSearchApiResultMatch,
+  SearchApiResultMatch,
+} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {
   DatasetOverviewMetadataItem,
@@ -177,6 +182,170 @@ describe('search-result selector', () => {
       const actual = selectFilteredSearchApiResultMatches.projector(searchMatchesMock, dynamicFilterGroups, searchIndexesMock);
 
       expect(actual).toEqual(searchMatchesMock);
+    });
+  });
+
+  describe('selectFilteredAddressesAndPlacesMatches', () => {
+    it('filters out any activeMapItems matches', () => {
+      const matchesMock: GeometryWithSrsSearchApiResultMatch[] = [
+        {
+          indexType: 'addresses',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 1,
+        },
+        {
+          indexType: 'places',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 2,
+        },
+        {
+          indexType: 'gvz',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 3,
+        },
+        {
+          indexType: 'egid',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 4,
+        },
+        {
+          indexType: 'egrid',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 5,
+        },
+        {
+          indexType: 'parcels',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 6,
+        },
+        {
+          indexType: 'activeMapItems',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 7,
+        },
+      ];
+
+      const actual = selectFilteredAddressesAndPlacesMatches.projector(matchesMock);
+
+      expect(actual).toHaveLength(6);
+      expect(actual.map((match) => match.indexType)).not.toContain('activeMapItems');
+    });
+  });
+
+  describe('selectFilteredActiveMapMatches', () => {
+    it('filters out any non-activeMapItems matches', () => {
+      const matchesMock: GeometryWithSrsSearchApiResultMatch[] = [
+        {
+          indexType: 'addresses',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 1,
+        },
+        {
+          indexType: 'places',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 2,
+        },
+        {
+          indexType: 'gvz',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 3,
+        },
+        {
+          indexType: 'egid',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 4,
+        },
+        {
+          indexType: 'egrid',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 5,
+        },
+        {
+          indexType: 'parcels',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 6,
+        },
+        {
+          indexType: 'activeMapItems',
+          displayString: '',
+          geometry: {
+            type: 'Point',
+            srs: 2056,
+            coordinates: [1, 2],
+          },
+          score: 7,
+        },
+      ];
+
+      const actual = selectFilteredActiveMapMatches.projector(matchesMock);
+
+      expect(actual).toHaveLength(1);
+      expect(actual.map((match) => match.indexType)).toContain('activeMapItems');
     });
   });
 

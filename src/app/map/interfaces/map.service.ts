@@ -10,16 +10,11 @@ import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
 import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 
 export interface MapService extends AddToMapVisitor {
-  /**
-   * Initializes the map by creating the initial background map and with a given extent
-   */
-  init(): void;
+  /** De-initializes the entire map */
+  deInit(): void;
 
   /** Assigns the map to an element on the HTML */
   assignMapElement(container: HTMLDivElement): void;
-
-  /** Removes the currently assigned map element. */
-  unassignMapElement(): void;
 
   /** Sets the scale of the whole map */
   setScale(scale: number): void;

@@ -1,29 +1,26 @@
 <mat-expansion-panel hideToggle="true" #expansionPanel class="general-information general-information--no-content-indent">
   <mat-expansion-panel-header class="general-information__header">
     <mat-panel-title>
-      <mat-icon
-        [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
-        class="general-information__header__toggle"
-      ></mat-icon>
+      <mat-icon [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'" class="general-information__header__toggle" />
       <div class="general-information__header__title">
         <span>
-          <b>Koordinaten:</b> {{ generalInfoData.locationInformation.queryPosition.coordinates[0] }} /
-          {{ generalInfoData.locationInformation.queryPosition.coordinates[1] }}
+          <b>Koordinaten:</b> {{ generalInfoData().locationInformation.queryPosition.coordinates[0] }} /
+          {{ generalInfoData().locationInformation.queryPosition.coordinates[1] }}
         </span>
         <span>
-          <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number: '1.0-2' }} m / <b>DOM:</b>
-          {{ generalInfoData.locationInformation.heightDom | number: '1.0-2' }} m
+          <b>DTM:</b> {{ generalInfoData().locationInformation.heightDtm | number: '1.0-2' }} m / <b>DOM:</b>
+          {{ generalInfoData().locationInformation.heightDom | number: '1.0-2' }} m
         </span>
       </div>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div class="general-information__additional-content">
-    <generic-list [listData]="generalInfoData.alternativeSpatialReferences" [itemTemplate]="aCrs"></generic-list>
+    <generic-list [listData]="generalInfoData().alternativeSpatialReferences" [itemTemplate]="aCrs" />
     <ng-template #aCrs let-aCrs>
       <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] }} / {{ aCrs.coordinates[1] }}
     </ng-template>
     <b>Weitere Kartendienste:</b>
-    <generic-list [listData]="generalInfoData.externalMaps" [itemTemplate]="externalMaps"></generic-list>
+    <generic-list [listData]="generalInfoData().externalMaps" [itemTemplate]="externalMaps" />
     <ng-template #externalMaps let-extMap>
       <a
         [href]="extMap.url"
@@ -40,9 +37,9 @@
 
 <div class="external-links">
   <ng-container *featureFlag="'oerebExtract'">
-    @if (generalInfoData.parcel) {
+    @if (generalInfoData().parcel; as parcel) {
       <a
-        [href]="generalInfoData.parcel.oerebExtract.pdfUrl"
+        [href]="parcel.oerebExtract.pdfUrl"
         class="external-links__button"
         rel="noopener noreferrer"
         target="_blank"
@@ -55,9 +52,9 @@
     }
   </ng-container>
   <ng-container *featureFlag="'ownershipInformation'">
-    @if (generalInfoData.parcel) {
+    @if (generalInfoData().parcel; as parcel) {
       <a
-        [href]="generalInfoData.parcel.ownershipInformation.url"
+        [href]="parcel.ownershipInformation.url"
         class="external-links__button"
         mat-raised-button
         rel="noopener"

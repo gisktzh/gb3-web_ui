@@ -2,44 +2,44 @@
   <div class="map-tools-desktop__list" typedTourAnchor="map.tools">
     <button
       (click)="toggleToolMenu('measurement')"
-      [ngClass]="{'map-tools-desktop__list__button--active': toolMenuVisibility === 'measurement'}"
+      [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'measurement'"
       class="map-tools-desktop__list__button"
       color="accent"
       data-test-id="map-ruler"
       mat-icon-button
       [matTooltip]="tooltipText.measurement"
-      [disabled]="!isMapReady"
-      [attr.aria-label]="tooltipText.measurement"
+      [disabled]="!isMapReady()"
+      [aria-label]="tooltipText.measurement"
     >
-      <mat-icon svgIcon="ktzh_measure_menu"></mat-icon>
+      <mat-icon svgIcon="ktzh_measure_menu" />
     </button>
-    <mat-divider class="map-tools-desktop__list__divider"></mat-divider>
+    <mat-divider class="map-tools-desktop__list__divider" />
     <button
       (click)="toggleToolMenu('drawing')"
-      [ngClass]="{'map-tools-desktop__list__button--active': toolMenuVisibility === 'drawing'}"
+      [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'drawing'"
       class="map-tools-desktop__list__button"
       color="accent"
       data-test-id="map-drawing"
       mat-icon-button
       [matTooltip]="tooltipText.drawing"
-      [attr.aria-label]="tooltipText.drawing"
-      [disabled]="!isMapReady"
+      [aria-label]="tooltipText.drawing"
+      [disabled]="!isMapReady()"
     >
-      <mat-icon svgIcon="ktzh_drawing_menu"></mat-icon>
+      <mat-icon svgIcon="ktzh_drawing_menu" />
     </button>
-    <mat-divider class="map-tools-desktop__list__divider"></mat-divider>
+    <mat-divider class="map-tools-desktop__list__divider" />
     <button
       (click)="toggleToolMenu('data-download')"
-      [ngClass]="{'map-tools-desktop__list__button--active': toolMenuVisibility === 'data-download'}"
+      [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'data-download'"
       class="map-tools-desktop__list__button"
       color="accent"
       data-test-id="map-data-download"
       mat-icon-button
       [matTooltip]="tooltipText.dataDownload"
-      [attr.aria-label]="tooltipText.dataDownload"
-      [disabled]="!isMapReady"
+      [aria-label]="tooltipText.dataDownload"
+      [disabled]="!isMapReady()"
     >
-      <mat-icon svgIcon="ktzh_download"></mat-icon>
+      <mat-icon svgIcon="ktzh_download" />
     </button>
     <button
       (click)="showPrintDialog()"
@@ -47,46 +47,46 @@
       data-test-id="map-print"
       mat-icon-button
       [matTooltip]="tooltipText.print"
-      [attr.aria-label]="tooltipText.print"
-      [disabled]="!isMapReady"
+      [aria-label]="tooltipText.print"
+      [disabled]="!isMapReady()"
     >
-      <mat-icon svgIcon="ktzh_print"></mat-icon>
+      <mat-icon svgIcon="ktzh_print" />
     </button>
-    <mat-divider class="map-tools-desktop__list__divider"></mat-divider>
+    <mat-divider class="map-tools-desktop__list__divider" />
     <button
       (click)="showShareLinkDialog()"
       class="map-tools-desktop__list__button"
       data-test-id="map-share"
       mat-icon-button
       [matTooltip]="tooltipText.share"
-      [attr.aria-label]="tooltipText.share"
-      [disabled]="!isMapReady"
+      [aria-label]="tooltipText.share"
+      [disabled]="!isMapReady()"
     >
-      <mat-icon svgIcon="ktzh_share"></mat-icon>
+      <mat-icon svgIcon="ktzh_share" />
     </button>
-    <mat-divider class="map-tools-desktop__list__divider"></mat-divider>
+    <mat-divider class="map-tools-desktop__list__divider" />
     <button
       (click)="showMapImportDialog()"
       class="map-tools-desktop__list__button"
       data-test-id="map-import"
       mat-icon-button
       [matTooltip]="tooltipText.mapImport"
-      [attr.aria-label]="tooltipText.mapImport"
-      [disabled]="!isMapReady"
+      [aria-label]="tooltipText.mapImport"
+      [disabled]="!isMapReady()"
     >
-      <mat-icon svgIcon="ktzh_map_management"></mat-icon>
+      <mat-icon svgIcon="ktzh_map_management" />
     </button>
   </div>
-  @if (toolMenuVisibility !== undefined) {
-    <div class="map-tools-desktop__list" [attr.data-tool]="activeTool">
-      @if (toolMenuVisibility === 'measurement') {
-        <measurement-tools></measurement-tools>
+  @if (toolMenuVisibility() !== undefined; as toolMenuVisiblity) {
+    <div class="map-tools-desktop__list" [attr.data-tool]="activeTool()">
+      @if (toolMenuVisibility() === 'measurement') {
+        <measurement-tools />
       }
-      @if (toolMenuVisibility === 'drawing') {
-        <drawing-tools></drawing-tools>
+      @if (toolMenuVisibility() === 'drawing') {
+        <drawing-tools />
       }
-      @if (toolMenuVisibility === 'data-download') {
-        <data-download-selection-tools></data-download-selection-tools>
+      @if (toolMenuVisibility() === 'data-download') {
+        <data-download-selection-tools />
       }
     </div>
   }

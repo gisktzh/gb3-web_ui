@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {MainPage} from '../../../../enums/main-page.enum';
 import {RouterLink} from '@angular/router';
 import {NgTemplateOutlet} from '@angular/common';
@@ -20,12 +20,12 @@ import {NgTemplateOutlet} from '@angular/common';
   imports: [RouterLink, NgTemplateOutlet],
 })
 export class LinkGridListItemComponent {
-  @Input() public title!: string;
-  @Input() public url!: string;
-  @Input() public internalLink?: MainPage;
-  @Input() public internalQueryParams?: Record<string, string>;
-  @Input() public entryType?: string;
-  @Input() public entryDate?: string;
-  @Input() public size: 'small' | 'large' = 'small';
-  @Input() public imageUrl?: string;
+  public readonly title = input.required<string>();
+  public readonly url = input<string>();
+  public readonly internalLink = input<MainPage>();
+  public readonly internalQueryParams = input<Record<string, string>>();
+  public readonly entryType = input<string>();
+  public readonly entryDate = input<string>();
+  public readonly size = input<'small' | 'large'>('small');
+  public readonly imageUrl = input<string>();
 }

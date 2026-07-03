@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Filter</h1>
 <div mat-dialog-content class="search-filter-dialog-content">
   <cdk-accordion>
-    @for (filterGroup of nonEmptyFilterGroups; track trackByFilterGroupLabel($index, filterGroup)) {
+    @for (filterGroup of nonEmptyFilterGroups(); track trackByFilterGroupLabel($index, filterGroup)) {
       <accordion-item [header]="filterGroup.label" variant="dark">
         <div class="search-filter-dialog-content__wrapper">
           @for (filter of filterGroup.filters; track trackByFilterLabel($index, filter)) {

@@ -156,6 +156,7 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
       type: 'symbol',
       symbolSize: 10,
       symbolRotation: 10,
+      symbolDefinition: null,
     };
 
     const mockEsriDrawingSymbolDescriptor = new EsriDrawingSymbolDescriptor({
@@ -183,6 +184,7 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
       type: 'symbol',
       symbolSize: 10,
       symbolRotation: 10,
+      symbolDefinition: null,
     };
 
     const mockDrawingSymbolDescriptor = new MockDrawingSymbolDesciptor({
@@ -344,6 +346,7 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
       type: 'symbol',
       symbolSize: 10,
       symbolRotation: 11,
+      symbolDefinition: null,
     };
 
     const expected = new EsriDrawingSymbolDescriptor();

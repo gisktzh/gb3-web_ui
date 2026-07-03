@@ -32,9 +32,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://staging.geo.ktzh.ch/cms',
         useMockData: false,
       },
-      twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js',
-      },
       geoshopApi: {
         baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
       },

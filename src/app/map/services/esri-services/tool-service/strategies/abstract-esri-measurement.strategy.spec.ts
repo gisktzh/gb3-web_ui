@@ -9,7 +9,6 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {EsriPointMeasurementStrategy} from './measurement/esri-point-measurement.strategy';
 import {AbstractEsriMeasurementStrategy} from './abstract-esri-measurement.strategy';
 import {AbstractEsriDrawableToolStrategy} from './abstract-esri-drawable-tool.strategy';
-import {MapViewWithMap} from '../../types/esri-mapview-with-map.type';
 
 class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
   public get svm() {
@@ -19,7 +18,7 @@ class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
 
 describe('AbstractEsriMeasurementStrategy', () => {
   describe('completeEditing', () => {
-    let mapView: MapViewWithMap;
+    let mapView: MapView;
     let layer: GraphicsLayer;
     let pointSymbol: SimpleMarkerSymbol;
     let strategy: EsriPointMeasurementStrategy;
@@ -31,11 +30,11 @@ describe('AbstractEsriMeasurementStrategy', () => {
     };
 
     beforeEach(() => {
-      mapView = new MapView({map: new Map()}) as MapViewWithMap;
+      mapView = new MapView({map: new Map()});
       layer = new GraphicsLayer({
         id: UserDrawingLayer.Measurements,
       });
-      mapView.map.layers.add(layer);
+      mapView.map!.layers.add(layer);
       pointSymbol = new SimpleMarkerSymbol();
       textSymbol = new TextSymbol({text: 'test'});
       strategy = new EsriPointMeasurementStrategyWrapper(layer, mapView, pointSymbol, textSymbol, () => callbackHandler.handle());
@@ -84,7 +83,7 @@ describe('AbstractEsriMeasurementStrategy', () => {
     });
   });
   describe('removeLabelOnEdit', () => {
-    let mapView: MapViewWithMap;
+    let mapView: MapView;
     let layer: GraphicsLayer;
     let pointSymbol: SimpleMarkerSymbol;
     let strategy: EsriPointMeasurementStrategy;
@@ -96,11 +95,11 @@ describe('AbstractEsriMeasurementStrategy', () => {
     };
 
     beforeEach(() => {
-      mapView = new MapView({map: new Map()}) as MapViewWithMap;
+      mapView = new MapView({map: new Map()});
       layer = new GraphicsLayer({
         id: UserDrawingLayer.Measurements,
       });
-      mapView.map.layers.add(layer);
+      mapView.map!.layers.add(layer);
       pointSymbol = new SimpleMarkerSymbol();
       textSymbol = new TextSymbol({text: 'test'});
       strategy = new EsriPointMeasurementStrategyWrapper(layer, mapView, pointSymbol, textSymbol, () => callbackHandler.handle());

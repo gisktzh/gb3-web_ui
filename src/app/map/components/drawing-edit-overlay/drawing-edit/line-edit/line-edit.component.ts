@@ -1,24 +1,16 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Gb3LineStringStyle, LineStyleConfiguration} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {Component, model} from '@angular/core';
+import {Gb3LineStringStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {SliderEditComponent} from '../slider-edit/slider-edit.component';
 import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.component';
+import {form, FormField} from '@angular/forms/signals';
 
 @Component({
   selector: 'line-edit',
   templateUrl: './line-edit.component.html',
   styleUrl: './line-edit.component.scss',
-  imports: [SliderEditComponent, ColorPickerEditComponent],
+  imports: [SliderEditComponent, ColorPickerEditComponent, FormField],
 })
 export class LineEditComponent {
-  @Input() public lineStyle!: Gb3LineStringStyle;
-
-  @Output() public readonly updateStyleEvent = new EventEmitter<Gb3LineStringStyle>();
-
-  public updateValue(field: keyof LineStyleConfiguration, value: number | string) {
-    this.lineStyle = {
-      ...this.lineStyle,
-      [field]: value,
-    };
-    this.updateStyleEvent.emit(this.lineStyle);
-  }
+  public readonly lineStyle = model.required<Gb3LineStringStyle>();
+  public lineStyleForm = form(this.lineStyle);
 }

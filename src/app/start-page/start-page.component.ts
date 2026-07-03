@@ -1,13 +1,9 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Observable, Subscription, tap} from 'rxjs';
 import {TitleLink, PageSectionComponent} from '../shared/components/page-section/page-section.component';
-import {LinksGroup} from '../shared/interfaces/links-group.interface';
-import {ScreenMode} from '../shared/types/screen-size.type';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectAdditionalInformationLinks} from '../state/support/reducers/support-content.reducer';
 import {HeroHeaderComponent} from '../shared/components/hero-header/hero-header.component';
-import {NgClass} from '@angular/common';
 import {StartPageSearchComponent} from './components/start-page-search/start-page-search.component';
 import {GisBrowserTeaserComponent} from './components/gis-browser-teaser/gis-browser-teaser.component';
 import {FrequentlyUsedItemsComponent} from './components/frequently-used-items/frequently-used-items.component';
@@ -25,7 +21,6 @@ const START_PAGE_SUMMARY =
   imports: [
     PageSectionComponent,
     HeroHeaderComponent,
-    NgClass,
     StartPageSearchComponent,
     GisBrowserTeaserComponent,
     FrequentlyUsedItemsComponent,
@@ -34,7 +29,7 @@ const START_PAGE_SUMMARY =
     LinkListComponent,
   ],
 })
-export class StartPageComponent implements OnInit, OnDestroy {
+export class StartPageComponent {
   private readonly store = inject(Store);
 
   public heroText = START_PAGE_SUMMARY;
@@ -42,27 +37,6 @@ export class StartPageComponent implements OnInit, OnDestroy {
     url: 'https://www.zh.ch/de/news-uebersicht.html?organisation=organisationen%253Akanton-zuerich%252Fbaudirektion%252Famt-fuer-raumentwicklung&topic=themen%253Aplanen-bauen%252Fgeoinformation',
     displayTitle: 'Mehr Beiträge',
   };
-  public additionalInformationLinksGroups: LinksGroup[] = [];
-  public screenMode: ScreenMode = 'regular';
-
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly additionalInformationLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectAdditionalInformationLinks);
-  private readonly subscriptions: Subscription = new Subscription();
-
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.additionalInformationLinksGroups$
-        .pipe(tap((additionalInformationLinks) => (this.additionalInformationLinksGroups = additionalInformationLinks)))
-        .subscribe(),
-    );
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-  }
+  public readonly additionalInformationLinksGroups = this.store.selectSignal(selectAdditionalInformationLinks);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
 }

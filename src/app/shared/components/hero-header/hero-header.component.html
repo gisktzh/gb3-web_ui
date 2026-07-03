@@ -1,14 +1,14 @@
 <div class="hero-header">
-  <img aria-hidden="true" alt="Kt. ZH Logo" class="hero-header__image" ngSrc="/assets/images/ktzh_inverted.svg" height="180" width="184" />
-  <h1 class="ktzh-h1-giant" [ngClass]="{'ktzh-h1-giant--mobile': screenMode === 'mobile'}">
-    {{ heroTitle }}
+  <img aria-hidden="true" alt="Kt. ZH Logo" class="hero-header__image" src="/assets/images/ktzh_inverted.svg" height="180" width="184" />
+  <h1 class="ktzh-h1-giant" [class.ktzh-h1-giant--mobile]="screenMode() === 'mobile'">
+    {{ heroTitle() }}
   </h1>
-  @if (screenMode !== 'mobile') {
+  @if (screenMode() !== 'mobile') {
     <p class="hero-header__intro-paragraph">
-      {{ heroText }}
+      {{ heroText() }}
     </p>
   }
-  @if (heroSubText) {
-    <p class="hero-header__intro-paragraph hero-header__intro-paragraph--subtext">{{ heroSubText }}</p>
+  @if (heroSubText()) {
+    <p class="hero-header__intro-paragraph hero-header__intro-paragraph--subtext">{{ heroSubText() }}</p>
   }
 </div>

@@ -7,7 +7,6 @@ import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import {EsriPointDrawingStrategy} from './esri-point-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 class EsriPointDrawingStrategyWrapper extends EsriPointDrawingStrategy {
@@ -25,7 +24,7 @@ const mockResourceHandle = {
  * As such, we do not test for the addition of the graphics which should be handled by the Esri framework any way.
  */
 describe('EsriPointDrawingStrategy', () => {
-  let mapView: MapViewWithMap;
+  let mapView: MapView;
   let layer: GraphicsLayer;
   let pointSymbol: SimpleMarkerSymbol;
   const callbackHandler = {
@@ -35,11 +34,11 @@ describe('EsriPointDrawingStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()}) as MapViewWithMap;
+    mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });
-    mapView.map.layers.add(layer);
+    mapView.map!.layers.add(layer);
     pointSymbol = new SimpleMarkerSymbol();
   });
 

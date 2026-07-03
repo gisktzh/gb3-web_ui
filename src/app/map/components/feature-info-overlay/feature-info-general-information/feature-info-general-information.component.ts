@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {GeneralInfoResponse} from '../../../../shared/interfaces/general-info.interface';
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from '@angular/material/expansion';
 import {MatIcon} from '@angular/material/icon';
@@ -27,5 +27,5 @@ import {DecimalPipe} from '@angular/common';
   ],
 })
 export class FeatureInfoGeneralInformationComponent {
-  @Input() public generalInfoData!: GeneralInfoResponse;
+  public readonly generalInfoData = input.required<GeneralInfoResponse>();
 }

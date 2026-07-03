@@ -1,15 +1,15 @@
 <div>
   <div>
-    <page-section [background]="'primary'" [pageTitle]="true">
+    <page-section background="primary" [pageTitle]="true">
       <hero-header
         heroText="Hier erhalten Sie eine Übersicht von Webanwendungen, die auf Geodaten des Kantons Zürich zugreifen."
         heroTitle="Apps"
-      ></hero-header>
+      />
     </page-section>
 
     <page-section>
       <link-grid-list>
-        @for (externalApp of this.externalApps; track $index) {
+        @for (externalApp of externalApps(); track $index) {
           <link-grid-list-item [title]="externalApp.title" [url]="externalApp.appUrl">
             <img class="app-image" [src]="externalApp.image.url" [alt]="externalApp.image.altText" />
           </link-grid-list-item>

@@ -1,15 +1,11 @@
-/* eslint-disable rxjs-angular-x/prefer-composition -- eslint does not pickup inherited properties*/
-import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, inject} from '@angular/core';
+import {Component, computed, inject, viewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {combineLatestWith, filter, switchMap, tap} from 'rxjs';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ConfigService} from '../../../shared/services/config.service';
 import {SearchActions} from '../../../state/app/actions/search.actions';
 import {selectTerm} from '../../../state/app/reducers/search.reducer';
 import {selectActiveSearchFilterValues} from '../../../state/data-catalogue/selectors/active-search-filters.selector';
 import {SearchResultGroupsComponent} from './search-result-groups/search-result-groups.component';
-import {SearchResultIdentifierDirective} from '../../../shared/directives/search-result-identifier.directive';
 import {
   selectFilteredFaqItems,
   selectFilteredLayerCatalogMaps,
@@ -18,7 +14,7 @@ import {
 } from '../../../state/app/selectors/search-results.selector';
 import {BaseSearchContainerComponent} from '../../../shared/components/search/base-search-container/base-search-container.component';
 import {SearchBarComponent} from '../../../shared/components/search/search-bar/search-bar.component';
-import {NgClass} from '@angular/common';
+
 import {MatChipRow, MatChipRemove} from '@angular/material/chips';
 import {MatIcon} from '@angular/material/icon';
 
@@ -26,77 +22,60 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'start-page-search',
   templateUrl: './start-page-search.component.html',
   styleUrls: ['./start-page-search.component.scss'],
-  imports: [SearchBarComponent, NgClass, MatChipRow, MatChipRemove, MatIcon, SearchResultGroupsComponent],
+  imports: [SearchBarComponent, MatChipRow, MatChipRemove, MatIcon, SearchResultGroupsComponent],
 })
-export class StartPageSearchComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+export class StartPageSearchComponent extends BaseSearchContainerComponent {
   protected override store = inject(Store);
-  protected override cdr = inject(ChangeDetectorRef);
   private readonly configService = inject(ConfigService);
 
-  @ViewChild(SearchResultGroupsComponent) private readonly searchResultGroupsComponent?: SearchResultGroupsComponent;
+  private readonly searchResultGroupsComponent = viewChild(SearchResultGroupsComponent);
 
-  public searchTerms: string[] = [];
-  public activeSearchFilterValues: {groupLabel: string; filterLabel: string}[] = [];
-  public screenMode: ScreenMode = 'regular';
+  public readonly searchTerm = this.store.selectSignal(selectTerm);
+  public readonly searchTerms = computed<string[]>(() => {
+    const searchTerm = this.searchTerm()?.trim();
+    if (!searchTerm || searchTerm.length === 0) {
+      return [];
+    }
+
+    return searchTerm.split(/\s+/);
+  });
+  public readonly activeSearchFilterValues = this.store.selectSignal(selectActiveSearchFilterValues);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly searchConfig = this.configService.searchConfig.startPage;
 
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly searchTerm$ = this.store.select(selectTerm);
-  private readonly activeSearchFilterValues$ = this.store.select(selectActiveSearchFilterValues);
+  public readonly filteredFaqItems = this.store.selectSignal(selectFilteredFaqItems);
+  public readonly filteredUsefulLinks = this.store.selectSignal(selectFilteredUsefulLinks);
+  public readonly filteredMetadataItems = this.store.selectSignal(selectFilteredMetadataItems);
+  public readonly filteredLayerCatalogMaps = this.store.selectSignal(selectFilteredLayerCatalogMaps);
 
-  public override ngOnInit() {
-    super.ngOnInit();
+  public readonly combinedSearchData = computed(() => ({
+    searchTerms: this.searchTerms(),
+    faq: this.filteredFaqItems(),
+    usefulLinks: this.filteredUsefulLinks(),
+    metadata: this.filteredMetadataItems(),
+    layerMaps: this.filteredLayerCatalogMaps(),
+  }));
+
+  public override readonly allSearchResults = computed(() => {
+    // So it has a dependency on combined search data.
+    this.combinedSearchData();
+
+    const resultGroups = this.searchResultGroupsComponent();
+
+    if (!resultGroups) {
+      return [];
+    }
+
+    return resultGroups.overviewSearchResultItemComponents();
+  });
+
+  constructor() {
+    super();
+
     this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));
-    this.initSubscriptions();
-  }
-
-  public override ngOnDestroy() {
-    super.ngOnDestroy();
-    this.subscriptions.unsubscribe();
-  }
-
-  public override ngAfterViewInit() {
-    super.ngAfterViewInit();
-    // Necessary because we are passing the searchComponent to the searchResultKeyboardNavigation directive
-    this.cdr.detectChanges();
   }
 
   public deactivateFilter(groupLabel: string, filterLabel: string) {
     this.store.dispatch(SearchActions.setFilterValue({groupLabel, filterLabel, isActive: false}));
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.searchTerm$
-        .pipe(
-          tap((searchTerm) => {
-            if (searchTerm === '') {
-              this.searchTerms = [];
-            } else {
-              this.searchTerms = searchTerm.split(' ');
-            }
-          }),
-          combineLatestWith(
-            this.store.select(selectFilteredFaqItems),
-            this.store.select(selectFilteredUsefulLinks),
-            this.store.select(selectFilteredMetadataItems),
-            this.store.select(selectFilteredLayerCatalogMaps),
-          ),
-          filter(() => this.searchResultGroupsComponent !== undefined),
-          switchMap(() => this.searchResultGroupsComponent!.overviewSearchResultItemComponents.changes),
-          tap((overviewChanges: QueryList<SearchResultIdentifierDirective>) => {
-            this.allSearchResults = overviewChanges.toArray();
-            this.cdr.detectChanges(); // Trigger change detection to reflect updates in the template
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(
-      this.activeSearchFilterValues$
-        .pipe(tap((activeSearchFilterValues) => (this.activeSearchFilterValues = activeSearchFilterValues)))
-        .subscribe(),
-    );
   }
 }

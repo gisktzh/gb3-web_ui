@@ -1,13 +1,10 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output, inject} from '@angular/core';
+import {Component, inject, output} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {Basemap} from '../../../../../shared/interfaces/basemap.interface';
 import {MapConfigActions} from '../../../../../state/map/actions/map-config.actions';
 import {selectActiveBasemapId} from '../../../../../state/map/reducers/map-config.reducer';
 import {BasemapConfigService} from '../../../../services/basemap-config.service';
-import {NgClass, NgOptimizedImage} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {BasemapImageLinkPipe} from '../../../../../shared/pipes/background-map-image-link.pipe';
 
@@ -15,49 +12,19 @@ import {BasemapImageLinkPipe} from '../../../../../shared/pipes/background-map-i
   selector: 'basemap-selection-list',
   templateUrl: './basemap-selection-list.component.html',
   styleUrls: ['./basemap-selection-list.component.scss'],
-  imports: [NgClass, MatButton, NgOptimizedImage, BasemapImageLinkPipe],
+  imports: [MatButton, BasemapImageLinkPipe],
 })
-export class BasemapSelectionListComponent implements OnInit, OnDestroy {
+export class BasemapSelectionListComponent {
   private readonly store = inject(Store);
-  private readonly basemapConfigService = inject(BasemapConfigService);
 
-  @Output() public readonly basemapChangedEvent = new EventEmitter();
+  public readonly basemapChangedEvent = output();
 
-  public activeBasemap?: Basemap;
-  public availableBasemaps: Basemap[] = [];
-  public screenMode: ScreenMode = 'regular';
-
-  private readonly subscriptions: Subscription = new Subscription();
-  private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-
-  constructor() {
-    this.availableBasemaps = this.basemapConfigService.availableBasemaps;
-  }
-
-  public ngOnInit(): void {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+  public availableBasemaps: Basemap[] = inject(BasemapConfigService).availableBasemaps;
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly activeBasemapId = this.store.selectSignal(selectActiveBasemapId);
 
   public switchBasemap(toId: string) {
     this.store.dispatch(MapConfigActions.setBasemap({activeBasemapId: toId}));
     this.basemapChangedEvent.emit();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.activeBasemapId$
-        .pipe(
-          tap((activeBasemapId) => {
-            this.activeBasemap = this.availableBasemaps.find((basemap) => basemap.id === activeBasemapId);
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

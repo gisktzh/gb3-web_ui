@@ -1,30 +1,30 @@
 <div class="slider-wrapper">
-  @if (overwriteHeader) {
-    <ng-content select="[header]"></ng-content>
+  @if (overwriteHeader()) {
+    <ng-content select="[header]" />
   } @else {
     <div class="slider-wrapper__header">
       <div class="slider-wrapper__header__title">
-        @if (description) {
-          <div class="slider-wrapper__header__title__info" [matTooltip]="description">
+        @if (description()) {
+          <div class="slider-wrapper__header__title__info" [matTooltip]="description()">
             <mat-icon>info</mat-icon>
           </div>
         }
-        <div class="slider-wrapper__header__title__text">{{ title }}</div>
+        <div class="slider-wrapper__header__title__text">{{ title() }}</div>
       </div>
       <div class="slider-wrapper__header__value">
-        <strong>{{ value }}</strong>
+        <strong>{{ value() }}</strong>
       </div>
     </div>
   }
   <div class="slider-wrapper__content">
-    <ng-content select="[content]"></ng-content>
+    <ng-content select="[content]" />
   </div>
-  @if (overwriteFooter) {
-    <ng-content select="[footer]"></ng-content>
+  @if (overwriteFooter()) {
+    <ng-content select="[footer]" />
   } @else {
     <div class="slider-wrapper__footer">
-      <div>{{ minValue }}</div>
-      <div>{{ maxValue }}</div>
+      <div>{{ minValue() }}</div>
+      <div>{{ maxValue() }}</div>
     </div>
   }
 </div>

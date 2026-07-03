@@ -1,32 +1,16 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  QueryList,
-  Renderer2,
-  ViewChild,
-  ViewChildren,
-  inject,
-} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, computed, inject, input, signal, viewChild} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {Store} from '@ngrx/store';
 import {selectPinnedFeatureId} from '../../../../state/map/reducers/feature-info.reducer';
-import {Subscription, tap} from 'rxjs';
 import {MatRadioButton} from '@angular/material/radio';
 import {TableColumnIdentifierDirective} from './table-column-identifier.directive';
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapService} from '../../../interfaces/map.service';
 import {StyleExpression} from '../../../../shared/types/style-expression.type';
 import {MAP_SERVICE} from '../../../../app.tokens';
-import {NgStyle, NgOptimizedImage, KeyValuePipe} from '@angular/common';
-import {MatTooltip} from '@angular/material/tooltip';
-import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
+import {KeyValuePipe} from '@angular/common';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 
 type CellType = 'text' | 'url' | 'image';
@@ -74,11 +58,6 @@ interface TableHeader extends Omit<AbstractTableCell, 'cellType'> {
 type TableRows = Map<string, TableCell[]>;
 
 /**
- * Name of the css class which is used to designate a highlighted cell.
- */
-const HIGHLIGHTED_CELL_CLASS = 'feature-info-content__table__row__column--highlighted';
-
-/**
  * Default value to be displayed when a field has no value (i.e. undefined)
  */
 const DEFAULT_CELL_VALUE = '-';
@@ -90,6 +69,7 @@ const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 
 const DEFAULT_TABLE_HEADER_WIDTH = 130;
 const MIN_TABLE_HEADER_WIDTH = 80;
+const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
 
 /**
  * Important to know: All tables are isolated from each other, yet the pinned state is shared among all of them. As such, the pinnedFeature
@@ -99,94 +79,102 @@ const MIN_TABLE_HEADER_WIDTH = 80;
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
-  imports: [
-    NgStyle,
-    TableColumnIdentifierDirective,
-    MatRadioButton,
-    MatTooltip,
-    ShowTooltipIfTruncatedDirective,
-    NgOptimizedImage,
-    ResizeHandlerComponent,
-    KeyValuePipe,
-  ],
+  imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe],
 })
-export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterViewInit {
+export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
-  private readonly renderer = inject(Renderer2);
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
 
-  @Input() public layer!: FeatureInfoResultLayer;
-  @Input() public topicId!: string;
-  public readonly staticFilesBaseUrl: string;
+  public readonly layer = input.required<FeatureInfoResultLayer>();
+  public readonly topicId = input.required<string>();
+  public readonly staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
 
-  /**
-   * The order of the TableCell elements reflects the order of the TableHeader elements.
-   */
-  public readonly tableRows: TableRows = new Map<string, TableCell[]>();
-  public readonly tableHeaders: TableHeader[] = [];
   public readonly minTableHeaderWidth: number = MIN_TABLE_HEADER_WIDTH;
-  public maxTableHeaderWidth: number = DEFAULT_TABLE_HEADER_WIDTH;
-  public tableHeaderWidth: string = `${DEFAULT_TABLE_HEADER_WIDTH}px`;
+  public readonly tableHeaderWidth = signal(`${DEFAULT_TABLE_HEADER_WIDTH}px`);
+  public readonly pinnedFeatureId = this.store.selectSignal(selectPinnedFeatureId);
+  public readonly hoveredFeatureId = signal<number | null>(0);
+  public readonly containerWidth = signal(0);
+  public readonly maxTableHeaderWidth = computed(() => this.containerWidth() * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO);
+  public readonly container = viewChild.required<ElementRef>('container');
+
+  public readonly highlightedFeatureId = computed(() => {
+    return this.pinnedFeatureId() ?? this.hoveredFeatureId();
+  });
+
+  public readonly tableData = computed(() => {
+    const tableHeaders: TableHeader[] = [];
+    const tableRows: TableRows = new Map<string, TableCell[]>();
+
+    this.layer().features.forEach(({fid, geometry, fields}, featureIdx, features) => {
+      const tableHeader = this.createTableHeaderForFeature(fid, featureIdx, features.length, !!geometry);
+      tableHeaders.push(tableHeader);
+
+      fields.forEach((feature) => {
+        const tableCell = this.createTableCellForFeatureAndField(fid, feature);
+
+        if (tableRows.has(feature.label)) {
+          // see: https://stackoverflow.com/questions/70723319/object-is-possibly-undefined-using-es6-map-get-right-after-map-set
+          // -> it should never happen, but IF it were to happen, we are not doing anything.
+          tableRows.get(feature.label)?.push(tableCell);
+        } else {
+          tableRows.set(feature.label, [tableCell]);
+        }
+      });
+    });
+
+    return {tableHeaders, tableRows};
+  });
+
+  public readonly tableRows = computed(() => this.tableData().tableRows);
+  public readonly tableHeaders = computed(() => this.tableData().tableHeaders);
 
   private resizeObserver!: ResizeObserver;
-  private readonly featureGeometries: Map<number, GeometryWithSrs | undefined> = new Map();
-  private readonly pinnedFeatureId$ = this.store.select(selectPinnedFeatureId);
-  private readonly subscriptions: Subscription = new Subscription();
-  private pinnedFeatureId: string | undefined;
-  @ViewChildren(TableColumnIdentifierDirective) private readonly tableColumns!: QueryList<TableColumnIdentifierDirective>;
-  @ViewChild('container') private readonly container!: ElementRef;
 
-  constructor() {
-    this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
-  }
+  public readonly featureGeometries = computed(() => {
+    const featureGeometries: Map<number, GeometryWithSrs | undefined> = new Map();
+
+    this.layer().features.forEach(({fid, geometry}) => {
+      featureGeometries.set(fid, geometry);
+    });
+
+    return featureGeometries;
+  });
 
   public resize(style: StyleExpression) {
-    this.tableHeaderWidth = style['width'] ?? `${DEFAULT_TABLE_HEADER_WIDTH}px`;
-  }
-
-  public ngOnInit() {
-    this.initTableData();
+    this.tableHeaderWidth.set(style['width'] ?? `${DEFAULT_TABLE_HEADER_WIDTH}px`);
   }
 
   public ngOnDestroy() {
     this.resizeObserver.disconnect();
-    this.subscriptions.unsubscribe();
   }
 
   public ngAfterViewInit() {
-    this.initPinnedFeatureIdHandler();
     this.initResizeObserver();
   }
 
-  public toggleHighlightForFeature(fid: number, highlightButton: MatRadioButton, hasGeometry: boolean) {
+  public toggleHighlightForFeature(fid: number, hasGeometry: boolean) {
     if (!hasGeometry) {
       return;
     }
 
-    if (highlightButton.checked) {
+    if (this.pinnedFeatureId() === fid.toString()) {
       this.store.dispatch(FeatureInfoActions.clearHighlight());
-      // Programmaticaly dispatch the hover effect which is not triggered anymore because the button is inside the hover area
-      this.onFeatureHoverStart(fid);
-      // Also uncheck the radio button status, because radio buttons cannot be deactivated by default
-      highlightButton.checked = false;
     } else {
       this.highlightFeatureOnMapIfExists(fid, true, true);
-      highlightButton.checked = true;
     }
   }
 
   public onFeatureHoverStart(fid: number) {
-    if (!this.pinnedFeatureId) {
-      this.addHighlightClassToCellsForFid(fid);
+    if (!this.pinnedFeatureId()) {
+      this.hoveredFeatureId.set(fid);
       this.highlightFeatureOnMapIfExists(fid);
     }
   }
 
-  public onFeatureHoverEnd(fid: number) {
-    if (!this.pinnedFeatureId) {
-      this.removeHighlightClassFromCellsForFid(fid);
+  public onFeatureHoverEnd() {
+    if (!this.pinnedFeatureId()) {
+      this.hoveredFeatureId.set(null);
       this.store.dispatch(FeatureInfoActions.clearHighlight());
     }
   }
@@ -205,96 +193,29 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
    * the outer container is resized to a smaller size, we reset the current width to the default width to ensure the elements are always
    * visible and do not overflow (e.g. if you have a very large container and very broad table headers, resizing it to small will make the
    * table unusable since the drag hanler is out of reach).
-   *
-   * We also need to run change detection to enforce rerender, since setting the width of the element does not trigger it - which is a bit
-   * ugly, but is a drawback of our current ResizeHandler implementation. Note that we do NOT trigger this if the size of the container is
-   * 0, which happens onDestroy and would lead to a flickering due to the change detection.
    */
   private initResizeObserver() {
     this.resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const maxWidth = entry.contentRect.width * 0.8;
-        if (this.maxTableHeaderWidth > maxWidth && maxWidth > 0) {
+      const container = entries.at(0);
+      if (container) {
+        const containerWidth = container.contentRect.width;
+        if (this.maxTableHeaderWidth() > containerWidth * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO) {
           this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
-          this.changeDetectorRef.detectChanges();
         }
-        this.maxTableHeaderWidth = maxWidth;
+
+        this.containerWidth.set(containerWidth);
       }
     });
 
-    this.resizeObserver.observe(this.container.nativeElement);
-  }
-
-  /**
-   * Adds the highlight class to all cells for a given feature to find all corresponding cells, mimicking a column
-   * selection.
-   * @param fid
-   */
-  private addHighlightClassToCellsForFid(fid: number) {
-    const tableColumnIdentifier = this.createUniqueColumnIdentifierForFid(fid);
-    this.tableColumns
-      .filter((tableColumn) => tableColumn.uniqueIdentifier === tableColumnIdentifier)
-      .forEach((tableColumn) => this.renderer.addClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS));
-  }
-
-  /**
-   * Removes the highlight class to all cells for a given feature to find all corresponding cells, mimicking a column
-   * selection.
-   * @param fid
-   */
-  private removeHighlightClassFromCellsForFid(fid: number) {
-    const tableColumnIdentifier = this.createUniqueColumnIdentifierForFid(fid);
-    this.tableColumns
-      .filter((tableColumn) => tableColumn.uniqueIdentifier === tableColumnIdentifier)
-      .forEach((tableColumn) => {
-        this.renderer.removeClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS);
-      });
+    this.resizeObserver.observe(this.container().nativeElement);
   }
 
   private createUniqueColumnIdentifierForFid(fid: number): string {
-    return TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid);
-  }
-
-  /**
-   * Removes the highlight class from all cells that currently have it.
-   * @private
-   */
-  private removeHighlightClassFromAllCells() {
-    this.tableColumns
-      .filter((tableColumn) => tableColumn.host.nativeElement.classList.contains(HIGHLIGHTED_CELL_CLASS))
-      .forEach((tableColumn) => {
-        this.renderer.removeClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS);
-      });
-  }
-
-  /**
-   * Whenever the global state changes (indicating a pinned feature), we need to remove the highlight class from all cells - the reason is
-   * that we cannot remove it from the specific FID because it might be in another table, so the FIDs won't match. If a feature is pinned,
-   * we also add it (if it exists).
-   * @private
-   */
-  private initPinnedFeatureIdHandler() {
-    this.subscriptions.add(
-      this.pinnedFeatureId$
-        .pipe(
-          tap((pinnedFeatureId) => {
-            this.pinnedFeatureId = pinnedFeatureId;
-            this.removeHighlightClassFromAllCells();
-            if (pinnedFeatureId) {
-              const feature = this.tableColumns.find((tableColumn) => tableColumn.uniqueIdentifier === pinnedFeatureId);
-
-              if (feature) {
-                this.addHighlightClassToCellsForFid(feature.featureId);
-              }
-            }
-          }),
-        )
-        .subscribe(),
-    );
+    return TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId(), this.layer().layer, fid);
   }
 
   private highlightFeatureOnMapIfExists(fid: number, isPinned: boolean = false, zoomToFeature: boolean = false) {
-    const feature = this.featureGeometries.get(fid);
+    const feature = this.featureGeometries().get(fid);
     if (!feature) {
       return;
     }
@@ -337,35 +258,5 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
           url: feature.value.href,
         };
     }
-  }
-
-  /**
-   * Because the data from the API comes in a very special format, and because we're using transposed tables to display our results, we
-   * have to initialize the table data in such a way that we can build our table correctly. Because we have both left-side headers (the
-   * actual attributes) and top headers (the result number), we fill two seperate attributes in the same order so we can "fake" a
-   * column oriented setup.
-   *
-   * In effect, both this.tableHeaders and this.tableRows (or, rather its values) are ordered in the same way, so the cells get rendered
-   * in the correct column, even though they run in seperate loops.
-   * @private
-   */
-  private initTableData() {
-    this.layer.features.forEach(({fid, geometry, fields}, featureIdx, features) => {
-      this.featureGeometries.set(fid, geometry);
-      const tableHeader = this.createTableHeaderForFeature(fid, featureIdx, features.length, !!geometry);
-      this.tableHeaders.push(tableHeader);
-
-      fields.forEach((feature) => {
-        const tableCell = this.createTableCellForFeatureAndField(fid, feature);
-
-        if (this.tableRows.has(feature.label)) {
-          // see: https://stackoverflow.com/questions/70723319/object-is-possibly-undefined-using-es6-map-get-right-after-map-set
-          // -> it should never happen, but IF it were to happen, we are not doing anything.
-          this.tableRows.get(feature.label)?.push(tableCell);
-        } else {
-          this.tableRows.set(feature.label, [tableCell]);
-        }
-      });
-    });
   }
 }

@@ -247,13 +247,24 @@
             }
           },
           "defaultConfiguration": "test"
+        },
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "options": {
+            "devServerTarget": "gb3-frontend:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "gb3-frontend:serve:production"
+            }
+          }
         }
       }
     }
   },
   "cli": {
     "analytics": false,
-    "schematicCollections": ["@ngrx/schematics"]
+    "schematicCollections": ["@ngrx/schematics", "playwright-ng-schematics"]
   },
   "schematics": {
     "@angular-eslint/schematics:application": {

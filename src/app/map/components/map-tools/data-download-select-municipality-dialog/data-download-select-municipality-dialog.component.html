@@ -1,22 +1,24 @@
-<api-dialog-wrapper title="Daten beziehen" [savingState]="loadingState" (closeEvent)="cancel()">
+<api-dialog-wrapper title="Daten beziehen" [savingState]="loadingState()" (closeEvent)="cancel()">
   <ng-container content>
     <div class="data-download-select-municipality-dialog">
-      @if (municipalities) {
+      @if (municipalities()) {
         <mat-form-field class="data-download-select-municipality-dialog__content" appearance="fill">
           <mat-label>Gemeinde</mat-label>
           <input
-            #municipalityInput
             type="text"
             placeholder="Bitte auswählen"
             aria-label="Gemeinde"
             matInput
-            [formControl]="municipalityFormControl"
+            (input)="filterValue.set($event.target.value)"
             [matAutocomplete]="municipalityAutocomplete"
-            (input)="updateFilteredMunicipalities()"
-            (focus)="updateFilteredMunicipalities()"
           />
-          <mat-autocomplete requireSelection #municipalityAutocomplete="matAutocomplete" [displayWith]="getMunicipalityName">
-            @for (municipality of filteredMunicipalities | async; track municipality) {
+          <mat-autocomplete
+            requireSelection
+            #municipalityAutocomplete="matAutocomplete"
+            [displayWith]="getMunicipalityName"
+            (optionSelected)="municipalityForm.municipality().value.set($event.option.value)"
+          >
+            @for (municipality of filteredMunicipalities(); track municipality) {
               <mat-option [value]="municipality">
                 {{ municipality.name }}
               </mat-option>
@@ -28,8 +30,6 @@
   </ng-container>
   <ng-container actions>
     <button (click)="cancel()" mat-button>Abbrechen</button>
-    <button (click)="continue()" mat-button [disabled]="loadingState !== 'loaded' || municipalityFormControl.status !== 'VALID'">
-      Weiter
-    </button>
+    <button (click)="continue()" mat-button [disabled]="loadingState() !== 'loaded' || !municipalityForm().valid()">Weiter</button>
   </ng-container>
 </api-dialog-wrapper>

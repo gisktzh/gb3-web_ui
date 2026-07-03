@@ -1,4 +1,4 @@
-import {Directive, Input, OnInit} from '@angular/core';
+import {Directive, input, OnInit} from '@angular/core';
 import {TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
 import {OnboardingGuideAnchor} from '../../onboarding-guide/types/onboarding-guide-anchor.type';
 import {SIGNAL} from '@angular/core/primitives/signals';
@@ -9,10 +9,10 @@ import {SIGNAL} from '@angular/core/primitives/signals';
  */
 @Directive({selector: '[typedTourAnchor]'})
 export class TypedTourAnchorDirective extends TourAnchorMatMenuDirective implements OnInit {
-  @Input() public typedTourAnchor!: OnboardingGuideAnchor;
+  public readonly typedTourAnchor = input.required<OnboardingGuideAnchor>();
 
   override ngOnInit() {
-    this.tourAnchor[SIGNAL].value = this.typedTourAnchor;
+    this.tourAnchor[SIGNAL].value = this.typedTourAnchor();
     super.ngOnInit();
   }
 }

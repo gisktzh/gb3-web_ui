@@ -1,8 +1,6 @@
 import {CdkDrag, CdkDragDrop, CdkDropList, CdkDragHandle, CdkDragPlaceholder} from '@angular/cdk/drag-drop';
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, computed, inject, signal} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
@@ -15,7 +13,7 @@ import {OnboardingGuideService} from '../../../onboarding-guide/services/onboard
 import {selectItems} from '../../../state/map/selectors/active-map-items.selector';
 import {MatCard, MatCardHeader} from '@angular/material/card';
 import {TypedTourAnchorDirective} from '../../../shared/directives/typed-tour-anchor.directive';
-import {NgClass} from '@angular/common';
+
 import {MatBadge} from '@angular/material/badge';
 import {MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -46,7 +44,6 @@ const TOOLTIP_TEXT = {
   imports: [
     MatCard,
     TypedTourAnchorDirective,
-    NgClass,
     MatCardHeader,
     MatBadge,
     MatIconButton,
@@ -64,36 +61,40 @@ const TOOLTIP_TEXT = {
     CdkDragPlaceholder,
   ],
 })
-export class ActiveMapItemsComponent implements OnInit, OnDestroy {
+export class ActiveMapItemsComponent {
   private readonly store = inject(Store);
   private readonly onboardingGuideService = inject(OnboardingGuideService);
 
   public tooltipText = TOOLTIP_TEXT;
-  public isAuthenticated: boolean = false;
-  public activeMapItems: ActiveMapItem[] = [];
-  public isMinimized = false;
-  public numberOfNotices: number = 0;
-  public numberOfUnreadNotices: number = 0;
-  public screenMode: ScreenMode = 'regular';
-  public toolTipsFavourite: string = FAVOURITE_HELPER_MESSAGES.notAuthenticated;
-  public isActiveMapItemDragAndDropDisabled: boolean = false;
+  public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  public readonly activeMapItems = this.store.selectSignal(selectItems);
+  public readonly isMinimized = signal(false);
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly activeTool = this.store.selectSignal(selectActiveTool);
+  public readonly toolTipsFavourite = computed(() => {
+    if (!this.isAuthenticated()) {
+      return this.favouriteHelperMessages.notAuthenticated;
+    } else if (this.activeMapItems().length === 0) {
+      return this.favouriteHelperMessages.noMapsAdded;
+    }
+
+    return this.favouriteHelperMessages.authenticatedAndMapsAdded;
+  });
+  public readonly isActiveMapItemDragAndDropDisabled = computed(() => !!this.activeTool());
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
+  public readonly gb2ActiveMapItems = computed<Gb2WmsActiveMapItem[]>(() =>
+    this.activeMapItems().filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)),
+  );
+  public readonly activeMapItemsWithNotices = computed(() =>
+    this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice),
+  );
 
-  private readonly activeMapItems$ = this.store.select(selectItems);
-  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-  private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly activeTool$ = this.store.select(selectActiveTool);
-  private readonly subscriptions: Subscription = new Subscription();
+  public readonly numberOfNotices = computed(() => this.activeMapItemsWithNotices().length);
+  public readonly numberOfUnreadNotices = computed(
+    () => this.activeMapItemsWithNotices().filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length,
+  );
 
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  public trackByMapItemId(index: number, item: ActiveMapItem) {
+  public trackByMapItemId(_: number, item: ActiveMapItem) {
     return item.id;
   }
 
@@ -111,60 +112,11 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.showCreateFavouriteDialog());
   }
 
-  public toggleMinimizeActiveMapItems() {
-    this.isMinimized = !this.isMinimized;
-  }
-
   public showMapNotices() {
     this.store.dispatch(MapUiActions.showMapNoticesDialog());
   }
 
   public restartOnboardingGuide() {
     this.onboardingGuideService.start();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.activeMapItems$
-        .pipe(
-          tap((currentActiveMapItems) => {
-            this.activeMapItems = currentActiveMapItems;
-            const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
-            this.updateNumberOfNotices(gb2ActiveMapItems);
-            this.updateFavouritesMessage();
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.isAuthenticated$
-        .pipe(
-          tap((isAuthenticated) => {
-            this.isAuthenticated = isAuthenticated;
-            this.updateFavouritesMessage();
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(
-      this.activeTool$.pipe(tap((activeTool) => (this.isActiveMapItemDragAndDropDisabled = !!activeTool))).subscribe(),
-    );
-  }
-
-  private updateNumberOfNotices(currentActiveMapItems: Gb2WmsActiveMapItem[]) {
-    const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.settings.notice);
-    this.numberOfNotices = activeMapItemsWithNotices.length;
-    this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
-  }
-
-  public updateFavouritesMessage(): void {
-    if (!this.isAuthenticated) {
-      this.toolTipsFavourite = this.favouriteHelperMessages.notAuthenticated;
-    } else if (this.activeMapItems.length === 0) {
-      this.toolTipsFavourite = this.favouriteHelperMessages.noMapsAdded;
-    } else {
-      this.toolTipsFavourite = this.favouriteHelperMessages.authenticatedAndMapsAdded;
-    }
   }
 }

@@ -1,12 +1,12 @@
-@if (this.loadingState === 'loading') {
+@if (loadingState() === 'loading') {
   <p class="mat-body-2">
-    {{ loadingText ?? 'Lade Inhalt...' }}
-    <mat-progress-bar mode="query"></mat-progress-bar>
+    {{ loadingText() ?? 'Lade Inhalt...' }}
+    <mat-progress-bar mode="query" />
   </p>
 }
-@if (this.loadingState === 'error') {
+@if (loadingState() === 'error') {
   <p class="mat-body-2">
-    <strong>{{ loadingCompletedText ?? 'Fehler beim Laden.' }}</strong>
-    <mat-progress-bar mode="determinate" color="warn"></mat-progress-bar>
+    <strong>{{ loadingCompletedText() ?? 'Fehler beim Laden.' }}</strong>
+    <mat-progress-bar mode="determinate" color="warn" />
   </p>
 }

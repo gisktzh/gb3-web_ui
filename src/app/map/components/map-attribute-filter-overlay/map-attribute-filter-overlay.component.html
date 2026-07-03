@@ -1,10 +1,10 @@
-@if (mapAttributeFiltersItem) {
+@if (mapAttributeFiltersItem(); as mapAttributeFiltersItem) {
   <map-overlay
     (closeEvent)="close()"
-    [isVisible]="isVisible"
+    [isVisible]="isVisible()"
     [showPrintButton]="false"
     overlayTitle="Attributfilter: {{ mapAttributeFiltersItem.title }}"
   >
-    <map-attribute-filter></map-attribute-filter>
+    <map-attribute-filter />
   </map-overlay>
 }

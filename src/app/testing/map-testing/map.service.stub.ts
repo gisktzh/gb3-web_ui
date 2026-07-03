@@ -39,6 +39,8 @@ export class MapServiceStub implements MapService {
     initializeElevationProfileMeasurement() {},
   };
 
+  public deInit(): void {}
+
   public addGeometryToInternalDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
 
   public clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer): void {}

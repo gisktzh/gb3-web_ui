@@ -70,16 +70,19 @@ describe('data download product reducer', () => {
     },
   ];
   const errorMock: Error = new Error('oh no! anyway...');
+  const stateMock: DataDownloadProductState = {
+    products: existingStateProducts,
+    productsLoadingState: 'loaded',
+    relevantProductIds: ['1337_42_666_9001'],
+    relevantProductIdsLoadingState: 'loaded',
+    filterTerm: 'I want it all, I want it all and I want it now',
+    filters: existingStateFilters,
+  };
   let existingState: DataDownloadProductState;
 
   beforeEach(() => {
     existingState = {
-      products: existingStateProducts,
-      productsLoadingState: 'loaded',
-      relevantProductIds: ['1337_42_666_9001'],
-      relevantProductIdsLoadingState: 'loaded',
-      filterTerm: 'I want it all, I want it all and I want it now',
-      filters: existingStateFilters,
+      ...stateMock,
     };
   });
 
@@ -131,10 +134,10 @@ describe('data download product reducer', () => {
 
       expect(state.products).toEqual(expectedProducts);
       expect(state.productsLoadingState).toBe('loaded');
-      expect(state.relevantProductIds).toEqual(initialState.relevantProductIds);
-      expect(state.relevantProductIdsLoadingState).toBe(initialState.relevantProductIdsLoadingState);
-      expect(state.filterTerm).toBe(initialState.filterTerm);
-      expect(state.filters).toEqual(initialState.filters);
+      expect(state.relevantProductIds).toEqual(stateMock.relevantProductIds);
+      expect(state.relevantProductIdsLoadingState).toBe(stateMock.relevantProductIdsLoadingState);
+      expect(state.filterTerm).toBe(stateMock.filterTerm);
+      expect(state.filters).toEqual(stateMock.filters);
     });
   });
 

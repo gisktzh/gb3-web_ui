@@ -1,11 +1,11 @@
-<div class="descriptive-highlighted-link" [ngClass]="{'descriptive-highlighted-link--multiline': multiLine}">
+<div class="descriptive-highlighted-link" [class.descriptive-highlighted-link--multiline]="multiLine()">
   <div class="descriptive-highlighted-link__content">
-    <b class="descriptive-highlighted-link__content__title">{{ id }} {{ title }}</b>
-    @if (description) {
+    <b class="descriptive-highlighted-link__content__title">{{ id() }} {{ title() }}</b>
+    @if (description(); as description) {
       <p class="descriptive-highlighted-link__content__description">{{ description }}</p>
     }
   </div>
   <div class="descriptive-highlighted-link__links">
-    <ng-content></ng-content>
+    <ng-content />
   </div>
 </div>

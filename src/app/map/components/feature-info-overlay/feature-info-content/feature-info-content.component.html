@@ -1,49 +1,57 @@
 <div class="feature-info-content" #container>
-  <table class="feature-info-content__table" [attr.aria-describedby]="'Informationen zu ' + layer.title">
+  <table class="feature-info-content__table" [aria-describedby]="'Informationen zu ' + layer().title">
     <tr class="feature-info-content__table__row">
       <th
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
         scope="col"
-        [ngStyle]="{'min-width': tableHeaderWidth}"
+        [style.min-width]="tableHeaderWidth()"
       ></th>
-      @for (tableHeader of tableHeaders; track tableHeader) {
+      @for (tableHeader of tableHeaders(); track tableHeader) {
         <th
           (mouseenter)="onFeatureHoverStart(tableHeader.fid)"
-          (mouseleave)="onFeatureHoverEnd(tableHeader.fid)"
-          (click)="toggleHighlightForFeature(tableHeader.fid, highlightButton, tableHeader.hasGeometry)"
+          (mouseleave)="onFeatureHoverEnd()"
+          (click)="toggleHighlightForFeature(tableHeader.fid, tableHeader.hasGeometry)"
           [featureId]="tableHeader.fid"
-          [layerId]="layer.layer"
-          [topicId]="topicId"
+          [layerId]="layer().layer"
+          [topicId]="topicId()"
           class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
+          [class.feature-info-content__table__row__column--highlighted]="highlightedFeatureId() === tableHeader.fid"
           scope="col"
           tableColumnIdentifier
         >
           <div class="feature-info-content__table__row__column__wrapper">
             {{ tableHeader.displayValue.split(' ')[1] }}
-            <mat-radio-button [disabled]="!tableHeader.hasGeometry" #highlightButton labelPosition="before"> Markieren: </mat-radio-button>
+            <mat-radio-button
+              [disabled]="!tableHeader.hasGeometry"
+              [checked]="highlightedFeatureId() === tableHeader.fid"
+              labelPosition="before"
+            >
+              Markieren:
+            </mat-radio-button>
           </div>
         </th>
       }
     </tr>
-    @for (tableRow of tableRows | keyvalue: preserveKeyValueOrder; track tableRow) {
+    @for (tableRow of tableRows() | keyvalue: preserveKeyValueOrder; track tableRow) {
       <tr class="feature-info-content__table__row">
         <th
           class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
           scope="col"
-          [ngStyle]="{'min-width': tableHeaderWidth}"
+          [style.min-width]="tableHeaderWidth()"
         >
-          <span class="feature-info-content__table__row__column--attribute" [matTooltip]="tableRow.key" showTooltipIfTruncated>{{
-            tableRow.key
-          }}</span>
+          <span class="feature-info-content__table__row__column--attribute">
+            {{ tableRow.key }}
+          </span>
         </th>
         @for (cellValue of tableRow.value; track cellValue) {
           <td
             (mouseenter)="onFeatureHoverStart(cellValue.fid)"
-            (mouseleave)="onFeatureHoverEnd(cellValue.fid)"
+            (mouseleave)="onFeatureHoverEnd()"
             [featureId]="cellValue.fid"
-            [layerId]="layer.layer"
-            [topicId]="topicId"
+            [layerId]="layer().layer"
+            [topicId]="topicId()"
             class="feature-info-content__table__row__column"
+            [class.feature-info-content__table__row__column--highlighted]="highlightedFeatureId() === cellValue.fid"
             tableColumnIdentifier
           >
             @switch (cellValue.cellType) {
@@ -62,7 +70,7 @@
                 <a [href]="cellValue.url" target="_blank" rel="noopener noreferrer" [title]="cellValue.displayValue">
                   <img
                     class="feature-info-content__table__row__column__image"
-                    ngSrc="{{ cellValue.src }}"
+                    [src]="cellValue.src"
                     [alt]="cellValue.alt"
                     width="200"
                     height="200"
@@ -80,10 +88,10 @@
   </table>
   <resize-handler
     [minWidth]="minTableHeaderWidth"
-    [maxWidth]="maxTableHeaderWidth"
+    [maxWidth]="maxTableHeaderWidth()"
     location="left"
     (resizeEvent)="resize($event)"
     class="feature-info-content__resize"
-    [ngStyle]="{width: tableHeaderWidth}"
-  ></resize-handler>
+    [style.width]="tableHeaderWidth()"
+  />
 </div>

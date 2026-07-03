@@ -1,16 +1,16 @@
 <div class="fatal-error-page">
   <div class="fatal-error-page__content">
     <span class="fatal-error-page__content__icon">
-      <mat-icon svgIcon="ktzh_caution"></mat-icon>
+      <mat-icon svgIcon="ktzh_caution" />
     </span>
     <div class="fatal-error-page__content__text">
       <h1>Fehler</h1>
       <p>Die Applikation kann gerade nicht geladen werden. Laden Sie die Seite erneut oder versuchen Sie es später noch einmal.</p>
-      @if (errorMessage) {
+      @if (errorMessage(); as errorMessage) {
         <p class="fatal-error-page__content__text__error-message">Fehler: {{ errorMessage }}</p>
       }
       <a class="fatal-error-page__content__text__home-link" mat-button (click)="forceRefresh()" (keydown)="forceRefresh()" tabindex="0">
-        <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+        <mat-icon svgIcon="ktzh_arrow_right" />
         Zur Startseite
       </a>
     </div>

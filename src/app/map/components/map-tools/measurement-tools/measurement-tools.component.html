@@ -1,57 +1,57 @@
 <div class="measurement-tools">
   <button
-    (click)="this.togglePointMeasurement()"
-    [ngClass]="{'measurement-tools__button--active': activeTool === 'measure-point'}"
+    (click)="togglePointMeasurement()"
+    [class.measurement-tools__button--active]="activeTool() === 'measure-point'"
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.pointMeasurement"
-    [attr.aria-label]="tooltipText.pointMeasurement"
+    [aria-label]="tooltipText.pointMeasurement"
   >
-    <mat-icon svgIcon="ktzh_drawing_symbol_point"></mat-icon>
+    <mat-icon svgIcon="ktzh_drawing_symbol_point" />
   </button>
   <button
-    (click)="this.toggleLineMeasurement()"
-    [ngClass]="{'measurement-tools__button--active': activeTool === 'measure-line'}"
+    (click)="toggleLineMeasurement()"
+    [class.measurement-tools__button--active]="activeTool() === 'measure-line'"
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.lineMeasurement"
-    [attr.aria-label]="tooltipText.lineMeasurement"
+    [aria-label]="tooltipText.lineMeasurement"
   >
-    <mat-icon svgIcon="ktzh_drawing_symbol_line"></mat-icon>
+    <mat-icon svgIcon="ktzh_drawing_symbol_line" />
   </button>
   <button
-    (click)="this.toggleAreaMeasurement()"
-    [ngClass]="{'measurement-tools__button--active': activeTool === 'measure-area'}"
+    (click)="toggleAreaMeasurement()"
+    [class.measurement-tools__button--active]="activeTool() === 'measure-area'"
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.areaMeasurement"
-    [attr.aria-label]="tooltipText.areaMeasurement"
+    [aria-label]="tooltipText.areaMeasurement"
   >
-    <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
+    <mat-icon svgIcon="ktzh_drawing_symbol_polygon" />
   </button>
   <button
-    (click)="this.toggleCircleMeasurement()"
-    [ngClass]="{'measurement-tools__button--active': activeTool === 'measure-circle'}"
+    (click)="toggleCircleMeasurement()"
+    [class.measurement-tools__button--active]="activeTool() === 'measure-circle'"
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.circleMeasurement"
-    [attr.aria-label]="tooltipText.circleMeasurement"
+    [aria-label]="tooltipText.circleMeasurement"
   >
-    <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
+    <mat-icon svgIcon="ktzh_drawing_symbol_circle" />
   </button>
   <button
-    (click)="this.toggleElevationProfileMeasurement()"
-    [ngClass]="{'measurement-tools__button--active': activeTool === 'measure-elevation-profile'}"
+    (click)="toggleElevationProfileMeasurement()"
+    [class.measurement-tools__button--active]="activeTool() === 'measure-elevation-profile'"
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
     [matTooltip]="tooltipText.elevationProfileMeasurement"
-    [attr.aria-label]="tooltipText.elevationProfileMeasurement"
+    [aria-label]="tooltipText.elevationProfileMeasurement"
   >
-    <mat-icon svgIcon="ktzh_drawing_symbol_elevation"></mat-icon>
+    <mat-icon svgIcon="ktzh_drawing_symbol_elevation" />
   </button>
 </div>
