@@ -28,9 +28,7 @@ export interface FeatureInfoResultFeatureTextField extends AbstractFeatureInfoRe
 }
 
 export type FeatureInfoResultFeatureField =
-  | FeatureInfoResultFeatureImageField
-  | FeatureInfoResultFeatureLinkField
-  | FeatureInfoResultFeatureTextField;
+  FeatureInfoResultFeatureImageField | FeatureInfoResultFeatureLinkField | FeatureInfoResultFeatureTextField;
 
 interface FeatureInfoResultFeature {
   fid: number;
