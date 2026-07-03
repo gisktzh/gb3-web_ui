@@ -6,10 +6,6 @@
 /* Theme
 ========================== */
 
-body {
-  --mat-app-background-color: #fff;
-}
-
 // For usage, refer to: https://material.angular.io/guide/theming
 $zh-blue-theme: mat.m2-define-light-theme(
   (
@@ -39,6 +35,7 @@ $zh-cyan-theme: mat.m2-define-light-theme(
 @include mat.typography-hierarchy(ktzh-variables.$zh-typography-config);
 
 body {
+  --mat-app-background-color: #fff;
   @include mat.all-component-themes($zh-blue-theme);
   @include mat.all-component-typographies($zh-blue-theme);
   @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-blue, 'primary');
@@ -46,12 +43,12 @@ body {
   @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-secondary-accent-blue, 'secondary-accent');
   @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-accent, 'accent');
   @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-warn, 'warn');
-}
 
-body.body--is-intranet {
-  @include mat.all-component-themes($zh-cyan-theme);
-  @include mat.all-component-typographies($zh-cyan-theme);
-  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-cyan, 'primary');
-  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-light-cyan, 'primary-light');
-  @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-secondary-accent-cyan, 'secondary-accent');
+  &.body--is-intranet {
+    @include mat.all-component-themes($zh-cyan-theme);
+    @include mat.all-component-typographies($zh-cyan-theme);
+    @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-cyan, 'primary');
+    @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-light-cyan, 'primary-light');
+    @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-secondary-accent-cyan, 'secondary-accent');
+  }
 }
