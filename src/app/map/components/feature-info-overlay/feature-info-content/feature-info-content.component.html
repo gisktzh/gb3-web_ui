@@ -96,6 +96,6 @@
     class="feature-info-content__resize"
     [style.width]="tableHeaderWidth()"
     (resizeStart)="hoverEnabled.set(false)"
-    (resizeEnd)="hoverEnabled.set(true)"
+    (resizeEnd)="onResizeHandlerResizeEnd()"
   />
 </div>

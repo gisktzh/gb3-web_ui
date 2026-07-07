@@ -208,20 +208,39 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
    * table unusable since the drag hanler is out of reach).
    */
   private initResizeObserver() {
-    this.resizeObserver = new ResizeObserver((entries) => {
-      const container = entries.at(0);
-      if (container) {
-        const containerWidth = container.contentRect.width;
-        if (this.maxTableHeaderWidth() > containerWidth * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO) {
-          this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
-        }
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
 
-        this.containerWidth.set(containerWidth);
-        this.containerScrollWidth.set(this.container().nativeElement.scrollWidth);
+    this.resizeObserver = new ResizeObserver(() => this.onResize());
+    this.resizeObserver.observe(this.container().nativeElement);
+  }
+
+  public onResize() {
+    // Use a timeout here to let the browser recalculate thigs first.
+    setTimeout(() => {
+      const container = this.container().nativeElement;
+      const effectiveWidth = container.clientWidth;
+      let scrollWidth = container.scrollWidth;
+
+      this.containerWidth.set(effectiveWidth);
+      this.containerScrollWidth.set(scrollWidth);
+
+      if (this.maxTableHeaderWidth() > effectiveWidth * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO) {
+        this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
+
+        // Resizing automatically means different scrollWidth, using a timeout here too to let the browser catch up.
+        setTimeout(() => {
+          scrollWidth = container.scrollWidth;
+          this.containerScrollWidth.set(scrollWidth);
+        });
       }
     });
+  }
 
-    this.resizeObserver.observe(this.container().nativeElement);
+  public onResizeHandlerResizeEnd() {
+    this.hoverEnabled.set(true);
+    this.onResize();
   }
 
   private createUniqueColumnIdentifierForFid(fid: number): string {
