@@ -13,6 +13,7 @@ import {MAP_SERVICE} from '../../../../app.tokens';
 import {KeyValuePipe} from '@angular/common';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 import {HyphenateUnderscoresPipe} from '../../../pipes/hyphenate-underscores.pipe';
+import {selectScrollbarWidth} from 'src/app/state/app/reducers/app-layout.reducer';
 
 type CellType = 'text' | 'url' | 'image';
 
@@ -96,12 +97,22 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   public readonly pinnedFeatureId = this.store.selectSignal(selectPinnedFeatureId);
   public readonly hoveredFeatureId = signal<number | null>(0);
   public readonly containerWidth = signal(0);
+  public readonly containerScrollWidth = signal(0);
   public readonly maxTableHeaderWidth = computed(() => this.containerWidth() * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO);
+  public readonly scrollbarWidth = this.store.selectSignal(selectScrollbarWidth);
   public readonly hoverEnabled = signal(true);
   public readonly container = viewChild.required<ElementRef>('container');
 
   public readonly highlightedFeatureId = computed(() => {
     return this.pinnedFeatureId() ?? this.hoveredFeatureId();
+  });
+
+  public readonly calculatedScrollbarHeight = computed(() => {
+    if (this.containerWidth() < this.containerScrollWidth()) {
+      return this.scrollbarWidth();
+    }
+
+    return 0;
   });
 
   public readonly tableData = computed(() => {
@@ -206,6 +217,7 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
         }
 
         this.containerWidth.set(containerWidth);
+        this.containerScrollWidth.set(this.container().nativeElement.scrollWidth);
       }
     });
 

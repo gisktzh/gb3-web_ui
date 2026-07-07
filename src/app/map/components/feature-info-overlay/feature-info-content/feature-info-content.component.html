@@ -88,6 +88,7 @@
     }
   </table>
   <resize-handler
+    [style]="`--calculated-scrollbar-height: ${calculatedScrollbarHeight()}px;`"
     [minWidth]="minTableHeaderWidth"
     [maxWidth]="maxTableHeaderWidth()"
     location="left"
