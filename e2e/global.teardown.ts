@@ -2,6 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {redactAny} from './utils/redact.utils';
 import {canonicalizeHar} from './utils/canonicalize.utils';
+import {Har} from 'har-format';
 
 /**
  * Removes all occurrences of `target` from every file in `dirPath`.
@@ -23,9 +24,9 @@ export function redactFromHARFiles(): void {
     const filePath = path.join(dirPath, file);
 
     if (fs.statSync(filePath).isFile()) {
-      const content = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      const content: Har = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as Har;
 
-      const redactedContent = redactAny(content);
+      const redactedContent: Har = redactAny(content);
       const canonicalContent = canonicalizeHar(redactedContent);
 
       fs.writeFileSync(filePath, JSON.stringify(canonicalContent, null, 2), 'utf-8');

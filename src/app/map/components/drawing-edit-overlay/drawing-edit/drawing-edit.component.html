@@ -9,7 +9,7 @@
     <text-edit [textStyle]="{style, label: selectedFeature()?.labelText!}" (textStyleChange)="updateStyle($event.style, $event.label)" />
   } @else if (isSymbolStyle(); as style) {
     <symbol-edit
-      [symbolStyle]="{style, selectedSymbol: selectedFeature()?.mapDrawingSymbol?.drawingSymbolDefinition!}"
+      [symbolStyle]="{style, selectedSymbol: selectedFeature()?.mapDrawingSymbol?.drawingSymbolDefinition || null}"
       (symbolStyleChange)="updateStyle($event.style, undefined, $event.selectedSymbol)"
     />
   }

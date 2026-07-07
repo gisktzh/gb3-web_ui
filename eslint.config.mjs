@@ -28,12 +28,18 @@ export default tseslint.config(
     files: ['src/**/*.ts', 'e2e/**/*.ts'],
     extends: [
       eslint.configs.recommended,
-      ...tseslint.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
       ...angular.configs.tsRecommended,
       prettierRecommended,
       ...ngrx.configs.all,
       rxjsX.configs.recommended,
     ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.json', './e2e/tsconfig.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
     plugins: {
       rxjs: rxjsX,
       'rxjs-angular-x': rxjsAngularX,

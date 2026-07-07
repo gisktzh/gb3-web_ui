@@ -151,7 +151,7 @@ export const test = base.extend<Gb3Fixtures>({
       if (shouldSkipTour) {
         const skipButton = await page.getByText('Überspringen').all();
         if (skipButton.length === 1) {
-          skipButton.at(0)?.click();
+          await skipButton.at(0)?.click();
           await page.waitForLoadState('networkidle');
         }
       }
