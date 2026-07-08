@@ -29,11 +29,14 @@ export class ResizeHandlerComponent {
   public readonly usePrimaryColor = input(false);
 
   public readonly resizeEvent = output<StyleExpression>();
+  public readonly resizeStart = output();
+  public readonly resizeEnd = output();
   public readonly resizeableStyle = signal<StyleExpression>({});
   public readonly isResizeActive = signal(false);
 
   public onResizeStart() {
     this.isResizeActive.set(true);
+    this.resizeStart.emit();
   }
 
   public validate(event: ResizeEvent): boolean {
@@ -75,5 +78,6 @@ export class ResizeHandlerComponent {
     }
     this.resizeEvent.emit(this.resizeableStyle());
     this.isResizeActive.set(false);
+    this.resizeEnd.emit();
   }
 }

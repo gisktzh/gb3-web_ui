@@ -4,7 +4,7 @@
       <th
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
         scope="col"
-        [style.min-width]="tableHeaderWidth()"
+        [style.width]="tableHeaderWidth()"
       ></th>
       @for (tableHeader of tableHeaders(); track tableHeader) {
         <th
@@ -38,9 +38,10 @@
           class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
           scope="col"
           [style.min-width]="tableHeaderWidth()"
+          [style.max-width]="tableHeaderWidth()"
         >
           <span class="feature-info-content__table__row__column--attribute">
-            {{ tableRow.key }}
+            {{ tableRow.key | hyphenateUnderscores }}
           </span>
         </th>
         @for (cellValue of tableRow.value; track cellValue) {
@@ -87,11 +88,14 @@
     }
   </table>
   <resize-handler
+    [style]="`--calculated-scrollbar-height: ${calculatedScrollbarHeight()}px;`"
     [minWidth]="minTableHeaderWidth"
     [maxWidth]="maxTableHeaderWidth()"
     location="left"
     (resizeEvent)="resize($event)"
     class="feature-info-content__resize"
     [style.width]="tableHeaderWidth()"
+    (resizeStart)="hoverEnabled.set(false)"
+    (resizeEnd)="onResizeHandlerResizeEnd()"
   />
 </div>

@@ -12,6 +12,8 @@ import {StyleExpression} from '../../../../shared/types/style-expression.type';
 import {MAP_SERVICE} from '../../../../app.tokens';
 import {KeyValuePipe} from '@angular/common';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
+import {HyphenateUnderscoresPipe} from '../../../pipes/hyphenate-underscores.pipe';
+import {selectScrollbarWidth} from 'src/app/state/app/reducers/app-layout.reducer';
 
 type CellType = 'text' | 'url' | 'image';
 
@@ -79,7 +81,7 @@ const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
-  imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe],
+  imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe, HyphenateUnderscoresPipe],
 })
 export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   private readonly store = inject(Store);
@@ -95,11 +97,22 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   public readonly pinnedFeatureId = this.store.selectSignal(selectPinnedFeatureId);
   public readonly hoveredFeatureId = signal<number | null>(0);
   public readonly containerWidth = signal(0);
+  public readonly containerScrollWidth = signal(0);
   public readonly maxTableHeaderWidth = computed(() => this.containerWidth() * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO);
+  public readonly scrollbarWidth = this.store.selectSignal(selectScrollbarWidth);
+  public readonly hoverEnabled = signal(true);
   public readonly container = viewChild.required<ElementRef>('container');
 
   public readonly highlightedFeatureId = computed(() => {
     return this.pinnedFeatureId() ?? this.hoveredFeatureId();
+  });
+
+  public readonly calculatedScrollbarHeight = computed(() => {
+    if (this.containerWidth() < this.containerScrollWidth()) {
+      return this.scrollbarWidth();
+    }
+
+    return 0;
   });
 
   public readonly tableData = computed(() => {
@@ -166,7 +179,7 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   }
 
   public onFeatureHoverStart(fid: number) {
-    if (!this.pinnedFeatureId()) {
+    if (!this.pinnedFeatureId() && this.hoverEnabled()) {
       this.hoveredFeatureId.set(fid);
       this.highlightFeatureOnMapIfExists(fid);
     }
@@ -195,19 +208,39 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
    * table unusable since the drag hanler is out of reach).
    */
   private initResizeObserver() {
-    this.resizeObserver = new ResizeObserver((entries) => {
-      const container = entries.at(0);
-      if (container) {
-        const containerWidth = container.contentRect.width;
-        if (this.maxTableHeaderWidth() > containerWidth * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO) {
-          this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
-        }
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
 
-        this.containerWidth.set(containerWidth);
+    this.resizeObserver = new ResizeObserver(() => this.onResize());
+    this.resizeObserver.observe(this.container().nativeElement);
+  }
+
+  public onResize() {
+    // Use a timeout here to let the browser recalculate thigs first.
+    setTimeout(() => {
+      const container = this.container().nativeElement;
+      const effectiveWidth = container.clientWidth;
+      let scrollWidth = container.scrollWidth;
+
+      this.containerWidth.set(effectiveWidth);
+      this.containerScrollWidth.set(scrollWidth);
+
+      if (this.maxTableHeaderWidth() > effectiveWidth * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO) {
+        this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
+
+        // Resizing automatically means different scrollWidth, using a timeout here too to let the browser catch up.
+        setTimeout(() => {
+          scrollWidth = container.scrollWidth;
+          this.containerScrollWidth.set(scrollWidth);
+        });
       }
     });
+  }
 
-    this.resizeObserver.observe(this.container().nativeElement);
+  public onResizeHandlerResizeEnd() {
+    this.hoverEnabled.set(true);
+    this.onResize();
   }
 
   private createUniqueColumnIdentifierForFid(fid: number): string {
