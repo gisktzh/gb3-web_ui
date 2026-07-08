@@ -1,10 +1,15 @@
 import {Gb3SymbolStyle} from './../../../../../shared/interfaces/internal-drawing-representation.interface';
-import {Component, model} from '@angular/core';
+import {Component, linkedSignal, model} from '@angular/core';
 import {DrawingSymbolsComponent} from '../../../drawing-symbols/drawing-symbols.component';
 import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 import {debounce, form, required} from '@angular/forms/signals';
 
 const INPUT_DEBOUNCE_IN_MS = 10;
+
+const DEFAULT_STYLE = {
+  symbolSize: 30,
+  symbolRotation: 0,
+};
 
 @Component({
   selector: 'symbol-edit',
@@ -18,7 +23,18 @@ export class SymbolEditComponent {
     selectedSymbol: DrawingSymbolDefinition | null;
   }>();
 
-  public symbolStyleForm = form(this.symbolStyle, (fieldPath) => {
+  public readonly symbolStyleFormModel = linkedSignal({
+    source: this.symbolStyle,
+    computation: (value) => ({
+      selectedSymbol: value.selectedSymbol,
+      style: {
+        ...DEFAULT_STYLE,
+        ...value.style,
+      },
+    }),
+  });
+
+  public symbolStyleForm = form(this.symbolStyleFormModel, (fieldPath) => {
     required(fieldPath.selectedSymbol);
     debounce(fieldPath.selectedSymbol, INPUT_DEBOUNCE_IN_MS);
     debounce(fieldPath.style.symbolSize, INPUT_DEBOUNCE_IN_MS);
