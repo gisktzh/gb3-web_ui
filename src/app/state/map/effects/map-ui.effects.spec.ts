@@ -166,9 +166,10 @@ describe('MapUiEffects', () => {
   });
 
   describe('closeAttributeFilterIfAttributeFilterItemIsUndefined$', () => {
-    it('dispatches MapUiActions.setAttributeFilterVisibility() when the current mapAttributeFilter is undefined', () => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() when the current mapAttributeFilter is undefined on desktop', () => {
       const activeMapItem = createGb2WmsMapItemMock('123');
       store.overrideSelector(selectMapAttributeFiltersItem, undefined);
+      store.overrideSelector(selectScreenMode, 'regular');
 
       const expectedAction = MapUiActions.setAttributeFilterVisibility({isVisible: false});
 
@@ -176,6 +177,23 @@ describe('MapUiEffects', () => {
       effects.closeAttributeFilterIfAttributeFilterItemIsUndefined$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });
+    });
+
+    it('does not dispatch MapUiActions.setAttributeFilterVisibility() when the current mapAttributeFilter is undefined on mobile', async () => {
+      vi.useFakeTimers();
+
+      const activeMapItem = createGb2WmsMapItemMock('123');
+      store.overrideSelector(selectMapAttributeFiltersItem, undefined);
+      store.overrideSelector(selectScreenMode, 'mobile');
+      let actualAction;
+
+      actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem}));
+      effects.closeAttributeFilterIfAttributeFilterItemIsUndefined$.subscribe((action) => (actualAction = action));
+      await vi.runAllTimersAsync();
+
+      expect(actualAction).toBeUndefined();
+
+      vi.useRealTimers();
     });
 
     it('does not dispatch MapUiActions.setAttributeFilterVisibility() when the mapAttributeFilter is defined', async () => {

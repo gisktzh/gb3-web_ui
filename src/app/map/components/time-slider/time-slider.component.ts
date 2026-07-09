@@ -64,7 +64,7 @@ export class TimeSliderComponent {
   );
 
   public readonly minimumDateIndex = signal(0);
-  public readonly maximumDateIndex = computed(() => this.availableDates().length);
+  public readonly maximumDateIndex = computed(() => this.availableDates().length - 1);
 
   // the time slider shows a simple current value (e.g. `2001` instead of `2001-2002`) if it has a range of exactly one of a single time unit (year, month, ...)
   public readonly hasSimpleCurrentValue = computed(() => this.isStringSingleTimeUnitRange(this.timeSliderConfiguration().range));
