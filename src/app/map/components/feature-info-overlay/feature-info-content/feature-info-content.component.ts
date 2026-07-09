@@ -4,7 +4,7 @@ import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../..
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {Store} from '@ngrx/store';
 import {selectPinnedFeatureId} from '../../../../state/map/reducers/feature-info.reducer';
-import {MatRadioButton} from '@angular/material/radio';
+import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {TableColumnIdentifierDirective} from './table-column-identifier.directive';
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapService} from '../../../interfaces/map.service';
@@ -81,7 +81,7 @@ const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
-  imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe, HyphenateUnderscoresPipe],
+  imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe, HyphenateUnderscoresPipe, MatRadioGroup],
 })
 export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   private readonly store = inject(Store);
@@ -94,8 +94,32 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
 
   public readonly minTableHeaderWidth: number = MIN_TABLE_HEADER_WIDTH;
   public readonly tableHeaderWidth = signal(`${DEFAULT_TABLE_HEADER_WIDTH}px`);
-  public readonly pinnedFeatureId = this.store.selectSignal(selectPinnedFeatureId);
-  public readonly hoveredFeatureId = signal<number | null>(0);
+  public readonly pinnedFeatureUniqueIdentifier = this.store.selectSignal(selectPinnedFeatureId);
+  public readonly pinnedFeatureId = computed(() => {
+    // The actual feature ID that's coming from `fid`.
+    // We need to:
+    //  1.) Check that there actually is a pinned feature overall one
+    //  2.) Check if the pinned feature belongs to this topic and layer
+    //  3.) Return the number of the pinned feature, so it's in the same format as `fid` again
+    const pinnedFeatureUniqueIdentifier = this.pinnedFeatureUniqueIdentifier();
+    if (pinnedFeatureUniqueIdentifier === undefined) {
+      return undefined;
+    }
+
+    const pinnedFeatureIdCandidate = Number(pinnedFeatureUniqueIdentifier.split('_').at(-1));
+    const anticipatedUniqueIdentifier = TableColumnIdentifierDirective.createUniqueColumnIdentifier(
+      this.topicId(),
+      this.layer().layer,
+      pinnedFeatureIdCandidate,
+    );
+
+    if (anticipatedUniqueIdentifier !== pinnedFeatureUniqueIdentifier) {
+      return undefined;
+    }
+
+    return pinnedFeatureIdCandidate;
+  });
+  public readonly hoveredFeatureId = signal<number | null>(null);
   public readonly containerWidth = signal(0);
   public readonly containerScrollWidth = signal(0);
   public readonly maxTableHeaderWidth = computed(() => this.containerWidth() * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO);
@@ -171,7 +195,9 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
       return;
     }
 
-    if (this.pinnedFeatureId() === fid.toString()) {
+    this.hoveredFeatureId.set(fid);
+
+    if (this.pinnedFeatureId() === fid) {
       this.store.dispatch(FeatureInfoActions.clearHighlight());
     } else {
       this.highlightFeatureOnMapIfExists(fid, true, true);
@@ -179,15 +205,20 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   }
 
   public onFeatureHoverStart(fid: number) {
-    if (!this.pinnedFeatureId() && this.hoverEnabled()) {
+    if (this.hoverEnabled()) {
       this.hoveredFeatureId.set(fid);
-      this.highlightFeatureOnMapIfExists(fid);
+      // Would otherwise reset the pinned feature on hover, which we don't want.
+      if (this.pinnedFeatureUniqueIdentifier() === undefined) {
+        this.highlightFeatureOnMapIfExists(fid);
+      }
     }
   }
 
   public onFeatureHoverEnd() {
-    if (!this.pinnedFeatureId()) {
-      this.hoveredFeatureId.set(null);
+    this.hoveredFeatureId.set(null);
+
+    if (this.pinnedFeatureUniqueIdentifier() === undefined) {
+      // Would otherwise reset the pinned feature on hover, which we don't want.
       this.store.dispatch(FeatureInfoActions.clearHighlight());
     }
   }
