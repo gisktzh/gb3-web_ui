@@ -1,5 +1,5 @@
 import {Gb3SymbolStyle} from './../../../../../shared/interfaces/internal-drawing-representation.interface';
-import {Component, linkedSignal, model} from '@angular/core';
+import {Component, effect, linkedSignal, model} from '@angular/core';
 import {DrawingSymbolsComponent} from '../../../drawing-symbols/drawing-symbols.component';
 import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 import {debounce, form, required} from '@angular/forms/signals';
@@ -40,4 +40,15 @@ export class SymbolEditComponent {
     debounce(fieldPath.style.symbolSize, INPUT_DEBOUNCE_IN_MS);
     debounce(fieldPath.style.symbolRotation, INPUT_DEBOUNCE_IN_MS);
   });
+
+  constructor() {
+    effect(() => {
+      const styleFormModel = this.symbolStyleFormModel();
+      const style = this.symbolStyle();
+
+      if (JSON.stringify(styleFormModel) !== JSON.stringify(style)) {
+        this.symbolStyle.set({...this.symbolStyleFormModel()});
+      }
+    });
+  }
 }
