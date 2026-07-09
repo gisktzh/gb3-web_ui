@@ -1,7 +1,7 @@
 <api-dialog-wrapper title="Einstellungen" (closeEvent)="cancel()" class="drawing-settings-dialog">
   <ng-container content>
     <div class="drawing-settings-dialog__content">
-      <slider-edit [(value)]="lineWidth" [minValue]="1" [maxValue]="12" [step]="1" [showLineWidth]="true" title="Strichstärke" />
+      <slider-edit [(value)]="lineWidth" [minValue]="1" [maxValue]="12" [step]="1" title="Strichstärke" />
       <color-picker-edit [(value)]="lineColor" title="Strichfarbe" />
       <color-picker-edit [(value)]="fillColor" title="Füllfarbe" />
     </div>

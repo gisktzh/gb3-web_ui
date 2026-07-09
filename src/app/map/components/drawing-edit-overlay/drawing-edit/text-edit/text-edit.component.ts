@@ -1,4 +1,4 @@
-import {Component, linkedSignal, model} from '@angular/core';
+import {Component, effect, linkedSignal, model} from '@angular/core';
 import {Gb3TextStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {MatFormField, MatLabel, MatInput} from '@angular/material/input';
@@ -51,4 +51,15 @@ export class TextEditComponent {
     debounce(fieldPath.style.haloColor, INPUT_DEBOUNCE_IN_MS);
     debounce(fieldPath.style.labelYOffset, INPUT_DEBOUNCE_IN_MS);
   });
+
+  constructor() {
+    effect(() => {
+      const styleFormModel = this.textStyleFormModel();
+      const style = this.textStyle();
+
+      if (JSON.stringify(styleFormModel) !== JSON.stringify(style)) {
+        this.textStyle.set({...this.textStyleFormModel()});
+      }
+    });
+  }
 }

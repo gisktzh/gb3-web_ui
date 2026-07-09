@@ -1,4 +1,4 @@
-import {Component, linkedSignal, model} from '@angular/core';
+import {Component, effect, linkedSignal, model} from '@angular/core';
 import {Gb3PolygonStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {SliderEditComponent} from '../slider-edit/slider-edit.component';
 import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.component';
@@ -29,4 +29,15 @@ export class PolygonEditComponent {
     }),
   });
   public polygonStyleForm = form(this.polygonStyleFormModel);
+
+  constructor() {
+    effect(() => {
+      const styleFormModel = this.polygonStyleFormModel();
+      const style = this.polygonStyle();
+
+      if (JSON.stringify(styleFormModel) !== JSON.stringify(style)) {
+        this.polygonStyle.set({...this.polygonStyleFormModel()});
+      }
+    });
+  }
 }

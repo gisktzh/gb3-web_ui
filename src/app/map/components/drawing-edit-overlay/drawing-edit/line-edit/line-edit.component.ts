@@ -1,4 +1,4 @@
-import {Component, linkedSignal, model} from '@angular/core';
+import {Component, effect, linkedSignal, model} from '@angular/core';
 import {Gb3LineStringStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {SliderEditComponent} from '../slider-edit/slider-edit.component';
 import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.component';
@@ -26,4 +26,15 @@ export class LineEditComponent {
     }),
   });
   public lineStyleForm = form(this.lineStyleFormModel);
+
+  constructor() {
+    effect(() => {
+      const styleFormModel = this.lineStyleFormModel();
+      const style = this.lineStyle();
+
+      if (JSON.stringify(styleFormModel) !== JSON.stringify(style)) {
+        this.lineStyle.set({...this.lineStyleFormModel()});
+      }
+    });
+  }
 }
