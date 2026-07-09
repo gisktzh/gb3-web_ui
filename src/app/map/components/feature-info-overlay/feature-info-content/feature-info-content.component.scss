@@ -94,7 +94,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
           &:not(&:nth-of-type(1)) {
             min-width: 200px;
             width: 100%;
-            overflow-y: hidden;
+            cursor: pointer;
           }
         }
 
@@ -117,6 +117,11 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
           justify-content: space-between;
           align-items: center;
           height: 20px;
+          position: relative;
+
+          & mat-radio-button {
+            pointer-events: none;
+          }
         }
       }
 
