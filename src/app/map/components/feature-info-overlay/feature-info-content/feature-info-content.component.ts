@@ -117,7 +117,7 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
       return undefined;
     }
 
-    return Number(pinnedFeatureUniqueIdentifier.split('_').at(-1));
+    return pinnedFeatureIdCandidate;
   });
   public readonly hoveredFeatureId = signal<number | null>(null);
   public readonly containerWidth = signal(0);
