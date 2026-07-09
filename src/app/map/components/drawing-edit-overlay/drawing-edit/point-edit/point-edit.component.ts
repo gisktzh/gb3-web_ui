@@ -1,4 +1,4 @@
-import {Component, linkedSignal, model} from '@angular/core';
+import {Component, effect, linkedSignal, model} from '@angular/core';
 import {Gb3PointStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {SliderEditComponent} from '../slider-edit/slider-edit.component';
 import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.component';
@@ -30,4 +30,15 @@ export class PointEditComponent {
     }),
   });
   public pointStyleForm = form(this.pointStyleFormModel);
+
+  constructor() {
+    effect(() => {
+      const styleFormModel = this.pointStyleFormModel();
+      const style = this.pointStyle();
+
+      if (JSON.stringify(styleFormModel) !== JSON.stringify(style)) {
+        this.pointStyle.set({...this.pointStyleFormModel()});
+      }
+    });
+  }
 }
