@@ -74,7 +74,7 @@ test.describe('Drawing', () => {
       [1000, 900],
       [800, 900],
       [700, 700],
-      [600, 750],
+      [650, 750],
     ];
     const reactangleCoords: ScreenCoordsList = [
       [500, 100],

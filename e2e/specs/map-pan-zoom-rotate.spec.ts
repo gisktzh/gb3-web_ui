@@ -24,10 +24,14 @@ test.describe('Map pan/zoom/rotate', () => {
     await page.waitForTimeout(20);
     await page.mouse.wheel(0, 200);
 
+    await page.waitForTimeout(500);
+
     await expect(zoomInput).toHaveValue('2772');
     await expect(coordsInput).toHaveValue('2684549 / 1253603');
 
     await page.mouse.wheel(0, -200);
+
+    await page.waitForTimeout(500);
 
     await expect(zoomInput).toHaveValue('1000');
 
