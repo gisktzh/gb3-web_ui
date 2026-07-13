@@ -20,11 +20,11 @@
         <legend class="print-dialog__form__fieldset__legend">Beschriftung</legend>
         <mat-form-field appearance="outline" class="print-dialog__form__field print-dialog__form__field--full-width">
           <mat-label>Kartentitel</mat-label>
-          <input matInput [formField]="printForm.title" />
+          <input matInput [formField]="printForm.title" data-test-id="input-print-title" />
         </mat-form-field>
         <mat-form-field appearance="outline" class="print-dialog__form__field print-dialog__form__field--full-width">
           <mat-label>Kommentar</mat-label>
-          <textarea matInput [formField]="printForm.comment"></textarea>
+          <textarea matInput [formField]="printForm.comment" data-test-id="input-print-comment"></textarea>
         </mat-form-field>
       </fieldset>
 
@@ -33,12 +33,12 @@
         <div class="print-dialog__form__field-group">
           <mat-form-field appearance="outline" class="print-dialog__form__field">
             <mat-label>Rotation [°]</mat-label>
-            <input matInput [formField]="printForm.rotation" type="number" placeholder="0" />
+            <input matInput [formField]="printForm.rotation" type="number" placeholder="0" data-test-id="input-print-rotation" />
             <mat-error>Minimum: -90° Maximum: 90°</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline" class="print-dialog__form__field print-dialog__form__field--with-prefix" hideRequiredMarker>
             <mat-label>Massstab</mat-label>
-            <input matInput [formField]="printForm.scale" />
+            <input matInput [formField]="printForm.scale" data-test-id="input-print-scale" />
             <span matPrefix class="print-dialog__form__field__prefix"> 1: </span>
             <mat-error>Minimum: 1:{{ maxScale }} Maximum: 1:{{ minScale }}</mat-error>
           </mat-form-field>
@@ -52,7 +52,7 @@
         <div class="print-dialog__form__field-group">
           <mat-form-field appearance="outline" class="print-dialog__form__field" hideRequiredMarker>
             <mat-label>Papiergrösse</mat-label>
-            <mat-select [formField]="printForm.layout">
+            <mat-select [formField]="printForm.layout" data-test-id="input-print-layout">
               @for (layout of allLayouts(); track layout) {
                 <mat-option [value]="layout" [disabled]="!availableLayouts().includes(layout)">
                   {{ layout }}
@@ -70,7 +70,7 @@
           }
           <mat-form-field appearance="outline" class="print-dialog__form__field" hideRequiredMarker>
             <mat-label>Auflösung [dpi]</mat-label>
-            <mat-select [formField]="printForm.dpi">
+            <mat-select [formField]="printForm.dpi" data-test-id="input-print-dpi">
               @for (dpi of allDpiSettings(); track dpi) {
                 <mat-option [value]="dpi" [disabled]="!availableDpiSettings().includes(dpi)">{{ dpi }}</mat-option>
               }
@@ -78,7 +78,7 @@
           </mat-form-field>
           <mat-form-field appearance="outline" class="print-dialog__form__field" hideRequiredMarker>
             <mat-label>Dateiformat</mat-label>
-            <mat-select [formField]="printForm.fileFormat">
+            <mat-select [formField]="printForm.fileFormat" data-test-id="input-print-fileformat">
               @for (format of allFileFormats(); track format) {
                 <mat-option [value]="format" [disabled]="!availableFileFormats().includes(format)">
                   {{ format }}
@@ -140,6 +140,7 @@
         form="print-dialog-form"
         [disabled]="printCreationLoadingState() === 'loading' || !printForm().valid"
         mat-button
+        data-test-id="submit-print-from"
       >
         Drucken
       </button>

@@ -21,6 +21,7 @@ export default defineConfig({
     // headless: false,
     launchOptions: {
       slowMo: 50,
+      args: ['--ozone-platform=wayland', '--enable-features=CDPScreenshotNewSurface'],
       firefoxUserPrefs: process.env['CI']
         ? {
             'webgl.disabled': false,
