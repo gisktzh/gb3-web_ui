@@ -76,8 +76,7 @@ describe('Gb3GeneralInfoService', () => {
     const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/general_info?x=${mockCoord.x}&y=${mockCoord.y}`;
 
     service.loadGeneralInfo(mockCoord.x, mockCoord.y).subscribe(() => {
-      expect(httpClient.get).toHaveBeenCalledTimes(1);
-      expect(httpClient.get).toHaveBeenCalledWith(expected);
+      expect(httpClient.get).toHaveBeenCalledExactlyOnceWith(expected);
     });
   });
 
@@ -87,8 +86,7 @@ describe('Gb3GeneralInfoService', () => {
     const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/general_info?x=${mockCoord.x}&y=${mockCoord.y}&scale=${mockScale}`;
 
     service.loadGeneralInfo(mockCoord.x, mockCoord.y, mockScale).subscribe(() => {
-      expect(httpClient.get).toHaveBeenCalledTimes(1);
-      expect(httpClient.get).toHaveBeenCalledWith(expected);
+      expect(httpClient.get).toHaveBeenCalledExactlyOnceWith(expected);
     });
   });
 
