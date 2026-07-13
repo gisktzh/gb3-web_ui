@@ -131,6 +131,8 @@ export class MapUiEffects {
       ofType(ActiveMapItemActions.removeActiveMapItem),
       concatLatestFrom(() => this.store.select(selectMapAttributeFiltersItem)),
       filter(([__, attributeFilterItem]) => attributeFilterItem === undefined),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([_, screenMode]) => screenMode !== 'mobile'),
       map(() => MapUiActions.setAttributeFilterVisibility({isVisible: false})),
     );
   });
