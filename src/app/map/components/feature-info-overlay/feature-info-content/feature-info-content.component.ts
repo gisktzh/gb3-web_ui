@@ -14,6 +14,7 @@ import {KeyValuePipe} from '@angular/common';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 import {HyphenateUnderscoresPipe} from '../../../pipes/hyphenate-underscores.pipe';
 import {selectScrollbarWidth} from 'src/app/state/app/reducers/app-layout.reducer';
+import {formatFeatureInfoFieldValue} from '../../../../shared/utils/feature-info-field.utils';
 
 type CellType = 'text' | 'url' | 'image';
 
