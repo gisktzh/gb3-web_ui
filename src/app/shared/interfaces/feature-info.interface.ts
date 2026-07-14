@@ -28,7 +28,7 @@ export interface FeatureInfoResultFeatureTextField extends AbstractFeatureInfoRe
 }
 
 export interface FeatureInfoResultFeatureDateField extends AbstractFeatureInfoResultFeatureFieldInterface {
-  value: string | Date | null;
+  value: string | null;
   type: 'date';
 }
 

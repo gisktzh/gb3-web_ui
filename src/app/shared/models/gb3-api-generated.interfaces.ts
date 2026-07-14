@@ -1110,7 +1110,7 @@ export type InfoFeatureField =
       /** Field label */
       label: string;
       /** Field date */
-      value: string | Date | null;
+      value: string | null;
       /** type for the date object (here 'date') */
       type: 'date';
     };
