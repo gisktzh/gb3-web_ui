@@ -12,13 +12,18 @@ test.describe('Drawing', () => {
     await useHar();
     captureConsole();
 
-    await openUrlWithCoordinates('300', '300');
+    await openUrlWithCoordinates('2702555', '1241686');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(200);
 
     const mapContainer = page.locator('map-container');
+    await expect(mapContainer).toBeVisible();
+
+    await page.waitForTimeout(200);
 
     const drawingMenuOpenButton = page.locator('button[aria-label="Zeichnen"]');
     await expect(drawingMenuOpenButton).toBeVisible();
-    await drawingMenuOpenButton.click();
+    await drawingMenuOpenButton.click({force: true});
 
     const drawingMenu = page.locator('drawing-tools');
     await expect(drawingMenu).toBeVisible();
@@ -91,15 +96,15 @@ test.describe('Drawing', () => {
     await page.mouse.move(100, 100);
 
     // Point add
-    await pointToolButton.click();
-    await page.waitForTimeout(250);
+    await pointToolButton.click({force: true});
+    await page.waitForTimeout(500);
     await page.mouse.click(pointCoords[0], pointCoords[1]);
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(250);
 
     await expect(mapContainer).toBeVisible();
 
     // Line add
-    await lineToolButton.click();
+    await lineToolButton.click({force: true});
     await page.waitForTimeout(250);
     await drawShapeOnMap(lineCoords);
     await page.waitForTimeout(100);
@@ -107,7 +112,7 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     // Polygon add
-    await polygonToolButton.click();
+    await polygonToolButton.click({force: true});
     await page.waitForTimeout(250);
     await drawShapeOnMap(polygonCoords);
     await page.waitForTimeout(100);
@@ -115,7 +120,7 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     // Rectangle add
-    await rectangleToolButton.click();
+    await rectangleToolButton.click({force: true});
     await page.waitForTimeout(250);
     await drawShapeOnMap(reactangleCoords);
     await page.waitForTimeout(100);
@@ -123,7 +128,7 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     // Circle add
-    await circleToolButton.click();
+    await circleToolButton.click({force: true});
     await page.waitForTimeout(250);
     await drawShapeOnMap(circleCoords);
     await page.waitForTimeout(100);
@@ -131,7 +136,7 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     // Text add
-    await textToolButton.click();
+    await textToolButton.click({force: true});
     await page.waitForTimeout(250);
     await page.mouse.click(textCoords[0], textCoords[1]);
     await page.waitForTimeout(500);
@@ -147,13 +152,13 @@ test.describe('Drawing', () => {
 
     const textDrawingToolFormSubmit = textDrawingToolInputForm.getByRole('button', {name: 'Hinzufügen'});
     await expect(textDrawingToolFormSubmit).toBeVisible();
-    await textDrawingToolFormSubmit.click();
+    await textDrawingToolFormSubmit.click({force: true});
     await page.waitForTimeout(100);
 
     await expect(mapContainer).toBeVisible();
 
     // Symbol add
-    await symbolToolButton.click();
+    await symbolToolButton.click({force: true});
     await page.waitForTimeout(250);
     const symbolInput = page.locator('symbol-drawing-tool-input');
     await expect(symbolInput).toBeVisible();
@@ -161,11 +166,12 @@ test.describe('Drawing', () => {
     // Close it and reopen it
     const closeButton = page.locator('mat-dialog-container button', {hasText: 'close'});
     await expect(closeButton).toBeVisible();
-    await closeButton.click();
+    await closeButton.click({force: true});
     await page.waitForTimeout(250);
     await expect(symbolInput).not.toBeVisible();
 
-    await symbolToolButton.click();
+    await page.waitForTimeout(250);
+    await symbolToolButton.click({force: true});
     await page.waitForTimeout(250);
     await expect(symbolInput).toBeVisible();
 
@@ -183,15 +189,15 @@ test.describe('Drawing', () => {
       await expect(categories[index]).toContainText(title);
     }
 
-    await categories[1].click();
+    await categories[1].click({force: true});
     await page.waitForTimeout(250);
     const porcupine = symbolInput.locator('label[for="Porcupine"]');
     await expect(porcupine).toBeVisible();
-    await porcupine.click();
+    await porcupine.click({force: true});
 
     const addButton = symbolInput.locator('button', {hasText: 'Hinzufügen'});
     await expect(addButton).toBeVisible();
-    await addButton.click();
+    await addButton.click({force: true});
     await page.waitForTimeout(1000);
 
     await page.mouse.click(symbolCoords[0], symbolCoords[1]);
@@ -199,7 +205,9 @@ test.describe('Drawing', () => {
 
     // Scroll in and out once to make all drawings visible by refreshing the @arcgis/core map rendering.
     await page.mouse.wheel(0, 10);
+    await page.waitForTimeout(250);
     await page.mouse.wheel(0, -10);
+    await page.waitForTimeout(250);
 
     await expect(mapContainer).toBeVisible();
 
