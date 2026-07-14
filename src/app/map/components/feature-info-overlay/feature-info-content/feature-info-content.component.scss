@@ -123,6 +123,12 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
             pointer-events: none;
           }
         }
+
+        .feature-info-content__table__row__column--attribute {
+          max-width: 100%;
+          word-break: break-word;
+          hyphens: auto;
+        }
       }
 
       // Add background on col header on hover

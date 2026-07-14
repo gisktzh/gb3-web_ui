@@ -12,7 +12,7 @@ import {StyleExpression} from '../../../../shared/types/style-expression.type';
 import {MAP_SERVICE} from '../../../../app.tokens';
 import {KeyValuePipe} from '@angular/common';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
-import {HyphenateUnderscoresPipe} from '../../../pipes/hyphenate-underscores.pipe';
+import {HyphenatePipe} from '../../../pipes/hyphenate.pipe';
 import {selectScrollbarWidth} from 'src/app/state/app/reducers/app-layout.reducer';
 
 type CellType = 'text' | 'url' | 'image';
@@ -81,7 +81,7 @@ const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
-  imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe, HyphenateUnderscoresPipe, MatRadioGroup],
+  imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe, HyphenatePipe, MatRadioGroup],
 })
 export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   private readonly store = inject(Store);
