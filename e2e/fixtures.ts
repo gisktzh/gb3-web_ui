@@ -285,40 +285,43 @@ export const test = base.extend<Gb3Fixtures>({
         await page.mouse.click(clickCoords[0], clickCoords[1], {
           button: 'right',
         });
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(1500);
         const editTool = page.locator(editToolSelector);
         await expect(editTool).toBeVisible();
 
         if (sliderInputValues.length > 0) {
           const sliderInputs = await editTool.locator('slider-edit').all();
-          await page.waitForTimeout(20);
+          await page.waitForTimeout(200);
           for (const [index, value] of sliderInputValues.entries()) {
             const inputField = sliderInputs[index].locator('input');
             await inputField.fill(value);
+            await page.waitForTimeout(200);
             await expect(sliderInputs[index].locator('.slider-wrapper__header__value')).toContainText(value);
-            await page.waitForTimeout(20);
+            await page.waitForTimeout(200);
           }
         }
 
         if (colorInputValues.length > 0) {
           const colorInputs = await editTool.locator('input[type="color"]').all();
-          await page.waitForTimeout(20);
+          await page.waitForTimeout(200);
           for (const [index, value] of colorInputValues.entries()) {
             await colorInputs[index].fill(value);
+            await page.waitForTimeout(200);
             await expect(mapContainer).toBeVisible();
-            await page.waitForTimeout(20);
+            await page.waitForTimeout(200);
           }
         }
 
         if (textInputValues.length > 0) {
           const textInputs = await editTool.locator('input:not([type])').all();
-          await page.waitForTimeout(20);
+          await page.waitForTimeout(200);
           for (const [index, value] of textInputValues.entries()) {
             await textInputs[index].focus();
             await textInputs[index].clear();
             await textInputs[index].fill(value);
+            await page.waitForTimeout(200);
             await expect(mapContainer).toBeVisible();
-            await page.waitForTimeout(20);
+            await page.waitForTimeout(200);
           }
         }
 

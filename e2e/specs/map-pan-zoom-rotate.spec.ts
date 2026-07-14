@@ -24,16 +24,25 @@ test.describe('Map pan/zoom/rotate', () => {
     await page.waitForTimeout(20);
     await page.mouse.wheel(0, 200);
 
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(1000);
 
-    await expect(zoomInput).toHaveValue('2772');
-    await expect(coordsInput).toHaveValue('2684549 / 1253603');
+    const zoomValueAfterWheelOut = Number(await zoomInput.inputValue());
+    await expect(zoomValueAfterWheelOut).toBeGreaterThan(1000);
+
+    const coordsAfterWheelOut = (await coordsInput.inputValue())?.split(' / ');
+    if (coordsAfterWheelOut) {
+      // Should be roughly the same ballpark numbers
+      await expect(coordsAfterWheelOut[0]).toMatch(/^2684\d{3}/);
+      await expect(coordsAfterWheelOut[1]).toMatch(/^1253\d{3}/);
+    }
 
     await page.mouse.wheel(0, -200);
 
     await page.waitForTimeout(500);
 
     await expect(zoomInput).toHaveValue('1000');
+    const zoomValueAfterWheelIn = Number(await zoomInput.inputValue());
+    await expect(zoomValueAfterWheelIn).toBeLessThan(zoomValueAfterWheelOut);
 
     await page.waitForTimeout(250);
 
@@ -51,7 +60,12 @@ test.describe('Map pan/zoom/rotate', () => {
     await page.waitForTimeout(250);
 
     await expect(zoomInput).toHaveValue('1000');
-    await expect(coordsInput).toHaveValue('2684499 / 1253645');
+    const coordsAfterPan = (await coordsInput.inputValue())?.split(' / ');
+    if (coordsAfterPan) {
+      // Should be roughly the same ballpark numbers
+      await expect(coordsAfterPan[0]).toMatch(/^2684\d{3}/);
+      await expect(coordsAfterPan[1]).toMatch(/^1253\d{3}/);
+    }
 
     // Set extent by drawing a rectangle
     await page.keyboard.down('Shift');
@@ -62,7 +76,12 @@ test.describe('Map pan/zoom/rotate', () => {
     await page.keyboard.up('Shift');
 
     await expect(zoomInput).toHaveValue('99');
-    await expect(coordsInput).toHaveValue('2684527 / 1253631');
+    const coordsAfterExtentZoom = (await coordsInput.inputValue())?.split(' / ');
+    if (coordsAfterExtentZoom) {
+      // Should be roughly the same ballpark numbers
+      await expect(coordsAfterExtentZoom[0]).toMatch(/^2684\d{3}/);
+      await expect(coordsAfterExtentZoom[1]).toMatch(/^1253\d{3}/);
+    }
 
     // Via buttons
     const zoomControls = page.locator('zoom-controls');

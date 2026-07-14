@@ -88,13 +88,16 @@ test.describe('Data download', () => {
 
     await page.waitForTimeout(200);
 
+    // Clickaway.
+    await page.mouse.move(100, 100);
+    await page.mouse.click(100, 100);
+
+    await page.waitForTimeout(200);
+
     const downloadStartButton = dataDownloadDialog.locator('[data-test-id="data-download-download-button"]');
     await expect(downloadStartButton).toBeVisible();
 
-    // Clicking twice to get rid of the overlay that the download format dropdown produces.
-    await downloadStartButton.click({force: true});
-    await page.waitForTimeout(50);
-    await downloadStartButton.click({force: true});
+    await downloadStartButton.click();
 
     await page.waitForTimeout(200);
 

@@ -64,7 +64,7 @@ test.describe('Drawing', () => {
     // After each drawing, we check for the visibility of the map container. If it's still there, there's
     // no non-recoverable error.
 
-    const pointCoords: ScreenCoords = [600, 600];
+    const pointCoords: ScreenCoords = [850, 600];
     const lineCoords: ScreenCoordsList = [
       [700, 200],
       [900, 300],
@@ -77,8 +77,8 @@ test.describe('Drawing', () => {
       [650, 750],
     ];
     const reactangleCoords: ScreenCoordsList = [
-      [500, 100],
-      [750, 250],
+      [500, 500],
+      [750, 650],
     ];
     const circleCoords: ScreenCoordsList = [
       [1200, 500],
@@ -171,8 +171,11 @@ test.describe('Drawing', () => {
 
     const symbolSliderInputs = await symbolInput.locator('slider-edit').all();
     await symbolSliderInputs[0].locator('input').fill('16');
+    await page.waitForTimeout(250);
     await expect(symbolSliderInputs[0].locator('.slider-wrapper__header__value')).toContainText('16');
+
     await symbolSliderInputs[1].locator('input').fill('180');
+    await page.waitForTimeout(250);
     await expect(symbolSliderInputs[1].locator('.slider-wrapper__header__value')).toContainText('180');
 
     const categories = await symbolInput.locator('mat-expansion-panel-header').all();
@@ -181,6 +184,7 @@ test.describe('Drawing', () => {
     }
 
     await categories[1].click();
+    await page.waitForTimeout(250);
     const porcupine = symbolInput.locator('label[for="Porcupine"]');
     await expect(porcupine).toBeVisible();
     await porcupine.click();
