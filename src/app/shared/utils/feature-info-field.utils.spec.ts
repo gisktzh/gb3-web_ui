@@ -8,6 +8,21 @@ describe('feature-info-field utils', () => {
     expect(formatFeatureInfoFieldValue('2026-07-15T14:30:00.000+02:00', 'date')).toBe('15.07.2026 12:30:00');
   });
 
+  it('formats date values with hours and minutes when input contains time', () => {
+    expect(formatFeatureInfoFieldValue('2026-07-15T14:30', 'date')).toBe('15.07.2026 14:30');
+    expect(formatFeatureInfoFieldValue('2026-07-15 14:30', 'date')).toBe('15.07.2026 14:30');
+  });
+
+  it('returns original string value for invalid dates', () => {
+    expect(formatFeatureInfoFieldValue('not-a-date', 'date')).toBe('not-a-date');
+    expect(formatFeatureInfoFieldValue('notadate', 'date')).toBe('notadate');
+  });
+
+  it('returns null or string for non-string date values', () => {
+    expect(formatFeatureInfoFieldValue(42, 'date')).toBeNull();
+    expect(formatFeatureInfoFieldValue(null, 'date')).toBeNull();
+  });
+
   it('converts text values to strings', () => {
     expect(formatFeatureInfoFieldValue('42', 'text')).toBe('42');
     expect(formatFeatureInfoFieldValue(42, 'text')).toBe('42');

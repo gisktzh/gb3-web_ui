@@ -10,23 +10,22 @@ export function formatFeatureInfoFieldValue(value: string | number | null, type:
       return String(value);
 
     case 'date':
-      return formatDateValue(value);
+      return typeof value === 'string' ? formatDateValue(value) : null;
   }
 }
 
-function formatDateValue(value: string | number): string | null {
+function formatDateValue(value: string): string | null {
   const date = dayjs(value);
+
   if (!date.isValid()) {
-    return typeof value === 'string' ? value : null;
+    return value;
   }
 
-  const input = typeof value === 'string' ? value : '';
-
-  if (/[T ]\d{2}:\d{2}:\d{2}/.test(input)) {
+  if (/[T ]\d{2}:\d{2}:\d{2}/.test(value)) {
     return date.format('DD.MM.YYYY HH:mm:ss');
   }
 
-  if (/[T ]\d{2}:\d{2}/.test(input)) {
+  if (/[T ]\d{2}:\d{2}/.test(value)) {
     return date.format('DD.MM.YYYY HH:mm');
   }
 
