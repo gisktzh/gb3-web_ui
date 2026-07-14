@@ -7,6 +7,6 @@ import {hyphenateSync as hyphenate} from 'hyphen/de';
 })
 export class HyphenatePipe implements PipeTransform {
   public transform(value: string): string {
-    return hyphenate(value);
+    return hyphenate(value.replace(/(?<=\w)_(?=\w)/g, '_\u00AD'));
   }
 }
