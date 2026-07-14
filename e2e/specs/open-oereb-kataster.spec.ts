@@ -1,7 +1,7 @@
 import {test, expect} from '../fixtures';
 
 test.describe('OEREB-Kataster', () => {
-  test.only('opens the OEREB-Kataster and searches for a specific address, returning its data in the info request', async ({
+  test('opens the OEREB-Kataster and searches for a specific address, returning its data in the info request', async ({
     page,
     search,
     useHar,
