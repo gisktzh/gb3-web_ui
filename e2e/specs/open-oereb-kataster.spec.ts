@@ -16,13 +16,13 @@ test.describe('OEREB-Kataster', () => {
     await page.waitForLoadState('networkidle');
 
     await search('Weststrasse 49, 8003');
+    await page.waitForTimeout(5000); // Until the zoom is done
 
     const map = page.locator('map-page');
     await expect(map).toBeVisible();
 
-    await map.click({force: true});
+    await map.click();
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(500);
 
     await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
     await expect(page.locator('feature-info-content', {hasText: 'Markieren'})).toBeVisible();
