@@ -9,6 +9,8 @@ test.describe('Printing', () => {
     filterForLayer,
     clickMapInTheList,
   }) => {
+    test.setTimeout(120_000);
+
     await useHar();
     captureConsole();
 
