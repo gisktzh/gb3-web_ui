@@ -23,7 +23,7 @@ test.describe('Drawing', () => {
 
     const drawingMenuOpenButton = page.locator('button[aria-label="Zeichnen"]');
     await expect(drawingMenuOpenButton).toBeVisible();
-    await drawingMenuOpenButton.click({force: true});
+    await drawingMenuOpenButton.click();
 
     const drawingMenu = page.locator('drawing-tools');
     await expect(drawingMenu).toBeVisible();
@@ -96,7 +96,7 @@ test.describe('Drawing', () => {
     await page.mouse.move(100, 100);
 
     // Point add
-    await pointToolButton.click({force: true});
+    await pointToolButton.click();
     await page.waitForTimeout(500);
     await page.mouse.click(pointCoords[0], pointCoords[1]);
     await page.waitForTimeout(250);
@@ -104,7 +104,7 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     // Line add
-    await lineToolButton.click({force: true});
+    await lineToolButton.click();
     await page.waitForTimeout(250);
     await drawShapeOnMap(lineCoords);
     await page.waitForTimeout(100);
@@ -112,7 +112,7 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     // Polygon add
-    await polygonToolButton.click({force: true});
+    await polygonToolButton.click();
     await page.waitForTimeout(250);
     await drawShapeOnMap(polygonCoords);
     await page.waitForTimeout(100);
@@ -120,7 +120,7 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     // Rectangle add
-    await rectangleToolButton.click({force: true});
+    await rectangleToolButton.click();
     await page.waitForTimeout(250);
     await drawShapeOnMap(reactangleCoords);
     await page.waitForTimeout(100);
@@ -128,7 +128,7 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     // Circle add
-    await circleToolButton.click({force: true});
+    await circleToolButton.click();
     await page.waitForTimeout(250);
     await drawShapeOnMap(circleCoords);
     await page.waitForTimeout(100);
@@ -136,7 +136,7 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     // Text add
-    await textToolButton.click({force: true});
+    await textToolButton.click();
     await page.waitForTimeout(250);
     await page.mouse.click(textCoords[0], textCoords[1]);
     await page.waitForTimeout(500);
@@ -152,13 +152,13 @@ test.describe('Drawing', () => {
 
     const textDrawingToolFormSubmit = textDrawingToolInputForm.getByRole('button', {name: 'Hinzufügen'});
     await expect(textDrawingToolFormSubmit).toBeVisible();
-    await textDrawingToolFormSubmit.click({force: true});
+    await textDrawingToolFormSubmit.click();
     await page.waitForTimeout(100);
 
     await expect(mapContainer).toBeVisible();
 
     // Symbol add
-    await symbolToolButton.click({force: true});
+    await symbolToolButton.click();
     await page.waitForTimeout(250);
     const symbolInput = page.locator('symbol-drawing-tool-input');
     await expect(symbolInput).toBeVisible();
@@ -166,12 +166,12 @@ test.describe('Drawing', () => {
     // Close it and reopen it
     const closeButton = page.locator('mat-dialog-container button', {hasText: 'close'});
     await expect(closeButton).toBeVisible();
-    await closeButton.click({force: true});
+    await closeButton.click();
     await page.waitForTimeout(250);
     await expect(symbolInput).not.toBeVisible();
 
     await page.waitForTimeout(250);
-    await symbolToolButton.click({force: true});
+    await symbolToolButton.click();
     await page.waitForTimeout(250);
     await expect(symbolInput).toBeVisible();
 
@@ -189,15 +189,15 @@ test.describe('Drawing', () => {
       await expect(categories[index]).toContainText(title);
     }
 
-    await categories[1].click({force: true});
+    await categories[1].click();
     await page.waitForTimeout(250);
     const porcupine = symbolInput.locator('label[for="Porcupine"]');
     await expect(porcupine).toBeVisible();
-    await porcupine.click({force: true});
+    await porcupine.click();
 
     const addButton = symbolInput.locator('button', {hasText: 'Hinzufügen'});
     await expect(addButton).toBeVisible();
-    await addButton.click({force: true});
+    await addButton.click();
     await page.waitForTimeout(1000);
 
     await page.mouse.click(symbolCoords[0], symbolCoords[1]);

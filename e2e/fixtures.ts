@@ -159,6 +159,7 @@ export const test = base.extend<Gb3Fixtures>({
   openUrlWithCoordinates: async ({page}, use) => {
     await use(async (x: string, y: string, shouldSkipTour: boolean = true) => {
       await page.goto(`/maps?x=${x}&y=${y}&scale=251&basemap=arelkbackgroundzh`);
+      await page.waitForTimeout(2000);
       await page.waitForLoadState('networkidle');
 
       if (shouldSkipTour) {

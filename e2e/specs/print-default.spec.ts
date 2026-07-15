@@ -1,13 +1,23 @@
 import {test, expect} from '../fixtures';
 
 test.describe('Printing', () => {
-  test('creates a print job and downloads the file', async ({page, useHar, openUrlWithCoordinates, captureConsole}) => {
+  test('creates a print job and downloads the file', async ({
+    page,
+    useHar,
+    openUrlWithCoordinates,
+    captureConsole,
+    filterForLayer,
+    clickMapInTheList,
+  }) => {
     await useHar();
     captureConsole();
 
     await openUrlWithCoordinates('2702555', '1241686');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(200);
+
+    await filterForLayer('Amtliche Vermessung in Farbe');
+    await clickMapInTheList('Amtliche Vermessung in Farbe');
 
     const printDialogButton = page.locator('[data-test-id="map-print"]');
     await expect(printDialogButton).toBeVisible();
