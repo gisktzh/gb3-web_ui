@@ -16,6 +16,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     ignoreHTTPSErrors: true,
     screenshot: 'only-on-failure',
+    video: 'on-first-retry',
 
     // DEBUGGING: The following options are left here for convenience. They're super useful for debugging.
     // headless: false,
