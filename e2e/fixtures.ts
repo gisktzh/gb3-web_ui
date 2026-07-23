@@ -292,7 +292,6 @@ export const test = base.extend<Gb3Fixtures>({
 
         if (sliderInputValues.length > 0) {
           const sliderInputs = await editTool.locator('slider-edit').all();
-          await page.waitForTimeout(200);
           for (const [index, value] of sliderInputValues.entries()) {
             const inputField = sliderInputs[index].locator('input');
             await inputField.fill(value);

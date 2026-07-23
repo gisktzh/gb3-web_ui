@@ -75,12 +75,9 @@ test.describe('Printing', () => {
     await expect(dpiField).toContainText('150');
 
     const submitButton = page.locator('[data-test-id="submit-print-from"]');
-
-    const downloadPromise = page.waitForEvent('download');
-
     await submitButton.click();
 
-    const download = await downloadPromise;
+    const download = await page.waitForEvent('download');
     const suggestedFileName = download.suggestedFilename();
     await expect(suggestedFileName).toContain('geoportal_zh_A2_hoch_');
     await expect(suggestedFileName).toContain('.pdf');
