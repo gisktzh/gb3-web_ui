@@ -29,6 +29,9 @@ import {ExpandableListItemComponent} from '../../../shared/components/expandable
 import {MapDataItemFavouriteComponent} from './base-map-data-item/map-data-item-favourite.component';
 import {MapDataItemMapComponent} from './base-map-data-item/map-data-item-map.component';
 import {MatDivider} from '@angular/material/divider';
+import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
+import {ConfigService} from 'src/app/shared/services/config.service';
+import {selectItems} from 'src/app/state/map/selectors/active-map-items.selector';
 
 @Component({
   selector: 'map-data-catalogue',
@@ -51,9 +54,11 @@ import {MatDivider} from '@angular/material/divider';
 })
 export class MapDataCatalogueComponent implements OnDestroy {
   private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
   private readonly favouritesService = inject(FavouritesService);
 
   public readonly changeIsMinimizedEvent = output<boolean>();
+  public readonly basemapChangedEvent = output();
 
   public readonly topics = this.store.selectSignal(selectFilteredLayerCatalog);
   public readonly catalogueLoadingState = this.store.selectSignal(selectCatalogueLoadingState);
@@ -64,6 +69,7 @@ export class MapDataCatalogueComponent implements OnDestroy {
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   private readonly originalMaps = this.store.selectSignal(selectMaps);
   public readonly isMinimized = signal(false);
+  public readonly activeMapItems = this.store.selectSignal(selectItems);
 
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
@@ -116,6 +122,10 @@ export class MapDataCatalogueComponent implements OnDestroy {
       activeMap = originalActiveMap;
     }
 
+    if (!isTemporary && this.activeMapItems().length === 0) {
+      this.applyDefaultBasemapForMap(activeMap);
+    }
+
     this.addActiveItem(
       isTemporary ? ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap) : ActiveMapItemFactory.createGb2WmsMapItem(activeMap),
     );
@@ -166,5 +176,14 @@ export class MapDataCatalogueComponent implements OnDestroy {
   private addActiveItem(activeMapItem: ActiveMapItem) {
     // add new map items on top (position 0)
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
+  }
+
+  private applyDefaultBasemapForMap(activeMap: Map) {
+    const newActiveBaseMap = this.configService.basemapConfig.availableBasemaps.find((basemap) =>
+      basemap.defaultForTopics?.includes(activeMap.id),
+    );
+    if (newActiveBaseMap) {
+      this.store.dispatch(MapConfigActions.setBasemap({activeBasemapId: newActiveBaseMap.id}));
+    }
   }
 }
