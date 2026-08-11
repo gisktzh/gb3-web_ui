@@ -11,7 +11,7 @@ interface AbstractBasemap {
   id: string;
   type: 'wms' | 'blank';
   title: string;
-  defaultForTopics?: string[] | undefined;
+  defaultForTopics?: string[];
 }
 
 export type Basemap = WmsBasemap | BlankBasemap;

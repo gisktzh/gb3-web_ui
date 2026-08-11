@@ -58,7 +58,6 @@ export class MapDataCatalogueComponent implements OnDestroy {
   private readonly favouritesService = inject(FavouritesService);
 
   public readonly changeIsMinimizedEvent = output<boolean>();
-  public readonly basemapChangedEvent = output();
 
   public readonly topics = this.store.selectSignal(selectFilteredLayerCatalog);
   public readonly catalogueLoadingState = this.store.selectSignal(selectCatalogueLoadingState);
