@@ -36,9 +36,9 @@ test.describe('Drawing', () => {
         for (const [index, value] of sliderInputValues.entries()) {
           const inputField = sliderInputs[index].locator('input');
           await inputField.fill(value);
-          await page.waitForTimeout(500);
+          await page.waitForTimeout(150);
           await expect(sliderInputs[index].locator('.slider-wrapper__header__value')).toContainText(value);
-          await page.waitForTimeout(500);
+          await page.waitForTimeout(150);
         }
       }
 
