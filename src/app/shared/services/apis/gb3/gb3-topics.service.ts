@@ -184,23 +184,21 @@ export class Gb3TopicsService extends Gb3ApiService {
                 permissionMissing: topic.permission_missing,
                 opacity: topic.opacity,
                 layers: topic.layers
-                  .map(
-                    (layer): MapLayer => ({
-                      id: layer.id,
-                      layer: layer.layer,
-                      title: layer.title,
-                      queryable: layer.queryable,
-                      uuid: layer.geolion_geodatensatz_uuid,
-                      groupTitle: layer.group_title,
-                      minScale: layer.min_scale,
-                      maxScale: layer.max_scale,
-                      wmsSort: layer.wms_sort,
-                      tocSort: layer.toc_sort,
-                      permissionMissing: layer.permission_missing,
-                      visible: layer.initially_visible,
-                      isHidden: false,
-                    }),
-                  )
+                  .map((layer): MapLayer => ({
+                    id: layer.id,
+                    layer: layer.layer,
+                    title: layer.title,
+                    queryable: layer.queryable,
+                    uuid: layer.geolion_geodatensatz_uuid,
+                    groupTitle: layer.group_title,
+                    minScale: layer.min_scale,
+                    maxScale: layer.max_scale,
+                    wmsSort: layer.wms_sort,
+                    tocSort: layer.toc_sort,
+                    permissionMissing: layer.permission_missing,
+                    visible: layer.initially_visible,
+                    isHidden: false,
+                  }))
                   .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted
                 // to the order of the WMS specifications
                 ...this.handleTimeSliderConfiguration(topic.timesliderConfiguration),
@@ -209,13 +207,11 @@ export class Gb3TopicsService extends Gb3ApiService {
                     name: filterConfiguration.name,
                     description: filterConfiguration.description,
                     parameter: filterConfiguration.parameter,
-                    filterValues: filterConfiguration.filterValues.map(
-                      (filterValue): FilterValue => ({
-                        isActive: false,
-                        values: filterValue.values,
-                        name: filterValue.name,
-                      }),
-                    ),
+                    filterValues: filterConfiguration.filterValues.map((filterValue): FilterValue => ({
+                      isActive: false,
+                      values: filterValue.values,
+                      name: filterValue.name,
+                    })),
                   };
                 }),
                 searchConfigurations: topic.searchConfigurations ?? undefined,
