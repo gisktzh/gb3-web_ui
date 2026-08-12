@@ -11,16 +11,21 @@ import {Gb3QueryCoordinatesToPointConverterUtils} from '../../../utils/gb3-query
 export class Gb3GeneralInfoService extends Gb3ApiService {
   protected readonly endpoint = 'general_info';
 
-  public loadGeneralInfo(x: number, y: number): Observable<GeneralInfoResponse> {
-    const generalInfoData = this.get<GeneralInfoListData>(this.createUrlForLocation(x, y));
+  public loadGeneralInfo(x: number, y: number, scale?: number): Observable<GeneralInfoResponse> {
+    const generalInfoData = this.get<GeneralInfoListData>(this.createUrlForLocation(x, y, scale));
 
     return generalInfoData.pipe(map((generalInfoListData) => this.mapGeneralInfoListDataToGeneralInfoResponse(generalInfoListData)));
   }
 
-  private createUrlForLocation(x: number, y: number): string {
+  private createUrlForLocation(x: number, y: number, scale?: number): string {
     const url = new URL(this.getFullEndpointUrl());
     url.searchParams.append('x', x.toString());
     url.searchParams.append('y', y.toString());
+
+    if (scale !== undefined) {
+      url.searchParams.append('scale', scale.toString());
+    }
+
     return url.toString();
   }
 
