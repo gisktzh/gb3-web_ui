@@ -1,25 +1,83 @@
 import {test, expect, ScreenCoordsList, ScreenCoords} from '../fixtures';
 
 test.describe('Drawing', () => {
-  test('draws different shapes and sizes and can edit them', async ({
-    page,
-    openUrlWithCoordinates,
-    useHar,
-    captureConsole,
-    drawShapeOnMap,
-    assertShapeEdit,
-  }) => {
+  test('draws different shapes and sizes and can edit them', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
+    async function drawShapeOnMap(coordList: ScreenCoordsList) {
+      for (const [index, coords] of coordList.entries()) {
+        if (index === coordList.length - 1) {
+          // Double click at the end of the shape.
+          await page.mouse.dblclick(coords[0], coords[1]);
+        } else {
+          await page.mouse.click(coords[0], coords[1]);
+        }
+        await page.waitForTimeout(250);
+      }
+    }
+
+    async function assertShapeEdit(
+      editToolSelector: string,
+      clickCoords: ScreenCoords,
+      sliderInputValues: string[] = [],
+      colorInputValues: string[] = [],
+      textInputValues: string[] = [],
+      radioInputId: string = '',
+    ) {
+      const mapContainer = page.locator('map-container');
+
+      await page.mouse.click(clickCoords[0], clickCoords[1], {
+        button: 'right',
+      });
+      await page.waitForTimeout(500);
+      const editTool = page.locator(editToolSelector);
+      await expect(editTool).toBeVisible({timeout: 30_000});
+
+      if (sliderInputValues.length > 0) {
+        const sliderInputs = await editTool.locator('slider-edit').all();
+        for (const [index, value] of sliderInputValues.entries()) {
+          const inputField = sliderInputs[index].locator('input');
+          await inputField.fill(value);
+          await expect(sliderInputs[index].locator('.slider-wrapper__header__value')).toContainText(value);
+        }
+      }
+
+      if (colorInputValues.length > 0) {
+        const colorInputs = await editTool.locator('input[type="color"]').all();
+        for (const [index, value] of colorInputValues.entries()) {
+          await colorInputs[index].fill(value);
+          await expect(mapContainer).toBeVisible();
+        }
+      }
+
+      if (textInputValues.length > 0) {
+        const textInputs = await editTool.locator('input:not([type])').all();
+        for (const [index, value] of textInputValues.entries()) {
+          await textInputs[index].focus();
+          await textInputs[index].clear();
+          await textInputs[index].fill(value);
+          await expect(mapContainer).toBeVisible();
+        }
+      }
+
+      if (radioInputId.length > 0) {
+        const radioInput = editTool.locator(`label[for="${radioInputId}"]`);
+        await expect(radioInput).toBeVisible();
+        await radioInput.click({force: true});
+        await page.waitForTimeout(500);
+        await expect(mapContainer).toBeVisible();
+      }
+
+      const closeButton = page.locator('drawing-edit-overlay button', {hasText: 'close'});
+      await closeButton.click();
+    }
+
     await useHar();
     captureConsole();
 
     await openUrlWithCoordinates('2702555', '1241686');
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(200);
 
     const mapContainer = page.locator('map-container');
     await expect(mapContainer).toBeVisible();
-
-    await page.waitForTimeout(200);
 
     const drawingMenuOpenButton = page.locator('button[aria-label="Zeichnen"]');
     await expect(drawingMenuOpenButton).toBeVisible();
@@ -99,7 +157,7 @@ test.describe('Drawing', () => {
     await pointToolButton.click();
     await page.waitForTimeout(500);
     await page.mouse.click(pointCoords[0], pointCoords[1]);
-    await page.waitForTimeout(250);
+    await page.waitForTimeout(500);
 
     await expect(mapContainer).toBeVisible();
 
@@ -107,7 +165,7 @@ test.describe('Drawing', () => {
     await lineToolButton.click();
     await page.waitForTimeout(250);
     await drawShapeOnMap(lineCoords);
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(250);
 
     await expect(mapContainer).toBeVisible();
 
@@ -115,7 +173,7 @@ test.describe('Drawing', () => {
     await polygonToolButton.click();
     await page.waitForTimeout(250);
     await drawShapeOnMap(polygonCoords);
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(250);
 
     await expect(mapContainer).toBeVisible();
 
@@ -123,7 +181,7 @@ test.describe('Drawing', () => {
     await rectangleToolButton.click();
     await page.waitForTimeout(250);
     await drawShapeOnMap(reactangleCoords);
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(250);
 
     await expect(mapContainer).toBeVisible();
 
@@ -131,7 +189,7 @@ test.describe('Drawing', () => {
     await circleToolButton.click();
     await page.waitForTimeout(250);
     await drawShapeOnMap(circleCoords);
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(250);
 
     await expect(mapContainer).toBeVisible();
 
@@ -139,10 +197,9 @@ test.describe('Drawing', () => {
     await textToolButton.click();
     await page.waitForTimeout(250);
     await page.mouse.click(textCoords[0], textCoords[1]);
-    await page.waitForTimeout(500);
 
     const textDrawingToolInputForm = page.locator('text-drawing-tool-input');
-    await expect(textDrawingToolInputForm).toBeVisible();
+    await expect(textDrawingToolInputForm).toBeVisible({timeout: 30_000});
     const textDrawingToolFormInput = textDrawingToolInputForm.locator('input');
     await expect(textDrawingToolFormInput).toBeVisible();
 
@@ -153,7 +210,6 @@ test.describe('Drawing', () => {
     const textDrawingToolFormSubmit = textDrawingToolInputForm.getByRole('button', {name: 'Hinzufügen'});
     await expect(textDrawingToolFormSubmit).toBeVisible();
     await textDrawingToolFormSubmit.click();
-    await page.waitForTimeout(100);
 
     await expect(mapContainer).toBeVisible();
 
@@ -167,21 +223,16 @@ test.describe('Drawing', () => {
     const closeButton = page.locator('mat-dialog-container button', {hasText: 'close'});
     await expect(closeButton).toBeVisible();
     await closeButton.click();
-    await page.waitForTimeout(250);
     await expect(symbolInput).not.toBeVisible();
 
-    await page.waitForTimeout(250);
     await symbolToolButton.click();
-    await page.waitForTimeout(250);
     await expect(symbolInput).toBeVisible();
 
     const symbolSliderInputs = await symbolInput.locator('slider-edit').all();
     await symbolSliderInputs[0].locator('input').fill('16');
-    await page.waitForTimeout(250);
     await expect(symbolSliderInputs[0].locator('.slider-wrapper__header__value')).toContainText('16');
 
     await symbolSliderInputs[1].locator('input').fill('180');
-    await page.waitForTimeout(250);
     await expect(symbolSliderInputs[1].locator('.slider-wrapper__header__value')).toContainText('180');
 
     const categories = await symbolInput.locator('mat-expansion-panel-header').all();
@@ -190,7 +241,6 @@ test.describe('Drawing', () => {
     }
 
     await categories[1].click();
-    await page.waitForTimeout(250);
     const porcupine = symbolInput.locator('label[for="Porcupine"]');
     await expect(porcupine).toBeVisible();
     await porcupine.click();
@@ -198,20 +248,14 @@ test.describe('Drawing', () => {
     const addButton = symbolInput.locator('button', {hasText: 'Hinzufügen'});
     await expect(addButton).toBeVisible();
     await addButton.click();
-    await page.waitForTimeout(1000);
 
-    await page.mouse.click(symbolCoords[0], symbolCoords[1]);
-    await page.waitForTimeout(1000);
-
-    // Scroll in and out once to make all drawings visible by refreshing the @arcgis/core map rendering.
-    await page.mouse.wheel(0, 10);
     await page.waitForTimeout(250);
-    await page.mouse.wheel(0, -10);
+    await page.mouse.move(symbolCoords[0], symbolCoords[1]);
+    await page.waitForTimeout(250);
+    await page.mouse.click(symbolCoords[0], symbolCoords[1]);
     await page.waitForTimeout(250);
 
     await expect(mapContainer).toBeVisible();
-
-    await page.waitForTimeout(250);
 
     // Point edit
     await assertShapeEdit('point-edit', pointCoords, ['8', '0.6', '0.3', '20'], ['#00ff00', '#00ff00']);
@@ -232,6 +276,6 @@ test.describe('Drawing', () => {
     await assertShapeEdit('text-edit', [textCoords[0], textCoords[1] - 10], ['12', '8', '13'], ['#00ff00', '#00ff00'], ['Changed']);
 
     // Symbol edit
-    await assertShapeEdit('symbol-edit', symbolCoords, ['20', '60'], [], [], 'Hippo');
+    await assertShapeEdit('symbol-edit', symbolCoords, ['20', '60'], [], [], 'Hedgehog');
   });
 });

@@ -8,7 +8,7 @@ test.describe('Printing', () => {
     captureConsole,
     filterForLayer,
     clickMapInTheList,
-  }) => {
+  }, testInfo) => {
     test.setTimeout(120_000);
 
     await useHar();
@@ -75,11 +75,25 @@ test.describe('Printing', () => {
     await expect(dpiField).toContainText('150');
 
     const submitButton = page.locator('[data-test-id="submit-print-from"]');
-    await submitButton.click();
 
-    const download = await page.waitForEvent('download');
-    const suggestedFileName = download.suggestedFilename();
-    await expect(suggestedFileName).toContain('geoportal_zh_A2_hoch_');
-    await expect(suggestedFileName).toContain('.pdf');
+    if (testInfo.project.name === 'webkit') {
+      const newPagePromise = page.waitForEvent('popup');
+      await submitButton.click();
+
+      const newPage = await newPagePromise;
+      const suggestedFileName = newPage.url();
+      await expect(suggestedFileName).toContain('geoportal_zh_A2_hoch_');
+      await expect(suggestedFileName).toContain('.pdf');
+    } else {
+      // Chrome and FF
+      const downloadPromise = page.waitForEvent('download');
+      await submitButton.click();
+
+      const download = await downloadPromise;
+
+      const suggestedFileName = download.suggestedFilename();
+      await expect(suggestedFileName).toContain('geoportal_zh_A2_hoch_');
+      await expect(suggestedFileName).toContain('.pdf');
+    }
   });
 });
