@@ -108,6 +108,17 @@ export const defaultBasemaps: Basemap[] = [
         name: 'TBBP',
       },
     ],
+    defaultForTopics: [
+      'KatOerebBelasteteStandorteZH',
+      'KatOerebEisenbahnenZH',
+      'KatOerebFlughaefenZH',
+      'KatOerebLaermZH',
+      'KatOerebRaumplanungZH',
+      'KatOerebStrassenZH',
+      'KatOerebVerEntsorgungZH',
+      'KatOerebWaldZH',
+      'KatOerebWasserZH',
+    ],
   },
   {
     id: 'aredtmbackgroundzh',
