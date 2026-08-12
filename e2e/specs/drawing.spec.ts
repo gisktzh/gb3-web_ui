@@ -26,6 +26,7 @@ test.describe('Drawing', () => {
 
       await page.mouse.click(clickCoords[0], clickCoords[1], {
         button: 'right',
+        clickCount: 10, // For good measure.
       });
       await page.waitForTimeout(500);
       const editTool = page.locator(editToolSelector);
@@ -67,6 +68,7 @@ test.describe('Drawing', () => {
 
       const closeButton = page.locator('drawing-edit-overlay button', {hasText: 'close'});
       await closeButton.click();
+      await page.waitForTimeout(500); // Wait for the edit tool to be closed.
     }
 
     await useHar();
