@@ -31,7 +31,6 @@ import {MapDataItemMapComponent} from './base-map-data-item/map-data-item-map.co
 import {MatDivider} from '@angular/material/divider';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
 import {ConfigService} from 'src/app/shared/services/config.service';
-import {selectItems} from 'src/app/state/map/selectors/active-map-items.selector';
 
 @Component({
   selector: 'map-data-catalogue',
