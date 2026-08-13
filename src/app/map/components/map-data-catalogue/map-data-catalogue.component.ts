@@ -68,7 +68,6 @@ export class MapDataCatalogueComponent implements OnDestroy {
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   private readonly originalMaps = this.store.selectSignal(selectMaps);
   public readonly isMinimized = signal(false);
-  public readonly activeMapItems = this.store.selectSignal(selectItems);
 
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
@@ -121,7 +120,7 @@ export class MapDataCatalogueComponent implements OnDestroy {
       activeMap = originalActiveMap;
     }
 
-    if (!isTemporary && this.activeMapItems().length === 0) {
+    if (!isTemporary) {
       this.applyDefaultBasemapForMap(activeMap);
     }
 
