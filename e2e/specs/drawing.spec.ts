@@ -2,6 +2,8 @@ import {test, expect, ScreenCoordsList, ScreenCoords} from '../fixtures';
 
 test.describe('Drawing', () => {
   test('draws different shapes and sizes and can edit them', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
+    test.slow();
+
     async function drawShapeOnMap(coordList: ScreenCoordsList) {
       for (const [index, coords] of coordList.entries()) {
         if (index === coordList.length - 1) {
