@@ -336,11 +336,11 @@ export class Gb3TopicsService extends Gb3ApiService {
       const dateFormat = timeSliderConfiguration.dateFormat;
       url.searchParams.set(
         timeSliderParameterSource.startRangeParameter,
-        this.timeService.getDateAsUTCString(timeSliderExtent.start, dateFormat),
+        this.timeService.getDateAsFormattedString(timeSliderExtent.start, dateFormat),
       );
       url.searchParams.set(
         timeSliderParameterSource.endRangeParameter,
-        this.timeService.getDateAsUTCString(timeSliderExtent.end, dateFormat),
+        this.timeService.getDateAsFormattedString(timeSliderExtent.end, dateFormat),
       );
     }
     return url.toString();
