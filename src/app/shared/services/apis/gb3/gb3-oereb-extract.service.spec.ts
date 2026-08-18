@@ -83,7 +83,7 @@ describe('Gb3OerebExtractService', () => {
                 {
                   id: 101,
                   name: 'Flächenbeschränkung',
-                  illustration: {
+                  illustration_url: {
                     src: {
                       href: 'https://example.com/area.png',
                     },
@@ -100,7 +100,6 @@ describe('Gb3OerebExtractService', () => {
                 {
                   id: 102,
                   name: 'Linienbeschränkung',
-                  illustration_url: undefined,
                   measurement: {
                     line_length: 987.65,
                   },
@@ -108,13 +107,13 @@ describe('Gb3OerebExtractService', () => {
                 {
                   id: 103,
                   name: 'Punktbeschränkung',
-                  illustration: {
+                  illustration_url: {
                     src: {
-                      href: 'https://example.com/area.png',
+                      href: 'https://example.com/points.png',
                     },
                     alt: '',
                     url: {
-                      href: 'https://example.com/area.png',
+                      href: 'https://example.com/points.png',
                     },
                   },
                   measurement: {
@@ -206,11 +205,11 @@ describe('Gb3OerebExtractService', () => {
                 name: 'Punktbeschränkung',
                 illustration: {
                   src: {
-                    href: 'https://example.com/area.png',
+                    href: 'https://example.com/points.png',
                   },
                   alt: '',
                   url: {
-                    href: 'https://example.com/area.png',
+                    href: 'https://example.com/points.png',
                   },
                 },
                 measurement: {
