@@ -150,6 +150,13 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
     left: 0;
     width: 140px;
     z-index: 10;
-    height: calc(calc(100% - 38px) - var(--calculated-scrollbar-height));
+    height: calc(calc(100% - 38px - var(--calculated-scrollbar-height)));
   }
+}
+
+.feature-info-item-icon {
+  margin: 0 12px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
 }

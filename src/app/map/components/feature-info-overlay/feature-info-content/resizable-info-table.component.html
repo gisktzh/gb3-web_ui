@@ -1,0 +1,57 @@
+<table class="feature-info-content__table" [aria-describedby]="tableLabel()">
+  @if (tableHeaders().length > 0) {
+    <tr class="feature-info-content__table__row">
+      <th
+        class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
+        scope="col"
+        [style.width]="tableHeaderWidth()"
+      ></th>
+      @for (tableHeader of tableHeaders(); track tableHeader) {
+        <ng-content select="[header-icon]" />
+        @if (tableHeaderTemplate(); as tableHeaderTemplate) {
+          <ng-container *ngTemplateOutlet="tableHeaderTemplate; context: getTableHeaderContext(tableHeader)" />
+        } @else {
+          <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col">
+            <div class="feature-info-content__table__row__column__wrapper">
+              {{ tableHeader.displayValue }}
+            </div>
+          </th>
+        }
+      }
+    </tr>
+  }
+  @for (tableRow of tableRows() | keyvalue: preserveKeyValueOrder; track tableRow) {
+    <tr class="feature-info-content__table__row">
+      <th
+        class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
+        scope="col"
+        [style.min-width]="tableHeaderWidth()"
+        [style.max-width]="tableHeaderWidth()"
+      >
+        <span class="feature-info-content__table__row__column--attribute">
+          {{ tableRow.key | hyphenate }}
+        </span>
+      </th>
+      @for (cellValue of tableRow.value; track cellValue) {
+        @if (tableCellTemplate(); as tableCellTemplate) {
+          <ng-container *ngTemplateOutlet="tableCellTemplate; context: getTableCellContext(cellValue)" />
+        } @else {
+          <td class="feature-info-content__table__row__column">
+            <info-table-cell [cellValue]="cellValue" />
+          </td>
+        }
+      }
+    </tr>
+  }
+</table>
+<resize-handler
+  [style]="`--calculated-scrollbar-height: ${calculatedScrollbarHeight()}px;`"
+  [minWidth]="minTableHeaderWidth"
+  [maxWidth]="maxTableHeaderWidth()"
+  location="left"
+  (resizeEvent)="resize($event)"
+  class="feature-info-content__resize"
+  [style.width]="tableHeaderWidth()"
+  (resizeStart)="onResizeHandlerResizeStart()"
+  (resizeEnd)="onResizeHandlerResizeEnd()"
+/>

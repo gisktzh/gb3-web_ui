@@ -310,6 +310,81 @@ export interface Municipality {
   };
 }
 
+export interface OerebFeature {
+  oereb_info: {
+    /** name of the affected municipality */
+    municipality_name: string;
+    /** fso number (BFS code) of the affected municipality */
+    municipality_code: number;
+    /**
+     * identification number of the parcel
+     * @maxLength 12
+     */
+    parcel_number: string;
+    /**
+     * federal property identifier
+     * @maxLength 14
+     */
+    egrid: string;
+    /** link to the cadastral processing organization */
+    kbo: LinkObject;
+    /** link to the E-Mail address of the surveyor organization */
+    surveyor: LinkObject;
+    /** list of themes which their restrictions are affected by this parcel */
+    concerned_themes: {
+      /** name of the not concerned theme */
+      name: string;
+      /** artificial identification number of the theme */
+      id: number;
+      /** list of restrictions for this theme */
+      restrictions: {
+        /** name of the current restriction */
+        name: string;
+        /** artificial identification number of the restriction */
+        id: number;
+        /** symbol image for the current restriction */
+        illustration_url?: Image;
+        /** concrete measurment for this restriction */
+        measurement:
+          | {
+              /**
+               * percentage of the area for the current restriction
+               * @min 0
+               * @max 999999999
+               */
+              area_m2: number;
+              /**
+               * restriction area in square meters
+               * @min 0
+               * @max 1
+               */
+              percentage: number;
+            }
+          | {
+              /** length of a concerned restriction line */
+              line_length: number;
+            }
+          | {
+              /** number of points of the concerned restriction */
+              points_count: number;
+            };
+      }[];
+      /** list of legal provision documents for this theme */
+      legal_provisions: LinkObject[];
+      /** list of law documents for this theme */
+      laws: LinkObject[];
+      /** list of hint documents for this theme */
+      hints: LinkObject[];
+      /** list of responsible offices for this theme */
+      responsible_offices: LinkObject[];
+    }[];
+    /** list of themes which their restrictions are not affected by this parcel */
+    not_concerned_themes: NotConcernedTheme[];
+    /** list of themes which their restrictions are not affected by this parcel */
+    not_available_themes: NotConcernedTheme[];
+  };
+}
+
 export interface PersonalFavorite {
   /** UUID of the favorite */
   id: string;
@@ -1179,6 +1254,27 @@ export interface MunicipalityItem {
   /** Municipality name */
   name: string;
 }
+
+/** list of themes which their restrictions are not affected by this parcel */
+export type NotConcernedTheme = {
+  /** name of the not concerned theme */
+  name: string;
+  /** artificial identification number of the theme */
+  id: number;
+  /** additional information whether the theme is not applicable to this parcel or other hints */
+  hints: (
+    | {
+        /** textual information of the hint */
+        title: string;
+      }
+    | {
+        /** textual information of the hint */
+        title: string;
+        /** URL for external source of information */
+        href: string;
+      }
+  )[];
+};
 
 export interface Product {
   /** Product UUID */

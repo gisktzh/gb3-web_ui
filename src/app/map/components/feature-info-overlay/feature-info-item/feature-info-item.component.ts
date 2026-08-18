@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ViewEncapsulation} from '@angular/core';
 import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-info.interface';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {MatIcon} from '@angular/material/icon';
@@ -11,6 +11,7 @@ import {FeatureInfoReportDownloadComponent} from '../feature-info-report-downloa
   templateUrl: './feature-info-item.component.html',
   styleUrls: ['./feature-info-item.component.scss'],
   imports: [MapOverlayListItemComponent, MatIcon, NgTemplateOutlet, FeatureInfoContentComponent, FeatureInfoReportDownloadComponent],
+  encapsulation: ViewEncapsulation.None,
 })
 export class FeatureInfoItemComponent {
   public readonly featureInfo = input.required<FeatureInfoResultDisplay>();

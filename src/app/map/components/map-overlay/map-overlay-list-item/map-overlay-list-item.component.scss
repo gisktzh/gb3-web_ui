@@ -21,6 +21,10 @@
 .list-item {
   margin-bottom: 24px;
 
+  &--has-border {
+    border: 1px solid ktzh-variables.$zh-blue;
+  }
+
   .list-item__header {
     padding: 0;
     background-color: ktzh-variables.$zh-light-grey;
