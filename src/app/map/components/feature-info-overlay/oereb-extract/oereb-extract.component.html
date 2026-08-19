@@ -1,0 +1,104 @@
+<div class="feature-info-content">
+  <map-overlay-list-item [forceExpanded]="true" overlayTitle="ÖREB-Kataster">
+    <!-- TODO GHUB-451: Change icon -->
+    <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
+
+    <div class="oereb-extract__static-link">
+      <a
+        [href]="staticExtractUrl()"
+        class="oereb-extract__static-link__button"
+        rel="noopener noreferrer"
+        target="_blank"
+        mat-raised-button
+        color="accent"
+      >
+        <mat-icon>download</mat-icon>
+        <span class="oereb-extract__static-link__button__label" matTooltip="ÖREB-Auszug" showTooltipIfTruncated>Auszug drucken</span>
+      </a>
+    </div>
+
+    <map-overlay-list-item [forceExpanded]="true" overlayTitle="Grundstücksinformationen" [hasBackgroundColor]="false" [hasBorder]="true">
+      <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
+
+      <div class="feature-info-content" #containerCadastreInfo>
+        <resizable-info-table
+          [tableData]="oerebCadastreData()"
+          tableLabel="Grundstücksinformationen"
+          [resizeContainer]="containerCadastreInfo"
+        />
+      </div>
+    </map-overlay-list-item>
+
+    <map-overlay-list-item [forceExpanded]="true" overlayTitle="Zuständige Stelle" [hasBackgroundColor]="false" [hasBorder]="true">
+      <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
+
+      <div class="feature-info-content" #containerKboAndSurveyor>
+        <resizable-info-table
+          [tableData]="kboAndSurveyorData()"
+          tableLabel="Zuständige Stelle"
+          [resizeContainer]="containerKboAndSurveyor"
+        />
+      </div>
+    </map-overlay-list-item>
+
+    @if (concernedThemes().length > 0) {
+      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Betroffene Themen" [hasBackgroundColor]="false" [hasBorder]="true">
+        <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
+
+        @for (theme of concernedThemes(); track $index) {
+          <map-overlay-list-item [forceExpanded]="true" [overlayTitle]="theme.name" [hasBackgroundColor]="false" style="--offset-top: 0px">
+            <h3 class="ktzh-h3-list-tiny oereb-extract-table__title">Allgemeine Informationen zum Thema</h3>
+
+            <div class="feature-info-content oereb-extract-table__container" #containerGeneralInfo>
+              <resizable-info-table
+                [tableData]="theme.generalInfo"
+                tableLabel="Allgemeine Informationen zum Thema"
+                [resizeContainer]="containerGeneralInfo"
+              />
+            </div>
+
+            @for (restriction of theme.restrictions; track $index) {
+              <h3 class="ktzh-h3-list-tiny oereb-extract-table__title">{{ restriction.name }}</h3>
+
+              <div class="feature-info-content oereb-extract-table__container" #containerRestriction>
+                <resizable-info-table
+                  [tableData]="restriction.data"
+                  [tableLabel]="restriction.name"
+                  [resizeContainer]="containerRestriction"
+                />
+              </div>
+            }
+          </map-overlay-list-item>
+        }
+      </map-overlay-list-item>
+    }
+
+    @if (notConcernedThemes().tableRows.size > 0) {
+      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht betroffene Themen" [hasBackgroundColor]="false" [hasBorder]="true">
+        <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
+
+        <div class="feature-info-content" #containerNotConcernedThemes>
+          <resizable-info-table
+            [tableData]="notConcernedThemes()"
+            tableLabel="Zuständige Stelle"
+            [resizeContainer]="containerNotConcernedThemes"
+          />
+        </div>
+      </map-overlay-list-item>
+    }
+
+    @if (notAvailableThemes().tableRows.size > 0) {
+      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht verfügbare Themen" [hasBackgroundColor]="false" [hasBorder]="true">
+        <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
+
+        <div class="feature-info-content" #containerNotConcernedThemes>
+          <resizable-info-table
+            [tableData]="notAvailableThemes()"
+            tableLabel="Zuständige Stelle"
+            [resizeContainer]="containerNotConcernedThemes"
+          />
+        </div>
+      </map-overlay-list-item>
+    }
+  </map-overlay-list-item>
+</div>
