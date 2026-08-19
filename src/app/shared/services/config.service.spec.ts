@@ -112,7 +112,6 @@ describe('ConfigService', () => {
     describe('configuration values', () => {
       it('merges default and runtime feature flags', () => {
         // we know this works because we set the testing runtime configuration to be the opposite of the default
-        expect(service.featureFlags).toEqual(expect.objectContaining({oerebExtract: defaultRuntimeConfig[0].featureFlags.oerebExtract}));
         expect(service.featureFlags).toEqual(expect.objectContaining({ownershipInformation: defaultFeatureFlags.ownershipInformation}));
       });
 

@@ -75,6 +75,7 @@ describe('Gb3OerebExtractService', () => {
             title: 'Vermessungsamt',
             href: 'https://example.com/surveyor',
           },
+          static_extract_url: 'https://example.com/extract.pdf',
           concerned_themes: [
             {
               id: 1,
@@ -170,6 +171,7 @@ describe('Gb3OerebExtractService', () => {
           title: 'Vermessungsamt',
           href: 'https://example.com/surveyor',
         },
+        staticExtractUrl: 'https://example.com/extract.pdf',
         concernedThemes: [
           {
             id: 1,
@@ -279,6 +281,7 @@ describe('Gb3OerebExtractService', () => {
             title: '',
             href: 'https://example.com/surveyor',
           },
+          static_extract_url: 'https://example.com/extract.pdf',
           concerned_themes: [],
           not_concerned_themes: [],
           not_available_themes: [],
@@ -313,6 +316,7 @@ describe('Gb3OerebExtractService', () => {
           surveyor: {
             href: 'https://example.com/surveyor',
           },
+          static_extract_url: 'https://example.com/extract.pdf',
           concerned_themes: [],
           not_concerned_themes: [],
           not_available_themes: [],

@@ -114,6 +114,7 @@ describe('OerebExtractEffects', () => {
         surveyor: {
           title: 'who wants to know this?',
         },
+        staticExtractUrl: 'https://example.com/extract.pdf',
         concernedThemes: [],
         notConcernedThemes: [],
         notAvailableThemes: [],

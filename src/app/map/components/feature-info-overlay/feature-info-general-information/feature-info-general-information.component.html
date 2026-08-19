@@ -36,21 +36,6 @@
 </mat-expansion-panel>
 
 <div class="external-links">
-  <ng-container *featureFlag="'oerebExtract'">
-    @if (generalInfoData().parcel; as parcel) {
-      <a
-        [href]="parcel.oerebExtract.pdfUrl"
-        class="external-links__button"
-        rel="noopener noreferrer"
-        target="_blank"
-        mat-raised-button
-        color="accent"
-      >
-        <mat-icon>download</mat-icon>
-        <span class="external-links__button__label" matTooltip="ÖREB-Auszug" showTooltipIfTruncated>ÖREB-Auszug</span>
-      </a>
-    }
-  </ng-container>
   <ng-container *featureFlag="'ownershipInformation'">
     @if (generalInfoData().parcel; as parcel) {
       <a

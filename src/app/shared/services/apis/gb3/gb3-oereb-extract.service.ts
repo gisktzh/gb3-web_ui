@@ -51,6 +51,7 @@ export class Gb3OerebExtractService extends Gb3ApiService {
       egrid: info.egrid,
       kbo: this.mapLinkObjectToOerebValue(info.kbo),
       surveyor: this.mapLinkObjectToOerebValue(info.surveyor),
+      staticExtractUrl: info.static_extract_url,
       concernedThemes: info.concerned_themes.map(
         (t): OerebConcernedTheme => ({
           id: t.id,

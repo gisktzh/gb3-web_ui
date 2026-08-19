@@ -330,6 +330,8 @@ export interface OerebFeature {
     kbo: LinkObject;
     /** link to the E-Mail address of the surveyor organization */
     surveyor: LinkObject;
+    /** URL for the static extract */
+    static_extract_url: string;
     /** list of themes which their restrictions are affected by this parcel */
     concerned_themes: {
       /** name of the not concerned theme */

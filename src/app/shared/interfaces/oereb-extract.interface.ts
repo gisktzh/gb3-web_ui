@@ -55,6 +55,7 @@ export interface OerebExtractResponse {
   egrid: string;
   kbo: OerebExtractValue;
   surveyor: OerebExtractValue;
+  staticExtractUrl: string;
   concernedThemes: OerebConcernedTheme[];
   notConcernedThemes: OerebNotConcernedTheme[];
   notAvailableThemes: OerebNotConcernedTheme[];

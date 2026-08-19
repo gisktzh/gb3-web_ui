@@ -5,12 +5,13 @@ import {MatIcon} from '@angular/material/icon';
 import {ResizableInfoTableComponent, TableData} from '../feature-info-content/resizable-info-table.component';
 import {ListTableCell, TableCell, TextTableCell, UrlTableCell} from '../feature-info-content/info-table-cell.component';
 import {NotConcernedTheme} from 'src/app/shared/models/gb3-api-generated.interfaces';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'oereb-extract',
   templateUrl: './oereb-extract.component.html',
   styleUrls: ['./oereb-extract.component.scss'],
-  imports: [MapOverlayListItemComponent, MatIcon, ResizableInfoTableComponent],
+  imports: [MapOverlayListItemComponent, MatIcon, MatButton, ResizableInfoTableComponent],
 })
 export class OerebExtractComponent {
   public readonly data = input.required<OerebExtractResponse>();
@@ -106,6 +107,8 @@ export class OerebExtractComponent {
       tableRows,
     } as TableData;
   });
+
+  public readonly staticExtractUrl = computed<string>(() => this.data().staticExtractUrl);
 
   public readonly concernedThemes = computed(() => {
     return this.data().concernedThemes.map((theme) => {
