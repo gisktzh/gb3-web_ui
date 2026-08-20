@@ -1105,6 +1105,14 @@ export type InfoFeatureField =
       value: Image | null;
       /** type for the image object (here 'image') */
       type: 'image';
+    }
+  | {
+      /** Field label */
+      label: string;
+      /** Field date */
+      value: string | null;
+      /** type for the date object (here 'date') */
+      type: 'date';
     };
 
 /** A link MUST be represented as either: a string containing the link’s URL or a link object. */

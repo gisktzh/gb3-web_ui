@@ -14,6 +14,7 @@ import {KeyValuePipe} from '@angular/common';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 import {HyphenatePipe} from '../../../pipes/hyphenate.pipe';
 import {selectScrollbarWidth} from 'src/app/state/app/reducers/app-layout.reducer';
+import {formatFeatureInfoFieldValue} from '../../../../shared/utils/feature-info-field.utils';
 
 type CellType = 'text' | 'url' | 'image';
 
@@ -304,7 +305,12 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
 
     switch (feature.type) {
       case 'text':
-        return {cellType: 'text', fid, displayValue: feature.value};
+      case 'date':
+        return {
+          cellType: 'text',
+          fid,
+          displayValue: formatFeatureInfoFieldValue(feature.value, feature.type) ?? DEFAULT_CELL_VALUE,
+        };
       case 'image':
         return {
           cellType: 'image',
