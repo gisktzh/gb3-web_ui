@@ -13,7 +13,7 @@ export type ScreenCoords = [number, number];
 export type ScreenCoordsList = ScreenCoords[];
 
 type Gb3Fixtures = {
-  useHar: () => Promise<void>;
+  useHar: (postFix?: string) => Promise<void>;
   captureConsole: () => void;
   filterForLayer: (searchTerm: string) => Promise<void>;
   clickMapInTheList: (nameOfTheMap: string) => Promise<void>;
@@ -34,13 +34,15 @@ export const test = base.extend<Gb3Fixtures>({
     const shouldUpdate = IS_WRITING_HAR;
     const fileName = path.basename(testInfo.file).split('.').at(0);
 
-    await use(async () => {
+    await use(async (postFix?: string) => {
+      const usedFileName = `${fileName}${postFix ? '-' : ''}${postFix}`;
+
       if (!process.env['CI']) {
         // eslint-disable-next-line no-console
-        console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ./e2e/hars/${fileName}.har`);
+        console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ./e2e/hars/${usedFileName}.har`);
       }
 
-      await advancedRouteFromHAR(`./e2e/hars/${fileName}.har`, {
+      await advancedRouteFromHAR(`./e2e/hars/${usedFileName}.har`, {
         url: HAR_TARGET_PATTERN,
         update: shouldUpdate,
         updateMode: 'minimal',
