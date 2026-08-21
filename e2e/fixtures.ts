@@ -35,7 +35,7 @@ export const test = base.extend<Gb3Fixtures>({
     const fileName = path.basename(testInfo.file).split('.').at(0);
 
     await use(async (postFix?: string) => {
-      const usedFileName = `${fileName}${postFix ? '-' : ''}${postFix}`;
+      const usedFileName = `${fileName}${postFix ? `-${postFix}` : ''}`;
 
       if (!process.env['CI']) {
         // eslint-disable-next-line no-console
