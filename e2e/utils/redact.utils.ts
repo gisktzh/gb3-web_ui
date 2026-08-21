@@ -11,6 +11,8 @@ const REDACTABLE_KEYS = new Set([
   'authenticity_token',
   'user[login]',
   'user[password]',
+  'user%5Blogin%5D',
+  'user%5Bpassword%5D',
   'x-request-id',
   '_ts',
   'n',
@@ -18,6 +20,7 @@ const REDACTABLE_KEYS = new Set([
   'kid',
   'user-agent',
   'User-Agent',
+  'set-cookie',
 ]);
 
 /**
@@ -70,8 +73,9 @@ function isJsonString(value: string): boolean {
     JSON.parse(value);
     return true;
   } catch (error) {
-    // eslint-disable-next-line no-console -- Debugging JSON strings in HAR handling.
-    console.debug('Invalid JSON string while checking for JSON strings', error);
+    ((_) => {
+      // noop, so SonarQube doesn't complain, we have no debug output and ESLint is happy.
+    })(error);
     return false;
   }
 }

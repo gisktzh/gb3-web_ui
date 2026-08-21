@@ -18,6 +18,7 @@ import {
   TopicsResponse,
   WmsFilterValue,
 } from '../../../interfaces/topic.interface';
+import {TimeExtent} from '../../../../map/interfaces/time-extent.interface';
 import {
   Geometry,
   InfoFeatureField,
@@ -32,6 +33,7 @@ import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
+import {formatFeatureInfoFieldValue} from '../../../utils/feature-info-field.utils';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
@@ -67,9 +69,18 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   public loadFeatureInfos(x: number, y: number, scale: number, queryTopics: QueryTopic[]): Observable<FeatureInfoResponse[]> {
     const featureInfoRequests = queryTopics.map((queryTopic) =>
-      this.get<TopicsFeatureInfoDetailData>(this.createFeatureInfoUrl(queryTopic.topic, x, y, scale, queryTopic.layersToQuery)).pipe(
-        map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data, queryTopic.isSingleLayer)),
-      ),
+      this.get<TopicsFeatureInfoDetailData>(
+        this.createFeatureInfoUrl(
+          queryTopic.topic,
+          x,
+          y,
+          scale,
+          queryTopic.layersToQuery,
+          queryTopic.filterConfigurations,
+          queryTopic.timeSliderConfiguration,
+          queryTopic.timeSliderExtent,
+        ),
+      ).pipe(map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data, queryTopic.isSingleLayer))),
     );
     return forkJoin(featureInfoRequests);
   }
@@ -301,12 +312,38 @@ export class Gb3TopicsService extends Gb3ApiService {
     return url.toString();
   }
 
-  private createFeatureInfoUrl(topicName: string, x: number, y: number, scale: number, queryLayers: string): string {
+  private createFeatureInfoUrl(
+    topicName: string,
+    x: number,
+    y: number,
+    scale: number,
+    queryLayers: string,
+    filterConfigurations?: FilterConfiguration[],
+    timeSliderConfiguration?: TimeSliderConfiguration,
+    timeSliderExtent?: TimeExtent,
+  ): string {
     const url = new URL(`${this.getFullEndpointUrl()}/${topicName}/feature_info`);
     url.searchParams.append('x', x.toString());
     url.searchParams.append('y', y.toString());
     url.searchParams.append('scale', scale.toString());
     url.searchParams.append('queryLayers', queryLayers);
+    if (filterConfigurations?.length) {
+      this.transformFilterConfigurationToParameters(filterConfigurations).forEach((filterParameter) => {
+        url.searchParams.append(filterParameter.name, filterParameter.value);
+      });
+    }
+    if (timeSliderConfiguration && timeSliderExtent && timeSliderConfiguration.sourceType === 'parameter') {
+      const timeSliderParameterSource = timeSliderConfiguration.source as TimeSliderParameterSource;
+      const dateFormat = timeSliderConfiguration.dateFormat;
+      url.searchParams.set(
+        timeSliderParameterSource.startRangeParameter,
+        this.timeService.getDateAsUTCString(timeSliderExtent.start, dateFormat),
+      );
+      url.searchParams.set(
+        timeSliderParameterSource.endRangeParameter,
+        this.timeService.getDateAsUTCString(timeSliderExtent.end, dateFormat),
+      );
+    }
     return url.toString();
   }
 
@@ -361,20 +398,25 @@ export class Gb3TopicsService extends Gb3ApiService {
   private createFeatureInfoField(field: InfoFeatureField): FeatureInfoResultFeatureField {
     switch (field.type) {
       case 'image':
-        return {type: field.type, value: field.value, label: field.label};
+        return field;
+
       case 'link':
         return {
-          type: field.type,
+          ...field,
           value: field.value
             ? {
                 title: field.value.title,
                 href: field.value.href,
               }
             : null,
-          label: field.label,
         };
+
       case 'text':
-        return {type: field.type, value: typeof field.value === 'number' ? field.value.toString() : field.value, label: field.label};
+      case 'date':
+        return {
+          ...field,
+          value: formatFeatureInfoFieldValue(field.value, field.type),
+        };
     }
   }
 }

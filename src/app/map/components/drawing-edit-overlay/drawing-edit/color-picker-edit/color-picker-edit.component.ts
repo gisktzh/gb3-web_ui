@@ -8,6 +8,6 @@ import {FormsModule} from '@angular/forms';
   imports: [FormsModule],
 })
 export class ColorPickerEditComponent {
-  public value = model('');
+  public readonly value = model('');
   public readonly title = input('');
 }

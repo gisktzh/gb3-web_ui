@@ -31,7 +31,7 @@ export class DrawingEditComponent {
   private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   public readonly selectedFeature = this.store.selectSignal(selectSelectedDrawing);
-  public style = model<Gb3StyleRepresentation | undefined>(this.selectedFeature()?.properties.style);
+  public readonly style = model<Gb3StyleRepresentation | undefined>(this.selectedFeature()?.properties.style);
 
   public readonly isPointStyle = computed(() => {
     return this.style()?.type === 'point' ? (this.style() as Gb3PointStyle) : null;
@@ -61,6 +61,11 @@ export class DrawingEditComponent {
   }
 
   public async updateStyle(style: Gb3StyleRepresentation, labelText?: string, drawingSymbolDefinition?: DrawingSymbolDefinition | null) {
+    const selectedFeature = this.selectedFeature()!;
+    if (selectedFeature === undefined) {
+      return;
+    }
+
     if (drawingSymbolDefinition && isGb3SymbolStyle(style)) {
       const mapDrawingSymbol = await this.drawingSymbolsService.convertToMapDrawingSymbol(
         drawingSymbolDefinition,
@@ -71,13 +76,13 @@ export class DrawingEditComponent {
       this.store.dispatch(
         DrawingActions.updateDrawingStyles({
           style,
-          drawing: this.selectedFeature()!,
+          drawing: selectedFeature,
           labelText,
           mapDrawingSymbol: mapDrawingSymbol === undefined ? null : mapDrawingSymbol,
         }),
       );
     } else {
-      this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: this.selectedFeature()!, labelText}));
+      this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: selectedFeature, labelText}));
     }
   }
 }

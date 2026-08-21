@@ -85,7 +85,7 @@ export class BaseMapDataItemComponent {
   }
 
   public setIsHovered(layer?: MapLayer) {
-    if (!this.gb2Url) {
+    if (!this.gb2Url()) {
       if (layer) {
         this.hoveredLayer.set(layer);
       } else {

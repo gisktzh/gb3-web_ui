@@ -44,11 +44,11 @@ const FAVOURITE_ERROR_TOOLTIP =
 })
 export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
   private readonly store = inject(Store);
-  public override loadingState = input.required<LoadingState>();
-  public override invalid = input<boolean>();
-  public override showExpandButton = signal(false);
+  public override readonly loadingState = input.required<LoadingState>();
+  public override readonly invalid = input<boolean>();
+  public override readonly showExpandButton = signal(false);
   public override showDeleteButton = true;
   public override errorTooltip: string = FAVOURITE_ERROR_TOOLTIP;
   public readonly activeTool = this.store.selectSignal(selectActiveTool);
-  public override isAddItemDisabled = computed(() => !!this.activeTool());
+  public override readonly isAddItemDisabled = computed(() => !!this.activeTool());
 }

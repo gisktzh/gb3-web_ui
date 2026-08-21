@@ -41,7 +41,7 @@ export class DataDownloadStatusQueueComponent {
   }
 
   public toggleIsMinimized() {
-    this.isMinimized.set(!this.isMinimized);
+    this.isMinimized.set(!this.isMinimized());
   }
 
   public trackById(_: number, item: OrderStatusJob): string {

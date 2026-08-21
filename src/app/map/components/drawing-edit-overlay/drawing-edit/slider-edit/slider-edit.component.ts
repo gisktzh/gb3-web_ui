@@ -10,7 +10,7 @@ import {FormsModule} from '@angular/forms';
   imports: [SliderWrapperComponent, MatSlider, MatSliderThumb, FormsModule],
 })
 export class SliderEditComponent {
-  public value = model<number | string>(0);
+  public readonly value = model<number | string>(0);
   public readonly minValue = input(0);
   public readonly maxValue = input(1);
   public readonly step = input(0.01);

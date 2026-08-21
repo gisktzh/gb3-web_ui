@@ -26,7 +26,7 @@
             (dateChange)="selectedDatePickerDate($event.value, true)"
             [matDatepicker]="minDatePicker"
             [min]="availableDates()[0]"
-            [max]="availableDates()[maximumDateIndex() - 1]"
+            [max]="availableDates()[maximumDateIndex()]"
           />
           <mat-datepicker
             #minDatePicker

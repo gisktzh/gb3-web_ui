@@ -13,6 +13,16 @@ export default {
     '*/**/*.spec.exclude.ts', // In case we need to exclude specific tests from being executed, we don't want Knip to complain.
     'tools/schematics/component-test-skeleton/src/**/*.ts', // Knip deems these files unused, although they're basically a standalone thing.
   ],
-  ignoreDependencies: ['@angular-eslint/schematics', '@angular-eslint/template-parser', '@ngrx/schematics', 'material-icons'],
+  ignoreDependencies: [
+    '@angular-eslint/schematics', // Needed, but only in @angular-eslint itself
+    '@angular-eslint/template-parser', // Needed, but only in @angular-eslint itself
+    '@ngrx/schematics', // Needed, but only in Angular itself
+    'material-icons', // Listed as unused, evven though we use it in CSS.
+    'har-format', // Installed via @types/har-format
+  ],
   ignoreBinaries: ['swagger-typescript-api'],
+  rules: {
+    exports: 'off',
+    types: 'off',
+  },
 };

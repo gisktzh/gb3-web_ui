@@ -290,32 +290,34 @@ export class Gb3PrintService extends Gb3ApiService {
         rotation: printCreation.map.rotation,
         center: printCreation.map.center,
         scale: printCreation.map.scale,
-        layers: printCreation.map.mapItems.map((mapItem) => {
-          switch (mapItem.type) {
-            case 'Vector':
-              return {
-                type: 'Vector',
-                geojson: mapItem.geojson,
-                styles: mapItem.styles,
-              };
-            case 'WMS':
-              return {
-                type: 'WMS',
-                url: mapItem.url,
-                layers: mapItem.layers,
-                custom_params: mapItem.customParams
-                  ? {
-                      format: mapItem.customParams.format,
-                      transparent: mapItem.customParams.transparent,
-                      ...mapItem.customParams.dynamicStringParams,
-                    }
-                  : undefined,
-                opacity: mapItem.opacity,
-                map_title: mapItem.mapTitle,
-                background: mapItem.background,
-              };
-          }
-        }),
+        layers: printCreation.map.mapItems
+          .filter((mapItem) => mapItem.type !== 'Vector' || mapItem.geojson.features.length > 0)
+          .map((mapItem) => {
+            switch (mapItem.type) {
+              case 'Vector':
+                return {
+                  type: 'Vector',
+                  geojson: mapItem.geojson,
+                  styles: mapItem.styles,
+                };
+              case 'WMS':
+                return {
+                  type: 'WMS',
+                  url: mapItem.url,
+                  layers: mapItem.layers,
+                  custom_params: mapItem.customParams
+                    ? {
+                        format: mapItem.customParams.format,
+                        transparent: mapItem.customParams.transparent,
+                        ...mapItem.customParams.dynamicStringParams,
+                      }
+                    : undefined,
+                  opacity: mapItem.opacity,
+                  map_title: mapItem.mapTitle,
+                  background: mapItem.background,
+                };
+            }
+          }),
       },
       attributes: {
         report_title: printCreation.attributes.reportTitle,

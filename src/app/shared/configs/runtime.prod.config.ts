@@ -31,9 +31,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geo.ktzh.ch/cms',
         useMockData: false,
       },
-      twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js',
-      },
       geoshopApi: {
         baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
       },
@@ -80,9 +77,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       gravCms: {
         baseUrl: 'https://geo.zh.ch/cms',
         useMockData: false,
-      },
-      twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js',
       },
       geoshopApi: {
         baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',

@@ -7,7 +7,7 @@
   </div>
 
   @if (printFormModel()) {
-    <form class="print-dialog__form" id="print-dialog-form" (ngSubmit)="print()">
+    <form class="print-dialog__form" id="print-dialog-form" [formRoot]="printForm">
       <fieldset class="print-dialog__form__fieldset">
         <legend class="print-dialog__form__fieldset__legend">Druckvorlage</legend>
         <mat-radio-group [value]="printFormModel().reportType" (change)="printForm.reportType().value.set($event.value)">

@@ -11,6 +11,10 @@ vi.mock('@arcgis/core/views/MapView', () => ({
 
       public removeHandles = vi.fn();
       public addHandles = vi.fn();
+
+      public ui = {
+        remove: vi.fn(),
+      };
     },
   ),
 }));
