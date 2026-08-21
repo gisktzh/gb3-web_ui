@@ -81,6 +81,7 @@ test.describe('Printing', () => {
       await submitButton.click();
 
       const newPage = await newPagePromise;
+      await page.waitForTimeout(500);
       const suggestedFileName = newPage.url();
       await expect(suggestedFileName).toContain('geoportal_zh_A2_hoch_');
       await expect(suggestedFileName).toContain('.pdf');
