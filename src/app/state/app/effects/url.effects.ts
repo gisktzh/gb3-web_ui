@@ -19,6 +19,7 @@ import {selectQueryParams} from '../selectors/router.selector';
 import {SearchActions} from '../actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
+import {MapUiActions} from '../../map/actions/map-ui.actions';
 
 @Injectable()
 export class UrlEffects {
@@ -67,7 +68,8 @@ export class UrlEffects {
       filter((mainPage) => mainPage === MainPage.Maps),
       concatLatestFrom(() => [this.store.select(selectQueryParams), this.store.select(selectMapConfigParams)]),
       map(([_, currentParams, mapConfigParams]) => {
-        const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex} = UrlUtils.extractUrlParamsForMapInitialization(currentParams);
+        const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex, collapsed} =
+          UrlUtils.extractUrlParamsForMapInitialization(currentParams);
         const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
         const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
         if (searchTerm || searchIndex) {
@@ -77,6 +79,8 @@ export class UrlEffects {
             basemapId,
             initialMaps,
           });
+        } else if (collapsed) {
+          return MapUiActions.changeUiElementsVisibility({hideAllUiElements: collapsed, hideUiToggleButton: false});
         } else if (x || y || scale || basemap || initialMapIds) {
           if (!x && !y && !scale) {
             const initialExtent = this.initalMapExtentService.calculateInitialExtent();
