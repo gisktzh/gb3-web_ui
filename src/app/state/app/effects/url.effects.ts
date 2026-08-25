@@ -79,9 +79,10 @@ export class UrlEffects {
             basemapId,
             initialMaps,
           });
-        } else if (collapsed) {
-          return MapUiActions.changeUiElementsVisibility({hideAllUiElements: collapsed, hideUiToggleButton: false});
-        } else if (x || y || scale || basemap || initialMapIds) {
+        } else if (x || y || scale || basemap || initialMapIds || collapsed) {
+          if (collapsed) {
+            MapUiActions.changeUiElementsVisibility({hideAllUiElements: collapsed, hideUiToggleButton: false});
+          }
           if (!x && !y && !scale) {
             const initialExtent = this.initalMapExtentService.calculateInitialExtent();
             return MapConfigActions.setInitialMapConfig({...initialExtent, initialMaps, basemapId});
