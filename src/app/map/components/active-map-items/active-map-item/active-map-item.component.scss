@@ -19,8 +19,8 @@
   border-radius: ktzh-variables.$zh-border-radius !important;
 
   &--expanded {
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    background-color: functions.get-color-from-palette('primary');
+    color: functions.get-contrast-color-from-palette('primary');
   }
 
   .active-map-item__header {
@@ -48,16 +48,16 @@
 
         border-width: 3px;
         border-style: solid;
-        border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+        border-color: functions.get-color-from-palette('primary', 900);
         border-radius: ktzh-variables.$zh-border-radius;
 
         .active-map-item__tabs__header__buttons__button {
           width: 100%;
-          color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
-          background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+          color: functions.get-contrast-color-from-palette('primary');
+          background-color: functions.get-color-from-palette('primary');
 
           &--selected {
-            background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+            background-color: functions.get-color-from-palette('primary', 900);
           }
 
           &:disabled {
@@ -78,7 +78,7 @@
       box-sizing: border-box;
 
       &--inverted {
-        border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+        border-color: functions.get-color-from-palette('primary');
       }
     }
   }

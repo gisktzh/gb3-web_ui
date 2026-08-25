@@ -56,12 +56,12 @@ $handle-no-hover: $handle-indicator-width double ktzh-variables.$zh-disabled-for
     .resize-handle--top-indicator {
       height: 0px;
       margin-top: 18px;
-      border: $handle-indicator-height solid functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 25);
+      border: $handle-indicator-height solid functions.get-contrast-color-from-palette('accent', 25);
       border-radius: 4px;
       width: 37px;
 
       &.resize-handle--top-indicator--primary {
-        border: $handle-indicator-height solid functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+        border: $handle-indicator-height solid functions.get-contrast-color-from-palette('primary');
       }
     }
 

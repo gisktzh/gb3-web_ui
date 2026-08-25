@@ -431,9 +431,19 @@ Example of a potential usage:
 
 ```SCSS
 .button {
-  background-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+  background-color: functions.get-color-from-palette('secondary-accent');
 }
 ```
+
+The `get-color-from-palette` function optionally accepts a hue value. A list of all available palettes:
+
+- `'primary'`
+- `'primary-light'`
+- `'secondary-accent'`
+- `'accent'`
+- `'warn'`
+
+The setup itself distinguishes between `intranet` and `internet` and switches the colours automatically.
 
 ### Custom icons
 

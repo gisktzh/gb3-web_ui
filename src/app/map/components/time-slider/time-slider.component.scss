@@ -23,7 +23,7 @@
       padding: 0;
 
       &--modified {
-        color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+        color: functions.get-color-from-palette('secondary-accent');
         font-weight: bold;
       }
     }
