@@ -10,6 +10,12 @@
  * ---------------------------------------------------------------
  */
 
+/** Manually added **/
+import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
+import {ReportOrientation, ReportType} from '../interfaces/print.interface';
+import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
+import {DrawingSymbolDefinition} from '../interfaces/drawing-symbol/drawing-symbol-definition.interface';
+
 export interface BboxGeoshop {
   /** GeoJSON geometry object */
   boundingbox: Geometry;
@@ -97,6 +103,12 @@ export interface Feature {
       topic: string;
       /** Geolion ID of topic */
       geolion_gdd: number | null;
+      /** Manually added **/
+      /** Jasper Report info, if any */
+      report: {
+        url: string | null;
+        description: string | null;
+      };
       /** UUID from geometadatabase */
       geolion_karten_uuid: string | null;
       layers: {
@@ -386,17 +398,18 @@ export interface PrintCapabilities {
   };
 }
 
+/** Manually added **/
 export interface PrintCapabilitiesCombination {
   /** Standard or mapset */
-  report_type: string;
+  report_type: ReportType;
   /** Portrait or landscape */
-  report_orientation: string;
+  report_orientation: ReportOrientation;
   /** Paper size, DIN A */
-  layout: string;
+  layout: DocumentFormat;
   /** DPI of the printed map */
-  dpi: number;
+  dpi: DpiSetting;
   /** File type */
-  file_format: string;
+  file_format: FileFormat;
   /** If the legend should be rendered as well */
   show_legend: boolean;
 }
@@ -1000,6 +1013,16 @@ export interface GeojsonFeature {
   /** GeoJSON Feature */
   type: 'Feature';
   properties: {
+    /** Manually added **/
+    /**
+     * UUID of the given feature
+     */
+    id: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
+    /** Manually added **/
+    /**
+     * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
+     */
+    belongsTo?: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
     /**
      * Reference to style ID in 'styles'
      * @example "a"
@@ -1010,6 +1033,12 @@ export interface GeojsonFeature {
      * @example "Label text"
      */
     text?: string;
+    /** Manually added **/
+    /**
+     * The tool used to draw the feature
+     * @example "polygon"
+     */
+    tool: SupportedEsriTool; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
   };
   /** GeoJSON geometry object */
   geometry: Geometry;
@@ -1090,6 +1119,15 @@ export type InfoFeatureField =
       value: Image | null;
       /** type for the image object (here 'image') */
       type: 'image';
+    }
+  /** Manually added **/
+  | {
+      /** Field label */
+      label: string;
+      /** Field date */
+      value: string | null;
+      /** type for the date object (here 'date') */
+      type: 'date';
     };
 
 /** A link MUST be represented as either: a string containing the link URL or a link object. */
@@ -1368,6 +1406,13 @@ export type VectorLayerStyles = {
     labelYOffset?: string;
     /** Geometry type of the drawing (point, line, polygon, text or symbol) */
     type?: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
+    /** Manually added **/
+    /** Size of the given symbol */
+    symbolSize?: number;
+    /** Rotation of the given symbol */
+    symbolRotation?: number;
+    /** The given symbol as in JSON format */
+    drawingSymbolDefinition: ReturnType<DrawingSymbolDefinition['toJSON']>;
   };
 } | null;
 
