@@ -31,7 +31,6 @@ import {MapDataItemMapComponent} from './base-map-data-item/map-data-item-map.co
 import {MatDivider} from '@angular/material/divider';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
 import {ConfigService} from 'src/app/shared/services/config.service';
-import {selectItems} from 'src/app/state/map/selectors/active-map-items.selector';
 
 @Component({
   selector: 'map-data-catalogue',
@@ -68,7 +67,6 @@ export class MapDataCatalogueComponent implements OnDestroy {
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   private readonly originalMaps = this.store.selectSignal(selectMaps);
   public readonly isMinimized = signal(false);
-  public readonly activeMapItems = this.store.selectSignal(selectItems);
 
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
@@ -121,7 +119,7 @@ export class MapDataCatalogueComponent implements OnDestroy {
       activeMap = originalActiveMap;
     }
 
-    if (!isTemporary && this.activeMapItems().length === 0) {
+    if (!isTemporary) {
       this.applyDefaultBasemapForMap(activeMap);
     }
 
