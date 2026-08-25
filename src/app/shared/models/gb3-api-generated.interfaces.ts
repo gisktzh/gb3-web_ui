@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -8,11 +9,6 @@
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
-
-import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
-import {ReportOrientation, ReportType} from '../interfaces/print.interface';
-import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
-import {DrawingSymbolDefinition} from '../interfaces/drawing-symbol/drawing-symbol-definition.interface';
 
 export interface BboxGeoshop {
   /** GeoJSON geometry object */
@@ -71,7 +67,7 @@ export interface ErrorObject {
   code?: string;
   /** A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization. */
   title?: string;
-  /** A human-readable explanation specific to this occurrence of the problem. Like title, this field’s value can be localized. */
+  /** A human-readable explanation specific to this occurrence of the problem. Like title, this field value can be localized. */
   detail?: string;
   /** An object containing references to the source of the error, optionally including any of the following members: pointer, parameter, header */
   source?: {
@@ -101,11 +97,6 @@ export interface Feature {
       topic: string;
       /** Geolion ID of topic */
       geolion_gdd: number | null;
-      /** Jasper Report info, if any */
-      report: {
-        url: string | null;
-        description: string | null;
-      };
       /** UUID from geometadatabase */
       geolion_karten_uuid: string | null;
       layers: {
@@ -157,7 +148,6 @@ export interface General {
       municipality_name: string;
       oereb_extract: LinkObject | null;
       owner: LinkObject | null;
-      // IMPORTANT: The nullability is added manually due to this bug: https://github.com/acacode/swagger-typescript-api/issues/533
     } | null;
   };
 }
@@ -365,48 +355,48 @@ export interface PersonalFavoriteNew {
 
 export interface PrintCapabilities {
   /** Root object for print capabilities */
-  print?: {
+  print: {
     /** Possible file types for printing */
-    formats?: string[];
+    formats: string[];
     /** Accepted DPI values */
-    dpis?: number[];
+    dpis: number[];
     /** List of reports and their map sizes */
-    reports?: {
+    reports: {
       /** Name of the report */
-      name?: string;
+      name: string;
       /** Size of the map in this report */
-      map?: {
-        width?: number;
-        height?: number;
+      map: {
+        width: number;
+        height: number;
       };
     }[];
     /** List of valid print settings combinations, old implementation */
-    valid_combinations?: {
+    valid_combinations: {
       /** Paper size plus orientation, space separated */
-      report?: string;
+      report: string;
       /** If the legend should be rendered as well */
-      show_legend?: boolean;
+      show_legend: boolean;
       /** DPI of the printed map */
-      dpi?: number;
+      dpi: number;
       /** File type */
-      format?: string;
+      format: string;
     }[];
     /** List of valid print settings combinations */
-    valid_combinations_machine_readable?: PrintCapabilitiesCombination[];
+    valid_combinations_machine_readable: PrintCapabilitiesCombination[];
   };
 }
 
 export interface PrintCapabilitiesCombination {
   /** Standard or mapset */
-  report_type: ReportType;
+  report_type: string;
   /** Portrait or landscape */
-  report_orientation: ReportOrientation;
+  report_orientation: string;
   /** Paper size, DIN A */
-  layout: DocumentFormat;
+  layout: string;
   /** DPI of the printed map */
-  dpi: DpiSetting;
+  dpi: number;
   /** File type */
-  file_format: FileFormat;
+  file_format: string;
   /** If the legend should be rendered as well */
   show_legend: boolean;
 }
@@ -700,23 +690,25 @@ export interface Topics {
             date: string;
           }[];
         };
-      };
+      } | null;
       /** Filters Settings */
-      filterConfigurations: {
-        /** display name of the filter, which is used as a title for the filter options */
-        name: string;
-        /** additional description for the current filter */
-        description?: string | null;
-        /** name of the parameter which contains the filter values */
-        parameter: string;
-        /** a list of data (name/value pair) to filter by */
-        filterValues: {
-          /** name of the filter that is displayed in the UI */
-          name: string;
-          /** a list containing the values to be filtered */
-          values: (string | number)[];
-        }[];
-      }[];
+      filterConfigurations:
+        | {
+            /** display name of the filter, which is used as a title for the filter options */
+            name: string;
+            /** additional description for the current filter */
+            description?: string | null;
+            /** name of the parameter which contains the filter values */
+            parameter: string;
+            /** a list of data (name/value pair) to filter by */
+            filterValues: {
+              /** name of the filter that is displayed in the UI */
+              name: string;
+              /** a list containing the values to be filtered */
+              values: (string | number)[];
+            }[];
+          }[]
+        | null;
       /** Search Settings */
       searchConfigurations:
         | {
@@ -979,6 +971,12 @@ export type FavoriteDrawings = VectorLayer;
 
 export type FavoriteMeasurements = VectorLayer;
 
+/**
+ * Binary file reference as used in multipart forms for uploading a single file
+ * @format binary
+ */
+export type File = File;
+
 export interface GenericGeojsonFeature {
   /** GeoJSON Feature */
   type: 'Feature';
@@ -1003,14 +1001,6 @@ export interface GeojsonFeature {
   type: 'Feature';
   properties: {
     /**
-     * UUID of the given feature
-     */
-    id: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
-    /**
-     * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
-     */
-    belongsTo?: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
-    /**
      * Reference to style ID in 'styles'
      * @example "a"
      */
@@ -1020,11 +1010,6 @@ export interface GeojsonFeature {
      * @example "Label text"
      */
     text?: string;
-    /**
-     * The tool used to draw the feature
-     * @example "polygon"
-     */
-    tool: SupportedEsriTool; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
   };
   /** GeoJSON geometry object */
   geometry: Geometry;
@@ -1105,29 +1090,21 @@ export type InfoFeatureField =
       value: Image | null;
       /** type for the image object (here 'image') */
       type: 'image';
-    }
-  | {
-      /** Field label */
-      label: string;
-      /** Field date */
-      value: string | null;
-      /** type for the date object (here 'date') */
-      type: 'date';
     };
 
-/** A link MUST be represented as either: a string containing the link’s URL or a link object. */
+/** A link MUST be represented as either: a string containing the link URL or a link object. */
 export type Link = LinkObject | string | null;
 
 export interface LinkObject {
-  /** A string whose value is a URI-reference https://datatracker.ietf.org/doc/html/rfc3986#section-4.1 pointing to the link’s target. */
+  /** A string whose value is a URI-reference https://datatracker.ietf.org/doc/html/rfc3986#section-4.1 pointing to the link target. */
   href: string;
-  /** A string indicating the link’s relation type. The string MUST be a valid link relation type. */
+  /** A string indicating the link relation type. The string MUST be a valid link relation type. */
   rel?: string;
   /** A link that leads to further information about this link. */
   describedby?: LinkObject;
   /** A string containing a human-readable description of the link. */
   title?: string;
-  /** A string or an array of strings indicating the language(s) of the link’s target. An array of strings indicates that the link’s target is available in multiple languages. Each string MUST be a valid language tag https://datatracker.ietf.org/doc/html/rfc5646. */
+  /** A string or an array of strings indicating the language(s) of the link target. An array of strings indicates that the link target is available in multiple languages. Each string MUST be a valid language tag https://datatracker.ietf.org/doc/html/rfc5646. */
   hreflang?: string;
   /** A meta object containing non-standard meta-information about the link. */
   meta?: object;
@@ -1391,14 +1368,8 @@ export type VectorLayerStyles = {
     labelYOffset?: string;
     /** Geometry type of the drawing (point, line, polygon, text or symbol) */
     type?: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
-    /** Size of the given symbol */
-    symbolSize?: number;
-    /** Rotation of the given symbol */
-    symbolRotation?: number;
-    /** The given symbol as in JSON format */
-    drawingSymbolDefinition: ReturnType<DrawingSymbolDefinition['toJSON']>;
   };
-};
+} | null;
 
 /** Vector layer without styles */
 export interface VectorLayerWithoutStyles {
@@ -1424,11 +1395,11 @@ export type ImportKmlCreateData = VectorLayer;
 
 export type ExportKmlCreateData = any;
 
-export type TopicsFeatureInfoDetailData = Feature;
+export type TopicsFeatureInfoListData = Feature;
 
 export type GeneralInfoListData = General;
 
-export type TopicsLegendDetailData = Legend;
+export type TopicsLegendListData = Legend;
 
 export type MetadataDatasetsListData = MetadataDatasets;
 
