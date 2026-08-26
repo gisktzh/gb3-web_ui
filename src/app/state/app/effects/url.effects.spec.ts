@@ -168,20 +168,32 @@ describe('UrlEffects', () => {
         expect(action).toEqual(expectedAction);
       });
     });
+  });
 
+  describe('handleCollapsedUrlParameter$', () => {
     it('dispatches MapUiActions.changeUiElementsVisibility() if collapsed query param is true', () => {
       const params = {collapsed: 'true'};
-      const basemapConfigService = TestBed.inject(BasemapConfigService);
-      vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue('Dust II');
-      const changeUiElementsVisibilitySpy = vi.spyOn(MapUiActions, 'changeUiElementsVisibility');
       store.overrideSelector(selectQueryParams, params);
-      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+
+      const expectedAction = MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: false});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.subscribe(() => {
-        expect(changeUiElementsVisibilitySpy).toHaveBeenCalledTimes(1);
-        expect(changeUiElementsVisibilitySpy).toHaveBeenCalledWith({hideAllUiElements: true, hideUiToggleButton: false});
+      effects.handleCollapsedUrlParameter$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
       });
+    });
+
+    it('does not dispatch any action if collapsed query param is not true', () => {
+      const params = {collapsed: 'false'};
+      store.overrideSelector(selectQueryParams, params);
+      let wasCalled = false;
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleCollapsedUrlParameter$.subscribe(() => {
+        wasCalled = true;
+      });
+
+      expect(wasCalled).toBe(false);
     });
   });
 

@@ -68,8 +68,7 @@ export class UrlEffects {
       filter((mainPage) => mainPage === MainPage.Maps),
       concatLatestFrom(() => [this.store.select(selectQueryParams), this.store.select(selectMapConfigParams)]),
       map(([_, currentParams, mapConfigParams]) => {
-        const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex, collapsed} =
-          UrlUtils.extractUrlParamsForMapInitialization(currentParams);
+        const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex} = UrlUtils.extractUrlParamsForMapInitialization(currentParams);
         const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
         const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap, initialMaps);
         if (searchTerm || searchIndex) {
@@ -79,10 +78,7 @@ export class UrlEffects {
             basemapId,
             initialMaps,
           });
-        } else if (x || y || scale || basemap || initialMapIds || collapsed) {
-          if (collapsed) {
-            MapUiActions.changeUiElementsVisibility({hideAllUiElements: collapsed, hideUiToggleButton: false});
-          }
+        } else if (x || y || scale || basemap || initialMapIds) {
           if (!x && !y && !scale) {
             const initialExtent = this.initalMapExtentService.calculateInitialExtent();
             return MapConfigActions.setInitialMapConfig({...initialExtent, initialMaps, basemapId});
@@ -92,6 +88,19 @@ export class UrlEffects {
           return UrlActions.setMapPageParams({params: mapConfigParams});
         }
       }),
+    );
+  });
+
+  public handleCollapsedUrlParameter$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UrlActions.setPage),
+      map((action) => action.mainPage),
+      distinctUntilChanged(),
+      filter((mainPage) => mainPage === MainPage.Maps),
+      concatLatestFrom(() => [this.store.select(selectQueryParams)]),
+      map(([_, currentParams]) => UrlUtils.extractUrlParamsForMapInitialization(currentParams).collapsed),
+      filter((collapsed) => collapsed),
+      map((collapsed) => MapUiActions.changeUiElementsVisibility({hideAllUiElements: collapsed, hideUiToggleButton: false})),
     );
   });
 
