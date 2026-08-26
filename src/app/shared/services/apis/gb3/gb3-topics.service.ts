@@ -34,6 +34,7 @@ import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
 import {formatFeatureInfoFieldValue} from '../../../utils/feature-info-field.utils';
+import {OerebMaps} from 'src/app/shared/configs/oereb-maps.config';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
@@ -168,7 +169,13 @@ export class Gb3TopicsService extends Gb3ApiService {
         return {
           title: category.title,
           maps: [...category.topics]
-            .sort((a, b) => a.title.localeCompare(b.title))
+            .sort((a, b) => {
+              if (category.title === 'ÖREB') {
+                return OerebMaps.indexOf(a.topic) - OerebMaps.indexOf(b.topic);
+              }
+
+              return a.title.localeCompare(b.title);
+            })
             .map((topic) => {
               return {
                 id: topic.topic,
