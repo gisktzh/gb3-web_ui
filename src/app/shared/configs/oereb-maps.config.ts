@@ -1,4 +1,6 @@
-const OerebMapOrder = [
+import {OerebMapOrderItem} from '../interfaces/oereb-map-order-item.interface';
+
+const OerebMapOrder: OerebMapOrderItem[] = [
   {name: 'KatOerebRaumplanungZH', sort: 1},
   {name: 'KatOerebStrassenZH', sort: 2},
   {name: 'KatOerebEisenbahnenZH', sort: 3},
@@ -10,4 +12,4 @@ const OerebMapOrder = [
   {name: 'KatOerebVerEntsorgungZH', sort: 9},
 ];
 
-export const OerebMaps = OerebMapOrder.toSorted((a, b) => a.sort - b.sort).map((item) => item.name);
+export const OerebMaps = [...OerebMapOrder].sort((a, b) => a.sort - b.sort).map((item) => item.name);

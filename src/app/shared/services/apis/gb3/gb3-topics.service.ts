@@ -34,7 +34,6 @@ import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
 import {formatFeatureInfoFieldValue} from '../../../utils/feature-info-field.utils';
-import {OerebMaps} from 'src/app/shared/configs/oereb-maps.config';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
@@ -49,6 +48,7 @@ export class Gb3TopicsService extends Gb3ApiService {
   private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   private readonly dataDatasetTabUrl = `/${MainPage.Data}/${DataCataloguePage.Datasets}`;
   private readonly dataMapTabUrl = `/${MainPage.Data}/${DataCataloguePage.Maps}`;
+  private readonly oerebMaps = this.configService.oerebMaps;
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -171,7 +171,7 @@ export class Gb3TopicsService extends Gb3ApiService {
           maps: [...category.topics]
             .sort((a, b) => {
               if (category.title === 'ÖREB') {
-                return OerebMaps.indexOf(a.topic) - OerebMaps.indexOf(b.topic);
+                return this.oerebMaps.indexOf(a.topic) - this.oerebMaps.indexOf(b.topic);
               }
 
               return a.title.localeCompare(b.title);
