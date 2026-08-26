@@ -103,7 +103,6 @@ export interface Feature {
       topic: string;
       /** Geolion ID of topic */
       geolion_gdd: number | null;
-      /** Manually added **/
       /** Jasper Report info, if any */
       report: {
         url: string | null;
@@ -398,7 +397,6 @@ export interface PrintCapabilities {
   };
 }
 
-/** Manually added **/
 export interface PrintCapabilitiesCombination {
   /** Standard or mapset */
   report_type: ReportType;
@@ -1013,16 +1011,14 @@ export interface GeojsonFeature {
   /** GeoJSON Feature */
   type: 'Feature';
   properties: {
-    /** Manually added **/
     /**
      * UUID of the given feature
      */
-    id: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
-    /** Manually added **/
+    id: string;
     /**
      * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
      */
-    belongsTo?: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
+    belongsTo?: string;
     /**
      * Reference to style ID in 'styles'
      * @example "a"
@@ -1033,12 +1029,11 @@ export interface GeojsonFeature {
      * @example "Label text"
      */
     text?: string;
-    /** Manually added **/
     /**
      * The tool used to draw the feature
      * @example "polygon"
      */
-    tool: SupportedEsriTool; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
+    tool: SupportedEsriTool;
   };
   /** GeoJSON geometry object */
   geometry: Geometry;
@@ -1120,7 +1115,6 @@ export type InfoFeatureField =
       /** type for the image object (here 'image') */
       type: 'image';
     }
-  /** Manually added **/
   | {
       /** Field label */
       label: string;
@@ -1406,12 +1400,11 @@ export type VectorLayerStyles = {
     labelYOffset?: string;
     /** Geometry type of the drawing (point, line, polygon, text or symbol) */
     type?: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
-    /** Manually added **/
-    /** Size of the given symbol */
+    /** Size of the symbol used in map units, if any */
     symbolSize?: number;
-    /** Rotation of the given symbol */
+    /** Rotation of the symbol in degrees, if any */
     symbolRotation?: number;
-    /** The given symbol as in JSON format */
+    /** JSON representation of the used symbol, if any */
     drawingSymbolDefinition: ReturnType<DrawingSymbolDefinition['toJSON']>;
   };
 } | null;
