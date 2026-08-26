@@ -1,5 +1,5 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {Component, ElementRef, computed, effect, inject, viewChildren} from '@angular/core';
+import {Component, ElementRef, Renderer2, computed, effect, inject, viewChildren} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
@@ -24,6 +24,7 @@ import {RouterOutlet} from '@angular/router';
 import {MainFooterComponent} from './shared/components/footer/main-footer.component';
 import {ScrollbarWidthCalculationComponent} from './shared/components/scrollbar-width-calculation/scrollbar-width-calculation.component';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {selectAccessMode} from './state/app/reducers/app.reducer';
 
 @Component({
   selector: 'app-root',
@@ -44,6 +45,7 @@ export class AppComponent {
   private readonly pageNotificationService = inject(PageNotificationService);
   private readonly store = inject(Store);
   private readonly iconsService = inject(IconsService);
+  private readonly renderer = inject(Renderer2);
   private readonly elements = viewChildren<HTMLElement, ElementRef<HTMLElement>>(Object.values(SkipLinkTemplateVariable).join(', '), {
     read: ElementRef<HTMLElement>,
   });
@@ -76,6 +78,8 @@ export class AppComponent {
       BreakpointsHeight.Small,
     ]),
   );
+  protected readonly accessMode = this.store.selectSignal(selectAccessMode);
+  protected readonly isIntranet = computed(() => this.accessMode() === 'intranet');
   protected readonly skipLinks: SkipLink[] = SkipLinkConstants.skipLinks;
   protected readonly templateVariable = SkipLinkTemplateVariable;
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
@@ -111,6 +115,14 @@ export class AppComponent {
         this.openPageNotificationSnackBar(pageNotifications[0]);
       } else {
         this.closePageNotificationSnackBar();
+      }
+    });
+
+    effect(() => {
+      if (this.isIntranet()) {
+        this.renderer.addClass(document.body, 'body--is-intranet');
+      } else {
+        this.renderer.removeClass(document.body, 'body--is-intranet');
       }
     });
   }

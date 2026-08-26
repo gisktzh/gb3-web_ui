@@ -53,7 +53,7 @@
         aspect-ratio: 1 / 1;
         height: 100%;
         border-radius: 2px;
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+        background-color: functions.get-color-from-palette('primary');
 
         &--disabled {
           background-color: ktzh-variables.$zh-black20;
@@ -68,8 +68,8 @@
         width: auto;
 
         @include mat-mixins.mat-icon-button-override-unthemed-color(
-          functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
-          functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+          functions.get-color-from-palette('secondary-accent'),
+          functions.get-contrast-color-from-palette('secondary-accent')
         );
         @include mat-mixins.mat-icon-button-override-icon-size(18px);
 

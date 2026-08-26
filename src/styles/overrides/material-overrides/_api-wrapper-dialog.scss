@@ -35,16 +35,16 @@
     padding: 0;
 
     & .mdc-button {
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
-      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+      background-color: functions.get-color-from-palette('accent', 50);
+      color: functions.get-color-from-palette('accent', 300);
       height: 48px;
       margin: 0 !important;
       width: 137px;
       padding: 12px 24px 12px 24px;
 
       &:last-of-type {
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
-        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+        background-color: functions.get-color-from-palette('accent');
+        color: functions.get-contrast-color-from-palette('accent');
       }
 
       &:disabled {

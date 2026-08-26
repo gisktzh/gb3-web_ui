@@ -6,8 +6,8 @@
 :host ::ng-deep {
   .map-data-item-map-layer__visibility-checkbox {
     @include mat-mixins.mat-checkbox-override-accent-color(
-      functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
-      functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+      functions.get-color-from-palette('secondary-accent'),
+      functions.get-contrast-color-from-palette('secondary-accent')
     );
   }
 }
@@ -51,8 +51,8 @@
     width: auto;
 
     @include mat-mixins.mat-icon-button-override-unthemed-color(
-      functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
-      functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+      functions.get-color-from-palette('secondary-accent'),
+      functions.get-contrast-color-from-palette('secondary-accent')
     );
     @include mat-mixins.mat-icon-button-override-icon-size(18px);
   }

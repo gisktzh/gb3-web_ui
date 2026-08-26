@@ -11,7 +11,7 @@
 
 .map-management-mobile-header {
   padding-bottom: 35px;
-  background-color: ktzh-variables.$zh-darkblue;
+  background-color: functions.get-color-from-palette('primary', 500);
   width: 100vw;
   left: 0;
   position: absolute;
@@ -21,18 +21,18 @@
     display: flex;
     border-width: 3px;
     border-style: solid;
-    border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+    border-color: functions.get-color-from-palette('primary', 900);
     border-radius: ktzh-variables.$zh-border-radius;
     margin: 0 9px;
 
     .map-management-mobile-header__buttons__button {
       width: 100%;
-      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+      color: functions.get-contrast-color-from-palette('primary');
+      background-color: functions.get-color-from-palette('primary');
       height: 48px;
 
       &--selected {
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+        background-color: functions.get-color-from-palette('primary', 900);
       }
 
       &:disabled {
@@ -54,8 +54,8 @@
         width: 24px;
         @include mat-mixins.mat-badge-inherit-size;
         @include mat-mixins.mat-badge-override-color(
-          functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary),
-          functions.get-color-from-palette(ktzh-variables.$zh-primary)
+          functions.get-contrast-color-from-palette('primary'),
+          functions.get-color-from-palette('primary')
         );
 
         &--hidden {

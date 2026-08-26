@@ -50,12 +50,12 @@
       margin-left: 12px;
 
       &.mdc-button {
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
-        color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+        background-color: functions.get-color-from-palette('accent', 50);
+        color: functions.get-color-from-palette('accent', 300);
 
         &:last-of-type {
-          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
-          color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+          background-color: functions.get-color-from-palette('accent');
+          color: functions.get-contrast-color-from-palette('accent');
         }
 
         &:disabled {

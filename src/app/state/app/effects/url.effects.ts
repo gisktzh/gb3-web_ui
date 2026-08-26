@@ -70,8 +70,8 @@ export class UrlEffects {
       map(([_, currentParams, mapConfigParams]) => {
         const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex, collapsed} =
           UrlUtils.extractUrlParamsForMapInitialization(currentParams);
-        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
         const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
+        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap, initialMaps);
         if (searchTerm || searchIndex) {
           return SearchActions.initializeSearchFromUrlParameters({
             searchTerm: searchTerm,
