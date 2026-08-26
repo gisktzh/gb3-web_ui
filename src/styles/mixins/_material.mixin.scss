@@ -9,8 +9,8 @@
 */
 
 @mixin cdk-drag-placeholder($height) {
-  background: ktzh-variables.$zh-blue;
-  border: dotted 3px ktzh-variables.$zh-darkblue;
+  background: functions.get-color-from-palette('primary-light', 500);
+  border: dotted 3px functions.get-color-from-palette('primary', 500);
   box-sizing: border-box;
   height: $height;
   width: 100%;

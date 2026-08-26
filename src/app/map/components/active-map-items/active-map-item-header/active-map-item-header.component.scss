@@ -6,8 +6,8 @@
 :host ::ng-deep {
   .active-map-item-header__image-container__checkbox {
     @include mat-mixins.mat-checkbox-override-accent-color(
-      functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
-      functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+      functions.get-color-from-palette('secondary-accent'),
+      functions.get-contrast-color-from-palette('secondary-accent')
     );
 
     .mdc-checkbox__ripple {
@@ -72,10 +72,10 @@
 
   .active-map-item-header__divider {
     height: 40%;
-    border-right-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    border-right-color: functions.get-color-from-palette('primary');
 
     &--inverted {
-      border-right-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+      border-right-color: functions.get-contrast-color-from-palette('primary');
     }
   }
 
@@ -113,11 +113,11 @@
       align-items: center;
       height: inherit;
       width: 142px;
-      background: linear-gradient(90deg, transparent 0%, functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary) 37.5%);
+      background: linear-gradient(90deg, transparent 0%, functions.get-contrast-color-from-palette('primary') 37.5%);
 
       &--inverted {
         display: flex;
-        background: linear-gradient(90deg, transparent 0%, functions.get-color-from-palette(ktzh-variables.$zh-primary) 37.5%);
+        background: linear-gradient(90deg, transparent 0%, functions.get-color-from-palette('primary') 37.5%);
       }
 
       &--mobile {

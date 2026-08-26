@@ -68,8 +68,8 @@ export class UrlEffects {
       concatLatestFrom(() => [this.store.select(selectQueryParams), this.store.select(selectMapConfigParams)]),
       map(([_, currentParams, mapConfigParams]) => {
         const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex} = UrlUtils.extractUrlParamsForMapInitialization(currentParams);
-        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
         const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
+        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap, initialMaps);
         if (searchTerm || searchIndex) {
           return SearchActions.initializeSearchFromUrlParameters({
             searchTerm: searchTerm,
