@@ -10,4 +10,4 @@ const OerebMapOrder = [
   {name: 'KatOerebVerEntsorgungZH', sort: 9},
 ];
 
-export const OerebMaps = OerebMapOrder.sort((a, b) => a.sort - b.sort).map((item) => item.name);
+export const OerebMaps = OerebMapOrder.toSorted((a, b) => a.sort - b.sort).map((item) => item.name);
