@@ -41,8 +41,10 @@ export class SearchWindowMobileComponent {
     });
 
     effect(() => {
-      if (!untracked(() => this.selectedSearchResult())) {
-        const searchTerm = this.searchTerm();
+      const searchTerm = this.searchTerm();
+      const selectedSearchResult = untracked(() => this.selectedSearchResult());
+
+      if (!selectedSearchResult) {
         queueMicrotask(() => {
           this.searchComponent().setTerm(searchTerm ?? '', false);
         });

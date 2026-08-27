@@ -23,7 +23,8 @@
     "lint": "eslint",
     "knip": "knip",
     "e2e": "ng e2e",
-    "generate-component-test-skeleton": "ng generate component-test-skeleton"
+    "generate-component-test-skeleton": "ng generate component-test-skeleton",
+    "generate-missing-component-tests": "./scripts/test_utils/generate_all_missing_component_tests.sh"
   },
   "private": true,
   "engines": {

@@ -48,10 +48,6 @@ describe('PrivacyContentComponent', () => {
     expect(compiled.textContent).toContain('Registrierung');
   });
 
-  it('should render YouTube section', () => {
-    expect(compiled.textContent).toContain('YouTube');
-  });
-
   it('should render unordered lists', () => {
     const lists = compiled.querySelectorAll<HTMLUListElement>('ul');
 

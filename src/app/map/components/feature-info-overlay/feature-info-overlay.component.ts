@@ -1,4 +1,4 @@
-import {Component, input, inject} from '@angular/core';
+import {Component, input, inject, computed} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectIsFeatureInfoOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
@@ -24,6 +24,9 @@ export class FeatureInfoOverlayComponent {
   public readonly featureInfoData = this.store.selectSignal(selectFeatureInfosForDisplay);
   public readonly loadingState = this.store.selectSignal(selectFeatureInfoQueryLoadingState);
   public readonly printLoadingState = this.store.selectSignal(selectFeatureInfoPrintState);
+  public readonly printButtonEnabled = computed(
+    () => this.showInteractiveElements() && this.loadingState() === 'loaded' && this.featureInfoData().length > 0,
+  );
 
   public close() {
     this.store.dispatch(MapUiActions.setFeatureInfoVisibility({isVisible: false}));

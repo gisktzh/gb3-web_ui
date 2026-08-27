@@ -22,7 +22,7 @@ function getNestedTypeArguments(typeReferenceNode: TypeReferenceNode | UnionType
   }
 
   return {
-    typeNames: [typeReferenceNode.typeName.getFullText()],
+    typeNames: [typeReferenceNode.typeName?.getFullText()],
     nested: typeReferenceNode.typeArguments?.map((t) => getNestedTypeArguments(t as TypeReferenceNode)) || [],
   };
 }

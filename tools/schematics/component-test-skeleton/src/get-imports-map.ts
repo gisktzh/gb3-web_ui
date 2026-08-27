@@ -5,7 +5,6 @@ export function getImportsMap(sourceFile: SourceFile) {
 
   function visit(node: Node) {
     if (isImportDeclaration(node)) {
-      // node.moduleSpecifier
       if (
         node.importClause?.namedBindings &&
         isNamedImportBindings(node.importClause.namedBindings) &&

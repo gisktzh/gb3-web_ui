@@ -97,7 +97,7 @@ describe('NavbarComponent', () => {
 
       fixture.detectChanges();
 
-      const logo = compiled.querySelector<HTMLImageElement>('.navbar__logo');
+      const logo = compiled.querySelector<HTMLImageElement>('img.navbar__logo');
 
       expect(logo?.style.display).toBe('inline');
     });
@@ -107,7 +107,7 @@ describe('NavbarComponent', () => {
 
       fixture.detectChanges();
 
-      const logo = compiled.querySelector<HTMLImageElement>('.navbar__logo');
+      const logo = compiled.querySelector<HTMLImageElement>('img.navbar__logo');
 
       expect(logo?.style.display).toBe('none');
     });
