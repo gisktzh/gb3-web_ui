@@ -14,3 +14,5 @@ npm run generate-component-test-skeleton -- --path="$component_ts"
   cat "${base}.component.spec.ts"
   printf '\n```\n'
 } | clip.exe
+
+code ${base}.component.spec.ts

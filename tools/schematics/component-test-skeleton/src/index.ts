@@ -67,12 +67,26 @@ export function componentTest(options: SchemaOptions): Rule {
 
     // Build up and override selectors
     storeSelectors.forEach((selector) => {
-      if (!imports.has(selector.name)) {
-        throw new Error(`Import for selector ${selector.name} is missing in source component?`);
+      // Simplest case: No aliasing, import is there as is.
+      if (imports.has(selector.name)) {
+        necessaryImports += `import {${selector.name}} from '${imports.get(selector.name)}'\n`;
+        overriddenSelectors += `    store.overrideSelector(${selector.name}, ${selector.defaultArg});\n`;
+
+        return;
       }
 
-      necessaryImports += `import {${selector.name}} from '${imports.get(selector.name)}'\n`;
-      overriddenSelectors += `    store.overrideSelector(${selector.name}, ${selector.defaultArg});\n`;
+      // Less straight-forward: Import has been aliased.
+      const importKeyCandidates = Array.from(imports.keys()).filter((k) => k.endsWith(` as ${selector.name}`));
+      if (importKeyCandidates.length > 0) {
+        const key = importKeyCandidates[0];
+
+        necessaryImports += `import {${key}} from '${imports.get(key)}'\n`;
+        overriddenSelectors += `    store.overrideSelector(${selector.name}, ${selector.defaultArg});\n`;
+
+        return;
+      }
+
+      throw new Error(`Import for selector ${selector.name} is missing in source component? Imports: ${JSON.stringify(imports)}`);
     });
 
     if (overriddenSelectors.length > 0) {

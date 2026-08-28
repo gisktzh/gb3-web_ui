@@ -46,7 +46,7 @@ export class FavouriteCreationDialogComponent implements HasSavingStateSingal {
         await firstValueFrom(this.favouritesService.createFavourite(this.nameModel().name));
         this.store.dispatch(FavouriteListActions.loadFavourites());
         this.close();
-      } catch (err: unknown) {
+      } catch (err) {
         this.savingState.set('error');
         throw new FavouriteCouldNotBeCreated(err);
       }
