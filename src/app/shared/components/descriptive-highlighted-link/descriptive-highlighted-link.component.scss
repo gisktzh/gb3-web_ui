@@ -7,8 +7,8 @@
   align-items: center;
   width: auto;
   flex-wrap: nowrap;
-  background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
-  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 25);
+  background-color: functions.get-color-from-palette('accent', 25);
+  color: functions.get-contrast-color-from-palette('accent', 25);
   padding: 12px 16px;
   justify-content: space-between;
   gap: 12px;

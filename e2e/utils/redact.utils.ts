@@ -21,6 +21,7 @@ const REDACTABLE_KEYS = new Set([
   'user-agent',
   'User-Agent',
   'set-cookie',
+  'auth_state',
 ]);
 
 /**
@@ -84,7 +85,9 @@ function isJsonString(value: string): boolean {
  * Checks if a given value looks and behaves like an HTTP query string.
  */
 function isSearchParamsString(value: string) {
-  if (!/^\??(?:[a-zA-Z0-9._~-]+(?:\[\])?=(?:[a-zA-Z0-9._~%-]*))(?:&[a-zA-Z0-9._~-]+(?:\[\])?=(?:[a-zA-Z0-9._~%-]*))*$/.test(value)) {
+  if (
+    !/^\??(?:[a-zA-Z0-9.%\-_*~]+(?:\[\])?=(?:[a-zA-Z0-9.%\-_*~]*))(?:&[a-zA-Z0-9.%\-_*~]+(?:\[\])?=(?:[a-zA-Z0-9.%\-_*~]*))*$/.test(value)
+  ) {
     return false;
   }
 

@@ -2,8 +2,8 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .gis-browser-teaser {
-  background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+  background-color: functions.get-color-from-palette('primary');
+  color: functions.get-contrast-color-from-palette('primary');
   padding: 40px;
   display: block;
   text-decoration: none;

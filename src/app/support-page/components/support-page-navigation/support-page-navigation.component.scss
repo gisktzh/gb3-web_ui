@@ -3,7 +3,7 @@
 @use 'mixins/helpers.mixin' as mixins;
 
 .support-page-navigation {
-  border-bottom: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50) solid 2px;
+  border-bottom: functions.get-color-from-palette('accent', 50) solid 2px;
 
   .support-page-navigation__buttons {
     display: flex;
@@ -11,16 +11,16 @@
     white-space: nowrap;
 
     .support-page-navigation__buttons__button {
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
-      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+      background-color: functions.get-color-from-palette('accent', 50);
+      color: functions.get-color-from-palette('accent', 300);
       margin-right: 6px;
       margin-bottom: 6px;
       font-family: ktzh-variables.$zh-font-family;
       flex: 0 0 auto;
 
       &--active {
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
-        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+        background-color: functions.get-color-from-palette('accent');
+        color: functions.get-contrast-color-from-palette('accent');
         font-family: ktzh-variables.$zh-font-family-bold;
       }
     }

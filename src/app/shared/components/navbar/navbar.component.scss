@@ -62,7 +62,7 @@
 
   .navbar__divider {
     height: 65%;
-    border-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    border-color: functions.get-contrast-color-from-palette('primary');
   }
 
   .navbar__underline-container {

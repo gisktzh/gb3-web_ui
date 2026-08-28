@@ -3,7 +3,7 @@ import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/co
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
-import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
+import {TopicsFeatureInfoListData, TopicsLegendListData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {ConfigService} from '../../config.service';
 import {Gb3TopicsService} from './gb3-topics.service';
 import {FilterConfiguration, TopicsResponse, WmsFilterValue} from '../../../interfaces/topic.interface';
@@ -331,7 +331,7 @@ describe('Gb3TopicsService', () => {
 
   describe('loadLegends', () => {
     it('should receive the data and transform it correctly', () => {
-      const data: TopicsLegendDetailData = {
+      const data: TopicsLegendListData = {
         legend: {
           topic: 'Lageklassen2003ZH',
           geolion_gdd: null,
@@ -534,7 +534,7 @@ describe('Gb3TopicsService', () => {
 
   describe('loadFeatureInfos', () => {
     it('should receive the data and transform it correctly', () => {
-      const data: TopicsFeatureInfoDetailData = {
+      const data: TopicsFeatureInfoListData = {
         feature_info: {
           query_position: {
             x: 2682707.901193953,
@@ -918,7 +918,7 @@ describe('Gb3TopicsService', () => {
     });
 
     it('should build feature info URL for StatGebAlterZH with FILTER_GEBART and FILTER_VON and FILTER_BIS', () => {
-      const data: TopicsFeatureInfoDetailData = {
+      const data: TopicsFeatureInfoListData = {
         feature_info: {
           query_position: {
             x: 2683132.068846092,

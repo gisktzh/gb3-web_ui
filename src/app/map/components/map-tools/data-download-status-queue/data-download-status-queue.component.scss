@@ -17,8 +17,8 @@
   .data-download-status-queue__header {
     display: flex;
     align-items: center;
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    background-color: functions.get-color-from-palette('primary');
+    color: functions.get-contrast-color-from-palette('primary');
     font-family: ktzh-variables.$zh-font-family;
     padding: 0 6px 0 24px;
     height: 48px;
@@ -91,7 +91,7 @@
             margin-right: auto;
 
             &--error {
-              color: functions.get-color-from-palette(ktzh-variables.$zh-warn);
+              color: functions.get-color-from-palette('warn');
             }
           }
         }
