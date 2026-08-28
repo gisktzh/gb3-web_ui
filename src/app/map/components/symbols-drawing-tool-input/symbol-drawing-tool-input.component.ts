@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatDialogRef, MatDialogClose} from '@angular/material/dialog';
 import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
@@ -11,6 +11,7 @@ import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/
   selector: 'symbol-drawing-tool-input',
   templateUrl: './symbol-drawing-tool-input.component.html',
   styleUrls: ['./symbol-drawing-tool-input.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, FormsModule, ReactiveFormsModule, MatButton, MatDialogClose, DrawingSymbolsComponent],
 })
 export class SymbolDrawingToolInputComponent {

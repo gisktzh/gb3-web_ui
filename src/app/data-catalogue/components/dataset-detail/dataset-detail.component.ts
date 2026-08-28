@@ -1,4 +1,4 @@
-import {Component, computed, Signal} from '@angular/core';
+import {Component, computed, Signal, ChangeDetectionStrategy} from '@angular/core';
 import {DatasetMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {DataDisplayElement} from '../../types/data-display-element.type';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
@@ -31,6 +31,7 @@ interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   selector: 'dataset-detail',
   templateUrl: './dataset-detail.component.html',
   styleUrls: ['./dataset-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     LoadingAndProcessBarComponent,
     DataCatalogueDetailPageComponent,

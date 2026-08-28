@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_SNACK_BAR_DATA, MatSnackBarRef, MatSnackBarLabel, MatSnackBarActions} from '@angular/material/snack-bar';
 import {ErrorNotificationInterface} from '../../interfaces/error-notification.interface';
 import {BehaviorSubject, concatMap, interval, Observable, Subscription, tap} from 'rxjs';
@@ -13,6 +13,7 @@ const TICK_LENGTH_IN_MS = 100;
   selector: 'error-notification',
   templateUrl: './error-notification.component.html',
   styleUrls: ['./error-notification.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatSnackBarLabel, MatSnackBarActions, MatIconButton, MatIcon, MatProgressBar, AsyncPipe],
 })
 export class ErrorNotificationComponent implements OnInit, OnDestroy {

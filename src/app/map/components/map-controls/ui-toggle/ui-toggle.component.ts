@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectHideToggleUiElementsButton, selectHideUiElements} from 'src/app/state/map/reducers/map-ui.reducer';
@@ -10,6 +10,7 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
   selector: 'ui-toggle',
   templateUrl: './ui-toggle.component.html',
   styleUrls: ['./ui-toggle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatTooltip, MatSlideToggle],
 })
 export class UiToggleComponent {

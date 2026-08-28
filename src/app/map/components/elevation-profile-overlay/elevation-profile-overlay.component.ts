@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {selectIsElevationProfileOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
@@ -16,6 +16,7 @@ import {MatDivider} from '@angular/material/divider';
   selector: 'elevation-profile-overlay',
   templateUrl: './elevation-profile-overlay.component.html',
   styleUrls: ['./elevation-profile-overlay.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MapOverlayComponent,
     LoadingAndProcessBarComponent,

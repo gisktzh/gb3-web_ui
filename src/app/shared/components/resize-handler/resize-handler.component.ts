@@ -1,4 +1,4 @@
-import {Component, input, output, signal} from '@angular/core';
+import {Component, input, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ResizeEvent, ResizableModule} from 'angular-resizable-element';
 import {ResizeHandlerLocation} from '../../types/resize-handler-location.type';
 import {StyleExpression} from '../../types/style-expression.type';
@@ -18,6 +18,7 @@ const MAX_DIMENSION_PERCENTAGE = 0.85;
   selector: 'resize-handler',
   templateUrl: './resize-handler.component.html',
   styleUrls: ['./resize-handler.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ResizableModule],
 })
 export class ResizeHandlerComponent {

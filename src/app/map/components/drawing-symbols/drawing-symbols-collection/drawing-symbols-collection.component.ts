@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, input, model, signal} from '@angular/core';
+import {Component, computed, effect, inject, input, model, signal, ChangeDetectionStrategy} from '@angular/core';
 import {firstValueFrom} from 'rxjs';
 import {DrawingSymbolsService} from 'src/app/shared/interfaces/drawing-symbols-service.interface';
 import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
@@ -8,6 +8,7 @@ import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/
 @Component({
   selector: 'drawing-symbols-collection',
   templateUrl: './drawing-symbols-collection.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./drawing-symbols-collection.component.scss'],
 })
 export class DrawingSymbolsCollectionComponent {

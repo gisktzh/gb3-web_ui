@@ -1,4 +1,4 @@
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {AuthConfig, OAuthModule, OAuthModuleConfig, OAuthStorage} from 'angular-oauth2-oidc';
 import {authConfigFactory} from '../shared/factories/auth-config.factory';
@@ -15,7 +15,7 @@ import {AuthNotificationDialogComponent} from './notifications/auth-notification
     {provide: AuthConfig, useFactory: authConfigFactory, deps: [ConfigService]},
     {provide: OAuthModuleConfig, useFactory: oAuthConfigFactory, deps: [ConfigService]},
     {provide: OAuthStorage, useFactory: storageFactory},
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
   ],
 })
 export class AuthModule {}

@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectFeatureInfoQueryLoadingState} from 'src/app/state/map/selectors/feature-info-query-loading-state.selector';
 import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-info.interface';
@@ -13,6 +13,7 @@ import {FeatureInfoItemComponent} from '../feature-info-item/feature-info-item.c
   selector: 'feature-info',
   templateUrl: './feature-info.component.html',
   styleUrls: ['./feature-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LoadingAndProcessBarComponent, FeatureInfoGeneralInformationComponent, MatDivider, FeatureInfoItemComponent],
 })
 export class FeatureInfoComponent {

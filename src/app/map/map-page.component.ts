@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, computed, inject, OnInit, signal} from '@angular/core';
+import {AfterViewInit, Component, computed, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ONBOARDING_STEPS, OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {Store} from '@ngrx/store';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
@@ -70,6 +70,7 @@ import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
     OnboardingGuideComponent,
     CenterAnchorComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '(window:keydown.esc)': 'closeSideDrawer()',
   },
