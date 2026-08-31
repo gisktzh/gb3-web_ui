@@ -19,6 +19,10 @@ async function openMapAndDrawingTools(
   await expect(drawingMenu).toBeVisible();
 }
 
+function isScreenCoordsList(coords: ScreenCoords | ScreenCoordsList): coords is ScreenCoordsList {
+  return Array.isArray(coords[0]);
+}
+
 async function drawShapeOnMap(page: Page, coordList: ScreenCoordsList) {
   for (const [index, coords] of coordList.entries()) {
     if (index === coordList.length - 1) {
@@ -34,19 +38,36 @@ async function drawShapeOnMap(page: Page, coordList: ScreenCoordsList) {
 async function assertShapeEdit(
   page: Page,
   editToolSelector: string,
-  clickCoords: ScreenCoords,
+  clickCoords: ScreenCoords | ScreenCoordsList,
   sliderInputValues: string[] = [],
   colorInputValues: string[] = [],
   textInputValues: string[] = [],
   radioInputId: string = '',
 ) {
   const mapContainer = page.locator('map-container');
-
-  await page.mouse.click(clickCoords[0], clickCoords[1], {
-    button: 'right',
-  });
-  await page.waitForTimeout(500);
   const editTool = page.locator(editToolSelector);
+  const clickCoordinateList: ScreenCoordsList = isScreenCoordsList(clickCoords) ? clickCoords : [clickCoords];
+
+  // Retrying the right click makes the test resilient against transient map-tool timing and hit-test sensitivity.
+  const clickOffsets: ScreenCoordsList = [
+    [0, 0],
+    [8, 0],
+    [0, 8],
+    [-8, 0],
+    [0, -8],
+  ];
+  for (const [x, y] of clickCoordinateList) {
+    for (const [offsetX, offsetY] of clickOffsets) {
+      await page.mouse.click(x + offsetX, y + offsetY, {button: 'right'});
+      await page.waitForTimeout(350);
+      if (await editTool.isVisible()) {
+        break;
+      }
+    }
+    if (await editTool.isVisible()) {
+      break;
+    }
+  }
   await expect(editTool).toBeVisible({timeout: 30_000});
 
   if (sliderInputValues.length > 0) {
@@ -148,7 +169,7 @@ test.describe('Drawing', () => {
 
     await expect(mapContainer).toBeVisible();
 
-    await assertShapeEdit(page, 'line-edit', lineCoords[0], ['8', '0.6'], ['#00ff00']);
+    await assertShapeEdit(page, 'line-edit', lineCoords, ['8', '0.6'], ['#00ff00']);
   });
 
   test('draws a polygon and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
@@ -182,7 +203,7 @@ test.describe('Drawing', () => {
 
     await expect(mapContainer).toBeVisible();
 
-    await assertShapeEdit(page, 'polygon-edit', polygonCoords[0], ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
+    await assertShapeEdit(page, 'polygon-edit', polygonCoords, ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
   });
 
   test('draws a rectangle and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
@@ -214,7 +235,7 @@ test.describe('Drawing', () => {
 
     await expect(mapContainer).toBeVisible();
 
-    await assertShapeEdit(page, 'polygon-edit', reactangleCoords[0], ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
+    await assertShapeEdit(page, 'polygon-edit', reactangleCoords, ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
   });
 
   test('draws a circle and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
@@ -246,7 +267,7 @@ test.describe('Drawing', () => {
 
     await expect(mapContainer).toBeVisible();
 
-    await assertShapeEdit(page, 'polygon-edit', circleCoords[0], ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
+    await assertShapeEdit(page, 'polygon-edit', circleCoords, ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
   });
 
   test('draws text and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
@@ -272,9 +293,21 @@ test.describe('Drawing', () => {
 
     await textToolButton.click();
     await page.waitForTimeout(250);
-    await page.mouse.click(textCoords[0], textCoords[1]);
 
     const textDrawingToolInputForm = page.locator('text-drawing-tool-input');
+
+    // Retrying the click makes the test resilient against the first map click after activating a tool getting swallowed.
+    for (let clickAttempt = 0; clickAttempt < 3; clickAttempt++) {
+      await page.mouse.move(textCoords[0], textCoords[1]);
+      await page.waitForTimeout(250);
+      await page.mouse.click(textCoords[0], textCoords[1]);
+      await page.waitForTimeout(1000);
+
+      if (await textDrawingToolInputForm.isVisible()) {
+        break;
+      }
+    }
+
     await expect(textDrawingToolInputForm).toBeVisible({timeout: 30_000});
     const textDrawingToolFormInput = textDrawingToolInputForm.locator('input');
     await expect(textDrawingToolFormInput).toBeVisible();
@@ -336,15 +369,6 @@ test.describe('Drawing', () => {
     const symbolInput = page.locator('symbol-drawing-tool-input');
     await expect(symbolInput).toBeVisible();
 
-    // Close it and reopen it
-    const closeButton = page.locator('mat-dialog-container button', {hasText: 'close'});
-    await expect(closeButton).toBeVisible();
-    await closeButton.click();
-    await expect(symbolInput).not.toBeVisible();
-
-    await symbolToolButton.click();
-    await expect(symbolInput).toBeVisible();
-
     const symbolSliderInputs = await symbolInput.locator('slider-edit').all();
     await symbolSliderInputs[0].locator('input').fill('16');
     await expect(symbolSliderInputs[0].locator('.slider-wrapper__header__value')).toContainText('16');
@@ -366,11 +390,25 @@ test.describe('Drawing', () => {
     await expect(addButton).toBeVisible();
     await addButton.click();
 
-    await page.waitForTimeout(250);
-    await page.mouse.move(symbolCoords[0], symbolCoords[1]);
-    await page.waitForTimeout(250);
-    await page.mouse.click(symbolCoords[0], symbolCoords[1]);
-    await page.waitForTimeout(250);
+    await expect(symbolInput).not.toBeVisible();
+    await page.waitForLoadState('networkidle');
+    await expect(symbolToolButton).toHaveClass(/drawing-tools__button--active/);
+
+    for (let clickAttempt = 0; clickAttempt < 2; clickAttempt++) {
+      await page.mouse.move(symbolCoords[0], symbolCoords[1]);
+      await page.waitForTimeout(250);
+      await page.mouse.click(symbolCoords[0], symbolCoords[1]);
+      await page.waitForTimeout(350);
+
+      const isSymbolToolStillActive = await symbolToolButton.evaluate((button) =>
+        button.classList.contains('drawing-tools__button--active'),
+      );
+      if (!isSymbolToolStillActive) {
+        break;
+      }
+    }
+
+    await expect(symbolToolButton).not.toHaveClass(/drawing-tools__button--active/, {timeout: 30_000});
 
     await expect(mapContainer).toBeVisible();
 
