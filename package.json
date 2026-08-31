@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@angular/animations": "^22.1.4",
+    "@angular/build": "^22.1.6",
     "@angular/cdk": "^22.1.4",
     "@angular/cli": "^22.1.6",
     "@angular/common": "^22.1.4",
@@ -73,7 +74,6 @@
   "devDependencies": {
     "@angular-eslint/schematics": "^22.1.0",
     "@angular-eslint/template-parser": "^22.1.0",
-    "@angular/build": "^22.1.6",
     "@eslint/js": "^10.0.1",
     "@ngrx/eslint-plugin": "^22.0.0",
     "@ngrx/schematics": "^21.0.0",
