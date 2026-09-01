@@ -88,6 +88,7 @@ export class UrlUtils {
       initialMapIds: initialMapIdsParam,
       searchTerm: searchTermParam,
       searchIndex: searchIndexParam,
+      collapsed: collapsedParam,
     } = params;
 
     const x = UrlUtils.extractLastOccurrenceOfParam(xParam);
@@ -97,8 +98,9 @@ export class UrlUtils {
     const initialMapIds = UrlUtils.extractLastOccurrenceOfParam(initialMapIdsParam);
     const searchTerm = UrlUtils.extractLastOccurrenceOfParam(searchTermParam);
     const searchIndex = searchIndexParam ? UrlUtils.extractLastOccurrenceOfParam(searchIndexParam).split(',')[0] : undefined;
+    const collapsed = UrlUtils.extractLastOccurrenceOfParam(collapsedParam) === 'true';
 
-    return {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex};
+    return {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex, collapsed};
   }
 
   /**

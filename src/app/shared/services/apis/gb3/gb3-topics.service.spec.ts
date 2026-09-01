@@ -11,6 +11,7 @@ import {LegendResponse} from '../../../interfaces/legend.interface';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 import {provideMockStore} from '@ngrx/store/testing';
+import dayjs from 'dayjs';
 
 describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
@@ -990,10 +991,12 @@ describe('Gb3TopicsService', () => {
           },
         },
       ];
+      const filterFrom = dayjs(queryTopics[0].timeSliderExtent?.start).format('YYYY');
+      const filterTo = dayjs(queryTopics[0].timeSliderExtent?.end).format('YYYY');
 
       const expectedUrl =
         `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/` +
-        `topics/StatGebAlterZH/feature_info?x=${x}&y=${y}&scale=${scale}&queryLayers=geb-alter_wohnen&FILTER_GEBART=%27%27%2C%27Geb%C3%A4ude+Landwirtschaft%27%2C%27Geb%C3%A4ude+Industrie%27%2C%27Geb%C3%A4ude+Verwaltung%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27&FILTER_VON=1291&FILTER_BIS=1776`;
+        `topics/StatGebAlterZH/feature_info?x=${x}&y=${y}&scale=${scale}&queryLayers=geb-alter_wohnen&FILTER_GEBART=%27%27%2C%27Geb%C3%A4ude+Landwirtschaft%27%2C%27Geb%C3%A4ude+Industrie%27%2C%27Geb%C3%A4ude+Verwaltung%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27&FILTER_VON=${filterFrom}&FILTER_BIS=${filterTo}`;
       const expected: FeatureInfoResponse[] = [
         {
           featureInfo: {

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {MainPage} from 'src/app/shared/enums/main-page.enum';
 
@@ -6,6 +6,7 @@ import {MainPage} from 'src/app/shared/enums/main-page.enum';
   selector: 'gis-browser-teaser',
   templateUrl: './gis-browser-teaser.component.html',
   styleUrls: ['./gis-browser-teaser.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink],
 })
 export class GisBrowserTeaserComponent {

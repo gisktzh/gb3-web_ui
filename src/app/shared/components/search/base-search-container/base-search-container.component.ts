@@ -1,4 +1,4 @@
-import {Component, computed, DOCUMENT, effect, inject, signal, Signal, viewChild} from '@angular/core';
+import {Component, computed, DOCUMENT, effect, inject, signal, Signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {SearchResultIdentifierDirective} from '../../../directives/search-result-identifier.directive';
 import {selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {Store} from '@ngrx/store';
@@ -8,6 +8,7 @@ import {SearchBarComponent} from '../search-bar/search-bar.component';
   selector: 'abstract-search-container',
   imports: [],
   template: '',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '(keydown.arrowdown)': 'handleArrowDown($event)',
     '(keydown.arrowup)': 'handleArrowUp($event)',

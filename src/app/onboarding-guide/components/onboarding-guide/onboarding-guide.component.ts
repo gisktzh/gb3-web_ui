@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {TourService, TourStepTemplateComponent} from 'ngx-ui-tour-md-menu';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
@@ -12,6 +12,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
   selector: 'onboarding-guide',
   templateUrl: './onboarding-guide.component.html',
   styleUrls: ['./onboarding-guide.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TourStepTemplateComponent,
     MatCard,

@@ -1,4 +1,4 @@
-import {Component, computed, inject, input, output} from '@angular/core';
+import {Component, computed, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {Store} from '@ngrx/store';
 import {selectScale} from '../../../../state/map/reducers/map-config.reducer';
@@ -14,6 +14,7 @@ import {LayerTooltipPipe} from '../../../../shared/pipes/layer-tooltip.pipe';
   selector: 'map-data-item-map-layer',
   templateUrl: './map-data-item-map-layer.component.html',
   styleUrls: ['./map-data-item-map-layer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatCheckbox, MatIconButton, MatIcon, MatTooltip, HighlightSearchQueryPipe, LayerTooltipPipe],
 })
 export class MapDataItemMapLayerComponent {

@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectBottomSheetContent} from 'src/app/state/map/reducers/map-ui.reducer';
 import {BottomSheetItemComponent} from './bottom-sheet-item/bottom-sheet-item.component';
@@ -15,6 +15,7 @@ import {MapManagementMobileComponent} from '../map-management-mobile/map-managem
   selector: 'bottom-sheet-overlay',
   templateUrl: './bottom-sheet-overlay.component.html',
   styleUrls: ['./bottom-sheet-overlay.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     BottomSheetItemComponent,
     BasemapSelectionListComponent,
