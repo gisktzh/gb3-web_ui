@@ -728,11 +728,11 @@ export class EsriMapService implements MapService {
     const dateFormat = timeSliderConfiguration.dateFormat;
 
     esriLayer.customLayerParameters = esriLayer.customLayerParameters ?? {};
-    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = this.timeService.getDateAsUTCString(
+    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = this.timeService.getDateAsFormattedString(
       timeSliderExtent.start,
       dateFormat,
     );
-    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = this.timeService.getDateAsUTCString(
+    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = this.timeService.getDateAsFormattedString(
       timeSliderExtent.end,
       dateFormat,
     );
@@ -826,34 +826,37 @@ export class EsriMapService implements MapService {
     container: HTMLDivElement,
   ) {
     const spatialReference = new SpatialReference({wkid: srsId});
-    this.esriMapViewService.mapView.set(
-      new MapView({
-        container,
-        map: mapInstance,
-        scale: scaleSettings.scale,
-        center: new Point({x: center.x, y: center.y, spatialReference}),
-        constraints: {
-          snapToZoom: false,
-          minScale: scaleSettings.minScale,
-          maxScale: scaleSettings.maxScale,
-          lods: TileInfo.create({
-            /**
-             * This number seems to be required for Esri to generate enough ZoomLevels to also include 1:1. Setting it to anything below 32
-             * will lead to an inversion of levels, only allowing for zooming from 1:1500000 to 1:VERYLARGENUMBER.
-             *
-             * See https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-TileInfo.html#create
-             *
-             * Note that increasing this number will not add anything more; the minimum scale will still be calculated at an approximation of
-             * MAPCONSTANTS.minScale.
-             */
-            numLODs: 32,
-            spatialReference,
-          }).lods,
-        },
-        spatialReference,
-        popupEnabled: false,
-      }),
-    );
+    const mapView = new MapView({
+      container,
+      map: mapInstance,
+      scale: scaleSettings.scale,
+      center: new Point({x: center.x, y: center.y, spatialReference}),
+      constraints: {
+        snapToZoom: false,
+        minScale: scaleSettings.minScale,
+        maxScale: scaleSettings.maxScale,
+        lods: TileInfo.create({
+          /**
+           * This number seems to be required for Esri to generate enough ZoomLevels to also include 1:1. Setting it to anything below 32
+           * will lead to an inversion of levels, only allowing for zooming from 1:1500000 to 1:VERYLARGENUMBER.
+           *
+           * See https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-TileInfo.html#create
+           *
+           * Note that increasing this number will not add anything more; the minimum scale will still be calculated at an approximation of
+           * MAPCONSTANTS.minScale.
+           */
+          numLODs: 32,
+          spatialReference,
+        }).lods,
+      },
+      spatialReference,
+      popupEnabled: false,
+    });
+
+    // Removes the extra default zoom buttons.
+    mapView.ui.remove('zoom');
+
+    this.esriMapViewService.mapView.set(mapView);
   }
 
   private updateReferenceDistance() {

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {DataDownloadFilter, DataDownloadFilterCategory} from '../../../../shared/interfaces/data-download-filter.interface';
@@ -14,6 +14,7 @@ import {MatButton} from '@angular/material/button';
   selector: 'data-download-filter-dialog',
   templateUrl: './data-download-filter-dialog.component.html',
   styleUrls: ['./data-download-filter-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     CdkScrollable,

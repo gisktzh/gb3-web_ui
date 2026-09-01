@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {TitleLink, PageSectionComponent} from '../shared/components/page-section/page-section.component';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
@@ -18,6 +18,7 @@ const START_PAGE_SUMMARY =
   selector: 'start-page',
   templateUrl: './start-page.component.html',
   styleUrls: ['./start-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     PageSectionComponent,
     HeroHeaderComponent,

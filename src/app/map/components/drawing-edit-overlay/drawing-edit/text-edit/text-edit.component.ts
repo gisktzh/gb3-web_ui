@@ -1,4 +1,4 @@
-import {Component, model} from '@angular/core';
+import {Component, effect, linkedSignal, model, ChangeDetectionStrategy} from '@angular/core';
 import {Gb3TextStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {MatFormField, MatLabel, MatInput} from '@angular/material/input';
@@ -9,10 +9,20 @@ import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.c
 import {debounce, form, FormField, maxLength, required} from '@angular/forms/signals';
 
 const INPUT_DEBOUNCE_IN_MS = 10;
+
+const DEFAULT_STYLE = {
+  fontSize: 0,
+  fontColor: '#ff0000',
+  haloRadius: 1,
+  haloColor: '#ff0000',
+  labelYOffset: 1,
+};
+
 @Component({
   selector: 'text-edit',
   templateUrl: './text-edit.component.html',
   styleUrl: './text-edit.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatFormField, MatLabel, MatInput, FormsModule, MatDivider, SliderEditComponent, ColorPickerEditComponent, FormField],
 })
 export class TextEditComponent {
@@ -21,7 +31,18 @@ export class TextEditComponent {
     label: string;
   }>();
 
-  public textStyleForm = form(this.textStyle, (fieldPath) => {
+  public readonly textStyleFormModel = linkedSignal({
+    source: this.textStyle,
+    computation: (value) => ({
+      label: value.label || '',
+      style: {
+        ...DEFAULT_STYLE,
+        ...value.style,
+      },
+    }),
+  });
+
+  public textStyleForm = form(this.textStyleFormModel, (fieldPath) => {
     maxLength(fieldPath.label, MapConstants.TEXT_DRAWING_MAX_LENGTH);
     required(fieldPath.label);
     debounce(fieldPath.label, INPUT_DEBOUNCE_IN_MS);
@@ -31,4 +52,15 @@ export class TextEditComponent {
     debounce(fieldPath.style.haloColor, INPUT_DEBOUNCE_IN_MS);
     debounce(fieldPath.style.labelYOffset, INPUT_DEBOUNCE_IN_MS);
   });
+
+  constructor() {
+    effect(() => {
+      const styleFormModel = this.textStyleFormModel();
+      const style = this.textStyle();
+
+      if (JSON.stringify(styleFormModel) !== JSON.stringify(style)) {
+        this.textStyle.set({...this.textStyleFormModel()});
+      }
+    });
+  }
 }

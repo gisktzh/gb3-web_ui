@@ -10,8 +10,8 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+  background-color: functions.get-color-from-palette('primary');
+  color: functions.get-contrast-color-from-palette('primary');
 
   &.navbar-mobile__dialog--right {
     left: unset;
@@ -26,8 +26,8 @@
 
     .navbar-mobile__dialog__header__title {
       @include material-mixins.mat-icon-custom-svg-size(18px);
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+      background-color: functions.get-color-from-palette('primary');
+      color: functions.get-contrast-color-from-palette('primary');
       font-size: 18px;
     }
   }
@@ -52,7 +52,7 @@
   padding-right: 10px;
   padding-top: 24px;
   padding-bottom: 24px;
-  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+  color: functions.get-contrast-color-from-palette('primary');
   font-size: 18px;
   flex-grow: 1;
   justify-content: flex-start;

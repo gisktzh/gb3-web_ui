@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, signal} from '@angular/core';
+import {Component, computed, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {MapServiceType} from '../../../../types/map-service.type';
 import {Store} from '@ngrx/store';
 import {SharedModule} from '../../../../../shared/shared.module';
@@ -12,6 +12,7 @@ import {form, required, validate, FormField, disabled, FormRoot} from '@angular/
   selector: 'map-import-service-and-url',
   imports: [SharedModule, FormField, FormRoot],
   templateUrl: './map-import-service-and-url.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './map-import-service-and-url.component.scss',
 })
 export class MapImportServiceAndUrlComponent {

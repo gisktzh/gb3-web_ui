@@ -16,4 +16,5 @@ import './app/testing/mocks/arcgis-core-mapview';
 import './app/testing/mocks/arcgis-core-reactive-utils';
 import './app/testing/mocks/arcgis-core-webgl-wasm';
 import './app/testing/mocks/cim-symbols';
+import './app/testing/mocks/hyphen';
 import './app/testing/mocks/globals';

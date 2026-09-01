@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
 
@@ -6,6 +6,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'slider-wrapper',
   templateUrl: './slider-wrapper.component.html',
   styleUrls: ['./slider-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatTooltip, MatIcon],
 })
 export class SliderWrapperComponent<T> {

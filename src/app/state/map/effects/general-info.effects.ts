@@ -25,15 +25,15 @@ export class GeneralInfoEffects {
   public interceptMapClick$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.handleMapClick),
-      map(({x, y}) => GeneralInfoActions.sendRequest({x, y})),
+      map(({x, y, scale}) => GeneralInfoActions.sendRequest({x, y, scale})),
     );
   });
 
   public requestGeneralInfo = createEffect(() => {
     return this.actions$.pipe(
       ofType(GeneralInfoActions.sendRequest),
-      switchMap(({x, y}) =>
-        this.generalInfoService.loadGeneralInfo(x, y).pipe(
+      switchMap(({x, y, scale}) =>
+        this.generalInfoService.loadGeneralInfo(x, y, scale).pipe(
           map((generalInfo) => {
             return GeneralInfoActions.updateContent({generalInfo});
           }),

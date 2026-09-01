@@ -1,4 +1,4 @@
-import {Component, OnDestroy, effect, inject, output, signal} from '@angular/core';
+import {Component, OnDestroy, effect, inject, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
 import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
@@ -29,11 +29,14 @@ import {ExpandableListItemComponent} from '../../../shared/components/expandable
 import {MapDataItemFavouriteComponent} from './base-map-data-item/map-data-item-favourite.component';
 import {MapDataItemMapComponent} from './base-map-data-item/map-data-item-map.component';
 import {MatDivider} from '@angular/material/divider';
+import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
+import {ConfigService} from 'src/app/shared/services/config.service';
 
 @Component({
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
   styleUrls: ['./map-data-catalogue.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCard,
     TypedTourAnchorDirective,
@@ -51,6 +54,7 @@ import {MatDivider} from '@angular/material/divider';
 })
 export class MapDataCatalogueComponent implements OnDestroy {
   private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
   private readonly favouritesService = inject(FavouritesService);
 
   public readonly changeIsMinimizedEvent = output<boolean>();
@@ -116,6 +120,10 @@ export class MapDataCatalogueComponent implements OnDestroy {
       activeMap = originalActiveMap;
     }
 
+    if (!isTemporary) {
+      this.applyDefaultBasemapForMap(activeMap);
+    }
+
     this.addActiveItem(
       isTemporary ? ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap) : ActiveMapItemFactory.createGb2WmsMapItem(activeMap),
     );
@@ -166,5 +174,14 @@ export class MapDataCatalogueComponent implements OnDestroy {
   private addActiveItem(activeMapItem: ActiveMapItem) {
     // add new map items on top (position 0)
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
+  }
+
+  private applyDefaultBasemapForMap(activeMap: Map) {
+    const newActiveBaseMap = this.configService.basemapConfig.availableBasemaps.find((basemap) =>
+      basemap.defaultForTopics?.includes(activeMap.id),
+    );
+    if (newActiveBaseMap) {
+      this.store.dispatch(MapConfigActions.setBasemap({activeBasemapId: newActiveBaseMap.id}));
+    }
   }
 }

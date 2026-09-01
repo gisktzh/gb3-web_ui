@@ -114,6 +114,24 @@ describe('Gb3PrintService', () => {
       },
     };
 
+    const printCreationMockWithEmptyVectorItem: PrintCreation = {
+      ...printCreationMock,
+      map: {
+        ...printCreationMock.map,
+        mapItems: [
+          {
+            type: 'Vector',
+            geojson: {
+              type: 'FeatureCollection',
+              features: [],
+            },
+            styles: {},
+          },
+          ...printCreationMock.map.mapItems,
+        ],
+      },
+    };
+
     const transformedPrintCreationMock: PrintNew = {
       format: 'tschif',
       report: 'mobile hoch',
@@ -179,6 +197,22 @@ describe('Gb3PrintService', () => {
       const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(printResponseMock));
 
       service.createPrintJob(printCreationMock).subscribe((response) => {
+        expect(response.reportUrl).toBe(printResponseMock.report_url);
+        expect(postCallSpy).toHaveBeenCalledTimes(1);
+        expect(postCallSpy).toHaveBeenCalledWith(
+          `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/print`,
+          transformedPrintCreationMock,
+          {
+            headers: undefined,
+          },
+        );
+      });
+    });
+
+    it('should filter out empty vector items when transforming and sending print jobs', () => {
+      const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(printResponseMock));
+
+      service.createPrintJob(printCreationMockWithEmptyVectorItem).subscribe((response) => {
         expect(response.reportUrl).toBe(printResponseMock.report_url);
         expect(postCallSpy).toHaveBeenCalledTimes(1);
         expect(postCallSpy).toHaveBeenCalledWith(
