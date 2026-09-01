@@ -71,27 +71,39 @@ async function assertShapeEdit(
   await expect(editTool).toBeVisible({timeout: 30_000});
 
   if (sliderInputValues.length > 0) {
-    const sliderInputs = await editTool.locator('slider-edit').all();
+    // Use live locators instead of an `all()` snapshot: editing a value redraws the graphic, which re-renders the
+    // overlay and detaches previously resolved element handles.
+    const sliderEdits = editTool.locator('slider-edit');
+    await expect(sliderEdits).toHaveCount(sliderInputValues.length);
+
     for (const [index, value] of sliderInputValues.entries()) {
-      const inputField = sliderInputs[index].locator('input');
-      await inputField.fill(value);
+      const sliderEdit = sliderEdits.nth(index);
+      await sliderEdit.locator('input').fill(value);
+      // Wait for the value to be applied before touching the next slider, so the overlay is settled again.
+      await expect(sliderEdit.locator('.slider-wrapper__header__value')).toContainText(value);
     }
   }
 
   if (colorInputValues.length > 0) {
-    const colorInputs = await editTool.locator('input[type="color"]').all();
+    const colorInputs = editTool.locator('input[type="color"]');
+    await expect(colorInputs).toHaveCount(colorInputValues.length);
+
     for (const [index, value] of colorInputValues.entries()) {
-      await colorInputs[index].fill(value);
+      const colorInput = colorInputs.nth(index);
+      await colorInput.fill(value);
+      await expect(colorInput).toHaveValue(value);
       await expect(mapContainer).toBeVisible();
     }
   }
 
   if (textInputValues.length > 0) {
-    const textInputs = await editTool.locator('input:not([type])').all();
+    const textInputs = editTool.locator('input:not([type])');
+    await expect(textInputs).toHaveCount(textInputValues.length);
+
     for (const [index, value] of textInputValues.entries()) {
-      await textInputs[index].focus();
-      await textInputs[index].clear();
-      await textInputs[index].fill(value);
+      const textInput = textInputs.nth(index);
+      await textInput.fill(value);
+      await expect(textInput).toHaveValue(value);
       await expect(mapContainer).toBeVisible();
     }
   }
@@ -369,19 +381,22 @@ test.describe('Drawing', () => {
     const symbolInput = page.locator('symbol-drawing-tool-input');
     await expect(symbolInput).toBeVisible();
 
-    const symbolSliderInputs = await symbolInput.locator('slider-edit').all();
-    await symbolSliderInputs[0].locator('input').fill('16');
-    await expect(symbolSliderInputs[0].locator('.slider-wrapper__header__value')).toContainText('16');
+    const symbolSliderInputs = symbolInput.locator('slider-edit');
+    await expect(symbolSliderInputs).toHaveCount(2);
 
-    await symbolSliderInputs[1].locator('input').fill('180');
-    await expect(symbolSliderInputs[1].locator('.slider-wrapper__header__value')).toContainText('180');
+    await symbolSliderInputs.nth(0).locator('input').fill('16');
+    await expect(symbolSliderInputs.nth(0).locator('.slider-wrapper__header__value')).toContainText('16');
 
-    const categories = await symbolInput.locator('mat-expansion-panel-header').all();
+    await symbolSliderInputs.nth(1).locator('input').fill('180');
+    await expect(symbolSliderInputs.nth(1).locator('.slider-wrapper__header__value')).toContainText('180');
+
+    const categories = symbolInput.locator('mat-expansion-panel-header');
+    await expect(categories).toHaveCount(symbolCategories.length);
     for (const [index, title] of symbolCategories.entries()) {
-      await expect(categories[index]).toContainText(title);
+      await expect(categories.nth(index)).toContainText(title);
     }
 
-    await categories[1].click();
+    await categories.nth(1).click();
     const porcupine = symbolInput.locator('label[for="Porcupine"]');
     await expect(porcupine).toBeVisible();
     await porcupine.click();
@@ -392,23 +407,30 @@ test.describe('Drawing', () => {
 
     await expect(symbolInput).not.toBeVisible();
     await page.waitForLoadState('networkidle');
-    await expect(symbolToolButton).toHaveClass(/drawing-tools__button--active/);
 
-    for (let clickAttempt = 0; clickAttempt < 2; clickAttempt++) {
+    // Matching the active class as part of the locator makes "not found" and "not active" equivalent, so the checks
+    // below never blow up when the drawing tool menu is re-rendered.
+    const activeSymbolToolButton = drawingMenu.locator(
+      'button[aria-label="Symbol: Auswählen und auf Karte hinzufügen"].drawing-tools__button--active',
+    );
+
+    // The strategy only arms the sketch after asynchronously fetching the symbol descriptor, so this can take a while.
+    await expect(activeSymbolToolButton).toBeVisible({timeout: 30_000});
+
+    // Retrying the click makes the test resilient against the first map click after arming the tool getting swallowed.
+    for (let clickAttempt = 0; clickAttempt < 3; clickAttempt++) {
       await page.mouse.move(symbolCoords[0], symbolCoords[1]);
       await page.waitForTimeout(250);
       await page.mouse.click(symbolCoords[0], symbolCoords[1]);
-      await page.waitForTimeout(350);
+      await page.waitForTimeout(500);
 
-      const isSymbolToolStillActive = await symbolToolButton.evaluate((button) =>
-        button.classList.contains('drawing-tools__button--active'),
-      );
-      if (!isSymbolToolStillActive) {
+      if ((await activeSymbolToolButton.count()) === 0) {
         break;
       }
     }
 
-    await expect(symbolToolButton).not.toHaveClass(/drawing-tools__button--active/, {timeout: 30_000});
+    // Placing the symbol deactivates the tool again.
+    await expect(activeSymbolToolButton).toHaveCount(0, {timeout: 30_000});
 
     await expect(mapContainer).toBeVisible();
 
