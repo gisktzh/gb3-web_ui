@@ -1,4 +1,15 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, computed, inject, input, signal, viewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  computed,
+  inject,
+  input,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
@@ -82,6 +93,7 @@ const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe, HyphenatePipe, MatRadioGroup],
 })
 export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {

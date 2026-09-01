@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, model} from '@angular/core';
+import {Component, computed, effect, inject, model, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectSelectedDrawing} from '../../../../state/map/reducers/drawing.reducer';
 import {
@@ -24,6 +24,7 @@ import {isGb3SymbolStyle} from 'src/app/shared/type-guards/gb3-symbol-style.type
   selector: 'drawing-edit',
   templateUrl: './drawing-edit.component.html',
   styleUrl: './drawing-edit.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PointEditComponent, LineEditComponent, PolygonEditComponent, TextEditComponent, SymbolEditComponent],
 })
 export class DrawingEditComponent {

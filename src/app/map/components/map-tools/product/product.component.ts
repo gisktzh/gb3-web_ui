@@ -1,4 +1,4 @@
-import {Component, computed, inject, input, signal, viewChild} from '@angular/core';
+import {Component, computed, inject, input, signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Product, ProductFormat} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Store} from '@ngrx/store';
@@ -18,6 +18,7 @@ import {NgTemplateOutlet} from '@angular/common';
   selector: 'product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCheckbox,
     MatTooltip,

@@ -1,4 +1,4 @@
-import {Component, computed} from '@angular/core';
+import {Component, computed, ChangeDetectionStrategy} from '@angular/core';
 import {ServiceMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {DataDisplayElement} from '../../types/data-display-element.type';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
@@ -20,6 +20,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'service-detail',
   templateUrl: './service-detail.component.html',
   styleUrls: ['./service-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     LoadingAndProcessBarComponent,
     DataCatalogueDetailPageComponent,

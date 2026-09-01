@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {MainPage} from '../../enums/main-page.enum';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {RouterLink} from '@angular/router';
@@ -7,6 +7,7 @@ import {RouterLink} from '@angular/router';
   selector: 'waiting-page',
   templateUrl: './waiting-page.component.html',
   styleUrls: ['./waiting-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatProgressSpinner, RouterLink],
 })
 export class WaitingPageComponent {

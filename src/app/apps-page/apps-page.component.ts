@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
 import {Store} from '@ngrx/store';
 import {LinkGridListComponent} from '../shared/components/lists/link-grid-list/link-grid-list.component';
@@ -10,6 +10,7 @@ import {selectExternalAppsForAccessMode} from '../state/external-apps/selectors/
   standalone: true,
   imports: [SharedModule, LinkGridListComponent, LinkGridListItemComponent],
   templateUrl: './apps-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './apps-page.component.scss',
 })
 export class AppsPageComponent {
