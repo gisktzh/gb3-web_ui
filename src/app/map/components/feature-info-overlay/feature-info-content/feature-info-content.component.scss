@@ -94,7 +94,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
           &:not(&:nth-of-type(1)) {
             min-width: 200px;
             width: 100%;
-            overflow: hidden;
+            cursor: pointer;
           }
         }
 
@@ -117,6 +117,15 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
           justify-content: space-between;
           align-items: center;
           height: 20px;
+          position: relative;
+
+          & mat-radio-button {
+            pointer-events: none;
+          }
+        }
+
+        .feature-info-content__table__row__column--attribute {
+          max-width: 100%;
         }
       }
 
@@ -141,6 +150,6 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
     left: 0;
     width: 140px;
     z-index: 10;
-    height: calc(100% - 38px);
+    height: calc(calc(100% - 38px) - var(--calculated-scrollbar-height));
   }
 }

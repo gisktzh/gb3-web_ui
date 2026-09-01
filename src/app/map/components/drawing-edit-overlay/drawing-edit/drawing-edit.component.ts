@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, model} from '@angular/core';
+import {Component, computed, effect, inject, model, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectSelectedDrawing} from '../../../../state/map/reducers/drawing.reducer';
 import {
@@ -24,6 +24,7 @@ import {isGb3SymbolStyle} from 'src/app/shared/type-guards/gb3-symbol-style.type
   selector: 'drawing-edit',
   templateUrl: './drawing-edit.component.html',
   styleUrl: './drawing-edit.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PointEditComponent, LineEditComponent, PolygonEditComponent, TextEditComponent, SymbolEditComponent],
 })
 export class DrawingEditComponent {
@@ -61,6 +62,11 @@ export class DrawingEditComponent {
   }
 
   public async updateStyle(style: Gb3StyleRepresentation, labelText?: string, drawingSymbolDefinition?: DrawingSymbolDefinition | null) {
+    const selectedFeature = this.selectedFeature()!;
+    if (selectedFeature === undefined) {
+      return;
+    }
+
     if (drawingSymbolDefinition && isGb3SymbolStyle(style)) {
       const mapDrawingSymbol = await this.drawingSymbolsService.convertToMapDrawingSymbol(
         drawingSymbolDefinition,
@@ -71,13 +77,13 @@ export class DrawingEditComponent {
       this.store.dispatch(
         DrawingActions.updateDrawingStyles({
           style,
-          drawing: this.selectedFeature()!,
+          drawing: selectedFeature,
           labelText,
           mapDrawingSymbol: mapDrawingSymbol === undefined ? null : mapDrawingSymbol,
         }),
       );
     } else {
-      this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: this.selectedFeature()!, labelText}));
+      this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: selectedFeature, labelText}));
     }
   }
 }

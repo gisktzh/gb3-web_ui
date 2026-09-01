@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {map, catchError} from 'rxjs';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
@@ -17,6 +17,7 @@ const NUMBER_OF_ENTRIES = 2;
   selector: 'discover-maps',
   templateUrl: './discover-maps.component.html',
   styleUrls: ['./discover-maps.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ContentLoadingStateComponent, LinkGridListComponent, LinkGridListItemComponent],
 })
 export class DiscoverMapsComponent implements HasLoadingStateSignal {

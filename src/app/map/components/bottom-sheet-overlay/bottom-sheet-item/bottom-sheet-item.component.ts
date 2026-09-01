@@ -1,4 +1,4 @@
-import {Component, computed, inject, input, signal} from '@angular/core';
+import {Component, computed, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {BottomSheetHeight} from 'src/app/shared/types/bottom-sheet-height.type';
 import {StyleExpression} from 'src/app/shared/types/style-expression.type';
@@ -16,6 +16,7 @@ import {CdkScrollable} from '@angular/cdk/scrolling';
   selector: 'bottom-sheet-item',
   templateUrl: './bottom-sheet-item.component.html',
   styleUrls: ['./bottom-sheet-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatCard, MatCardHeader, MatIconButton, MatIcon, MatCardContent, CdkScrollable, ResizeHandlerComponent],
 })
 export class BottomSheetItemComponent {

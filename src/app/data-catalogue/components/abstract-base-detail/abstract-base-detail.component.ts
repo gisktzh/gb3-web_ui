@@ -1,4 +1,4 @@
-import {Component, computed, effect, ErrorHandler, inject, signal} from '@angular/core';
+import {Component, computed, effect, ErrorHandler, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {firstValueFrom, Observable} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -19,6 +19,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
 type DetailMetadata = ProductMetadata | MapMetadata | ServiceMetadata | DatasetMetadata;
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> {

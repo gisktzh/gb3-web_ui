@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {PageSectionComponent} from '../shared/components/page-section/page-section.component';
@@ -12,6 +12,7 @@ const PRIVACY_SUMMARY =
   selector: 'privacy-page',
   templateUrl: './privacy-page.component.html',
   styleUrls: ['./privacy-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PageSectionComponent, HeroHeaderComponent, PrivacyContentComponent],
 })
 export class PrivacyPageComponent {

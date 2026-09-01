@@ -31,7 +31,7 @@
     border-top-left-radius: ktzh-variables.$zh-border-radius;
 
     &--primary-color {
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+      background-color: functions.get-color-from-palette('primary');
     }
 
     .bottom-sheet-item__header__container {
@@ -41,7 +41,7 @@
       align-items: flex-end;
 
       &__button--primary--color {
-        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+        color: functions.get-contrast-color-from-palette('primary');
       }
 
       .bottom-sheet-item__header__container__title {

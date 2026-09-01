@@ -1,4 +1,4 @@
-import {Component, ElementRef, output, signal, viewChild} from '@angular/core';
+import {Component, ElementRef, output, signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
 
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -13,6 +13,7 @@ import {validateUploadedFileList} from '../../utils/validate-uploaded-file-list.
   selector: 'drop-zone',
   imports: [MatButton, MatIcon],
   templateUrl: './drop-zone.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './drop-zone.component.scss',
 })
 export class DropZoneComponent {

@@ -1,4 +1,4 @@
-import {Component, input, output, signal} from '@angular/core';
+import {Component, input, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ResizeEvent, ResizableModule} from 'angular-resizable-element';
 import {ResizeHandlerLocation} from '../../types/resize-handler-location.type';
 import {StyleExpression} from '../../types/style-expression.type';
@@ -18,6 +18,7 @@ const MAX_DIMENSION_PERCENTAGE = 0.85;
   selector: 'resize-handler',
   templateUrl: './resize-handler.component.html',
   styleUrls: ['./resize-handler.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ResizableModule],
 })
 export class ResizeHandlerComponent {
@@ -29,11 +30,14 @@ export class ResizeHandlerComponent {
   public readonly usePrimaryColor = input(false);
 
   public readonly resizeEvent = output<StyleExpression>();
+  public readonly resizeStart = output();
+  public readonly resizeEnd = output();
   public readonly resizeableStyle = signal<StyleExpression>({});
   public readonly isResizeActive = signal(false);
 
   public onResizeStart() {
     this.isResizeActive.set(true);
+    this.resizeStart.emit();
   }
 
   public validate(event: ResizeEvent): boolean {
@@ -75,5 +79,6 @@ export class ResizeHandlerComponent {
     }
     this.resizeEvent.emit(this.resizeableStyle());
     this.isResizeActive.set(false);
+    this.resizeEnd.emit();
   }
 }

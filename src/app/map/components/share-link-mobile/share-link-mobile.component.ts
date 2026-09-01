@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {MainPage} from 'src/app/shared/enums/main-page.enum';
@@ -13,6 +13,7 @@ import {LoadingAndProcessBarComponent} from '../../../shared/components/loading-
   selector: 'share-link-mobile',
   templateUrl: './share-link-mobile.component.html',
   styleUrls: ['./share-link-mobile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatSuffix, CdkCopyToClipboard, MatIcon, LoadingAndProcessBarComponent],
 })
 export class ShareLinkMobileComponent {

@@ -3,7 +3,7 @@ import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/co
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
-import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
+import {TopicsFeatureInfoListData, TopicsLegendListData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {ConfigService} from '../../config.service';
 import {Gb3TopicsService} from './gb3-topics.service';
 import {FilterConfiguration, TopicsResponse, WmsFilterValue} from '../../../interfaces/topic.interface';
@@ -11,6 +11,7 @@ import {LegendResponse} from '../../../interfaces/legend.interface';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 import {provideMockStore} from '@ngrx/store/testing';
+import dayjs from 'dayjs';
 
 describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
@@ -331,7 +332,7 @@ describe('Gb3TopicsService', () => {
 
   describe('loadLegends', () => {
     it('should receive the data and transform it correctly', () => {
-      const data: TopicsLegendDetailData = {
+      const data: TopicsLegendListData = {
         legend: {
           topic: 'Lageklassen2003ZH',
           geolion_gdd: null,
@@ -534,7 +535,7 @@ describe('Gb3TopicsService', () => {
 
   describe('loadFeatureInfos', () => {
     it('should receive the data and transform it correctly', () => {
-      const data: TopicsFeatureInfoDetailData = {
+      const data: TopicsFeatureInfoListData = {
         feature_info: {
           query_position: {
             x: 2682707.901193953,
@@ -918,7 +919,7 @@ describe('Gb3TopicsService', () => {
     });
 
     it('should build feature info URL for StatGebAlterZH with FILTER_GEBART and FILTER_VON and FILTER_BIS', () => {
-      const data: TopicsFeatureInfoDetailData = {
+      const data: TopicsFeatureInfoListData = {
         feature_info: {
           query_position: {
             x: 2683132.068846092,
@@ -990,10 +991,12 @@ describe('Gb3TopicsService', () => {
           },
         },
       ];
+      const filterFrom = dayjs(queryTopics[0].timeSliderExtent?.start).format('YYYY');
+      const filterTo = dayjs(queryTopics[0].timeSliderExtent?.end).format('YYYY');
 
       const expectedUrl =
         `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/` +
-        `topics/StatGebAlterZH/feature_info?x=${x}&y=${y}&scale=${scale}&queryLayers=geb-alter_wohnen&FILTER_GEBART=%27%27%2C%27Geb%C3%A4ude+Landwirtschaft%27%2C%27Geb%C3%A4ude+Industrie%27%2C%27Geb%C3%A4ude+Verwaltung%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27&FILTER_VON=1291&FILTER_BIS=1776`;
+        `topics/StatGebAlterZH/feature_info?x=${x}&y=${y}&scale=${scale}&queryLayers=geb-alter_wohnen&FILTER_GEBART=%27%27%2C%27Geb%C3%A4ude+Landwirtschaft%27%2C%27Geb%C3%A4ude+Industrie%27%2C%27Geb%C3%A4ude+Verwaltung%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27%2C%27%27&FILTER_VON=${filterFrom}&FILTER_BIS=${filterTo}`;
       const expected: FeatureInfoResponse[] = [
         {
           featureInfo: {
