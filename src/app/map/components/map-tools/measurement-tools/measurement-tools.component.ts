@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component';
 import {MatIconButton} from '@angular/material/button';
 
@@ -16,6 +16,7 @@ const TOOLTIP_TEXT = {
   selector: 'measurement-tools',
   templateUrl: './measurement-tools.component.html',
   styleUrls: ['./measurement-tools.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatTooltip, MatIcon],
 })
 export class MeasurementToolsComponent extends AbstractToolsComponent {

@@ -2,7 +2,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
-import ngrx from '@ngrx/eslint-plugin/v9';
+import ngrx from '@ngrx/eslint-plugin';
 import angular from 'angular-eslint';
 
 /**
@@ -26,6 +26,12 @@ export default tseslint.config(
   {
     ignores: ['**/*.mock.ts', '**/*.stub.ts'],
     files: ['src/**/*.ts', 'e2e/**/*.ts', 'tools/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
@@ -79,6 +85,9 @@ export default tseslint.config(
       '@angular-eslint/no-uncalled-signals': ['error'],
 
       '@angular-eslint/prefer-signal-model': ['warn'],
+
+      // Angular ESLint 22 enables this in its recommended set; keeping it disabled avoids a repo-wide refactor.
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
 
       '@typescript-eslint/explicit-member-accessibility': [
         'error',
@@ -152,6 +161,20 @@ export default tseslint.config(
         'error',
         {
           allow: ['warn', 'error'],
+        },
+      ],
+    },
+  },
+  {
+    files: ['e2e/**/*.ts'],
+    extends: [eslint.configs.recommended, ...tseslint.configs.recommended, prettierRecommended],
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrors: 'none',
         },
       ],
     },

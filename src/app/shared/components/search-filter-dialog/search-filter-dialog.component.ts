@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectFilterGroups} from '../../../state/app/reducers/search.reducer';
 import {SearchActions} from '../../../state/app/actions/search.actions';
@@ -14,6 +14,7 @@ import {MatButton} from '@angular/material/button';
   selector: 'search-filter-dialog',
   templateUrl: './search-filter-dialog.component.html',
   styleUrls: ['./search-filter-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     CdkScrollable,

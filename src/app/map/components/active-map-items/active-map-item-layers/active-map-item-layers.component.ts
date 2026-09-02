@@ -1,4 +1,4 @@
-import {Component, computed, inject, input} from '@angular/core';
+import {Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
@@ -11,6 +11,7 @@ import {ActiveMapItemLayerComponent} from './active-map-item-layer/active-map-it
   selector: 'active-map-item-layers',
   templateUrl: './active-map-item-layers.component.html',
   styleUrls: ['./active-map-item-layers.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CdkDropList, CdkDrag, DragCursorDirective, ActiveMapItemLayerComponent, CdkDragHandle, CdkDragPlaceholder],
 })
 export class ActiveMapItemLayersComponent {

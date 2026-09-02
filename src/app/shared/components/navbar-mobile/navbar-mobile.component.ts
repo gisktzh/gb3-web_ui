@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {selectUrlState} from 'src/app/state/app/reducers/url.reducer';
@@ -12,6 +12,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'navbar-mobile',
   templateUrl: './navbar-mobile.component.html',
   styleUrls: ['./navbar-mobile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatToolbar, MatButton, MatIcon, MatIconButton],
 })
 export class NavbarMobileComponent {

@@ -1,4 +1,4 @@
-import {Component, input, output} from '@angular/core';
+import {Component, input, output, ChangeDetectionStrategy} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
 import {MatIconButton} from '@angular/material/button';
@@ -11,6 +11,7 @@ import {HasSavingStateSingal} from 'src/app/shared/interfaces/has-saving-state-s
   selector: 'api-dialog-wrapper',
   templateUrl: './api-dialog-wrapper.component.html',
   styleUrls: ['./api-dialog-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatDialogTitle, MatIconButton, MatIcon, CdkScrollable, MatDialogContent, MatDialogActions, LoadingAndProcessBarComponent],
 })
 export class ApiDialogWrapperComponent implements HasSavingStateSingal {

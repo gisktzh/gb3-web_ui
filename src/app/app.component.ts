@@ -1,5 +1,5 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {Component, ElementRef, Renderer2, computed, effect, inject, viewChildren} from '@angular/core';
+import {Component, ElementRef, Renderer2, computed, effect, inject, viewChildren, ChangeDetectionStrategy} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
@@ -30,6 +30,7 @@ import {selectAccessMode} from './state/app/reducers/app.reducer';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     SkipLinkComponent,
     NavbarMobileComponent,

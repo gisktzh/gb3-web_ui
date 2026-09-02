@@ -1,4 +1,4 @@
-import {Component, inject, input, viewChild} from '@angular/core';
+import {Component, inject, input, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {SharedModule} from '../../../shared.module';
 import {selectSearchState} from '../../../../state/app/reducers/search.reducer';
 import {selectScreenMode} from '../../../../state/app/reducers/app-layout.reducer';
@@ -17,6 +17,7 @@ import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
   selector: 'search-bar',
   imports: [SharedModule, SearchInputComponent],
   templateUrl: './search-bar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './search-bar.component.scss',
 })
 export class SearchBarComponent {

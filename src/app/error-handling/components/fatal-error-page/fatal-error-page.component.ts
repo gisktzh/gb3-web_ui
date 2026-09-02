@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton} from '@angular/material/button';
@@ -8,6 +8,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
   selector: 'fatal-error-page',
   templateUrl: './fatal-error-page.component.html',
   styleUrls: ['./fatal-error-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIcon, MatButton],
 })
 export class FatalErrorPageComponent {
