@@ -19,7 +19,7 @@ describe('CenterAnchorComponent', () => {
     },
   })
   class MockTourAnchorMatMenuDirective {
-    public tourAnchor = input<OnboardingGuideAnchor | undefined>(undefined);
+    public readonly tourAnchor = input<OnboardingGuideAnchor | undefined>(undefined);
   }
 
   beforeEach(async () => {

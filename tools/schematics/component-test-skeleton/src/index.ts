@@ -62,8 +62,6 @@ export function componentTest(options: SchemaOptions): Rule {
     let mockDeclarations = '';
     let overriddenSelectors = '';
     let providerConfig = '';
-    let inputBindings = '';
-    let outputSpies = '';
 
     // Build up and override selectors
     storeSelectors.forEach((selector) => {
@@ -114,7 +112,7 @@ export function componentTest(options: SchemaOptions): Rule {
       });
 
     // Add input bindings
-    inputBindings = inputs.map((i) => `inputBinding('${i.name}', ${i.name})`).join(',');
+    let inputBindings = inputs.map((i) => `inputBinding('${i.name}', ${i.name})`).join(',');
     if (inputBindings.length > 0) {
       inputBindings = `, {
         bindings: [
@@ -126,7 +124,7 @@ export function componentTest(options: SchemaOptions): Rule {
     }
 
     // Add output spies
-    outputSpies = outputs.map((o) => `${o.name}Spy = vi.spyOn(component.${o.name}, 'emit');`).join('\n');
+    const outputSpies = outputs.map((o) => `${o.name}Spy = vi.spyOn(component.${o.name}, 'emit');`).join('\n');
     if (outputSpies.length > 0) {
       mockDeclarations += `\n${outputs.map((o) => `  let ${o.name}Spy: Mock;`).join('\n')}`;
       necessaryImports += `import {Mock} from 'vitest';\n`;

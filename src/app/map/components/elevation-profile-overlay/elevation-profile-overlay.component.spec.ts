@@ -1,4 +1,4 @@
-import {ComponentFixture, DeferBlockState, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {Mock} from 'vitest';
 import {selectIsElevationProfileOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';

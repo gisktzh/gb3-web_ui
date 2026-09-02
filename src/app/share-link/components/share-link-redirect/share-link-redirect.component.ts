@@ -1,4 +1,4 @@
-import {Component, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
+import {Component, effect, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';

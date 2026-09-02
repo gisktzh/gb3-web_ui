@@ -17,7 +17,7 @@ import {selectIsAnySearchFilterActiveSelector} from 'src/app/state/app/selectors
   template: '<search-bar />',
 })
 class TestSearchContainerComponent extends BaseSearchContainerComponent {
-  public allSearchResults: WritableSignal<readonly SearchResultIdentifierDirective[]> = signal([]);
+  public readonly allSearchResults: WritableSignal<readonly SearchResultIdentifierDirective[]> = signal([]);
 }
 
 class MockSearchResultIdentifierDirective {
@@ -150,7 +150,7 @@ describe('BaseSearchContainerComponent', () => {
   it('should not click result on enter when nothing is selected', () => {
     const result = new MockSearchResultIdentifierDirective() as unknown as SearchResultIdentifierDirective;
 
-    component.allSearchResults = signal([result]);
+    component.allSearchResults.set([result]);
 
     const event = {
       preventDefault: vi.fn(),
