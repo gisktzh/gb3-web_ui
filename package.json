@@ -41,7 +41,7 @@
     "@angular/material": "^22.1.4",
     "@angular/platform-browser": "^22.1.4",
     "@angular/router": "^22.1.4",
-    "@arcgis/core": "5.1.20",
+    "@arcgis/core": "5.1.21",
     "@gisktzh/cim-symbol-to-svg": "^1.0.1",
     "@ngrx/effects": "^22.0.0",
     "@ngrx/entity": "^22.0.0",
