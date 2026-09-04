@@ -11,6 +11,8 @@ import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/
   styleUrls: ['./drawing-symbols-collection.component.scss'],
 })
 export class DrawingSymbolsCollectionComponent {
+  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
+
   public readonly collectionId = input.required<string>();
   public readonly groupName = input('');
   public readonly value = model<DrawingSymbolDefinition | null>(null);
@@ -23,7 +25,6 @@ export class DrawingSymbolsCollectionComponent {
       isSelected: innerValue ? this.drawingSymbolsService.isSameSymbol(symbol.item, innerValue) : false,
     }));
   });
-  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   constructor() {
     const service = this.drawingSymbolsService;

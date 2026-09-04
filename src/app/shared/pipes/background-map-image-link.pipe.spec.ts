@@ -1,7 +1,7 @@
 import {BasemapImageLinkPipe} from './background-map-image-link.pipe';
-import {ConfigService} from '../services/config.service';
 import {TestBed} from '@angular/core/testing';
 import {Basemap, BlankBasemap, WmsBasemap} from '../interfaces/basemap.interface';
+import {BasemapConfigService} from 'src/app/map/services/basemap-config.service';
 
 const wmsBasemap: WmsBasemap = {
   id: 'test-1',
@@ -16,23 +16,18 @@ const blankBasemap: BlankBasemap = {id: 'test-2', type: 'blank', title: 'Test 2'
 
 const mockBasemaps: Basemap[] = [wmsBasemap, blankBasemap];
 
-const mockBasemapConfig = {
-  availableBasemaps: mockBasemaps,
-  defaultBasemap: mockBasemaps[0],
-};
-
 describe('BasemapImageLinkPipe', () => {
   let pipe: BasemapImageLinkPipe;
   beforeEach(() => {
     const spy = {
-      basemapConfig: mockBasemapConfig,
+      availableBasemaps: mockBasemaps,
     };
 
     TestBed.configureTestingModule({
       providers: [
         BasemapImageLinkPipe,
         {
-          provide: ConfigService,
+          provide: BasemapConfigService,
           useValue: spy,
         },
       ],

@@ -12,6 +12,7 @@ if (!testBed.platform) {
   getTestBed().initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 }
 
+import './app/testing/mocks/arcgis-core-geometry-worker';
 import './app/testing/mocks/arcgis-core-mapview';
 import './app/testing/mocks/arcgis-core-reactive-utils';
 import './app/testing/mocks/arcgis-core-webgl-wasm';

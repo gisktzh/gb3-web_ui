@@ -9,7 +9,6 @@ import {Store} from '@ngrx/store';
 import {SearchActions} from '../../../../state/app/actions/search.actions';
 import {SearchFilterDialogComponent} from '../../search-filter-dialog/search-filter-dialog.component';
 import {PanelClass} from '../../../enums/panel-class.enum';
-
 import {SearchInputComponent} from '../search-input.component';
 import {SearchMode} from '../../../types/search-mode.type';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';

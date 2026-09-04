@@ -1,4 +1,4 @@
-import {Component, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
+import {Component, effect, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -16,18 +16,18 @@ import {WaitingPageComponent} from '../../../shared/components/waiting-page/wait
   imports: [WaitingPageComponent],
 })
 export class ShareLinkRedirectComponent {
-  private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
+  public readonly route = inject(ActivatedRoute);
 
   public readonly applicationInitializationLoadingState = this.store.selectSignal(selectApplicationInitializationLoadingState);
   public readonly shareLinkLoadingState = this.store.selectSignal(selectLoadingState);
-  public readonly id = signal(this.route.snapshot.paramMap.get(RouteParamConstants.RESOURCE_IDENTIFIER));
+  public readonly id = this.route.snapshot.paramMap.get(RouteParamConstants.RESOURCE_IDENTIFIER);
 
   protected readonly mainPageEnum = MainPage;
 
   constructor() {
-    const id = this.id();
+    const id = this.id;
     if (id === null) {
       throw new ShareLinkParameterInvalid();
     }

@@ -4,7 +4,7 @@
       <mat-label>Name des Favoriten</mat-label>
       <input [formField]="nameForm.name" id="name" matInput />
       @if (!nameForm().valid() && (nameForm().dirty() || nameForm().touched())) {
-        <mat-error> Geben Sie einen gültigen, nicht leeren Namen ein. </mat-error>
+        <mat-error>Geben Sie einen gültigen, nicht leeren Namen ein.</mat-error>
       }
     </mat-form-field>
   </ng-container>

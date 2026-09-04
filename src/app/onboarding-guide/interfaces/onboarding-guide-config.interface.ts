@@ -5,7 +5,7 @@ import {IStepOption} from 'ngx-ui-tour-md-menu';
  * Ovveride of the default IMdStepOption to force the usage of the OnboardingGuideAnchor types, which are also used in the TypedTourAnchor
  * directive.
  */
-interface OnboardingStep extends IStepOption {
+export interface OnboardingStep extends IStepOption {
   anchorId: OnboardingGuideAnchor;
   image?: string;
 }

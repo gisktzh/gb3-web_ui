@@ -12,7 +12,7 @@
       </a>
       <div class="data-catalogue-detail-page__title" [class.data-catalogue-detail-page__title--mobile]="screenMode() === 'mobile'">
         @if (baseMetadataInformation().imageUrl; as imageUrl) {
-          <a [href]="imageUrl.url.href">
+          <a [href]="imageUrl.url.href" [title]="imageUrl.url.title">
             <img [src]="imageUrl.src.href" class="data-catalogue-detail-page__title__image" [alt]="imageUrl.alt" />
           </a>
         }

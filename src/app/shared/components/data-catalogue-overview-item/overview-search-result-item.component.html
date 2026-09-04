@@ -22,7 +22,7 @@
   </a>
 }
 <ng-template #content>
-  @if (!isMobile()) {
+  @if (screenMode() !== 'mobile') {
     <div class="overview-search-result-item__icon" [matTooltip]="item().type" matTooltipPosition="right">
       @switch (item().type) {
         @case ('Geodatensatz') {
