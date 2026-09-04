@@ -90,7 +90,7 @@
     "eslint-plugin-rxjs-x": "~1.0.6",
     "husky": "^9.0.0",
     "jsdom": "^29.0.0",
-    "knip": "~6.32.0",
+    "knip": "~6.34.0",
     "lint-staged": "^17.0.0",
     "playwright-advanced-har": "^1.4.1",
     "playwright-ng-schematics": "^22.1.0",
