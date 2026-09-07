@@ -3,7 +3,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
-import {filter, tap} from 'rxjs';
+import {filter, mergeMap, tap} from 'rxjs';
 import {map} from 'rxjs';
 import {FavouriteCreationDialogComponent} from '../../../map/components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FavouriteDeletionDialogComponent} from '../../../map/components/favourite-deletion-dialog/favourite-deletion-dialog.component';
@@ -134,6 +134,49 @@ export class MapUiEffects {
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       filter(([_, screenMode]) => screenMode !== 'mobile'),
       map(() => MapUiActions.setAttributeFilterVisibility({isVisible: false})),
+    );
+  });
+
+  /**
+   * The overlays shown within the right hand side bar are mutually exclusive: opening one of them closes the other ones. This is only done
+   * on non-mobile screens because on mobile those overlays are shown within the bottom sheet which handles its content on its own.
+   */
+  public closeOtherSideBarOverlaysOnFeatureInfoOpen$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.setFeatureInfoVisibility),
+      filter(({isVisible}) => isVisible),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([_, screenMode]) => screenMode !== 'mobile'),
+      mergeMap(() => [
+        MapUiActions.setElevationProfileOverlayVisibility({isVisible: false}),
+        MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}),
+      ]),
+    );
+  });
+
+  public closeOtherSideBarOverlaysOnElevationProfileOpen$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.setElevationProfileOverlayVisibility),
+      filter(({isVisible}) => isVisible),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([_, screenMode]) => screenMode !== 'mobile'),
+      mergeMap(() => [
+        MapUiActions.setFeatureInfoVisibility({isVisible: false}),
+        MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}),
+      ]),
+    );
+  });
+
+  public closeOtherSideBarOverlaysOnDrawingEditOpen$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.setDrawingEditOverlayVisibility),
+      filter(({isVisible}) => isVisible),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([_, screenMode]) => screenMode !== 'mobile'),
+      mergeMap(() => [
+        MapUiActions.setFeatureInfoVisibility({isVisible: false}),
+        MapUiActions.setElevationProfileOverlayVisibility({isVisible: false}),
+      ]),
     );
   });
 

@@ -1,5 +1,5 @@
 @if (isVisible()) {
-  <mat-card [class.map-overlay--right]="location() === 'right'" [style]="resizeableStyle()" appearance="outlined" class="map-overlay">
+  <mat-card [class.map-overlay--right]="location() === 'right'" [style]="overlayStyle()" appearance="outlined" class="map-overlay">
     <mat-card-header class="map-overlay__header">
       <h3 class="ktzh-h3-small-big map-overlay__header__title">{{ overlayTitle() }}</h3>
       <button (click)="onClose()" mat-icon-button>

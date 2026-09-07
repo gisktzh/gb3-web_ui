@@ -1,4 +1,4 @@
-import {Component, input, inject, ChangeDetectionStrategy} from '@angular/core';
+import {Component, input, output, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectIsFeatureInfoOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
@@ -20,6 +20,8 @@ export class FeatureInfoOverlayComponent {
   private readonly store = inject(Store);
 
   public readonly showInteractiveElements = input(true);
+  public readonly width = input<number | undefined>(undefined);
+  public readonly resizeEvent = output<number>();
 
   public readonly isVisible = this.store.selectSignal(selectIsFeatureInfoOverlayVisible);
   public readonly featureInfoData = this.store.selectSignal(selectFeatureInfosForDisplay);

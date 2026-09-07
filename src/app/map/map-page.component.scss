@@ -51,11 +51,6 @@
     left: 0;
     height: 100%;
     z-index: z-index-variables.$map-overlay;
-
-    &--right {
-      left: unset;
-      right: 0;
-    }
   }
 
   .map-container__all-map-items-container {
@@ -142,11 +137,24 @@
     right: 12px;
     bottom: 85px;
     pointer-events: none;
+    width: clamp(
+      #{map-layout-variables.$search-window-min-width},
+      calc(
+        100% -
+          (
+            #{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} +
+              #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin}
+          ) -
+          12px
+      ),
+      #{map-layout-variables.$search-window-width}
+    );
 
     &--mobile {
       bottom: 12px + $minimal-bottom-height;
       top: auto;
       left: 12px;
+      width: auto;
     }
   }
 
@@ -194,5 +202,40 @@
 @media print {
   .map-container {
     display: none;
+  }
+}
+
+.overlays {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  // the layer itself must not intercept map interactions; children opt back in
+  pointer-events: none;
+}
+
+.main-overlays {
+  position: relative;
+  height: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+.sidebar-right-overlays {
+  // the side bar is sized by its content (i.e. the currently visible overlay) and thus collapses to zero width if there is none
+  position: relative;
+  height: 100%;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+
+  .sidebar-right-overlays__item {
+    // the hosts must not introduce boxes of their own, otherwise the hidden ones would claim space within the column
+    display: contents;
   }
 }
