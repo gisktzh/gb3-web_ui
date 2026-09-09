@@ -37,6 +37,16 @@
                 "glob": "favicon.ico",
                 "input": "src/",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@arcgis/core/assets/esri/themes/light",
+                "output": "/assets/esri-theme/light/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@arcgis/core/assets/esri/themes/base",
+                "output": "/assets/esri-theme/base/"
               }
             ],
             "styles": ["src/styles.scss"],
