@@ -24,6 +24,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     completeCallbackHandler: DrawingCallbackHandler<'completeSelection'>,
     polygonType: SupportedEsriPolygonTool,
     srs: SupportedSrs,
+    internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection,
   ) {
     super(layer, mapView, completeCallbackHandler);
 
@@ -31,6 +32,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.tool = polygonType;
     this.srs = srs;
+    this.internalLayerType = internalLayerType;
   }
 
   public start(): void {

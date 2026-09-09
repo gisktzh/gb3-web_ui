@@ -32,7 +32,10 @@ import {
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {DrawingLayerNotInitialized, EditFeatureInitializationFailed, NonEditableLayerType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
+import {StatisticsSelectionTool} from '../../../../shared/types/statistics-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
+import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
+import {deriveCircleFromGeometry} from '../../../../shared/utils/statistics-geometry.utils';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
@@ -46,7 +49,7 @@ import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/
 import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
 import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal-drawing-representation-to-esri-graphic.utils';
-import {SupportedEsriTool} from './strategies/supported-esri-tool.type';
+import {SupportedEsriPolygonTool, SupportedEsriTool} from './strategies/supported-esri-tool.type';
 import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawable-tool.strategy';
 import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
 import {DrawingMode} from './types/drawing-mode.type';
@@ -171,6 +174,12 @@ export class EsriToolService implements ToolService {
     );
   }
 
+  public initializeStatisticsSelection(selectionTool: StatisticsSelectionTool) {
+    this.initializeInternalDrawingTool(InternalDrawingLayer.StatisticsArea, (layer) =>
+      this.setStatisticsSelectionStrategy(selectionTool, layer),
+    );
+  }
+
   public completeDrawing(graphic: Graphic, mode: DrawingMode) {
     switch (mode) {
       case 'add':
@@ -286,6 +295,27 @@ export class EsriToolService implements ToolService {
   public completeSelection(selection: DataDownloadSelection | undefined) {
     if (selection) {
       this.store.dispatch(DataDownloadOrderActions.setSelection({selection}));
+    } else {
+      this.store.dispatch(ToolActions.cancelTool());
+    }
+    this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
+  }
+
+  public completeStatisticsSelection(selection: DataDownloadSelection | undefined, isCircle: boolean) {
+    if (selection) {
+      const geometry = selection.drawingRepresentation.geometry;
+      // Esri hands a drawn circle over as an approximating polygon, so centre and radius have to be recovered to keep the radius input
+      // in the panel in sync with what is shown on the map. A freely drawn polygon has neither.
+      const circle = isCircle ? deriveCircleFromGeometry(geometry) : undefined;
+      // A drawn area is always the user's own choice, so it must survive switching between the feature and the statistics tab.
+      this.store.dispatch(
+        StatisticsActions.setSelection({
+          geometry,
+          center: circle?.center,
+          radiusInMeters: circle?.radiusInMeters,
+          isUserDefined: true,
+        }),
+      );
     } else {
       this.store.dispatch(ToolActions.cancelTool());
     }
@@ -581,6 +611,21 @@ export class EsriToolService implements ToolService {
         );
         break;
     }
+  }
+
+  private setStatisticsSelectionStrategy(selectionType: StatisticsSelectionTool, layer: GraphicsLayer) {
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.StatisticsArea, false);
+    const polygonTool: SupportedEsriPolygonTool = selectionType === 'select-statistics-circle' ? 'circle' : 'polygon';
+
+    this.toolStrategy = new EsriPolygonSelectionStrategy(
+      layer,
+      this.esriMapViewService.getMapView(),
+      areaStyle,
+      (selection) => this.completeStatisticsSelection(selection, polygonTool === 'circle'),
+      polygonTool,
+      this.configService.mapConfig.defaultMapConfig.srsId,
+      InternalDrawingLayer.StatisticsArea,
+    );
   }
 
   private setDataDownloadSelectionStrategy(selectionType: DataDownloadSelectionTool, layer: GraphicsLayer) {
