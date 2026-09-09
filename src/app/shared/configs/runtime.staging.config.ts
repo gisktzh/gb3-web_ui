@@ -47,6 +47,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     },
     featureFlags: {
       koPlaNavItem: true,
+      statisticsTool: true,
     },
     overrides: {
       overrideWmsUrl: 'http://testwms.kt.ktzh.ch',

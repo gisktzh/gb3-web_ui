@@ -48,6 +48,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     },
     featureFlags: {
       koPlaNavItem: true,
+      statisticsTool: true,
     },
     overrides: {
       overrideWmsUrl: 'https://web.wms.zh.ch',

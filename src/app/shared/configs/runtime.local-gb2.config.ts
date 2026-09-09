@@ -45,7 +45,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'http://localhost:3000/',
     },
-    featureFlags: {},
+    featureFlags: {
+      statisticsTool: true,
+    },
     overrides: {
       overrideWmsUrl: 'http://localhost:3000/wms',
     },
@@ -94,6 +96,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     },
     featureFlags: {
       koPlaNavItem: true,
+      statisticsTool: true,
     },
     overrides: {
       overrideWmsUrl: 'http://127.0.0.1:3000/wms',
