@@ -14,9 +14,16 @@ import {MatDivider} from '@angular/material/divider';
 import {MeasurementToolsComponent} from '../measurement-tools/measurement-tools.component';
 import {DrawingToolsComponent} from '../drawing-tools/drawing-tools.component';
 import {DataDownloadSelectionToolsComponent} from '../data-download-selection-tools/data-download-selection-tools.component';
+import {StatisticsToolsComponent} from '../statistics-tools/statistics-tools.component';
+import {FeatureFlagDirective} from '../../../../shared/directives/feature-flag.directive';
+import {QueryMode} from '../../../../shared/types/query-mode.type';
+import {QueryModeActions} from '../../../../state/map/actions/query-mode.actions';
+import {selectQueryMode} from '../../../../state/map/reducers/query-mode.reducer';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 
 const TOOLTIP_TEXT = {
+  selectFeature: 'Objekt-Abfrage',
+  selectStatistic: 'Statistik-Abfrage',
   measurement: 'Messen',
   drawing: 'Zeichnen',
   dataDownload: 'Daten beziehen',
@@ -38,6 +45,8 @@ const TOOLTIP_TEXT = {
     MeasurementToolsComponent,
     DrawingToolsComponent,
     DataDownloadSelectionToolsComponent,
+    StatisticsToolsComponent,
+    FeatureFlagDirective,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   host: {
@@ -51,8 +60,13 @@ export class MapToolsDesktopComponent {
   public readonly toolMenuVisibility = this.store.selectSignal(selectToolMenuVisibility);
   public readonly isMapReady = this.store.selectSignal(selectReady);
   public readonly activeTool = this.store.selectSignal(selectActiveTool);
+  public readonly queryMode = this.store.selectSignal(selectQueryMode);
 
   public tooltipText = TOOLTIP_TEXT;
+
+  public setQueryMode(queryMode: QueryMode) {
+    this.store.dispatch(QueryModeActions.setQueryMode({queryMode}));
+  }
 
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
     const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility() === toolToToggle ? undefined : toolToToggle;

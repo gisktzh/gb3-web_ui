@@ -1,5 +1,34 @@
 <div class="map-tools-desktop">
   <div class="map-tools-desktop__list" typedTourAnchor="map.tools">
+    <ng-container *featureFlag="'statisticsTool'">
+      <button
+        (click)="setQueryMode('feature')"
+        [class.map-tools-desktop__list__button--active]="queryMode() === 'feature'"
+        class="map-tools-desktop__list__button"
+        color="accent"
+        data-test-id="map-select-feature"
+        mat-icon-button
+        [matTooltip]="tooltipText.selectFeature"
+        [disabled]="!isMapReady()"
+        [aria-label]="tooltipText.selectFeature"
+      >
+        <mat-icon svgIcon="ktzh_select_feature" />
+      </button>
+      <button
+        (click)="setQueryMode('statistics')"
+        [class.map-tools-desktop__list__button--active]="queryMode() === 'statistics'"
+        class="map-tools-desktop__list__button"
+        color="accent"
+        data-test-id="map-select-statistic"
+        mat-icon-button
+        [matTooltip]="tooltipText.selectStatistic"
+        [disabled]="!isMapReady()"
+        [aria-label]="tooltipText.selectStatistic"
+      >
+        <mat-icon svgIcon="ktzh_select_statistic" />
+      </button>
+      <mat-divider class="map-tools-desktop__list__divider" />
+    </ng-container>
     <button
       (click)="toggleToolMenu('measurement')"
       [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'measurement'"
@@ -87,6 +116,9 @@
       }
       @if (toolMenuVisibility() === 'data-download') {
         <data-download-selection-tools />
+      }
+      @if (toolMenuVisibility() === 'statistics') {
+        <statistics-tools />
       }
     </div>
   }
