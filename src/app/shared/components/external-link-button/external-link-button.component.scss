@@ -1,5 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+// Use :host to increase specificity and override Angular Material styles.
 :host {
   .external-link-button {
     &--highlighted {
