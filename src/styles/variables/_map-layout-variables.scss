@@ -9,6 +9,8 @@ $navbar-height: 72px;
 
 $map-overlay-width: 450px;
 $map-overlay-width-adjustment: 12px;
+$side-bar-overlap-breakpoint: 1430px;
+$minimum-main-overlay-width: $side-bar-overlap-breakpoint - ($map-overlay-width + $map-overlay-width-adjustment);
 $element-margin: 24px;
 $legend-button-width: 125px;
 $search-window-width: 783px;

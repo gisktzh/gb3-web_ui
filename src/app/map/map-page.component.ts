@@ -90,6 +90,10 @@ export class MapPageComponent implements AfterViewInit, OnInit {
   public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
   public readonly rotation = this.store.selectSignal(selectRotation);
   public readonly sideBarWidth = computed(() => this.mapUiState().sideBarWidth);
+  public readonly isSideBarOverlayVisible = computed(() => {
+    const mapUiState = this.mapUiState();
+    return mapUiState.isFeatureInfoOverlayVisible || mapUiState.isElevationProfileOverlayVisible || mapUiState.isDrawingEditOverlayVisible;
+  });
 
   public ngOnInit() {
     if (!this.mapConfigState().predefinedInitialExtent) {

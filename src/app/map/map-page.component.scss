@@ -206,6 +206,8 @@
 }
 
 .overlays {
+  --side-bar-width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$map-overlay-width-adjustment});
+
   position: absolute;
   inset: 0;
   display: flex;
@@ -237,5 +239,17 @@
   .sidebar-right-overlays__item {
     // the hosts must not introduce boxes of their own, otherwise the hidden ones would claim space within the column
     display: contents;
+  }
+}
+
+.overlays--sidebar-open {
+  .main-overlays {
+    flex: 0 0 auto;
+    width: max(calc(100% - var(--side-bar-width)), #{map-layout-variables.$minimum-main-overlay-width});
+  }
+
+  .sidebar-right-overlays {
+    position: absolute;
+    inset: 0 0 0 auto;
   }
 }

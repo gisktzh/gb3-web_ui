@@ -15,7 +15,7 @@
   </mat-drawer>
 
   @if (screenMode() !== 'mobile') {
-    <div class="overlays">
+    <div class="overlays" [class.overlays--sidebar-open]="isSideBarOverlayVisible()" [style.--side-bar-width.px]="sideBarWidth()">
       <div class="main-overlays">
         <legend-overlay class="map-container__overlay" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
         <map-attribute-filter-overlay
