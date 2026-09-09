@@ -4,12 +4,14 @@ import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
 import {catchError, filter, map, of, switchMap, tap} from 'rxjs';
 import {StatisticsActions} from '../actions/statistics.actions';
+import {QueryModeActions} from '../actions/query-mode.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {StatisticsService} from '../../../shared/services/apis/gb3/abstract-statistics.service';
-import {selectCenter, selectGeometry, selectIsUserDefined, selectRadiusInMeters} from '../reducers/statistics.reducer';
+import {selectQueryMode} from '../reducers/query-mode.reducer';
+import {selectCenter, selectGeometry, selectIsUserDefined, selectLoadingState, selectRadiusInMeters} from '../reducers/statistics.reducer';
 import {createCircle} from '../../../shared/utils/statistics-geometry.utils';
 
 @Injectable()
@@ -24,7 +26,30 @@ export class StatisticsEffects {
     () => {
       return this.actions$.pipe(
         ofType(StatisticsActions.setSelection),
-        tap(({geometry}) => this.mapDrawingService.drawStatisticsArea(geometry)),
+        concatLatestFrom(() => this.store.select(selectQueryMode)),
+        filter(([, queryMode]) => queryMode === 'statistics'),
+        tap(([{geometry}]) => this.mapDrawingService.drawStatisticsArea(geometry)),
+      );
+    },
+    {dispatch: false},
+  );
+
+  /**
+   * The area belongs to the statistics tab, so it is only drawn while that tab is active and removed again on the way back to the
+   * features. The area itself stays in the state and therefore reappears unchanged when the tab is opened again.
+   */
+  public toggleAreaVisibility$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(QueryModeActions.setQueryMode),
+        concatLatestFrom(() => this.store.select(selectGeometry)),
+        tap(([{queryMode}, geometry]) => {
+          if (queryMode === 'statistics' && geometry) {
+            this.mapDrawingService.drawStatisticsArea(geometry);
+          } else {
+            this.mapDrawingService.clearStatisticsArea();
+          }
+        }),
       );
     },
     {dispatch: false},
@@ -86,9 +111,26 @@ export class StatisticsEffects {
     );
   });
 
+  /**
+   * Statistics are only ever requested for the tab that shows them. Deriving the area on every map click is cheap, but querying the
+   * API for a tab the user may never open is not, so the request waits until the statistics tab is actually active.
+   */
   public requestStatistics$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(StatisticsActions.setSelection),
+      concatLatestFrom(() => this.store.select(selectQueryMode)),
+      filter(([, queryMode]) => queryMode === 'statistics'),
+      map(() => StatisticsActions.sendRequest()),
+    );
+  });
+
+  /** Picks up an area that was derived while the feature tab was active and for which no statistics have been loaded yet. */
+  public requestStatisticsOnModeChange$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(QueryModeActions.setQueryMode),
+      filter(({queryMode}) => queryMode === 'statistics'),
+      concatLatestFrom(() => [this.store.select(selectGeometry), this.store.select(selectLoadingState)]),
+      filter(([, geometry, loadingState]) => geometry !== undefined && loadingState === undefined),
       map(() => StatisticsActions.sendRequest()),
     );
   });

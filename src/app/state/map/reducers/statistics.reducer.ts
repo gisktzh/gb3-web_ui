@@ -20,7 +20,17 @@ export const statisticsFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(StatisticsActions.setSelection, (state, {geometry, center, radiusInMeters, isUserDefined}): StatisticsState => {
-      return {...state, geometry, center, radiusInMeters: radiusInMeters ?? state.radiusInMeters, isUserDefined};
+      // A new area invalidates the results loaded for the previous one, which is what lets the statistics tab detect on opening that
+      // it has to load them for an area that was derived while the feature tab was active.
+      return {
+        ...state,
+        geometry,
+        center,
+        radiusInMeters: radiusInMeters ?? state.radiusInMeters,
+        isUserDefined,
+        loadingState: undefined,
+        data: [],
+      };
     }),
     on(StatisticsActions.setMode, (state, {mode}): StatisticsState => {
       return {...state, mode};
