@@ -1,3 +1,27 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .divider {
   margin: 30px 0;
+}
+
+.feature-info-overlay__tabs {
+  display: flex;
+  margin-bottom: 16px;
+  background-color: ktzh-variables.$zh-light-grey;
+
+  .feature-info-overlay__tabs__tab {
+    flex: 1 1 50%;
+    padding: 12px 8px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: ktzh-variables.$zh-black100;
+    font-family: ktzh-variables.$zh-font-family-bold;
+    font-size: 14px;
+
+    &--active {
+      background-color: ktzh-variables.$zh-black100;
+      color: ktzh-variables.$zh-white;
+    }
+  }
 }

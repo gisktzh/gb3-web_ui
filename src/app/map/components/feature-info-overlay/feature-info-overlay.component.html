@@ -10,5 +10,34 @@
   overlayTitle="Info"
   location="right"
 >
-  <feature-info [showInteractiveElements]="showInteractiveElements()" />
+  <ng-container *featureFlag="'statisticsTool'">
+    <div class="feature-info-overlay__tabs" role="tablist">
+      <button
+        class="feature-info-overlay__tabs__tab"
+        [class.feature-info-overlay__tabs__tab--active]="queryMode() === 'feature'"
+        (click)="setQueryMode('feature')"
+        [attr.aria-selected]="queryMode() === 'feature'"
+        role="tab"
+        type="button"
+      >
+        Features
+      </button>
+      <button
+        class="feature-info-overlay__tabs__tab"
+        [class.feature-info-overlay__tabs__tab--active]="queryMode() === 'statistics'"
+        (click)="setQueryMode('statistics')"
+        [attr.aria-selected]="queryMode() === 'statistics'"
+        role="tab"
+        type="button"
+      >
+        Statistik
+      </button>
+    </div>
+  </ng-container>
+
+  @if (queryMode() === 'statistics') {
+    <statistics [showInteractiveElements]="showInteractiveElements()" />
+  } @else {
+    <feature-info [showInteractiveElements]="showInteractiveElements()" />
+  }
 </map-overlay>

@@ -1,0 +1,78 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.statistics-item {
+  width: 100%;
+
+  .statistics-item__icon {
+    height: 24px;
+    width: 24px;
+    font-size: 24px;
+  }
+
+  .statistics-item__status {
+    margin: 0;
+    color: ktzh-variables.$zh-black60;
+    font-size: 14px;
+  }
+
+  .statistics-item__status-link {
+    @include mixins.external-link-decoration;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 14px;
+
+    .statistics-item__status-link__icon {
+      height: 14px;
+      width: 14px;
+      font-size: 14px;
+    }
+  }
+
+  .statistics-item__table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    th,
+    td {
+      padding: 6px 8px;
+      vertical-align: top;
+      word-break: normal;
+      hyphens: auto;
+    }
+
+    thead th {
+      font-size: 12px;
+      font-family: ktzh-variables.$zh-font-family-bold;
+      background-color: ktzh-variables.$zh-light-grey;
+    }
+
+    tbody {
+      th {
+        font-size: 12px;
+        font-family: ktzh-variables.$zh-font-family-bold;
+        color: ktzh-variables.$zh-black60;
+        // The value columns are separated from the labels by a rule rather than a full border, as in the design.
+        border-right: 2px solid ktzh-variables.$zh-black100;
+      }
+
+      tr:nth-child(odd) td {
+        background-color: ktzh-variables.$zh-light-grey;
+      }
+
+      // A group header spans the whole width and introduces the rows below it, so it carries no separating rule.
+      .statistics-item__table__group th {
+        color: ktzh-variables.$zh-black100;
+        border-right: none;
+      }
+    }
+
+    .statistics-item__table__unit {
+      margin-left: 4px;
+    }
+  }
+}

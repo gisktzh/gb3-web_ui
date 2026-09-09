@@ -1,0 +1,40 @@
+<div class="statistics__controls">
+  <mat-form-field class="statistics__controls__mode">
+    <mat-label>Modus</mat-label>
+    <mat-select [value]="mode()" (valueChange)="setMode($event)">
+      <mat-option value="umkreis">Umkreis</mat-option>
+      <mat-option value="polygon">Polygon</mat-option>
+    </mat-select>
+  </mat-form-field>
+  @if (mode() === 'umkreis') {
+    <mat-form-field class="statistics__controls__radius">
+      <mat-label>Radius</mat-label>
+      <input
+        matInput
+        type="number"
+        [value]="radiusInMeters()"
+        [min]="minimumRadius"
+        [max]="maximumRadius"
+        (change)="setRadius($any($event.target).value)"
+      />
+      <span matSuffix>m</span>
+    </mat-form-field>
+  }
+</div>
+
+<loading-and-process-bar [loadingState]="loadingState()" />
+
+@if (loadingState() === 'loaded') {
+  @if (generalInfoData(); as generalInfoData) {
+    <feature-info-general-information [generalInfoData]="generalInfoData" [areaInSquareMeters]="areaInSquareMeters()" />
+    <mat-divider class="statistics__divider" />
+  }
+  @for (result of data(); track result.topic) {
+    <statistics-item [result]="result" [showInteractiveElements]="showInteractiveElements()" />
+  }
+  @if (data().length === 0) {
+    <i>Keine Statistik-Daten für das gewählte Gebiet!</i>
+  }
+} @else if (loadingState() === undefined) {
+  <i>Wählen Sie ein Gebiet auf der Karte, um die Statistik zu berechnen.</i>
+}

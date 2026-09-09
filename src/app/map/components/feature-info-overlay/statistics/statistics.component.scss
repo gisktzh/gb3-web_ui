@@ -1,0 +1,20 @@
+.statistics__controls {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-bottom: 8px;
+
+  .statistics__controls__mode {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .statistics__controls__radius {
+    // Wide enough for a five digit radius plus its unit, but never wider than the mode select next to it.
+    flex: 0 0 110px;
+  }
+}
+
+.statistics__divider {
+  margin: 8px 0;
+}
