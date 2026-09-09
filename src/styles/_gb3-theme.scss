@@ -32,12 +32,15 @@ $zh-cyan-theme: mat.m2-define-light-theme(
 // Emit theme-dependent styles for common features used across multiple components.
 @include mat.elevation-classes();
 @include mat.app-background();
+// `mat.typography-hierarchy()` already emits all component typography CSS once, globally, for
+// the (single, shared) $zh-typography-config used by both themes. The per-theme
+// `mat.all-component-typographies($theme)` calls below were therefore emitting fully duplicate
+// typography CSS a second (blue) and third (cyan) time - removed as dead weight.
 @include mat.typography-hierarchy(ktzh-variables.$zh-typography-config);
 
 body {
   --mat-app-background-color: #fff;
   @include mat.all-component-themes($zh-blue-theme);
-  @include mat.all-component-typographies($zh-blue-theme);
   @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-blue, 'primary');
   @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-light-blue, 'primary-light');
   @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-secondary-accent-blue, 'secondary-accent');
@@ -46,7 +49,6 @@ body {
 
   &.body--is-intranet {
     @include mat.all-component-themes($zh-cyan-theme);
-    @include mat.all-component-typographies($zh-cyan-theme);
     @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-cyan, 'primary');
     @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-primary-light-cyan, 'primary-light');
     @include mixins.define-css-vars-for-palette(ktzh-variables.$zh-secondary-accent-cyan, 'secondary-accent');
