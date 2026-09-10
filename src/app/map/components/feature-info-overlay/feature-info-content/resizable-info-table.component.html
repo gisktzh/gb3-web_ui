@@ -1,5 +1,5 @@
 <table class="feature-info-content__table" [aria-describedby]="tableLabel()">
-  @if (tableHeaders().length > 0) {
+  @if (tableHeaders() && tableHeaders()!.length > 0) {
     <tr class="feature-info-content__table__row">
       <th
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
@@ -25,6 +25,7 @@
       <th
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
         scope="col"
+        [style.width]="tableHeaders() ? null : tableHeaderWidth()"
         [style.min-width]="tableHeaderWidth()"
         [style.max-width]="tableHeaderWidth()"
       >

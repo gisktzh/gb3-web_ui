@@ -34,3 +34,37 @@
     }
   }
 }
+
+.oereb-info-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.oereb-detail-list__title {
+  color: ktzh-variables.$zh-black60;
+  font-size: 12px;
+  line-height: 18px;
+  font-family: ktzh-variables.$zh-font-family-bold;
+  font-weight: 900;
+}
+
+.oereb-detail-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .oereb-detail-list__link {
+    @include mixins.external-link-decoration;
+  }
+
+  .oereb-detail-list__item {
+    color: ktzh-variables.$zh-black60;
+  }
+}

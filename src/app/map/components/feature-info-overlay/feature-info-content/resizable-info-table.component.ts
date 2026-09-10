@@ -22,7 +22,7 @@ export interface TableHeader extends Omit<AbstractTableCell, 'cellType'> {
 export type TableRows = Map<string, TableCell[]>;
 
 export type TableData = {
-  tableHeaders: TableHeader[];
+  tableHeaders?: TableHeader[];
   tableRows: TableRows;
 };
 

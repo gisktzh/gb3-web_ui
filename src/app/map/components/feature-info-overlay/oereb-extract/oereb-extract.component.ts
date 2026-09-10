@@ -1,11 +1,24 @@
 import {ChangeDetectionStrategy, Component, computed, input} from '@angular/core';
-import {OerebExtractResponse} from 'src/app/shared/interfaces/oereb-extract.interface';
+import {OerebExtractResponse, OerebExtractValue} from 'src/app/shared/interfaces/oereb-extract.interface';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {MatIcon} from '@angular/material/icon';
 import {ResizableInfoTableComponent, TableData} from '../feature-info-content/resizable-info-table.component';
-import {ListTableCell, TableCell, TextTableCell, UrlTableCell} from '../feature-info-content/info-table-cell.component';
+import {TableCell, TextTableCell, UrlTableCell} from '../feature-info-content/info-table-cell.component';
 import {NotConcernedTheme} from 'src/app/shared/models/gb3-api-generated.interfaces';
 import {MatButton} from '@angular/material/button';
+
+type ListItem = {displayValue: string} & (
+  | {itemType: 'text'}
+  | {itemType: 'url'; url: string}
+  | {itemType: 'list'; items: ListItem[]}
+  | {itemType: 'image'; url: string; src: string; alt: string; width: number; height: number}
+);
+
+interface Theme {
+  name: string;
+  generalInfo: ListItem[];
+  restrictions: ListItem[];
+}
 
 @Component({
   selector: 'oereb-extract',
@@ -18,241 +31,167 @@ export class OerebExtractComponent {
   public readonly data = input.required<OerebExtractResponse>();
 
   public readonly oerebCadastreData = computed<TableData>(() => {
-    const tableRows = new Map<string, TableCell[]>();
-    tableRows.set('Gemeinde', [
-      {
-        fid: 1,
-        displayValue: this.data().municipalityName,
-        cellType: 'text',
-      },
-    ]);
-
-    tableRows.set('BFS-Nr.', [
-      {
-        fid: 2,
-        displayValue: this.data().municipalityCode.toString(),
-        cellType: 'text',
-      },
-    ]);
-
-    tableRows.set('Grundstück-Nr.', [
-      {
-        fid: 3,
-        displayValue: this.data().parcelNumber,
-        cellType: 'text',
-      },
-    ]);
-
-    tableRows.set('EGRIS_EGRID', [
-      {
-        fid: 4,
-        displayValue: this.data().egrid,
-        cellType: 'text',
-      },
-    ]);
-
     return {
-      tableHeaders: [
-        {
-          displayValue: 'Info',
-          hasGeometry: false,
-        },
-      ],
-      tableRows,
+      tableRows: new Map<string, TableCell[]>(
+        [
+          ['Gemeinde', this.data().municipalityName],
+          ['BFS-Nr.', this.data().municipalityCode.toString()],
+          ['Grundstück-Nr.', this.data().parcelNumber],
+          ['EGRIS_EGRID', this.data().egrid],
+        ].map(([l, v]) => [
+          l,
+          [
+            {
+              displayValue: v,
+              cellType: 'text',
+            },
+          ],
+        ]),
+      ),
     } as TableData;
   });
 
   public readonly kboAndSurveyorData = computed<TableData>(() => {
-    const tableRows = new Map<string, TableCell[]>();
-
     const kbo = this.data().kbo;
     const surveyor = this.data().surveyor;
 
-    tableRows.set('ÖREB-Kataster', [
-      kbo.href
-        ? {
-            fid: 5,
-            displayValue: kbo.title,
-            cellType: 'url',
-            url: kbo.href,
-          }
-        : {
-            fid: 5,
-            displayValue: kbo.title,
-            cellType: 'text',
-          },
-    ]);
-
-    tableRows.set('Email ÖREB', [
-      surveyor.href
-        ? {
-            fid: 5,
-            displayValue: surveyor.title,
-            cellType: 'url',
-            url: surveyor.href,
-          }
-        : {
-            fid: 5,
-            displayValue: surveyor.title,
-            cellType: 'text',
-          },
-    ]);
-
     return {
-      tableHeaders: [
-        {
-          displayValue: 'Info',
-          hasGeometry: false,
-        },
-      ],
-      tableRows,
+      tableRows: new Map<string, TableCell[]>([
+        [
+          'ÖREB-Kataster',
+          [
+            kbo.href
+              ? {
+                  displayValue: kbo.title,
+                  cellType: 'url',
+                  url: kbo.href,
+                }
+              : {
+                  displayValue: kbo.title,
+                  cellType: 'text',
+                },
+          ],
+        ],
+        [
+          'Email ÖREB',
+          [
+            surveyor.href
+              ? {
+                  displayValue: surveyor.title,
+                  cellType: 'url',
+                  url: surveyor.href,
+                }
+              : {
+                  displayValue: surveyor.title,
+                  cellType: 'text',
+                },
+          ],
+        ],
+      ]),
     } as TableData;
   });
 
   public readonly staticExtractUrl = computed<string>(() => this.data().staticExtractUrl);
 
-  public readonly concernedThemes = computed(() => {
-    return this.data().concernedThemes.map((theme) => {
-      const generalInfoRows = new Map<string, TableCell[]>();
-      generalInfoRows.set('Gesetzliche Grundlagen', [
+  public readonly concernedThemes = computed<Theme[]>(() => {
+    return this.data().concernedThemes.map((theme) => ({
+      name: theme.name,
+      generalInfo: [
         {
-          cellType: 'list',
-          items: theme.legalProvisions.map<UrlTableCell | TextTableCell>(
-            (l) =>
-              ({
-                fid: 1,
-                cellType: l.href ? 'url' : 'text',
-                displayValue: l.title,
-                url: l.href,
-              }) as UrlTableCell | TextTableCell,
-          ),
-        } as ListTableCell,
-      ]);
-
-      generalInfoRows.set('Rechtsvorschriften', [
+          displayValue: 'Gesetzliche Grundlagen',
+          itemType: 'list' as const,
+          items: theme.legalProvisions.map<ListItem>((i) => this.mapOerebExtractValueToListItem(i)),
+        },
         {
-          cellType: 'list',
-          items: theme.laws.map<UrlTableCell | TextTableCell>(
-            (l) =>
-              ({
-                fid: 1,
-                cellType: l.href ? 'url' : 'text',
-                displayValue: l.title,
-                url: l.href,
-              }) as UrlTableCell | TextTableCell,
-          ),
-        } as ListTableCell,
-      ]);
-
-      generalInfoRows.set('Weitere Hinweise', [
+          displayValue: 'Rechtsvorschriften',
+          itemType: 'list' as const,
+          items: theme.laws.map<ListItem>((i) => this.mapOerebExtractValueToListItem(i)),
+        },
         {
-          cellType: 'list',
-          items: theme.hints.map<UrlTableCell | TextTableCell>(
-            (l) =>
-              ({
-                fid: 1,
-                cellType: l.href ? 'url' : 'text',
-                displayValue: l.title,
-                url: l.href,
-              }) as UrlTableCell | TextTableCell,
-          ),
-        } as ListTableCell,
-      ]);
-
-      generalInfoRows.set('Zuständige Stellen', [
+          displayValue: 'Weitere Hinweise',
+          itemType: 'list' as const,
+          items: theme.hints.map<ListItem>((i) => this.mapOerebExtractValueToListItem(i)),
+        },
         {
-          cellType: 'list',
-          items: theme.resonsibleOffices.map<UrlTableCell | TextTableCell>(
-            (l) =>
-              ({
-                fid: 1,
-                cellType: l.href ? 'url' : 'text',
-                displayValue: l.title,
-                url: l.href,
-              }) as UrlTableCell | TextTableCell,
-          ),
-        } as ListTableCell,
-      ]);
-
-      const restrictions = theme.restrictions.map((r) => {
-        const restrictionRows = new Map<string, TableCell[]>();
+          displayValue: 'Zuständige Stellen',
+          itemType: 'list' as const,
+          items: theme.resonsibleOffices.map<ListItem>((i) => this.mapOerebExtractValueToListItem(i)),
+        },
+      ].filter((i) => i.items.length > 0),
+      restrictions: theme.restrictions.map((r) => {
+        const items: ListItem[] = [];
 
         if (r.illustration) {
-          restrictionRows.set('Darstellung', [
-            {
-              fid: 1,
-              cellType: 'image',
-              url: r.illustration.url.href,
-              src: r.illustration.src.href,
-              alt: r.illustration.alt,
-              displayValue: r.illustration.alt,
-              width: 23,
-              height: 13,
-            },
-          ]);
+          items.push({
+            displayValue: 'Darstellung',
+            itemType: 'list' as const,
+            items: [
+              {
+                displayValue: r.illustration.alt,
+                itemType: 'image' as const,
+                url: r.illustration.url.href,
+                src: r.illustration.src.href,
+                alt: r.illustration.alt,
+                width: 23,
+                height: 13,
+              },
+            ],
+          });
         }
 
         if ('areaM2' in r.measurement) {
-          restrictionRows.set('Fläche', [
-            {
-              fid: 1,
-              cellType: 'text',
-              displayValue: `${r.measurement.areaM2}m2`,
-            },
-          ]);
-          restrictionRows.set('Anteil', [
-            {
-              fid: 1,
-              cellType: 'text',
-              displayValue: `${Math.round(r.measurement.percentage * 100)}%`,
-            },
-          ]);
+          items.push({
+            displayValue: 'Fläche',
+            itemType: 'list' as const,
+            items: [
+              {
+                displayValue: `${r.measurement.areaM2}m2`,
+                itemType: 'text' as const,
+              },
+            ],
+          });
+
+          items.push({
+            displayValue: 'Anteil',
+            itemType: 'list' as const,
+            items: [
+              {
+                displayValue: `${Math.round(r.measurement.percentage * 100)}%`,
+                itemType: 'text' as const,
+              },
+            ],
+          });
         } else if ('lineLength' in r.measurement) {
-          restrictionRows.set('Länge', [
-            {
-              fid: 1,
-              cellType: 'text',
-              displayValue: `${r.measurement.lineLength}m`,
-            },
-          ]);
+          items.push({
+            displayValue: 'Länge',
+            itemType: 'list' as const,
+            items: [
+              {
+                displayValue: `${r.measurement.lineLength}m2`,
+                itemType: 'text' as const,
+              },
+            ],
+          });
         } else {
-          restrictionRows.set('Anzahl Punkte', [
-            {
-              fid: 1,
-              cellType: 'text',
-              displayValue: r.measurement.pointsCount.toString(),
-            },
-          ]);
+          items.push({
+            displayValue: 'Anzahl Punkte',
+            itemType: 'list' as const,
+            items: [
+              {
+                displayValue: r.measurement.pointsCount.toString(),
+                itemType: 'text' as const,
+              },
+            ],
+          });
         }
 
         return {
-          name: r.name,
-          data: {
-            tableHeaders: [
-              {
-                displayValue: 'Info',
-                hasGeometry: false,
-              },
-            ],
-            tableRows: restrictionRows,
-          } as TableData,
+          displayValue: r.name,
+          itemType: 'list' as const,
+          items,
         };
-      });
-
-      return {
-        name: theme.name,
-        generalInfo: {
-          tableHeaders: [
-            {
-              displayValue: 'Info',
-              hasGeometry: false,
-            },
-          ],
-          tableRows: generalInfoRows,
-        } as TableData,
-        restrictions,
-      };
-    });
+      }),
+    }));
   });
 
   public readonly notConcernedThemes = computed(() => {
@@ -263,13 +202,27 @@ export class OerebExtractComponent {
     return this.mapNotConcernedThemesToTableData(this.data().notAvailableThemes);
   });
 
+  private mapOerebExtractValueToListItem(item: OerebExtractValue): ListItem {
+    if (item.href) {
+      return {
+        displayValue: item.title,
+        itemType: 'url',
+        url: item.href,
+      };
+    }
+
+    return {
+      displayValue: item.title,
+      itemType: 'text',
+    };
+  }
+
   private mapNotConcernedThemesToTableData(themes: NotConcernedTheme[]): TableData {
     const tableRows = new Map<string, TableCell[]>();
 
     themes.forEach((t) => {
       tableRows.set(t.name, [
         {
-          fid: 1,
           displayValue: '',
           cellType: 'list',
           items: t.hints.map<UrlTableCell | TextTableCell>(
@@ -286,12 +239,6 @@ export class OerebExtractComponent {
     });
 
     return {
-      tableHeaders: [
-        {
-          displayValue: 'Info',
-          hasGeometry: false,
-        },
-      ],
       tableRows,
     } as TableData;
   }

@@ -37,8 +37,7 @@ $bottom-border: inset 0 calc(-1 * $border-size) 0 0 ktzh-variables.$zh-active-bl
 $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
 
 .feature-info-content {
-  width: calc(100% - 12px);
-  margin-left: 12px;
+  width: 100%;
   overflow: auto;
 
   .feature-info-content__table {
@@ -148,7 +147,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
   }
   & .feature-info-content__resize {
     top: var(--offset-top, 38px);
-    left: 12px;
+    left: 0;
     width: 140px;
     z-index: 10;
     height: calc(calc(100% - var(--offset-top, 38px) - var(--calculated-scrollbar-height)));

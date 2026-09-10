@@ -21,10 +21,6 @@
 .list-item {
   margin-bottom: 24px;
 
-  &--has-border {
-    border: 1px solid ktzh-variables.$zh-blue;
-  }
-
   .list-item__header {
     padding: 0;
     background-color: ktzh-variables.$zh-light-grey;
@@ -66,6 +62,21 @@
         order: 2;
       }
 
+      &--level-2,
+      &--level-3 {
+        .list-item__header__content__title {
+          overflow: visible;
+          -webkit-line-clamp: initial;
+        }
+      }
+
+      &--level-3 {
+        margin-top: 8px;
+        .list-item__header__content__title {
+          font-size: 12px;
+        }
+      }
+
       .list-item__header__content__info-link {
         text-decoration: none;
         color: inherit;
@@ -84,6 +95,29 @@
           @include mat-mixins.mat-icon-custom-svg-size(16px);
         }
       }
+    }
+  }
+
+  .list-item__content {
+    &--has-border {
+      border-left: 1px solid #cccccb;
+      margin-left: 12px;
+    }
+
+    &--level-1 {
+      padding-left: 12px;
+
+      &.list-item__content--has-border {
+        padding-left: 22px;
+      }
+    }
+
+    &--level-2 {
+      padding-left: 36px;
+    }
+
+    &--level-3 {
+      padding-left: 24px;
     }
   }
 }

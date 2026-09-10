@@ -7,7 +7,7 @@ export type CellType = 'text' | 'url' | 'image' | 'list';
  * and linkobject values.
  */
 export interface AbstractTableCell {
-  fid: number;
+  fid?: number;
   displayValue: string;
   cellType: CellType;
 }
