@@ -24,11 +24,10 @@ describe('statistics reducer', () => {
     it('stores the area and invalidates results loaded for the previous one', () => {
       const state: StatisticsState = {...initialState, loadingState: 'loaded', data: results};
 
-      const result = reducer(state, StatisticsActions.setSelection({geometry, center, radiusInMeters: undefined, isUserDefined: true}));
+      const result = reducer(state, StatisticsActions.setSelection({geometry, center, radiusInMeters: undefined}));
 
       expect(result.geometry).toEqual(geometry);
       expect(result.center).toEqual(center);
-      expect(result.isUserDefined).toBe(true);
       expect(result.loadingState).toBeUndefined();
       expect(result.data).toEqual([]);
     });
@@ -36,24 +35,23 @@ describe('statistics reducer', () => {
     it('keeps the current radius if the selection does not dictate one', () => {
       const state: StatisticsState = {...initialState, radiusInMeters: 750};
 
-      const result = reducer(state, StatisticsActions.setSelection({geometry, center, radiusInMeters: undefined, isUserDefined: true}));
+      const result = reducer(state, StatisticsActions.setSelection({geometry, center, radiusInMeters: undefined}));
 
       expect(result.radiusInMeters).toBe(750);
     });
 
     it('takes over the radius of a drawn circle', () => {
-      const result = reducer(initialState, StatisticsActions.setSelection({geometry, center, radiusInMeters: 1200, isUserDefined: true}));
+      const result = reducer(initialState, StatisticsActions.setSelection({geometry, center, radiusInMeters: 1200}));
 
       expect(result.radiusInMeters).toBe(1200);
     });
   });
 
   describe('setRadius', () => {
-    it('marks the area as user defined so that it survives a tab switch', () => {
+    it('stores the radius', () => {
       const result = reducer(initialState, StatisticsActions.setRadius({radiusInMeters: 250}));
 
       expect(result.radiusInMeters).toBe(250);
-      expect(result.isUserDefined).toBe(true);
     });
   });
 

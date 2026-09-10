@@ -13,7 +13,6 @@ export const StatisticsActions = createActionGroup({
       center: PointWithSrs | undefined;
       /** Set when the area itself dictates the radius, i.e. after drawing a circle; undefined keeps the current radius. */
       radiusInMeters: number | undefined;
-      isUserDefined: boolean;
     }>(),
     'Set Mode': props<{mode: StatisticsMode}>(),
     'Set Radius': props<{radiusInMeters: number}>(),

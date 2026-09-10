@@ -10,7 +10,6 @@ export const initialState: StatisticsState = {
   radiusInMeters: defaultStatisticsRadiusInMeters,
   center: undefined,
   geometry: undefined,
-  isUserDefined: false,
   loadingState: undefined,
   data: [],
 };
@@ -19,7 +18,7 @@ export const statisticsFeature = createFeature({
   name: statisticsFeatureKey,
   reducer: createReducer(
     initialState,
-    on(StatisticsActions.setSelection, (state, {geometry, center, radiusInMeters, isUserDefined}): StatisticsState => {
+    on(StatisticsActions.setSelection, (state, {geometry, center, radiusInMeters}): StatisticsState => {
       // A new area invalidates the results loaded for the previous one, which is what lets the statistics tab detect on opening that
       // it has to load them for an area that was derived while the feature tab was active.
       return {
@@ -27,7 +26,6 @@ export const statisticsFeature = createFeature({
         geometry,
         center,
         radiusInMeters: radiusInMeters ?? state.radiusInMeters,
-        isUserDefined,
         loadingState: undefined,
         data: [],
       };
@@ -35,9 +33,8 @@ export const statisticsFeature = createFeature({
     on(StatisticsActions.setMode, (state, {mode}): StatisticsState => {
       return {...state, mode};
     }),
-    // Changing the radius is an explicit user decision, so the resulting area must survive a tab switch just like a drawn one.
     on(StatisticsActions.setRadius, (state, {radiusInMeters}): StatisticsState => {
-      return {...state, radiusInMeters, isUserDefined: true};
+      return {...state, radiusInMeters};
     }),
     on(StatisticsActions.sendRequest, (state): StatisticsState => {
       return {...state, loadingState: 'loading', data: []};
@@ -63,7 +60,6 @@ export const {
   selectRadiusInMeters,
   selectCenter,
   selectGeometry,
-  selectIsUserDefined,
   selectLoadingState,
   selectData,
 } = statisticsFeature;

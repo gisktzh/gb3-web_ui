@@ -10,10 +10,5 @@ export interface StatisticsState extends HasLoadingState {
   center: PointWithSrs | undefined;
   /** The effective area the statistics are queried for, either the derived circle or a drawn polygon. */
   geometry: GeometryWithSrs | undefined;
-  /**
-   * True once the user has expressed intent about the area, by drawing it or by changing the radius. Such an area is kept when
-   * switching tabs, whereas an automatically derived one is replaced by a newly derived one.
-   */
-  isUserDefined: boolean;
   data: StatisticsResult[];
 }

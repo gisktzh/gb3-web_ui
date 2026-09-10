@@ -26,10 +26,61 @@ export function createCircle(center: PointWithSrs, radiusInMeters: number): Poly
 }
 
 /**
+ * Determines the centre of the bounding box of a geometry. This is the point the geometry is anchored at when it is moved to a new
+ * location, and the centre that is recovered from an area drawn with the circle tool.
+ */
+export function deriveBoundingBoxCenter(geometry: GeometryWithSrs): PointWithSrs | undefined {
+  const boundingBox = calculateBoundingBox(geometry);
+  if (!boundingBox) {
+    return undefined;
+  }
+
+  const {minX, maxX, minY, maxY} = boundingBox;
+  return {type: 'Point', coordinates: [(minX + maxX) / 2, (minY + maxY) / 2], srs: geometry.srs};
+}
+
+/**
+ * Moves a geometry so that the centre of its bounding box sits on the given point, keeping its shape and size unchanged. Used to let a
+ * map click recenter an area that has already been defined.
+ */
+export function moveGeometryTo<T extends GeometryWithSrs>(geometry: T, center: PointWithSrs): T {
+  const currentCenter = deriveBoundingBoxCenter(geometry);
+  if (!currentCenter) {
+    return geometry;
+  }
+
+  const deltaX = center.coordinates[0] - currentCenter.coordinates[0];
+  const deltaY = center.coordinates[1] - currentCenter.coordinates[1];
+
+  return translateGeometry(geometry, deltaX, deltaY);
+}
+
+/**
  * Derives the centre and radius of an area drawn with the circle tool. Esri hands the circle over as an approximating polygon, so both
  * values have to be recovered from its bounding box in order to keep the radius input in the panel in sync with the drawn area.
  */
 export function deriveCircleFromGeometry(geometry: GeometryWithSrs): {center: PointWithSrs; radiusInMeters: number} | undefined {
+  const boundingBox = calculateBoundingBox(geometry);
+  const center = deriveBoundingBoxCenter(geometry);
+  if (!boundingBox || !center) {
+    return undefined;
+  }
+
+  const {minX, maxX, minY, maxY} = boundingBox;
+  return {
+    center,
+    radiusInMeters: Math.round(Math.max(maxX - minX, maxY - minY) / 2),
+  };
+}
+
+interface BoundingBox {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+}
+
+function calculateBoundingBox(geometry: GeometryWithSrs): BoundingBox | undefined {
   const positions = extractPositions(geometry);
   if (positions.length === 0) {
     return undefined;
@@ -37,15 +88,30 @@ export function deriveCircleFromGeometry(geometry: GeometryWithSrs): {center: Po
 
   const xs = positions.map(([x]) => x);
   const ys = positions.map(([, y]) => y);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
 
-  return {
-    center: {type: 'Point', coordinates: [(minX + maxX) / 2, (minY + maxY) / 2], srs: geometry.srs},
-    radiusInMeters: Math.round(Math.max(maxX - minX, maxY - minY) / 2),
-  };
+  return {minX: Math.min(...xs), maxX: Math.max(...xs), minY: Math.min(...ys), maxY: Math.max(...ys)};
+}
+
+function translateGeometry<T extends GeometryWithSrs>(geometry: T, deltaX: number, deltaY: number): T {
+  const movePosition = ([x, y]: Position): Position => [x + deltaX, y + deltaY];
+
+  switch (geometry.type) {
+    case 'Point':
+      return {...geometry, coordinates: movePosition(geometry.coordinates)};
+    case 'MultiPoint':
+    case 'LineString':
+      return {...geometry, coordinates: geometry.coordinates.map(movePosition)};
+    case 'MultiLineString':
+    case 'Polygon':
+      return {...geometry, coordinates: geometry.coordinates.map((ring) => ring.map(movePosition))};
+    case 'MultiPolygon':
+      return {...geometry, coordinates: geometry.coordinates.map((polygon) => polygon.map((ring) => ring.map(movePosition)))};
+    case 'GeometryCollection':
+      return {
+        ...geometry,
+        geometries: geometry.geometries.map((child) => translateGeometry({...child, srs: geometry.srs}, deltaX, deltaY)),
+      };
+  }
 }
 
 /**

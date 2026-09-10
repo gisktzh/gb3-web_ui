@@ -1,4 +1,10 @@
-import {calculateAreaInSquareMeters, createCircle, deriveCircleFromGeometry} from './statistics-geometry.utils';
+import {
+  calculateAreaInSquareMeters,
+  createCircle,
+  deriveBoundingBoxCenter,
+  deriveCircleFromGeometry,
+  moveGeometryTo,
+} from './statistics-geometry.utils';
 import {PointWithSrs, PolygonWithSrs} from '../interfaces/geojson-types-with-srs.interface';
 
 describe('statistics geometry utils', () => {
@@ -44,6 +50,72 @@ describe('statistics geometry utils', () => {
       const empty: PolygonWithSrs = {type: 'Polygon', coordinates: [], srs: 2056};
 
       expect(deriveCircleFromGeometry(empty)).toBeUndefined();
+    });
+  });
+
+  describe('deriveBoundingBoxCenter', () => {
+    it('returns the centre of the bounding box', () => {
+      const rectangle: PolygonWithSrs = {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [0, 0],
+            [0, 20],
+            [10, 20],
+            [10, 0],
+            [0, 0],
+          ],
+        ],
+        srs: 2056,
+      };
+
+      expect(deriveBoundingBoxCenter(rectangle)).toEqual({type: 'Point', coordinates: [5, 10], srs: 2056});
+    });
+
+    it('returns undefined for a geometry without coordinates', () => {
+      const empty: PolygonWithSrs = {type: 'Polygon', coordinates: [], srs: 2056};
+
+      expect(deriveBoundingBoxCenter(empty)).toBeUndefined();
+    });
+  });
+
+  describe('moveGeometryTo', () => {
+    const triangle: PolygonWithSrs = {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [0, 0],
+          [10, 0],
+          [0, 30],
+          [0, 0],
+        ],
+      ],
+      srs: 2056,
+    };
+
+    it('places the centre of the bounding box on the given point', () => {
+      const moved = moveGeometryTo(triangle, center);
+
+      expect(deriveBoundingBoxCenter(moved)).toEqual(center);
+    });
+
+    it('keeps the shape and the size of the geometry', () => {
+      const moved = moveGeometryTo(triangle, center);
+
+      expect(calculateAreaInSquareMeters(moved)).toBe(calculateAreaInSquareMeters(triangle));
+      expect(moved.coordinates[0]).toHaveLength(triangle.coordinates[0].length);
+    });
+
+    it('does not modify the original geometry', () => {
+      moveGeometryTo(triangle, center);
+
+      expect(triangle.coordinates[0][0]).toEqual([0, 0]);
+    });
+
+    it('returns the geometry unchanged if it has no coordinates to move', () => {
+      const empty: PolygonWithSrs = {type: 'Polygon', coordinates: [], srs: 2056};
+
+      expect(moveGeometryTo(empty, center)).toBe(empty);
     });
   });
 

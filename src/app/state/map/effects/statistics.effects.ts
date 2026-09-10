@@ -11,8 +11,8 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {StatisticsService} from '../../../shared/services/apis/gb3/abstract-statistics.service';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
-import {selectCenter, selectGeometry, selectIsUserDefined, selectLoadingState, selectRadiusInMeters} from '../reducers/statistics.reducer';
-import {createCircle} from '../../../shared/utils/statistics-geometry.utils';
+import {selectCenter, selectGeometry, selectLoadingState, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
+import {createCircle, moveGeometryTo} from '../../../shared/utils/statistics-geometry.utils';
 
 @Injectable()
 export class StatisticsEffects {
@@ -79,35 +79,36 @@ export class StatisticsEffects {
           geometry: createCircle(center!, radiusInMeters),
           center,
           radiusInMeters: undefined,
-          isUserDefined: true,
         }),
       ),
     );
   });
 
   /**
-   * Every map click also defines where the statistics are calculated, so that the area is already in place when the user switches to
-   * the statistics tab. An area the user has defined themselves is kept, as it would otherwise be lost on the next click.
+   * Every map click also moves the area the statistics are calculated for, so that it is already in place when the user switches to the
+   * statistics tab. In 'umkreis' mode the click defines the centre of a new circle, in 'polygon' mode it moves the drawn polygon along
+   * without changing its shape. Without a polygon there is nothing to move yet, so the click is ignored until one has been drawn.
    */
-  public deriveCircleFromMapClick$ = createEffect(() => {
+  public recenterSelectionOnMapClick$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FeatureInfoActions.sendRequest),
-      concatLatestFrom(() => [this.store.select(selectIsUserDefined), this.store.select(selectRadiusInMeters)]),
-      filter(([, isUserDefined]) => !isUserDefined),
-      map(([{x, y}, , radiusInMeters]) => {
+      concatLatestFrom(() => [this.store.select(selectMode), this.store.select(selectGeometry), this.store.select(selectRadiusInMeters)]),
+      map(([{x, y}, mode, geometry, radiusInMeters]) => {
         const center: PointWithSrs = {
           type: 'Point',
           coordinates: [x, y],
           srs: this.configService.mapConfig.defaultMapConfig.srsId,
         };
 
-        return StatisticsActions.setSelection({
-          geometry: createCircle(center, radiusInMeters),
-          center,
-          radiusInMeters: undefined,
-          isUserDefined: false,
-        });
+        if (mode === 'umkreis') {
+          return StatisticsActions.setSelection({geometry: createCircle(center, radiusInMeters), center, radiusInMeters: undefined});
+        }
+
+        return geometry
+          ? StatisticsActions.setSelection({geometry: moveGeometryTo(geometry, center), center, radiusInMeters: undefined})
+          : undefined;
       }),
+      filter((action) => action !== undefined),
     );
   });
 
