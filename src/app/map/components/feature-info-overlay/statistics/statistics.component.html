@@ -1,24 +1,50 @@
 <div class="statistics__controls">
-  <mat-form-field class="statistics__controls__mode">
-    <mat-label>Modus</mat-label>
-    <mat-select [value]="mode()" (valueChange)="setMode($event)">
-      <mat-option value="umkreis">Umkreis</mat-option>
-      <mat-option value="polygon">Polygon</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <mat-select
+    class="statistics__controls__mode"
+    panelClass="statistics__controls__mode__panel"
+    aria-label="Modus"
+    [value]="mode()"
+    (valueChange)="setMode($event)"
+  >
+    <mat-select-trigger>
+      <span class="statistics__controls__mode__label" aria-hidden="true">Modus</span>
+      <span class="statistics__controls__mode__value">
+        @switch (mode()) {
+          @case ('umkreis') {
+            <mat-icon svgIcon="ktzh_drawing_symbol_circle" />
+            Umkreis
+          }
+          @case ('polygon') {
+            <mat-icon svgIcon="ktzh_drawing_symbol_polygon" />
+            Polygon
+          }
+        }
+      </span>
+    </mat-select-trigger>
+    <mat-option value="umkreis">
+      <mat-icon svgIcon="ktzh_drawing_symbol_circle" />
+      Umkreis
+    </mat-option>
+    <mat-option value="polygon">
+      <mat-icon svgIcon="ktzh_drawing_symbol_polygon" />
+      Polygon
+    </mat-option>
+  </mat-select>
   @if (mode() === 'umkreis') {
-    <mat-form-field class="statistics__controls__radius">
-      <mat-label>Radius</mat-label>
-      <input
-        matInput
-        type="number"
-        [value]="radiusInMeters()"
-        [min]="minimumRadius"
-        [max]="maximumRadius"
-        (change)="setRadius($any($event.target).value)"
-      />
-      <span matSuffix>m</span>
-    </mat-form-field>
+    <label class="statistics__controls__radius" for="statistics-radius-input">
+      <span class="statistics__controls__radius__label">Radius</span>
+      <span class="statistics__controls__radius__field">
+        <input
+          id="statistics-radius-input"
+          type="number"
+          [value]="radiusInMeters()"
+          [min]="minimumRadius"
+          [max]="maximumRadius"
+          (change)="setRadius($any($event.target).value)"
+        />
+        <span class="statistics__controls__radius__unit">m</span>
+      </span>
+    </label>
   }
 </div>
 

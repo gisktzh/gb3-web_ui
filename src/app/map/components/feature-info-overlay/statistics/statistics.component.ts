@@ -1,9 +1,9 @@
 import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatDivider} from '@angular/material/divider';
-import {MatFormField, MatLabel, MatInput, MatSuffix} from '@angular/material/input';
-import {MatSelect} from '@angular/material/select';
+import {MatSelect, MatSelectTrigger} from '@angular/material/select';
 import {MatOption} from '@angular/material/autocomplete';
+import {MatIcon} from '@angular/material/icon';
 import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
 import {selectData as selectGeneralInfoData} from '../../../../state/map/reducers/general-info.reducer';
 import {
@@ -30,12 +30,10 @@ import {StatisticsItemComponent} from '../statistics-item/statistics-item.compon
     FeatureInfoGeneralInformationComponent,
     StatisticsItemComponent,
     MatDivider,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatSuffix,
     MatSelect,
+    MatSelectTrigger,
     MatOption,
+    MatIcon,
   ],
 })
 export class StatisticsComponent {
