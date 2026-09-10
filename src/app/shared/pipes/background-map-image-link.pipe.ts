@@ -1,9 +1,9 @@
 import {Pipe, PipeTransform, inject} from '@angular/core';
-import {ConfigService} from '../services/config.service';
+import {BasemapConfigService} from 'src/app/map/services/basemap-config.service';
 
 @Pipe({name: 'basemapImageLink'})
 export class BasemapImageLinkPipe implements PipeTransform {
-  private readonly configService = inject(ConfigService);
+  private readonly basemapConfigService = inject(BasemapConfigService);
 
   public transform(identifier: string | undefined): string {
     let imagePath = '';
@@ -11,7 +11,7 @@ export class BasemapImageLinkPipe implements PipeTransform {
       return imagePath;
     }
 
-    const basemap = this.configService.basemapConfig.availableBasemaps.find((availableBasemap) => availableBasemap.id === identifier);
+    const basemap = this.basemapConfigService.availableBasemaps.find((availableBasemap) => availableBasemap.id === identifier);
     if (basemap) {
       switch (basemap.type) {
         case 'blank':

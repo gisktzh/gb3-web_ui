@@ -1,7 +1,6 @@
 import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {ToggleButtonPosition} from '../../../types/toggle-button-position.type';
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelContent} from '@angular/material/expansion';
-
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
 import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';

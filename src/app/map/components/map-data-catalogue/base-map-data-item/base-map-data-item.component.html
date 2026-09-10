@@ -3,7 +3,7 @@
     (click)="itemExpansionPanel.toggle()"
     class="base-map-data-item__header"
     [matTooltipDisabled]="!invalid()"
-    [matTooltip]="errorTooltip"
+    [matTooltip]="errorTooltip()"
     (delayedMouseEnter)="hoverStart()"
     (mouseenter)="setIsHovered()"
     [delayDurationInMs]="hoverDelay"
@@ -65,8 +65,14 @@
     @if (gb2Url(); as gb2Url) {
       <gb2-exit-button color="accent" [highlighted]="true" size="small" [url]="gb2Url | appendMapConfigurationToUrl: mapConfigState()" />
     }
-    @if (showDeleteButton) {
-      <button (click)="deleteItem()" (keydown.enter)="$event.stopPropagation()" (keydown.space)="$event.stopPropagation()" mat-icon-button>
+    @if (showDeleteButton()) {
+      <button
+        (click)="deleteItem()"
+        (keydown.enter)="$event.stopPropagation()"
+        (keydown.space)="$event.stopPropagation()"
+        mat-icon-button
+        data-testid="deleteBtn"
+      >
         <mat-icon>delete</mat-icon>
       </button>
     }

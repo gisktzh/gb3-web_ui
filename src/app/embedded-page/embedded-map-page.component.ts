@@ -1,4 +1,4 @@
-import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {Store} from '@ngrx/store';
 import {selectNumberOfQueryLegends} from '../state/map/selectors/query-legends.selector';
@@ -35,18 +35,17 @@ export class EmbeddedMapPageComponent {
   private readonly route = inject(ActivatedRoute);
 
   public readonly numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
-  public id: string | null = null;
+  public readonly id = computed(() => this.route.snapshot.paramMap.get(RouteParamConstants.RESOURCE_IDENTIFIER));
   public readonly initializeApplicationLoadingState = this.store.selectSignal(selectApplicationInitializationLoadingState);
-  public isEmbedded: boolean = false;
+
+  // compare the window location with its parent location to detect if the page is run within an iframe or not
+  public readonly isEmbedded = computed(() => window.location !== window.parent.location);
   protected readonly mainPageEnum = MainPage;
 
   constructor() {
-    // compare the window location with its parent location to detect if the page is run within an iframe or not
-    this.isEmbedded = window.location !== window.parent.location;
-
-    this.id = this.route.snapshot.paramMap.get(RouteParamConstants.RESOURCE_IDENTIFIER);
-    if (this.id !== null) {
-      this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id: this.id}));
+    const id = this.id();
+    if (id !== null) {
+      this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id}));
     } else {
       throw new ShareLinkParameterInvalid();
     }

@@ -19,7 +19,7 @@ export class SearchWindowComponent extends BaseSearchContainerComponent {
   protected override store = inject(Store);
 
   private readonly configService = inject(ConfigService);
-  private readonly resultGroupsComponent = viewChild.required<ResultGroupsComponent>(ResultGroupsComponent);
+  public readonly resultGroupsComponent = viewChild.required<ResultGroupsComponent>(ResultGroupsComponent);
   public readonly allSearchResults = computed(() =>
     this.resultGroupsComponent()
       .resultGroupComponents()

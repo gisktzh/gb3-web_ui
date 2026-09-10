@@ -38,6 +38,7 @@ export const test = base.extend<Gb3Fixtures>({
       const usedFileName = `${fileName}${postFix ? `-${postFix}` : ''}`;
 
       if (!process.env['CI']) {
+        // eslint-disable-next-line no-console -- We'd like to have an output to console here.
         console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ./e2e/hars/${usedFileName}.har`);
       }
 
@@ -107,6 +108,7 @@ export const test = base.extend<Gb3Fixtures>({
         if (process.env['CAPTURE_CONSOLE']) {
           const filtered = ['Animation Frame', 'prepare', 'preRender', 'render', 'postRender', 'update', 'finish'];
           if (!filtered.includes(msg.text())) {
+            // eslint-disable-next-line no-console -- We'd like to have an output to console here.
             console.log('[browser console]', msg.text());
           }
         }

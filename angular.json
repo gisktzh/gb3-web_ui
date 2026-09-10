@@ -264,7 +264,7 @@
   },
   "cli": {
     "analytics": false,
-    "schematicCollections": ["@ngrx/schematics", "playwright-ng-schematics"]
+    "schematicCollections": ["@ngrx/schematics", "playwright-ng-schematics", "./tools/schematics/collection.json"]
   },
   "schematics": {
     "@angular-eslint/schematics:application": {

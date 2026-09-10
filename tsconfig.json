@@ -27,7 +27,7 @@
       "chart.js/dist/types/utils": ["node_modules/chart.js/dist/types/utils.d.ts"]
     },
     // Necessary, because otherwise vscode won't properly use globals from Vitest.
-    "types": ["vitest", "vitest/globals", "vitest/importMeta"]
+    "types": ["vitest", "vitest/globals", "vitest/importMeta", "node"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

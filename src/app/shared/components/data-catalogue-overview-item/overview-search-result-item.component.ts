@@ -1,4 +1,4 @@
-import {Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 import {MatDivider} from '@angular/material/divider';
@@ -24,5 +24,4 @@ export class OverviewSearchResultItemComponent {
   // Can be removed if/when all searches have the arrow-key navigation enabled
   public readonly canFocusWithTabKey = input(false);
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
-  public readonly isMobile = computed(() => this.screenMode() === 'mobile');
 }

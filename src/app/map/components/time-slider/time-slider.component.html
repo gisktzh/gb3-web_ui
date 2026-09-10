@@ -62,12 +62,7 @@
             (monthSelected)="yearOrMonthSelected($event, maxDatePicker, false, 'months')"
           />
         </mat-form-field>
-        <button
-          mat-button
-          [class.time-slider__footer__button--modified]="maximumDateIndex() !== availableDates().length - 1"
-          class="time-slider__footer__button"
-          (click)="maxDatePicker.open()"
-        >
+        <button mat-button class="time-slider__footer__button" (click)="maxDatePicker.open()">
           {{ availableDates()[maximumDateIndex()] | dateToString: timeSliderConfiguration().dateFormat }}
         </button>
       </div>

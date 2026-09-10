@@ -1,0 +1,16 @@
+vi.mock('@arcgis/core/views/support/GeometryWorker.js', () => ({
+  area2D: vi.fn(),
+  areaHorizontal: vi.fn(),
+  autoArea2D: vi.fn(),
+  autoDistance2DBetweenPoints: vi.fn(),
+  autoLength2D: vi.fn(),
+  autoSize2D: vi.fn(),
+  distance2DBetweenPoints: vi.fn(),
+  geodeticArea: vi.fn(),
+  geodeticDistanceBetweenPoints: vi.fn(),
+  geodeticDistanceBetweenPointsMany: vi.fn(),
+  geodeticLength: vi.fn(),
+  length2D: vi.fn(),
+  preloadGeodetic: vi.fn(),
+  simplify: vi.fn(),
+}));

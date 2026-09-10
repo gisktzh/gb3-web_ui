@@ -77,8 +77,8 @@ export class BaseMapDataItemComponent {
     return this.layers().filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString)).length;
   });
 
-  public showDeleteButton: boolean = false;
-  public errorTooltip: string = '';
+  public readonly showDeleteButton = signal(false);
+  public readonly errorTooltip = signal('');
   public readonly hoverDelay = MapConstants.TEMPORARY_PREVIEW_DELAY;
 
   public addItem() {

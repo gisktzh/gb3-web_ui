@@ -34,7 +34,8 @@ export class ActiveMapItemSettingsComponent {
   public readonly numberOfChangedFilters = computed(() => {
     let numberOfChangedFilters = 0;
     const activeGb2WmsMapItems: Gb2WmsActiveMapItem[] = this.activeMapItems().filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
-    const activeMapItem = activeGb2WmsMapItems.find((mapItem) => mapItem.id === this.activeMapItem().id);
+    const activeMapItemId = this.activeMapItem().id;
+    const activeMapItem = activeGb2WmsMapItems.find((mapItem) => mapItem.id === activeMapItemId);
 
     if (activeMapItem?.settings.filterConfigurations) {
       // assumption: every filter is not active by default => only count active filters
