@@ -9,6 +9,7 @@ import {StatisticsEffects} from './statistics.effects';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {ToolActions} from '../actions/tool.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
 import {selectGeometry, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapService} from '../../../map/interfaces/map.service';
@@ -128,6 +129,17 @@ describe('StatisticsEffects', () => {
       vi.useRealTimers();
 
       expect(actualAction).toBeUndefined();
+    });
+  });
+
+  describe('clearOnFeatureInfoClose$', () => {
+    it('clears the area when the info overlay is closed', () => {
+      actions$ = of(MapConfigActions.clearFeatureInfoContent());
+
+      let actualAction;
+      effects.clearOnFeatureInfoClose$.subscribe((action) => (actualAction = action));
+
+      expect(actualAction).toEqual(StatisticsActions.clearContent());
     });
   });
 

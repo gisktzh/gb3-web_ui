@@ -7,6 +7,7 @@ import {StatisticsActions} from '../actions/statistics.actions';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {ToolActions} from '../actions/tool.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -55,6 +56,17 @@ export class StatisticsEffects {
     },
     {dispatch: false},
   );
+
+  /**
+   * Closing the info overlay discards the query it was showing. The feature info and the general info already clear themselves on this
+   * action, and the statistics area has to disappear from the map with them rather than outliving the panel that explains it.
+   */
+  public clearOnFeatureInfoClose$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapConfigActions.clearFeatureInfoContent),
+      map(() => StatisticsActions.clearContent()),
+    );
+  });
 
   public clearSelection$ = createEffect(
     () => {
