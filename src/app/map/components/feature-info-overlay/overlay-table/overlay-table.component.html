@@ -1,0 +1,25 @@
+<div class="overlay-table">
+  <div class="overlay-table__scroll" #container [style.--overlay-table-header-width]="headerWidth()">
+    <table class="overlay-table__table" [attr.aria-describedby]="ariaDescription()">
+      <thead>
+        <ng-content select="[header]" />
+      </thead>
+      <tbody>
+        <ng-content />
+      </tbody>
+    </table>
+  </div>
+  @if (isFirstColumnResizable()) {
+    <resize-handler
+      [style]="`--calculated-scrollbar-height: ${calculatedScrollbarHeight()}px;`"
+      [minWidth]="minHeaderWidth"
+      [maxWidth]="maxHeaderWidth()"
+      location="left"
+      (resizeEvent)="resize($event)"
+      class="overlay-table__resize"
+      [style.width]="headerWidth()"
+      (resizeStart)="isResizing.emit(true)"
+      (resizeEnd)="onResizeEnd()"
+    />
+  }
+</div>

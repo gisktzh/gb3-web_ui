@@ -1,15 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnDestroy,
-  computed,
-  inject,
-  input,
-  signal,
-  viewChild,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import {Component, computed, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
@@ -19,13 +8,11 @@ import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {TableColumnIdentifierDirective} from './table-column-identifier.directive';
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapService} from '../../../interfaces/map.service';
-import {StyleExpression} from '../../../../shared/types/style-expression.type';
 import {MAP_SERVICE} from '../../../../app.tokens';
 import {KeyValuePipe} from '@angular/common';
-import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 import {HyphenatePipe} from '../../../pipes/hyphenate.pipe';
-import {selectScrollbarWidth} from 'src/app/state/app/reducers/app-layout.reducer';
 import {formatFeatureInfoFieldValue} from '../../../../shared/utils/feature-info-field.utils';
+import {OverlayTableComponent} from '../overlay-table/overlay-table.component';
 
 type CellType = 'text' | 'url' | 'image';
 
@@ -81,10 +68,6 @@ const DEFAULT_CELL_VALUE = '-';
  */
 const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 
-const DEFAULT_TABLE_HEADER_WIDTH = 130;
-const MIN_TABLE_HEADER_WIDTH = 80;
-const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
-
 /**
  * Important to know: All tables are isolated from each other, yet the pinned state is shared among all of them. As such, the pinnedFeature
  * is added to the global state and handled accordingly in this component here.
@@ -94,9 +77,9 @@ const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe, HyphenatePipe, MatRadioGroup],
+  imports: [TableColumnIdentifierDirective, MatRadioButton, KeyValuePipe, HyphenatePipe, MatRadioGroup, OverlayTableComponent],
 })
-export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
+export class FeatureInfoContentComponent {
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
@@ -105,8 +88,6 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   public readonly topicId = input.required<string>();
   public readonly staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
 
-  public readonly minTableHeaderWidth: number = MIN_TABLE_HEADER_WIDTH;
-  public readonly tableHeaderWidth = signal(`${DEFAULT_TABLE_HEADER_WIDTH}px`);
   public readonly pinnedFeatureUniqueIdentifier = this.store.selectSignal(selectPinnedFeatureId);
   public readonly pinnedFeatureId = computed(() => {
     // The actual feature ID that's coming from `fid`.
@@ -133,23 +114,10 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
     return pinnedFeatureIdCandidate;
   });
   public readonly hoveredFeatureId = signal<number | null>(null);
-  public readonly containerWidth = signal(0);
-  public readonly containerScrollWidth = signal(0);
-  public readonly maxTableHeaderWidth = computed(() => this.containerWidth() * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO);
-  public readonly scrollbarWidth = this.store.selectSignal(selectScrollbarWidth);
   public readonly hoverEnabled = signal(true);
-  public readonly container = viewChild.required<ElementRef>('container');
 
   public readonly highlightedFeatureId = computed(() => {
     return this.pinnedFeatureId() ?? this.hoveredFeatureId();
-  });
-
-  public readonly calculatedScrollbarHeight = computed(() => {
-    if (this.containerWidth() < this.containerScrollWidth()) {
-      return this.scrollbarWidth();
-    }
-
-    return 0;
   });
 
   public readonly tableData = computed(() => {
@@ -179,8 +147,6 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
   public readonly tableRows = computed(() => this.tableData().tableRows);
   public readonly tableHeaders = computed(() => this.tableData().tableHeaders);
 
-  private resizeObserver!: ResizeObserver;
-
   public readonly featureGeometries = computed(() => {
     const featureGeometries: Map<number, GeometryWithSrs | undefined> = new Map();
 
@@ -190,18 +156,6 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
 
     return featureGeometries;
   });
-
-  public resize(style: StyleExpression) {
-    this.tableHeaderWidth.set(style['width'] ?? `${DEFAULT_TABLE_HEADER_WIDTH}px`);
-  }
-
-  public ngOnDestroy() {
-    this.resizeObserver.disconnect();
-  }
-
-  public ngAfterViewInit() {
-    this.initResizeObserver();
-  }
 
   public toggleHighlightForFeature(fid: number, hasGeometry: boolean) {
     if (!hasGeometry) {
@@ -242,49 +196,6 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
    */
   public preserveKeyValueOrder(): number {
     return 0;
-  }
-
-  /**
-   * Initializes the ResizeObserver to listen for any changes to the content elements. This will fire when the outer container (which is
-   * resizable as well) is resized and we then need to calculate the new maximum width (since that is 80% of the full width). In cases where
-   * the outer container is resized to a smaller size, we reset the current width to the default width to ensure the elements are always
-   * visible and do not overflow (e.g. if you have a very large container and very broad table headers, resizing it to small will make the
-   * table unusable since the drag hanler is out of reach).
-   */
-  private initResizeObserver() {
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
-    }
-
-    this.resizeObserver = new ResizeObserver(() => this.onResize());
-    this.resizeObserver.observe(this.container().nativeElement);
-  }
-
-  public onResize() {
-    // Use a timeout here to let the browser recalculate thigs first.
-    setTimeout(() => {
-      const container = this.container().nativeElement;
-      const effectiveWidth = container.clientWidth;
-      let scrollWidth = container.scrollWidth;
-
-      this.containerWidth.set(effectiveWidth);
-      this.containerScrollWidth.set(scrollWidth);
-
-      if (this.maxTableHeaderWidth() > effectiveWidth * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO) {
-        this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
-
-        // Resizing automatically means different scrollWidth, using a timeout here too to let the browser catch up.
-        setTimeout(() => {
-          scrollWidth = container.scrollWidth;
-          this.containerScrollWidth.set(scrollWidth);
-        });
-      }
-    });
-  }
-
-  public onResizeHandlerResizeEnd() {
-    this.hoverEnabled.set(true);
-    this.onResize();
   }
 
   private createUniqueColumnIdentifierForFid(fid: number): string {

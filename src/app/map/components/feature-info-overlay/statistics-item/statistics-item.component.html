@@ -21,37 +21,33 @@
             </a>
           }
         } @else {
-          <table class="statistics-item__table">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                @for (column of layer.columns; track column) {
-                  <th scope="col">{{ column }}</th>
+          <overlay-table [ariaDescription]="'Statistik zu ' + layer.title">
+            <tr header>
+              <th scope="col"></th>
+              @for (column of layer.columns; track column) {
+                <th scope="col">{{ column }}</th>
+              }
+            </tr>
+            @for (row of layer.rows; track $index) {
+              <tr [class.statistics-item__group]="row.isGroupHeader">
+                <th scope="row" [attr.colspan]="row.isGroupHeader ? layer.columns.length + 1 : null">{{ row.label | hyphenate }}</th>
+                @if (!row.isGroupHeader) {
+                  @for (value of row.values; track $index) {
+                    <td>
+                      @if (value.value !== null) {
+                        {{ value.value | number: '1.0-2' }}
+                        @if (value.unit) {
+                          <span class="statistics-item__unit">{{ value.unit }}</span>
+                        }
+                      } @else {
+                        &ndash;
+                      }
+                    </td>
+                  }
                 }
               </tr>
-            </thead>
-            <tbody>
-              @for (row of layer.rows; track $index) {
-                <tr [class.statistics-item__table__group]="row.isGroupHeader">
-                  <th scope="row" [attr.colspan]="row.isGroupHeader ? layer.columns.length + 1 : null">{{ row.label }}</th>
-                  @if (!row.isGroupHeader) {
-                    @for (value of row.values; track $index) {
-                      <td>
-                        @if (value.value !== null) {
-                          {{ value.value | number: '1.0-2' }}
-                          @if (value.unit) {
-                            <span class="statistics-item__table__unit">{{ value.unit }}</span>
-                          }
-                        } @else {
-                          &ndash;
-                        }
-                      </td>
-                    }
-                  }
-                </tr>
-              }
-            </tbody>
-          </table>
+            }
+          </overlay-table>
         }
       </map-overlay-list-item>
     </div>
