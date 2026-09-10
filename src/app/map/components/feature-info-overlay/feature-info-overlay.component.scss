@@ -5,11 +5,31 @@
 }
 
 .feature-info-overlay__tabs {
+  position: relative;
   display: flex;
   margin-bottom: 16px;
+  padding: 6px;
   background-color: ktzh-variables.$zh-light-grey;
 
+  // The active background is a single element that slides between the tabs instead of one background per tab, so that switching reads
+  // as one indicator moving rather than two independent colour changes.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: calc(50% - 6px);
+    height: calc(100% - 12px);
+    background-color: ktzh-variables.$zh-black100;
+    transition: transform 200ms ease-in-out;
+  }
+
+  &--statistics::before {
+    transform: translateX(100%);
+  }
+
   .feature-info-overlay__tabs__tab {
+    position: relative;
     flex: 1 1 50%;
     padding: 12px 8px;
     border: none;
@@ -18,10 +38,19 @@
     color: ktzh-variables.$zh-black100;
     font-family: ktzh-variables.$zh-font-family-bold;
     font-size: 14px;
+    transition: color 200ms ease-in-out;
 
     &--active {
-      background-color: ktzh-variables.$zh-black100;
       color: ktzh-variables.$zh-white;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-info-overlay__tabs {
+    &::before,
+    .feature-info-overlay__tabs__tab {
+      transition: none;
     }
   }
 }

@@ -11,7 +11,7 @@
   location="right"
 >
   <ng-container *featureFlag="'statisticsTool'">
-    <div class="feature-info-overlay__tabs" role="tablist">
+    <div class="feature-info-overlay__tabs" [class.feature-info-overlay__tabs--statistics]="queryMode() === 'statistics'" role="tablist">
       <button
         class="feature-info-overlay__tabs__tab"
         [class.feature-info-overlay__tabs__tab--active]="queryMode() === 'feature'"
