@@ -6,6 +6,7 @@ import {catchError, filter, map, of, switchMap, tap} from 'rxjs';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
+import {ToolActions} from '../actions/tool.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -133,6 +134,20 @@ export class StatisticsEffects {
       concatLatestFrom(() => [this.store.select(selectGeometry), this.store.select(selectLoadingState)]),
       filter(([, geometry, loadingState]) => geometry !== undefined && loadingState === undefined),
       map(() => StatisticsActions.sendRequest()),
+    );
+  });
+
+  /**
+   * Switching between the two modes discards the area defined for the previous one, as a circle cannot be carried over into a polygon
+   * or the other way round, and hands the corresponding tool to the user so that they can draw the new area right away.
+   */
+  public restartSelectionOnModeChange$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(StatisticsActions.setMode),
+      switchMap(({mode}) => [
+        StatisticsActions.clearContent(),
+        ToolActions.activateTool({tool: mode === 'polygon' ? 'select-statistics-polygon' : 'select-statistics-circle'}),
+      ]),
     );
   });
 

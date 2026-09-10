@@ -8,6 +8,7 @@ import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {StatisticsEffects} from './statistics.effects';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
+import {ToolActions} from '../actions/tool.actions';
 import {selectGeometry, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapService} from '../../../map/interfaces/map.service';
@@ -127,6 +128,26 @@ describe('StatisticsEffects', () => {
       vi.useRealTimers();
 
       expect(actualAction).toBeUndefined();
+    });
+  });
+
+  describe('restartSelectionOnModeChange$', () => {
+    it('clears the area and hands over the circle tool for the umkreis mode', () => {
+      actions$ = of(StatisticsActions.setMode({mode: 'umkreis'}));
+
+      const actualActions: Action[] = [];
+      effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
+
+      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.activateTool({tool: 'select-statistics-circle'})]);
+    });
+
+    it('clears the area and hands over the polygon tool for the polygon mode', () => {
+      actions$ = of(StatisticsActions.setMode({mode: 'polygon'}));
+
+      const actualActions: Action[] = [];
+      effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
+
+      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.activateTool({tool: 'select-statistics-polygon'})]);
     });
   });
 });

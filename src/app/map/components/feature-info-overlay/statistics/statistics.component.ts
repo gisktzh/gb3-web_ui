@@ -59,6 +59,10 @@ export class StatisticsComponent {
   }
 
   public setMode(mode: StatisticsMode) {
+    if (mode === this.mode()) {
+      return;
+    }
+
     this.store.dispatch(StatisticsActions.setMode({mode}));
   }
 
