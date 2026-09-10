@@ -8,13 +8,16 @@ import {QueryModeActions} from '../actions/query-mode.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
+import {MapUiActions} from '../actions/map-ui.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {StatisticsService} from '../../../shared/services/apis/gb3/abstract-statistics.service';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
+import {selectActiveTool} from '../reducers/tool.reducer';
 import {selectCenter, selectGeometry, selectLoadingState, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
 import {createCircle, moveGeometryTo} from '../../../shared/utils/statistics-geometry.utils';
+import {findStatisticsModeForTool, statisticsSelectionToolByMode} from '../../../shared/types/statistics-selection-tool.type';
 
 @Injectable()
 export class StatisticsEffects {
@@ -150,16 +153,47 @@ export class StatisticsEffects {
   });
 
   /**
+   * The results need the panel they are shown in, which the user may well have closed since the last query. The feature info opens its
+   * panel on the same grounds, so both tabs behave the same way.
+   */
+  public openOverlayOnRequest$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(StatisticsActions.sendRequest),
+      map(() => MapUiActions.setFeatureInfoVisibility({isVisible: true})),
+    );
+  });
+
+  /**
    * Switching between the two modes discards the area defined for the previous one, as a circle cannot be carried over into a polygon
-   * or the other way round, and hands the corresponding tool to the user so that they can draw the new area right away.
+   * or the other way round, and hands the corresponding tool to the user so that they can draw the new area right away. The tool is
+   * only handed over if it is not the one already drawing, which is what keeps this from bouncing back and forth with the effect below.
    */
   public restartSelectionOnModeChange$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(StatisticsActions.setMode),
-      switchMap(({mode}) => [
-        StatisticsActions.clearContent(),
-        ToolActions.activateTool({tool: mode === 'polygon' ? 'select-statistics-polygon' : 'select-statistics-circle'}),
-      ]),
+      concatLatestFrom(() => this.store.select(selectActiveTool)),
+      switchMap(([{mode}, activeTool]) => {
+        const tool = statisticsSelectionToolByMode[mode];
+
+        return activeTool === tool
+          ? [StatisticsActions.clearContent()]
+          : [StatisticsActions.clearContent(), ToolActions.activateTool({tool})];
+      }),
+    );
+  });
+
+  /**
+   * The two selection tools can also be started from the tool bar, which bypasses the mode select in the panel. The mode follows the
+   * tool so that the panel does not claim to be in a mode the map is not drawing.
+   */
+  public syncModeWithSelectionTool$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ToolActions.activateTool),
+      map(({tool}) => findStatisticsModeForTool(tool)),
+      filter((mode) => mode !== undefined),
+      concatLatestFrom(() => this.store.select(selectMode)),
+      filter(([mode, currentMode]) => mode !== currentMode),
+      map(([mode]) => StatisticsActions.setMode({mode})),
     );
   });
 

@@ -314,10 +314,10 @@ export class EsriToolService implements ToolService {
           radiusInMeters: circle?.radiusInMeters,
         }),
       );
-    } else {
-      this.store.dispatch(ToolActions.cancelTool());
     }
-    this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
+    // Unlike the data download selection, the drawn area stays adjustable: the tool hands the map back so that the following clicks
+    // move the area around instead of being swallowed by a tool that has nothing left to draw.
+    this.endDrawing();
   }
 
   public async addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: DrawingLayer) {

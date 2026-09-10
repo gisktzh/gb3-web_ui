@@ -10,7 +10,9 @@ import {StatisticsActions} from '../actions/statistics.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
+import {MapUiActions} from '../actions/map-ui.actions';
 import {selectGeometry, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
+import {selectActiveTool} from '../reducers/tool.reducer';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapService} from '../../../map/interfaces/map.service';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
@@ -145,6 +147,7 @@ describe('StatisticsEffects', () => {
 
   describe('restartSelectionOnModeChange$', () => {
     it('clears the area and hands over the circle tool for the umkreis mode', () => {
+      store.overrideSelector(selectActiveTool, undefined);
       actions$ = of(StatisticsActions.setMode({mode: 'umkreis'}));
 
       const actualActions: Action[] = [];
@@ -154,12 +157,73 @@ describe('StatisticsEffects', () => {
     });
 
     it('clears the area and hands over the polygon tool for the polygon mode', () => {
+      store.overrideSelector(selectActiveTool, undefined);
       actions$ = of(StatisticsActions.setMode({mode: 'polygon'}));
 
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
       expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.activateTool({tool: 'select-statistics-polygon'})]);
+    });
+
+    /** Re-activating the running tool would restart it, and the mode sync would answer with another mode change. */
+    it('does not hand over the tool that is already drawing', () => {
+      store.overrideSelector(selectActiveTool, 'select-statistics-polygon');
+      actions$ = of(StatisticsActions.setMode({mode: 'polygon'}));
+
+      const actualActions: Action[] = [];
+      effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
+
+      expect(actualActions).toEqual([StatisticsActions.clearContent()]);
+    });
+  });
+
+  describe('syncModeWithSelectionTool$', () => {
+    it('follows a selection tool started from the tool bar into its mode', () => {
+      store.overrideSelector(selectMode, 'umkreis');
+      actions$ = of(ToolActions.activateTool({tool: 'select-statistics-polygon'}));
+
+      let actualAction;
+      effects.syncModeWithSelectionTool$.subscribe((action) => (actualAction = action));
+
+      expect(actualAction).toEqual(StatisticsActions.setMode({mode: 'polygon'}));
+    });
+
+    it('stays quiet for the mode that is already selected', async () => {
+      store.overrideSelector(selectMode, 'polygon');
+      actions$ = of(ToolActions.activateTool({tool: 'select-statistics-polygon'}));
+
+      vi.useFakeTimers();
+      let actualAction;
+      effects.syncModeWithSelectionTool$.subscribe((action) => (actualAction = action));
+      await vi.runAllTimersAsync();
+      vi.useRealTimers();
+
+      expect(actualAction).toBeUndefined();
+    });
+
+    it('ignores tools that have nothing to do with statistics', async () => {
+      store.overrideSelector(selectMode, 'umkreis');
+      actions$ = of(ToolActions.activateTool({tool: 'measure-line'}));
+
+      vi.useFakeTimers();
+      let actualAction;
+      effects.syncModeWithSelectionTool$.subscribe((action) => (actualAction = action));
+      await vi.runAllTimersAsync();
+      vi.useRealTimers();
+
+      expect(actualAction).toBeUndefined();
+    });
+  });
+
+  describe('openOverlayOnRequest$', () => {
+    it('opens the info overlay for the results it is about to load', () => {
+      actions$ = of(StatisticsActions.sendRequest());
+
+      let actualAction;
+      effects.openOverlayOnRequest$.subscribe((action) => (actualAction = action));
+
+      expect(actualAction).toEqual(MapUiActions.setFeatureInfoVisibility({isVisible: true}));
     });
   });
 });
