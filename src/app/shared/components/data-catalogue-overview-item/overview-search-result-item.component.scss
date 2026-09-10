@@ -73,7 +73,7 @@
         }
 
         .overview-search-result-item__content__details__item__title {
-          color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 200);
+          color: functions.get-color-from-palette('accent', 200);
         }
 
         .overview-search-result-item__content__details__item__content {
@@ -94,5 +94,5 @@
 
 .search-result-entry-map__icon--rotate {
   rotate: -45deg;
-  color: ktzh-variables.$zh-darkblue;
+  color: functions.get-color-from-palette('primary', 500);
 }

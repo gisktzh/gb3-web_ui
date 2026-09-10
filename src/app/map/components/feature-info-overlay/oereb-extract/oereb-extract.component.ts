@@ -1,4 +1,4 @@
-import {Component, computed, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, input} from '@angular/core';
 import {OerebExtractResponse} from 'src/app/shared/interfaces/oereb-extract.interface';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {MatIcon} from '@angular/material/icon';
@@ -12,6 +12,7 @@ import {MatButton} from '@angular/material/button';
   templateUrl: './oereb-extract.component.html',
   styleUrls: ['./oereb-extract.component.scss'],
   imports: [MapOverlayListItemComponent, MatIcon, MatButton, ResizableInfoTableComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class OerebExtractComponent {
   public readonly data = input.required<OerebExtractResponse>();

@@ -22,8 +22,8 @@ import {TimeExtent} from '../../../../map/interfaces/time-extent.interface';
 import {
   Geometry,
   InfoFeatureField,
-  TopicsFeatureInfoDetailData,
-  TopicsLegendDetailData,
+  TopicsFeatureInfoListData,
+  TopicsLegendListData,
   TopicsListData,
 } from '../../../models/gb3-api-generated.interfaces';
 import {Gb3ApiService} from './gb3-api.service';
@@ -33,9 +33,12 @@ import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
+import {formatFeatureInfoFieldValue} from '../../../utils/feature-info-field.utils';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
+
+type TopicTimeSliderConfig = NonNullable<TopicsListData['categories'][number]['topics'][number]['timesliderConfiguration']>;
 
 @Injectable({
   providedIn: 'root',
@@ -59,8 +62,8 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   public loadLegends(queryTopics: QueryTopic[]): Observable<LegendResponse[]> {
     const legendRequests = queryTopics.map((queryTopic) =>
-      this.get<TopicsLegendDetailData>(this.createLegendUrl(queryTopic)).pipe(
-        map((data) => this.mapTopicsLegendDetailDataToLegendResponse(data, queryTopic.isSingleLayer)),
+      this.get<TopicsLegendListData>(this.createLegendUrl(queryTopic)).pipe(
+        map((data) => this.mapTopicsLegendDetailDataToLegendListData(data, queryTopic.isSingleLayer)),
       ),
     );
     return forkJoin(legendRequests);
@@ -68,7 +71,7 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   public loadFeatureInfos(x: number, y: number, scale: number, queryTopics: QueryTopic[]): Observable<FeatureInfoResponse[]> {
     const featureInfoRequests = queryTopics.map((queryTopic) =>
-      this.get<TopicsFeatureInfoDetailData>(
+      this.get<TopicsFeatureInfoListData>(
         this.createFeatureInfoUrl(
           queryTopic.topic,
           x,
@@ -79,7 +82,7 @@ export class Gb3TopicsService extends Gb3ApiService {
           queryTopic.timeSliderConfiguration,
           queryTopic.timeSliderExtent,
         ),
-      ).pipe(map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data, queryTopic.isSingleLayer))),
+      ).pipe(map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoListData(data, queryTopic.isSingleLayer))),
     );
     return forkJoin(featureInfoRequests);
   }
@@ -114,13 +117,10 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   /**
-   * Maps the generic TopicsLegendDetailData type from the API endpoint to the internal interface LegendResponse
+   * Maps the generic TopicsLegendListData type from the API endpoint to the internal interface LegendResponse
    */
-  private mapTopicsLegendDetailDataToLegendResponse(
-    topicsLegendDetailData: TopicsLegendDetailData,
-    isSingleLayer: boolean,
-  ): LegendResponse {
-    const {legend} = topicsLegendDetailData;
+  private mapTopicsLegendDetailDataToLegendListData(topicsLegendListData: TopicsLegendListData, isSingleLayer: boolean): LegendResponse {
+    const {legend} = topicsLegendListData;
 
     return {
       legend: {
@@ -234,9 +234,7 @@ export class Gb3TopicsService extends Gb3ApiService {
     return topicsResponse;
   }
 
-  private handleTimeSliderConfiguration(
-    timesliderConfiguration: TopicsListData['categories'][0]['topics'][0]['timesliderConfiguration'] | undefined,
-  ): TimeSliderSettings {
+  private handleTimeSliderConfiguration(timesliderConfiguration: TopicTimeSliderConfig | undefined | null): TimeSliderSettings {
     if (!timesliderConfiguration) {
       return {
         timeSliderConfiguration: undefined,
@@ -263,7 +261,7 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   private transformTimeSliderConfigurationSource(
     // the following typing for `source` is used to extract a subtype of the generated interface `TopicsListData`
-    source: TopicsListData['categories'][0]['topics'][0]['timesliderConfiguration']['source'],
+    source: TopicTimeSliderConfig['source'],
     sourceType: string,
   ): TimeSliderParameterSource | TimeSliderLayerSource {
     const timeSliderSourceType: TimeSliderSourceType = sourceType as TimeSliderSourceType;
@@ -336,24 +334,24 @@ export class Gb3TopicsService extends Gb3ApiService {
       const dateFormat = timeSliderConfiguration.dateFormat;
       url.searchParams.set(
         timeSliderParameterSource.startRangeParameter,
-        this.timeService.getDateAsUTCString(timeSliderExtent.start, dateFormat),
+        this.timeService.getDateAsFormattedString(timeSliderExtent.start, dateFormat),
       );
       url.searchParams.set(
         timeSliderParameterSource.endRangeParameter,
-        this.timeService.getDateAsUTCString(timeSliderExtent.end, dateFormat),
+        this.timeService.getDateAsFormattedString(timeSliderExtent.end, dateFormat),
       );
     }
     return url.toString();
   }
 
   /**
-   * Maps the generic TopicsFeatureInfoDetailData type from the API endpoint to the internal interface FeatureInfoResponse
+   * Maps the generic TopicsFeatureInfoListData type from the API endpoint to the internal interface FeatureInfoResponse
    */
-  private mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(
-    topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData,
+  private mapTopicsFeatureInfoDetailDataToFeatureInfoListData(
+    topicsFeatureInfoListData: TopicsFeatureInfoListData,
     isSingleLayer: boolean,
   ): FeatureInfoResponse {
-    const {feature_info: featureInfo} = topicsFeatureInfoDetailData;
+    const {feature_info: featureInfo} = topicsFeatureInfoListData;
 
     return {
       featureInfo: {
@@ -397,20 +395,25 @@ export class Gb3TopicsService extends Gb3ApiService {
   private createFeatureInfoField(field: InfoFeatureField): FeatureInfoResultFeatureField {
     switch (field.type) {
       case 'image':
-        return {type: field.type, value: field.value, label: field.label};
+        return field;
+
       case 'link':
         return {
-          type: field.type,
+          ...field,
           value: field.value
             ? {
                 title: field.value.title,
                 href: field.value.href,
               }
             : null,
-          label: field.label,
         };
+
       case 'text':
-        return {type: field.type, value: typeof field.value === 'number' ? field.value.toString() : field.value, label: field.label};
+      case 'date':
+        return {
+          ...field,
+          value: formatFeatureInfoFieldValue(field.value, field.type),
+        };
     }
   }
 }

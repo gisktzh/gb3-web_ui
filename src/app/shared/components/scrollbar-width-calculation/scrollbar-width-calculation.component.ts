@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, inject, viewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {AppLayoutActions} from '../../../state/app/actions/app-layout.actions';
 
@@ -9,6 +9,7 @@ import {AppLayoutActions} from '../../../state/app/actions/app-layout.actions';
 @Component({
   selector: 'scrollbar-width-calculation',
   templateUrl: './scrollbar-width-calculation.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./scrollbar-width-calculation.component.scss'],
 })
 export class ScrollbarWidthCalculationComponent implements AfterViewInit {

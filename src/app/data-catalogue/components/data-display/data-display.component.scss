@@ -28,7 +28,7 @@
       .data-display__item__value__list {
         margin: 0;
         padding-left: 36px;
-        color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+        color: functions.get-color-from-palette('secondary-accent');
       }
     }
   }

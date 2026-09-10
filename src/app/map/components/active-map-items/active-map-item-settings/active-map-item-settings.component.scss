@@ -25,14 +25,14 @@
       margin: 0;
       @include mat-mixins.mat-badge-inherit-size;
       @include mat-mixins.mat-badge-override-color(
-        functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
-        functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+        functions.get-color-from-palette('secondary-accent'),
+        functions.get-contrast-color-from-palette('secondary-accent')
       );
     }
 
     .active-map-item-settings__attribute-filter__button {
       @include mat-mixins.mat-button--align-icon-right;
-      color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+      color: functions.get-color-from-palette('secondary-accent');
     }
   }
 }

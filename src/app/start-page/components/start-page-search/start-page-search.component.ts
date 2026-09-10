@@ -1,4 +1,4 @@
-import {Component, computed, inject, viewChild} from '@angular/core';
+import {Component, computed, inject, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ConfigService} from '../../../shared/services/config.service';
@@ -22,6 +22,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'start-page-search',
   templateUrl: './start-page-search.component.html',
   styleUrls: ['./start-page-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SearchBarComponent, MatChipRow, MatChipRemove, MatIcon, SearchResultGroupsComponent],
 })
 export class StartPageSearchComponent extends BaseSearchContainerComponent {

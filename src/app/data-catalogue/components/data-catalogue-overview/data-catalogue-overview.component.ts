@@ -1,4 +1,4 @@
-import {Component, Injectable, effect, inject, viewChild} from '@angular/core';
+import {Component, Injectable, effect, inject, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
 import {selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
@@ -56,6 +56,7 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
   templateUrl: './data-catalogue-overview.component.html',
   styleUrls: ['./data-catalogue-overview.component.scss'],
   providers: [{provide: MatPaginatorIntl, useClass: DataCataloguePaginatorIntl}],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     PageSectionComponent,
     HeroHeaderComponent,

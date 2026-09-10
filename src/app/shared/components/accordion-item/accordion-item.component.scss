@@ -22,7 +22,7 @@
 
     &--grey {
       border-color: ktzh-variables.$zh-black20;
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
+      background-color: functions.get-color-from-palette('accent', 25);
     }
 
     .accordion-item__content__header {

@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, signal} from '@angular/core';
+import {Component, computed, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {form, required, email, FormField} from '@angular/forms/signals';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -15,6 +15,7 @@ import {selectUserEmail} from '../../../../state/auth/reducers/auth-status.reduc
   selector: 'data-download-email-dialog',
   templateUrl: './data-download-email-dialog.component.html',
   styleUrls: ['./data-download-email-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, MatCheckbox, FormsModule, MatFormField, MatLabel, MatInput, MatError, MatButton, FormField],
 })
 export class DataDownloadEmailDialogComponent {

@@ -1,4 +1,4 @@
-import {Component, effect, inject, input, signal} from '@angular/core';
+import {Component, effect, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
@@ -14,6 +14,7 @@ type TabType = 'layers' | 'settings';
   selector: 'active-map-item',
   templateUrl: './active-map-item.component.html',
   styleUrls: ['./active-map-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

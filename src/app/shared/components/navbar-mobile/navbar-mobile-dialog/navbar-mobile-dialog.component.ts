@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {MainPage} from 'src/app/shared/enums/main-page.enum';
@@ -16,6 +16,7 @@ import {FeatureFlagDirective} from '../../../directives/feature-flag.directive';
   selector: 'navbar-mobile-dialog',
   templateUrl: './navbar-mobile-dialog.component.html',
   styleUrls: ['./navbar-mobile-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCard,
     MatCardHeader,

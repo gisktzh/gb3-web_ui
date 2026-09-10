@@ -1,4 +1,4 @@
-import {Component, effect, linkedSignal, model} from '@angular/core';
+import {Component, effect, linkedSignal, model, ChangeDetectionStrategy} from '@angular/core';
 import {Gb3TextStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {MatFormField, MatLabel, MatInput} from '@angular/material/input';
@@ -22,6 +22,7 @@ const DEFAULT_STYLE = {
   selector: 'text-edit',
   templateUrl: './text-edit.component.html',
   styleUrl: './text-edit.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatFormField, MatLabel, MatInput, FormsModule, MatDivider, SliderEditComponent, ColorPickerEditComponent, FormField],
 })
 export class TextEditComponent {

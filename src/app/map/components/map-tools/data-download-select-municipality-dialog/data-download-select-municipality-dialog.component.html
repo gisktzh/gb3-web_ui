@@ -30,6 +30,13 @@
   </ng-container>
   <ng-container actions>
     <button (click)="cancel()" mat-button>Abbrechen</button>
-    <button (click)="continue()" mat-button [disabled]="loadingState() !== 'loaded' || !municipalityForm().valid()">Weiter</button>
+    <button
+      (click)="continue()"
+      mat-button
+      [disabled]="loadingState() !== 'loaded' || !municipalityForm().valid()"
+      data-test-id="data-download-municipality-submit"
+    >
+      Weiter
+    </button>
   </ng-container>
 </api-dialog-wrapper>

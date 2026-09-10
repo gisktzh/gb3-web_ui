@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions';
 import {selectIsAuthenticated, selectUserName} from '../../../state/auth/reducers/auth-status.reducer';
@@ -20,6 +20,7 @@ import {MatMenuTrigger, MatMenu, MatMenuItem} from '@angular/material/menu';
   selector: 'navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatToolbar,
     NgOptimizedImage,

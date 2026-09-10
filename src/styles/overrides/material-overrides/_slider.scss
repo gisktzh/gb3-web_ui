@@ -3,12 +3,12 @@
 
 .mat-mdc-slider.mat-primary {
   .mdc-slider__track .mdc-slider__track--active_fill {
-    border-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+    border-color: functions.get-color-from-palette('secondary-accent');
   }
 
   .mdc-slider__thumb .mdc-slider__thumb-knob {
-    border-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+    border-color: functions.get-color-from-palette('secondary-accent');
     border-width: 2px;
-    background-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent);
+    background-color: functions.get-contrast-color-from-palette('secondary-accent');
   }
 }

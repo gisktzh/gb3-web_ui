@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MatProgressBar} from '@angular/material/progress-bar';
 
@@ -6,6 +6,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
   selector: 'content-loading-state',
   templateUrl: './content-loading-state.component.html',
   styleUrls: ['./content-loading-state.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatProgressBar],
 })
 export class ContentLoadingStateComponent {

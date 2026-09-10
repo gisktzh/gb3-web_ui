@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
 export type CellType = 'text' | 'url' | 'image' | 'list';
 
@@ -41,6 +41,7 @@ export type TableCell = TextTableCell | UrlTableCell | ImageTableCell | ListTabl
   selector: 'info-table-cell',
   templateUrl: './info-table-cell.component.html',
   styleUrls: ['./info-table-cell.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class InfoTableCellComponent {
   public readonly cellValue = input.required<TableCell>();

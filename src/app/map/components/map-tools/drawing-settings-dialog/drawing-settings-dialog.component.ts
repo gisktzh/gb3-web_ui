@@ -1,4 +1,4 @@
-import {Component, effect, inject, signal} from '@angular/core';
+import {Component, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ColorUtils} from '../../../../shared/utils/color.utils';
 import {DrawingStyleActions} from '../../../../state/map/actions/drawing-style.actions';
 import {Store} from '@ngrx/store';
@@ -14,6 +14,7 @@ import {MatButton} from '@angular/material/button';
   selector: 'drawing-settings-dialog',
   templateUrl: './drawing-settings-dialog.component.html',
   styleUrls: ['./drawing-settings-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, SliderEditComponent, ColorPickerEditComponent, MatButton],
 })
 export class DrawingSettingsDialogComponent {

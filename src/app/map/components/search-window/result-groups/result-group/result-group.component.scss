@@ -90,7 +90,7 @@
           .result-group__container__element__link__icon-wrapper__icon {
             align-self: center;
             rotate: -45deg;
-            color: ktzh-variables.$zh-darkblue;
+            color: functions.get-color-from-palette('primary', 500);
           }
         }
 

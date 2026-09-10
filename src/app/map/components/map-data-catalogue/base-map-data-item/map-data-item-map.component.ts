@@ -1,4 +1,4 @@
-import {Component, computed, inject, input} from '@angular/core';
+import {Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
@@ -21,6 +21,7 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
   selector: 'map-data-item-map',
   templateUrl: './base-map-data-item.component.html',
   styleUrls: ['./base-map-data-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

@@ -9,8 +9,11 @@ import {expect} from '@playwright/test';
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
 const IS_WRITING_HAR = !!process.env['WRITE_HAR'];
 
+export type ScreenCoords = [number, number];
+export type ScreenCoordsList = ScreenCoords[];
+
 type Gb3Fixtures = {
-  useHar: () => Promise<void>;
+  useHar: (postFix?: string) => Promise<void>;
   captureConsole: () => void;
   filterForLayer: (searchTerm: string) => Promise<void>;
   clickMapInTheList: (nameOfTheMap: string) => Promise<void>;
@@ -19,6 +22,7 @@ type Gb3Fixtures = {
   openUrlWithCoordinates: (x: string, y: string, shouldSkipTour?: boolean) => Promise<void>;
   login: () => Promise<void>;
   search: (searchTerm: string) => Promise<void>;
+  zoom: (zoomLevel: number) => Promise<void>;
 };
 
 function getRequestKey(url: string, method: string) {
@@ -30,13 +34,14 @@ export const test = base.extend<Gb3Fixtures>({
     const shouldUpdate = IS_WRITING_HAR;
     const fileName = path.basename(testInfo.file).split('.').at(0);
 
-    await use(async () => {
+    await use(async (postFix?: string) => {
+      const usedFileName = `${fileName}${postFix ? `-${postFix}` : ''}`;
+
       if (!process.env['CI']) {
-        // eslint-disable-next-line no-console
-        console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ./e2e/hars/${fileName}.har`);
+        console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ./e2e/hars/${usedFileName}.har`);
       }
 
-      await advancedRouteFromHAR(`./e2e/hars/${fileName}.har`, {
+      await advancedRouteFromHAR(`./e2e/hars/${usedFileName}.har`, {
         url: HAR_TARGET_PATTERN,
         update: shouldUpdate,
         updateMode: 'minimal',
@@ -102,7 +107,6 @@ export const test = base.extend<Gb3Fixtures>({
         if (process.env['CAPTURE_CONSOLE']) {
           const filtered = ['Animation Frame', 'prepare', 'preRender', 'render', 'postRender', 'update', 'finish'];
           if (!filtered.includes(msg.text())) {
-            // eslint-disable-next-line no-console -- We explicitly want console output here.
             console.log('[browser console]', msg.text());
           }
         }
@@ -146,12 +150,13 @@ export const test = base.extend<Gb3Fixtures>({
   openUrlWithCoordinates: async ({page}, use) => {
     await use(async (x: string, y: string, shouldSkipTour: boolean = true) => {
       await page.goto(`/maps?x=${x}&y=${y}&scale=251&basemap=arelkbackgroundzh`);
+      await page.waitForTimeout(2000);
       await page.waitForLoadState('networkidle');
 
       if (shouldSkipTour) {
         const skipButton = await page.getByText('Überspringen').all();
         if (skipButton.length === 1) {
-          skipButton.at(0)?.click();
+          await skipButton.at(0)?.click();
           await page.waitForLoadState('networkidle');
         }
       }
@@ -228,6 +233,18 @@ export const test = base.extend<Gb3Fixtures>({
 
       await page.waitForTimeout(2000);
       await page.waitForLoadState('networkidle');
+    });
+  },
+
+  zoom: async ({page}, use) => {
+    await use(async (zoomLevel: number) => {
+      const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
+
+      await expect(zoomInput).toBeVisible();
+
+      await zoomInput.focus();
+      await zoomInput.clear();
+      await zoomInput.fill(zoomLevel.toString());
     });
   },
 });

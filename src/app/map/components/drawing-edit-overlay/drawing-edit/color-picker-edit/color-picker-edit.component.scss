@@ -7,7 +7,7 @@
   padding-bottom: 24px;
 
   .color-picker-edit__label {
-    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary, 50);
+    color: functions.get-contrast-color-from-palette('primary', 50);
     padding-bottom: 12px;
   }
 

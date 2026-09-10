@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectAdditionalInformationLinks} from '../state/support/reducers/support-content.reducer';
@@ -15,6 +15,7 @@ const SUPPORT_PAGE_SUMMARY =
   selector: 'support-page',
   templateUrl: './support-page.component.html',
   styleUrls: ['./support-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PageSectionComponent, HeroHeaderComponent, SupportPageNavigationComponent, RouterOutlet, LinkListComponent],
 })
 export class SupportPageComponent {

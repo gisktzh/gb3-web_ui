@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component';
 import {DrawingSettingsDialogComponent} from '../drawing-settings-dialog/drawing-settings-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
@@ -27,6 +27,7 @@ const TOOLTIP_TEXT = {
   selector: 'drawing-tools',
   templateUrl: './drawing-tools.component.html',
   styleUrls: ['./drawing-tools.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatTooltip, MatIcon, MatDivider, DrawingDownloadButtonComponent],
 })
 export class DrawingToolsComponent extends AbstractToolsComponent {

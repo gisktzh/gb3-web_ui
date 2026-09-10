@@ -8,17 +8,17 @@
 
   .link-list-item__item {
     display: flex;
-    border-bottom: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50) solid 2px;
+    border-bottom: functions.get-color-from-palette('accent', 50) solid 2px;
     margin-bottom: 12px;
 
     &:hover {
-      border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 900);
+      border-color: functions.get-color-from-palette('accent', 900);
     }
 
     .link-list-item__item__link {
       text-decoration: none;
       font-family: ktzh-variables.$zh-font-family-bold;
-      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 200);
+      color: functions.get-color-from-palette('accent', 200);
       font-size: larger;
       padding-top: 8px;
       padding-bottom: 8px;
@@ -27,7 +27,7 @@
       justify-content: space-between;
 
       &:hover {
-        color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 900);
+        color: functions.get-color-from-palette('accent', 900);
       }
 
       .link-list-item__item__link__icon {

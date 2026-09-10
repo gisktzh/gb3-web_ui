@@ -9,7 +9,7 @@
 
   <mat-form-field appearance="outline" class="map-import-service-and-url__url-input">
     <mat-label>URL</mat-label>
-    <input matInput placeholder="Bitte URL zum Kartendienst eingeben" formControlName="url" [formField]="serviceAndUrlForm.url" />
+    <input matInput placeholder="Bitte URL zum Kartendienst eingeben" [formField]="serviceAndUrlForm.url" />
     @if (loadingState() === 'loaded') {
       <mat-icon color="primary" matSuffix>check</mat-icon>
     }

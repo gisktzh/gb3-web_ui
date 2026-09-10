@@ -52,13 +52,13 @@
 
     &--active {
       .basemap-selection-list__item__image {
-        border: 4px solid functions.get-color-from-palette(ktzh-variables.$zh-primary);
+        border: 4px solid functions.get-color-from-palette('primary');
         box-sizing: border-box;
       }
 
       .basemap-selection-list__item__title {
         font-family: ktzh-variables.$zh-font-family-bold;
-        color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+        color: functions.get-color-from-palette('primary');
       }
     }
   }

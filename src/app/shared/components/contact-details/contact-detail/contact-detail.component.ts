@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Clipboard} from '@angular/cdk/clipboard';
 import {MatIcon} from '@angular/material/icon';
 import {NgTemplateOutlet} from '@angular/common';
@@ -7,6 +7,7 @@ import {NgTemplateOutlet} from '@angular/common';
   selector: 'contact-detail',
   templateUrl: './contact-detail.component.html',
   styleUrls: ['./contact-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIcon, NgTemplateOutlet],
 })
 export class ContactDetailComponent {

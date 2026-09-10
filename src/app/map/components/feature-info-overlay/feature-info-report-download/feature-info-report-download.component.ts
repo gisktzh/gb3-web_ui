@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -7,6 +7,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'feature-info-report-download',
   templateUrl: './feature-info-report-download.component.html',
   styleUrls: ['./feature-info-report-download.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapOverlayListItemComponent, MatButton, MatIcon],
 })
 export class FeatureInfoReportDownloadComponent {

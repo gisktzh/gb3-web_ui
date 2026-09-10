@@ -1,4 +1,4 @@
-import {Component, computed, inject, input} from '@angular/core';
+import {Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltip} from '@angular/material/tooltip';
 import {Store} from '@ngrx/store';
 import {toolTipFactoryMapToolsAndControls} from 'src/app/shared/factories/tooltip-map-tools-and-controls.factory';
@@ -27,6 +27,7 @@ const TOOLTIP_TEXT = {
   templateUrl: './zoom-controls.component.html',
   styleUrls: ['./zoom-controls.component.scss'],
   providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryMapToolsAndControls, deps: [ConfigService]}],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatTooltip, MatIcon, LoadingAndProcessBarComponent, MatDivider],
 })
 export class ZoomControlsComponent {

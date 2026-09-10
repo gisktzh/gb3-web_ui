@@ -1,4 +1,4 @@
-import {Component, computed} from '@angular/core';
+import {Component, computed, ChangeDetectionStrategy} from '@angular/core';
 import {MapMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {DataDisplayElement} from '../../types/data-display-element.type';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
@@ -25,6 +25,7 @@ interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   selector: 'map-detail',
   templateUrl: './map-detail.component.html',
   styleUrls: ['./map-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     LoadingAndProcessBarComponent,
     DataCatalogueDetailPageComponent,

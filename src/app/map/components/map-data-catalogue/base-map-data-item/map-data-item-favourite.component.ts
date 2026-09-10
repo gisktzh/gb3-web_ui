@@ -1,4 +1,4 @@
-import {Component, computed, inject, input, signal} from '@angular/core';
+import {Component, computed, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import {BaseMapDataItemComponent} from './base-map-data-item.component';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
@@ -25,6 +25,7 @@ const FAVOURITE_ERROR_TOOLTIP =
   selector: 'map-data-item-favourite',
   templateUrl: './base-map-data-item.component.html',
   styleUrls: ['./base-map-data-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

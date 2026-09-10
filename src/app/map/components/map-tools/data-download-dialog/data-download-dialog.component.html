@@ -16,6 +16,7 @@
           (openFilterEvent)="openFilterWindow()"
           [disabled]="savingState() === 'loading'"
           [isAnyFilterActive]="activeDataDownloadFiltersPerCategory().length > 0"
+          data-test-id="data-download-filter-input"
         />
       </div>
       <div class="data-download-dialog__content__products">
@@ -53,6 +54,7 @@
       color="accent"
       [disabled]="savingState() === 'loading' || !order() || order()!.products.length === 0"
       mat-button
+      data-test-id="data-download-download-button"
     >
       Download
     </button>

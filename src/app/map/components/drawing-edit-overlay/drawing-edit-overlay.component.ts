@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {selectIsDrawingEditOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Store} from '@ngrx/store';
 import {DrawingActions} from '../../../state/map/actions/drawing.actions';
@@ -9,6 +9,7 @@ import {DrawingEditComponent} from './drawing-edit/drawing-edit.component';
   selector: 'drawing-edit-overlay',
   templateUrl: './drawing-edit-overlay.component.html',
   styleUrl: './drawing-edit-overlay.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapOverlayComponent, DrawingEditComponent],
 })
 export class DrawingEditOverlayComponent {

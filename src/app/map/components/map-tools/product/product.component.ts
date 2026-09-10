@@ -1,4 +1,4 @@
-import {Component, computed, inject, input, signal, viewChild} from '@angular/core';
+import {Component, computed, inject, input, signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Product, ProductFormat} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Store} from '@ngrx/store';
@@ -12,11 +12,13 @@ import {MatFormField, MatLabel} from '@angular/material/input';
 import {MatOption} from '@angular/material/autocomplete';
 import {ExternalLinkButtonComponent} from '../../../../shared/components/external-link-button/external-link-button.component';
 import {disabled, form} from '@angular/forms/signals';
+import {NgTemplateOutlet} from '@angular/common';
 
 @Component({
   selector: 'product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCheckbox,
     MatTooltip,
@@ -28,6 +30,7 @@ import {disabled, form} from '@angular/forms/signals';
     ReactiveFormsModule,
     MatOption,
     ExternalLinkButtonComponent,
+    NgTemplateOutlet,
   ],
 })
 export class ProductComponent {
@@ -48,6 +51,10 @@ export class ProductComponent {
       }
     });
     return productFormats;
+  });
+  public readonly nonOgdProductUrl = computed(() => {
+    const product = this.product();
+    return !product.ogd ? product.nonOgdProductUrl : null;
   });
   public readonly formatsFormModel = signal<{formats: ProductFormat[]}>({
     formats: this.selectableFormats(),

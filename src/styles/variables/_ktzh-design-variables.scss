@@ -13,7 +13,9 @@ $zh-active-blue: #009ee0;
 $zh-blue: #0070b4;
 $zh-darkblue: #00407c;
 $zh-midnightblue: #002547;
+$zh-darkcyan: #004748;
 $zh-cyan: #00797b;
+$zh-active-cyan: #00abae;
 $zh-green: #1a7f1f;
 $zh-red: #d93c1a;
 $zh-bordeaux: #b01657;
@@ -52,7 +54,7 @@ $zh-filter-dialog-max-width: 956px;
 
 // generated using http://mcg.mbitson.com
 
-$zh-blue-palette: (
+$zh-lightblue-palette: (
   50: #e0eef6,
   100: #b3d4e9,
   200: #80b8da,
@@ -85,7 +87,7 @@ $zh-blue-palette: (
   ),
 );
 
-$zh-darkblue-palette: (
+$zh-blue-palette: (
   50: #e0e8ef,
   100: #b3c6d8,
   200: #80a0be,
@@ -223,13 +225,119 @@ $zh-bordeaux-palette: (
   ),
 );
 
+$zh-lightcyan-palette: (
+  50: '#e0efef',
+  100: '#b3d7d7',
+  200: '#80bcbd',
+  300: '#4da1a3',
+  400: '#268d8f',
+  500: $zh-cyan,
+  600: '#007173',
+  700: '#006668',
+  800: '#005c5e',
+  900: '#00494b',
+  A100: '#7ffbff',
+  A200: '#4cf9ff',
+  A400: '#19f7ff',
+  A700: '#00f6fe',
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+$zh-active-cyan-palette: (
+  50: #e0f5f5,
+  100: #b3e6e7,
+  200: #80d5d7,
+  300: #4dc4c6,
+  400: #26b8ba,
+  500: $zh-active-cyan,
+  600: #00a4a7,
+  700: #009a9d,
+  800: #009194,
+  900: #008084,
+  A100: #b1fcff,
+  A200: #7efbff,
+  A400: #4bf9ff,
+  A700: #31f8ff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+$zh-cyan-palette: (
+  50: #e0efef,
+  100: #b3d7d7,
+  200: #80bcbd,
+  300: #4da1a3,
+  400: #268d8f,
+  500: #00797b,
+  600: #007173,
+  700: #006668,
+  800: #005c5e,
+  900: #00494b,
+  A100: #7ffbff,
+  A200: #4cf9ff,
+  A400: #19f7ff,
+  A700: #00f6fe,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
 /* Theme palettes
 ========================== */
-$zh-primary: mat.m2-define-palette($zh-darkblue-palette);
+$zh-primary-blue: mat.m2-define-palette($zh-blue-palette);
+$zh-primary-cyan: mat.m2-define-palette($zh-cyan-palette);
+
+$zh-primary-light-blue: mat.m2-define-palette($zh-lightblue-palette);
+$zh-primary-light-cyan: mat.m2-define-palette($zh-lightcyan-palette);
+
 $zh-accent: mat.m2-define-palette($zh-black100-palette);
 $zh-warn: mat.m2-define-palette($zh-bordeaux-palette);
+
 // another theme palette used as an alternative color
-$zh-secondary-accent: mat.m2-define-palette($zh-active-blue-palette);
+$zh-secondary-accent-blue: mat.m2-define-palette($zh-active-blue-palette);
+$zh-secondary-accent-cyan: mat.m2-define-palette($zh-active-cyan-palette);
 
 /* Typography
 ========================== */

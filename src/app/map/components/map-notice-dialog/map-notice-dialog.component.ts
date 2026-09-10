@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
@@ -10,6 +10,7 @@ import {MatButton} from '@angular/material/button';
   selector: 'map-notice-dialog',
   templateUrl: './map-notice-dialog.component.html',
   styleUrls: ['./map-notice-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, MatDivider, MatButton],
 })
 export class MapNoticeDialogComponent {

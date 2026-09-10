@@ -728,11 +728,11 @@ export class EsriMapService implements MapService {
     const dateFormat = timeSliderConfiguration.dateFormat;
 
     esriLayer.customLayerParameters = esriLayer.customLayerParameters ?? {};
-    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = this.timeService.getDateAsUTCString(
+    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = this.timeService.getDateAsFormattedString(
       timeSliderExtent.start,
       dateFormat,
     );
-    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = this.timeService.getDateAsUTCString(
+    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = this.timeService.getDateAsFormattedString(
       timeSliderExtent.end,
       dateFormat,
     );

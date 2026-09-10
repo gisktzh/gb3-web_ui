@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, signal} from '@angular/core';
+import {Component, computed, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {selectCapabilitiesValidCombinations, selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
@@ -47,6 +47,7 @@ const AVAILABLE_VALUES_CHECK_PRIORITY: PrintFormAvailableCheckPriorityList = [
   selector: 'print-dialog',
   templateUrl: './print-dialog.component.html',
   styleUrls: ['./print-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatIconButton,
     MatIcon,

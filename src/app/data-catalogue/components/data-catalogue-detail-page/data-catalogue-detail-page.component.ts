@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {Store} from '@ngrx/store';
@@ -14,6 +14,7 @@ import {FormatLineBreaksPipe} from '../../../shared/pipes/format-line-breaks.pip
   selector: 'data-catalogue-detail-page',
   templateUrl: './data-catalogue-detail-page.component.html',
   styleUrls: ['./data-catalogue-detail-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PageSectionComponent, MatButton, RouterLink, MatIcon, FormatLineBreaksPipe],
 })
 export class DataCatalogueDetailPageComponent {

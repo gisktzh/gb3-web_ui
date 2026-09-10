@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {map, catchError} from 'rxjs';
 import {NewsService} from '../../../shared/interfaces/news-service.interface';
@@ -16,6 +16,7 @@ const NUMBER_OF_NEWS = 3;
   selector: 'news-feed',
   templateUrl: './news-feed.component.html',
   styleUrls: ['./news-feed.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ContentLoadingStateComponent, LinkGridListComponent, LinkGridListItemComponent],
 })
 export class NewsFeedComponent implements HasLoadingStateSignal {

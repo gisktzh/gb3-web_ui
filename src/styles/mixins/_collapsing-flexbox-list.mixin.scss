@@ -44,7 +44,7 @@
   height: $height;
 
   &:before {
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
+    background-color: functions.get-color-from-palette('accent', 25);
     content: '';
     display: block;
     height: calc(100% + 2 * $border-width);
@@ -58,7 +58,7 @@
     z-index: z-index-variables.$collapsing-flexbox-list-item-hover;
 
     &:before {
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 100);
+      background-color: functions.get-color-from-palette('accent', 100);
     }
   }
 }

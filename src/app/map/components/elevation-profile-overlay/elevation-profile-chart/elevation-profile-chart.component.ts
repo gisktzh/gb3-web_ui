@@ -1,4 +1,4 @@
-import {Component, OnInit, inject, input, signal} from '@angular/core';
+import {Component, OnInit, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ElevationProfileData, ElevationProfileDataPoint} from '../../../../shared/interfaces/elevation-profile.interface';
 import {ElevationProfileChartJsDataConfiguration} from './types/chartjs.type';
 import {ElevationPlotConfigService} from './services/elevation-plot-config.service';
@@ -13,6 +13,7 @@ const VERTIXAL_AXIS_LABEL = 'MüM';
   selector: 'elevation-profile-chart',
   templateUrl: './elevation-profile-chart.component.html',
   styleUrls: ['./elevation-profile-chart.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [BaseChartDirective],
 })
 export class ElevationProfileChartComponent implements OnInit {

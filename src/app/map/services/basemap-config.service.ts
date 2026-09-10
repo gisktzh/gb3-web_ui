@@ -15,19 +15,27 @@ export class BasemapConfigService {
     return this._availableBasemaps;
   }
 
-  public checkBasemapIdOrGetDefault(id: string | undefined | null): string {
-    if (id === undefined || id === null) {
-      return this.defaultBasemap.id;
+  public checkBasemapIdOrGetDefault(id: string | undefined | null, initialMaps: string[] = []): string {
+    const trimmedId = id?.trim();
+
+    if (trimmedId) {
+      const basemap = this.availableBasemaps.find((availableBasemap) => availableBasemap.id.toLowerCase() === trimmedId.toLowerCase());
+
+      if (basemap) {
+        return basemap.id;
+      }
     }
 
-    id = id.trim();
-    if (id === '') {
-      return this.defaultBasemap.id;
-    }
+    if (initialMaps.length > 0) {
+      const normalizedInitialMaps = new Set(initialMaps.map((initialMap) => initialMap.trim().toLowerCase()));
 
-    const basemap = this.availableBasemaps.find((availableBasemap) => availableBasemap.id.toLowerCase() === id!.toLowerCase());
-    if (basemap) {
-      return basemap.id;
+      const defaultBasemapForInitialMaps = this.availableBasemaps.find((availableBasemap) =>
+        availableBasemap.defaultForTopics?.some((defaultForTopic) => normalizedInitialMaps.has(defaultForTopic.trim().toLowerCase())),
+      );
+
+      if (defaultBasemapForInitialMaps) {
+        return defaultBasemapForInitialMaps.id;
+      }
     }
 
     return this.defaultBasemap.id;

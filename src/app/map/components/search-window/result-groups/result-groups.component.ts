@@ -1,4 +1,4 @@
-import {Component, inject, input, viewChildren} from '@angular/core';
+import {Component, inject, input, viewChildren, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {selectSearchApiLoadingState, selectSelectedSearchResult} from '../../../../state/app/reducers/search.reducer';
@@ -17,6 +17,7 @@ import {selectTerms} from 'src/app/state/app/selectors/search-terms.selector';
   selector: 'result-groups',
   templateUrl: './result-groups.component.html',
   styleUrls: ['./result-groups.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LoadingAndProcessBarComponent, MatAccordion, ResultGroupComponent],
 })
 export class ResultGroupsComponent {

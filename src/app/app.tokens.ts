@@ -5,10 +5,14 @@ import {MapService} from './map/interfaces/map.service';
 import {TimeService} from './shared/interfaces/time-service.interface';
 import {NewsService} from './shared/interfaces/news-service.interface';
 import {DrawingSymbolsService} from './shared/interfaces/drawing-symbols-service.interface';
+import {timeServiceFactory} from './shared/factories/time-service.factory';
 
 export const MAP_LOADER_SERVICE = new InjectionToken<MapLoaderService>('MapLoaderService');
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
 export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsService');
-export const TIME_SERVICE = new InjectionToken<TimeService>('TimeService');
+export const TIME_SERVICE = new InjectionToken<TimeService>('TimeService', {
+  providedIn: 'root',
+  factory: timeServiceFactory,
+});
 export const DRAWING_SYMBOLS_SERVICE = new InjectionToken<DrawingSymbolsService>('DrawingSymbolsService');

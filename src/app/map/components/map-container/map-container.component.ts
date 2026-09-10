@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, inject, viewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, inject, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {FeatureHighlightingService} from '../../services/feature-highlighting.service';
 import {MapService} from '../../interfaces/map.service';
 import {MAP_SERVICE} from '../../../app.tokens';
@@ -7,6 +7,7 @@ import {MAP_SERVICE} from '../../../app.tokens';
   selector: 'map-container',
   templateUrl: './map-container.component.html',
   styleUrls: ['./map-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [FeatureHighlightingService],
 })
 export class MapContainerComponent implements OnInit, AfterViewInit, OnDestroy {

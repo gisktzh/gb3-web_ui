@@ -3,7 +3,7 @@
 
 .main-footer {
   background-color: ktzh-variables.$zh-black80;
-  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 900);
+  color: functions.get-contrast-color-from-palette('accent', 900);
   display: flex;
   justify-content: center;
   padding: 56px 12px;

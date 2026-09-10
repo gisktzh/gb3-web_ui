@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 
 import {Store} from '@ngrx/store';
 import {ToolMenuVisibility} from '../../../../shared/types/tool-menu-visibility.type';
@@ -39,6 +39,7 @@ const TOOLTIP_TEXT = {
     DrawingToolsComponent,
     DataDownloadSelectionToolsComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '(window:keydown.control.p)': 'showPrintDialog($event)',
   },

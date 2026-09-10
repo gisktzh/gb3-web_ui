@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -18,6 +18,7 @@ import {HasSavingStateSingal} from 'src/app/shared/interfaces/has-saving-state-s
   selector: 'share-link-dialog',
   templateUrl: './share-link-dialog.component.html',
   styleUrls: ['./share-link-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ApiDialogWrapperComponent,
     MatFormField,

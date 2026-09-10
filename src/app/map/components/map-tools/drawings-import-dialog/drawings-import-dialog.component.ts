@@ -1,4 +1,4 @@
-import {Component, effect, inject, signal} from '@angular/core';
+import {Component, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ImportActions} from '../../../../state/map/actions/import.actions';
@@ -11,6 +11,7 @@ import {MatButton} from '@angular/material/button';
   selector: 'drawings-import-dialog',
   templateUrl: './drawings-import-dialog.component.html',
   styleUrl: './drawings-import-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, DropZoneComponent, MatButton],
 })
 export class DrawingsImportDialogComponent {

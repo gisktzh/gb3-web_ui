@@ -1,4 +1,4 @@
-import {Component, inject, input, model} from '@angular/core';
+import {Component, inject, input, model, ChangeDetectionStrategy} from '@angular/core';
 import {ExpandableListItemComponent} from 'src/app/shared/components/expandable-list-item/expandable-list-item.component';
 import {DrawingSymbolsCollectionComponent} from './drawing-symbols-collection/drawing-symbols-collection.component';
 import {SliderEditComponent} from '../drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
@@ -12,6 +12,7 @@ import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.consta
   selector: 'drawing-symbols',
   templateUrl: './drawing-symbols.component.html',
   styleUrls: ['./drawing-symbols.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DrawingSymbolsCollectionComponent, ExpandableListItemComponent, SliderEditComponent, MatAccordion],
 })
 export class DrawingSymbolsComponent {

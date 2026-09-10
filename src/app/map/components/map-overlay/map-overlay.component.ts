@@ -1,4 +1,4 @@
-import {Component, input, output, signal} from '@angular/core';
+import {Component, input, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ResizeHandlerLocation} from '../../../shared/types/resize-handler-location.type';
 import {StyleExpression} from '../../../shared/types/style-expression.type';
 import {LoadingState} from '../../../shared/types/loading-state.type';
@@ -8,6 +8,7 @@ import {SharedModule} from '../../../shared/shared.module';
   selector: 'map-overlay',
   templateUrl: './map-overlay.component.html',
   styleUrls: ['./map-overlay.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SharedModule],
 })
 export class MapOverlayComponent {

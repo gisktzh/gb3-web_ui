@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectIsAttributeFilterOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {MapAttributeFilterComponent} from '../map-attribute-filter/map-attribute-filter.component';
@@ -10,6 +10,7 @@ import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-at
   selector: 'map-attribute-filter-overlay',
   imports: [MapAttributeFilterComponent, MapOverlayComponent],
   templateUrl: './map-attribute-filter-overlay.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './map-attribute-filter-overlay.component.scss',
 })
 export class MapAttributeFilterOverlayComponent {

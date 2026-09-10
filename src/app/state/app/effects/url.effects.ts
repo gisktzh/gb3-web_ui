@@ -19,6 +19,7 @@ import {selectQueryParams} from '../selectors/router.selector';
 import {SearchActions} from '../actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
+import {MapUiActions} from '../../map/actions/map-ui.actions';
 
 @Injectable()
 export class UrlEffects {
@@ -68,8 +69,8 @@ export class UrlEffects {
       concatLatestFrom(() => [this.store.select(selectQueryParams), this.store.select(selectMapConfigParams)]),
       map(([_, currentParams, mapConfigParams]) => {
         const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex} = UrlUtils.extractUrlParamsForMapInitialization(currentParams);
-        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
         const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
+        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap, initialMaps);
         if (searchTerm || searchIndex) {
           return SearchActions.initializeSearchFromUrlParameters({
             searchTerm: searchTerm,
@@ -87,6 +88,19 @@ export class UrlEffects {
           return UrlActions.setMapPageParams({params: mapConfigParams});
         }
       }),
+    );
+  });
+
+  public handleCollapsedUrlParameter$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UrlActions.setPage),
+      map((action) => action.mainPage),
+      distinctUntilChanged(),
+      filter((mainPage) => mainPage === MainPage.Maps),
+      concatLatestFrom(() => [this.store.select(selectQueryParams)]),
+      map(([_, currentParams]) => UrlUtils.extractUrlParamsForMapInitialization(currentParams).collapsed),
+      filter((collapsed) => collapsed),
+      map((collapsed) => MapUiActions.changeUiElementsVisibility({hideAllUiElements: collapsed, hideUiToggleButton: false})),
     );
   });
 

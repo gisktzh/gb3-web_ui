@@ -1,29 +1,32 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.external-link-button {
-  &--highlighted {
-    background-color: ktzh-variables.$zh-light-grey;
-  }
+// Use :host to increase specificity and override Angular Material styles.
+:host {
+  .external-link-button {
+    &--highlighted {
+      background-color: ktzh-variables.$zh-light-grey;
+    }
 
-  &--small {
-    /**
-      Override the size of the button to the (fixed) 30px size of figma.
-      Adapted from https://stackoverflow.com/a/57759753 for use with SvgIcon.
-     */
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    .mat-mdc-button-touch-target {
+    &--small {
+      /**
+        Override the size of the button to the (fixed) 30px size of figma.
+        Adapted from https://stackoverflow.com/a/57759753 for use with SvgIcon.
+      */
       width: 30px;
       height: 30px;
-    }
-  }
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
 
-  .external-link-button__icon {
-    rotate: -45deg;
+      .mat-mdc-button-touch-target {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    .external-link-button__icon {
+      rotate: -45deg;
+    }
   }
 }

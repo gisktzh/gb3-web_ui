@@ -4,8 +4,8 @@
 .drawings-import-dialog__actions {
   .drawings-import-dialog__actions__button {
     &.mdc-button {
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
-      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+      background-color: functions.get-color-from-palette('accent', 50);
+      color: functions.get-color-from-palette('accent', 300);
     }
   }
 }

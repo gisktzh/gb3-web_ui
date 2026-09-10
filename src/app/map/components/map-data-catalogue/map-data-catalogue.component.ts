@@ -1,4 +1,4 @@
-import {Component, OnDestroy, effect, inject, output, signal} from '@angular/core';
+import {Component, OnDestroy, effect, inject, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
 import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
@@ -31,12 +31,12 @@ import {MapDataItemMapComponent} from './base-map-data-item/map-data-item-map.co
 import {MatDivider} from '@angular/material/divider';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
 import {ConfigService} from 'src/app/shared/services/config.service';
-import {selectItems} from 'src/app/state/map/selectors/active-map-items.selector';
 
 @Component({
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
   styleUrls: ['./map-data-catalogue.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCard,
     TypedTourAnchorDirective,
@@ -68,7 +68,6 @@ export class MapDataCatalogueComponent implements OnDestroy {
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   private readonly originalMaps = this.store.selectSignal(selectMaps);
   public readonly isMinimized = signal(false);
-  public readonly activeMapItems = this.store.selectSignal(selectItems);
 
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
@@ -121,7 +120,7 @@ export class MapDataCatalogueComponent implements OnDestroy {
       activeMap = originalActiveMap;
     }
 
-    if (!isTemporary && this.activeMapItems().length === 0) {
+    if (!isTemporary) {
       this.applyDefaultBasemapForMap(activeMap);
     }
 

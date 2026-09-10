@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {WaitingPageComponent} from '../../../shared/components/waiting-page/waiting-page.component';
 
@@ -6,6 +6,7 @@ import {WaitingPageComponent} from '../../../shared/components/waiting-page/wait
   selector: 'login-redirect',
   templateUrl: './login-redirect.component.html',
   styleUrls: ['./login-redirect.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [WaitingPageComponent],
 })
 export class LoginRedirectComponent {

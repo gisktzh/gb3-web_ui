@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewEncapsulation, computed, inject, input, signal, viewChild} from '@angular/core';
+import {Component, ElementRef, computed, inject, input, signal, viewChild, ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
@@ -11,6 +11,7 @@ import {MAP_SERVICE} from '../../../../app.tokens';
 import {ResizableInfoTableComponent, TableHeader, TableRows} from './resizable-info-table.component';
 import {Store} from '@ngrx/store';
 import {TableCell} from './info-table-cell.component';
+import {formatFeatureInfoFieldValue} from 'src/app/shared/utils/feature-info-field.utils';
 
 /**
  * Default value to be displayed when a field has no value (i.e. undefined)
@@ -31,6 +32,7 @@ const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
   templateUrl: './feature-info-content.component.html',
   imports: [TableColumnIdentifierDirective, MatRadioButton, MatRadioGroup, ResizableInfoTableComponent],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class FeatureInfoContentComponent {
   private readonly configService = inject(ConfigService);
@@ -173,7 +175,12 @@ export class FeatureInfoContentComponent {
 
     switch (feature.type) {
       case 'text':
-        return {cellType: 'text', fid, displayValue: feature.value};
+      case 'date':
+        return {
+          cellType: 'text',
+          fid,
+          displayValue: formatFeatureInfoFieldValue(feature.value, feature.type) ?? DEFAULT_CELL_VALUE,
+        };
       case 'image':
         return {
           cellType: 'image',

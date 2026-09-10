@@ -1,11 +1,4 @@
-<div class="product">
-  <mat-checkbox
-    class="product__checkbox"
-    [class.product__checkbox--hidden]="!product().ogd"
-    [(ngModel)]="isProductSelected"
-    (change)="toggleProduct()"
-    [disabled]="disabled() || !product().ogd"
-  />
+<ng-template #description>
   <div class="product__description">
     <p class="product__description__header" [matTooltip]="product().name" showTooltipIfTruncated>{{ product().name }}</p>
     <p class="product__description__content">
@@ -13,6 +6,24 @@
       <span>{{ product().ogd ? 'Frei (OGD)' : 'Eingeschränkt (NOGD)' }}</span>
     </p>
   </div>
+</ng-template>
+
+<div class="product">
+  @if (nonOgdProductUrl(); as productUrl) {
+    <ng-container *ngTemplateOutlet="description" />
+    <external-link-button color="accent" [highlighted]="true" size="small" [url]="productUrl" toolTip="Geodatenshop öffnen" />
+  } @else {
+    <mat-checkbox
+      class="product__checkbox"
+      [class.product__checkbox--hidden]="!product().ogd"
+      [(ngModel)]="isProductSelected"
+      (change)="toggleProduct()"
+      [disabled]="disabled() || !product().ogd"
+      [aria-label]="product().name"
+    >
+      <ng-container *ngTemplateOutlet="description" />
+    </mat-checkbox>
+  }
   @if (product().ogd && isProductSelected()) {
     <mat-form-field class="product__select" subscriptSizing="dynamic">
       <mat-label>Dateiformate</mat-label>
@@ -30,10 +41,5 @@
         }
       </mat-select>
     </mat-form-field>
-  }
-  @if (!product().ogd) {
-    @if (product().nonOgdProductUrl; as productUrl) {
-      <external-link-button color="accent" [highlighted]="true" size="small" [url]="productUrl" toolTip="Geodatenshop öffnen" />
-    }
   }
 </div>

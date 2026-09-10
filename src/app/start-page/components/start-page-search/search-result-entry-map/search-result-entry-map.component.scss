@@ -1,5 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'functions/helper.function' as functions;
 
 .search-result-entry-map {
   display: flex;
@@ -45,5 +46,5 @@
 
 .search-result-entry-map__icon--rotate {
   rotate: -45deg;
-  color: ktzh-variables.$zh-darkblue;
+  color: functions.get-color-from-palette('primary', 500);
 }

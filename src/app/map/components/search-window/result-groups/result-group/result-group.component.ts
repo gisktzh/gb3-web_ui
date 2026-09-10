@@ -1,4 +1,4 @@
-import {Component, inject, input, viewChildren} from '@angular/core';
+import {Component, inject, input, viewChildren, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ActiveMapItemFactory} from '../../../../../shared/factories/active-map-item.factory';
@@ -24,6 +24,7 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../../shared/pipes/appen
   selector: 'result-group',
   templateUrl: './result-group.component.html',
   styleUrls: ['./result-group.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ExpandableListItemComponent,
     MatRipple,

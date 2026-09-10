@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
 import {Store} from '@ngrx/store';
 import {toolTipFactoryMapToolsAndControls} from 'src/app/shared/factories/tooltip-map-tools-and-controls.factory';
@@ -12,6 +12,7 @@ import {MapToolsMobileComponent} from './map-tools-mobile/map-tools-mobile.compo
   templateUrl: './map-tools.component.html',
   styleUrls: ['./map-tools.component.scss'],
   providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryMapToolsAndControls, deps: [ConfigService]}],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapToolsDesktopComponent, MapToolsMobileComponent],
 })
 export class MapToolsComponent {

@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {ExternalLinkButtonComponent} from './external-link-button.component';
 import {MatIconButton} from '@angular/material/button';
 import {ClickOnSpaceBarDirective} from '../../directives/click-on-spacebar.directive';
@@ -10,6 +10,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'gb2-exit-button',
   templateUrl: './external-link-button.component.html',
   styleUrls: ['./external-link-button.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, ClickOnSpaceBarDirective, MatTooltip, MatIcon],
 })
 export class Gb2ExitButtonComponent extends ExternalLinkButtonComponent {

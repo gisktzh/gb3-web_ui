@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_SNACK_BAR_DATA, MatSnackBarLabel, MatSnackBarActions} from '@angular/material/snack-bar';
 import {PageNotification, PageNotificationSeverity} from '../../interfaces/page-notification.interface';
 import {Store} from '@ngrx/store';
@@ -21,6 +21,7 @@ function getIconBySeverity(severity: PageNotificationSeverity) {
   selector: 'page-notification',
   templateUrl: './page-notification.component.html',
   styleUrls: ['./page-notification.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatSnackBarLabel, MatIcon, MatSnackBarActions, MatIconButton],
 })
 export class PageNotificationComponent {

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
 import {DataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
 import {selectFilters} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
@@ -15,6 +15,7 @@ import {MatButton} from '@angular/material/button';
   selector: 'data-catalogue-filter-dialog',
   templateUrl: './data-catalogue-filter-dialog.component.html',
   styleUrls: ['./data-catalogue-filter-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     CdkScrollable,

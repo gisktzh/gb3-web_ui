@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {selectTitle} from '../../../../../state/map/reducers/map-import.reducer';
@@ -16,6 +16,7 @@ import {MatButton} from '@angular/material/button';
   selector: 'map-import-dialog',
   templateUrl: './map-import-dialog.component.html',
   styleUrl: './map-import-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ApiDialogWrapperComponent,
     MatStepper,

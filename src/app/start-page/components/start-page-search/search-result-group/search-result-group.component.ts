@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
@@ -8,6 +8,7 @@ import {ExpandableListItemComponent} from '../../../../shared/components/expanda
   selector: 'search-result-group',
   templateUrl: './search-result-group.component.html',
   styleUrls: ['./search-result-group.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ExpandableListItemComponent],
 })
 export class SearchResultGroupComponent {

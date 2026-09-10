@@ -1,4 +1,4 @@
-import {Component, computed, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy, computed} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectFeatureInfoQueryLoadingState} from 'src/app/state/map/selectors/feature-info-query-loading-state.selector';
 import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-info.interface';
@@ -22,6 +22,7 @@ import {OerebExtractComponent} from '../oereb-extract/oereb-extract.component';
     FeatureInfoItemComponent,
     OerebExtractComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class FeatureInfoComponent {
   private readonly store = inject(Store);

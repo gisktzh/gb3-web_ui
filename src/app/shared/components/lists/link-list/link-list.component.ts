@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {LinksGroup} from '../../../interfaces/links-group.interface';
 import {LinkListItemComponent} from './link-list-item/link-list-item.component';
 
@@ -6,6 +6,7 @@ import {LinkListItemComponent} from './link-list-item/link-list-item.component';
   selector: 'link-list',
   templateUrl: './link-list.component.html',
   styleUrls: ['./link-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LinkListItemComponent],
 })
 export class LinkListComponent {

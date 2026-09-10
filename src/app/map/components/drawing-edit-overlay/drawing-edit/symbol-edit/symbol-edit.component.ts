@@ -1,5 +1,5 @@
 import {Gb3SymbolStyle} from './../../../../../shared/interfaces/internal-drawing-representation.interface';
-import {Component, effect, linkedSignal, model} from '@angular/core';
+import {Component, effect, linkedSignal, model, ChangeDetectionStrategy} from '@angular/core';
 import {DrawingSymbolsComponent} from '../../../drawing-symbols/drawing-symbols.component';
 import {DrawingSymbolDefinition} from 'src/app/shared/interfaces/drawing-symbol/drawing-symbol-definition.interface';
 import {debounce, form, required} from '@angular/forms/signals';
@@ -15,6 +15,7 @@ const DEFAULT_STYLE = {
   selector: 'symbol-edit',
   templateUrl: './symbol-edit.component.html',
   styleUrl: './symbol-edit.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DrawingSymbolsComponent],
 })
 export class SymbolEditComponent {

@@ -16,6 +16,7 @@ import {selectKeepTemporaryUrlParams, selectMainPage} from '../reducers/url.redu
 import {SearchActions} from '../actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
+import {MapUiActions} from '../../map/actions/map-ui.actions';
 
 describe('UrlEffects', () => {
   let actions$: Observable<Action>;
@@ -169,6 +170,33 @@ describe('UrlEffects', () => {
     });
   });
 
+  describe('handleCollapsedUrlParameter$', () => {
+    it('dispatches MapUiActions.changeUiElementsVisibility() if collapsed query param is true', () => {
+      const params = {collapsed: 'true'};
+      store.overrideSelector(selectQueryParams, params);
+
+      const expectedAction = MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: false});
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleCollapsedUrlParameter$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+      });
+    });
+
+    it('does not dispatch any action if collapsed query param is not true', () => {
+      const params = {collapsed: 'false'};
+      store.overrideSelector(selectQueryParams, params);
+      let wasCalled = false;
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleCollapsedUrlParameter$.subscribe(() => {
+        wasCalled = true;
+      });
+
+      expect(wasCalled).toBe(false);
+    });
+  });
+
   describe('setMapPageParameters$', () => {
     it('navigates to the adjusted params if they are different to the current ones, no further action dispatch', () => {
       const router = TestBed.inject(Router);
@@ -193,11 +221,11 @@ describe('UrlEffects', () => {
       const routerSpy = vi.spyOn(router, 'navigate');
       store.overrideSelector(selectMainPage, MainPage.Maps);
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
-      const existingParams = {...params, initialMapIds: 'one,two', searchTerm: 'search', searchIndex: 'index'};
+      const existingParams = {...params, initialMapIds: 'one,two', searchTerm: 'search', searchIndex: 'index', collapsed: 'true'};
       store.overrideSelector(selectQueryParams, existingParams);
       store.overrideSelector(selectKeepTemporaryUrlParams, false);
 
-      const expectedParams = {...params, initialMapIds: null, searchTerm: null, searchIndex: null};
+      const expectedParams = {...params, initialMapIds: null, searchTerm: null, searchIndex: null, collapsed: null};
 
       actions$ = of(UrlActions.setMapPageParams({params}));
       effects.setMapPageParameters$.subscribe(() => {

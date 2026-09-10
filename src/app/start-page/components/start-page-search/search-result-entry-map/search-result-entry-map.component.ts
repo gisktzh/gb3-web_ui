@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {MainPage} from '../../../../shared/enums/main-page.enum';
 import {Store} from '@ngrx/store';
@@ -16,6 +16,7 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
   selector: 'search-result-entry-map',
   templateUrl: './search-result-entry-map.component.html',
   styleUrls: ['./search-result-entry-map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatRipple,
     MatTooltip,

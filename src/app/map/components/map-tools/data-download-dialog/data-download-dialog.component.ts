@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {selectOrder, selectSavingState} from '../../../../state/map/reducers/data-download-order.reducer';
@@ -28,6 +28,7 @@ import {LoadingAndProcessBarComponent} from '../../../../shared/components/loadi
   selector: 'data-download-dialog',
   templateUrl: './data-download-dialog.component.html',
   styleUrls: ['./data-download-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatIconButton,
     MatIcon,

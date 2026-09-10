@@ -113,8 +113,8 @@
   padding: 10px;
 
   &--active {
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    background-color: functions.get-color-from-palette('primary');
+    color: functions.get-contrast-color-from-palette('primary');
   }
 }
 
@@ -125,8 +125,8 @@
   height: 60px;
 
   &--active {
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    background-color: functions.get-color-from-palette('primary');
+    color: functions.get-contrast-color-from-palette('primary');
   }
 }
 
@@ -141,4 +141,12 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+@mixin define-css-vars-for-palette($palette, $name) {
+  @each $key, $color in $palette {
+    @if $key != 'contrast' {
+      --palette-#{$name}-#{$key}: #{$color};
+    }
+  }
 }

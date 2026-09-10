@@ -5,7 +5,7 @@ import {LinkObject} from './link-object.interface';
 import {Image} from './image.interface';
 import {HasDownloadableReport} from './downloadable-report.interface';
 
-type FeatureInfoResultFeatureFieldType = 'image' | 'link' | 'text';
+type FeatureInfoResultFeatureFieldType = 'image' | 'link' | 'text' | 'date';
 
 interface AbstractFeatureInfoResultFeatureFieldInterface {
   label: string;
@@ -27,10 +27,16 @@ export interface FeatureInfoResultFeatureTextField extends AbstractFeatureInfoRe
   type: 'text';
 }
 
+export interface FeatureInfoResultFeatureDateField extends AbstractFeatureInfoResultFeatureFieldInterface {
+  value: string | null;
+  type: 'date';
+}
+
 export type FeatureInfoResultFeatureField =
   | FeatureInfoResultFeatureImageField
   | FeatureInfoResultFeatureLinkField
-  | FeatureInfoResultFeatureTextField;
+  | FeatureInfoResultFeatureTextField
+  | FeatureInfoResultFeatureDateField;
 
 interface FeatureInfoResultFeature {
   fid: number;

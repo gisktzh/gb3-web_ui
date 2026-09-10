@@ -6,11 +6,11 @@
   .mdc-switch.mdc-switch--selected:enabled:focus,
   .mdc-switch.mdc-switch--selected:enabled:hover:not(:focus):not(:active) {
     .mdc-switch__track::after {
-      background: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 500);
+      background: functions.get-color-from-palette('secondary-accent', 500);
     }
 
     .mdc-switch__handle::after {
-      border-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 500);
+      border-color: functions.get-color-from-palette('secondary-accent', 500);
       background: none;
       border-width: 2px;
     }
@@ -20,7 +20,7 @@
   .mdc-switch.mdc-switch--unselected:enabled:focus,
   .mdc-switch.mdc-switch--unselected:enabled:hover:not(:focus):not(:active) {
     .mdc-switch__handle::after {
-      border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 100);
+      border-color: functions.get-color-from-palette('accent', 100);
       background: none;
       border-width: 2px;
     }

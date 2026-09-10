@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
@@ -12,6 +12,7 @@ import {MapRotationPipe} from '../../../pipes/map-rotation.pipe';
   selector: 'map-rotation-button',
   templateUrl: './map-rotation-button.component.html',
   styleUrls: ['./map-rotation-button.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatTooltip, MatIcon, MapRotationPipe],
 })
 export class MapRotationButtonComponent {

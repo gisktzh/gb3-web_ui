@@ -1,4 +1,4 @@
-import {Component, effect, inject, signal} from '@angular/core';
+import {Component, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ExportActions} from '../../../../state/map/actions/export.actions';
@@ -17,6 +17,7 @@ import {form, required, FormField} from '@angular/forms/signals';
   selector: 'drawing-download-dialog',
   templateUrl: './drawing-download-dialog.component.html',
   styleUrl: './drawing-download-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, MatFormField, MatLabel, MatSelect, MatOption, MatButton, UpperCasePipe, FormField],
 })
 export class DrawingDownloadDialogComponent {

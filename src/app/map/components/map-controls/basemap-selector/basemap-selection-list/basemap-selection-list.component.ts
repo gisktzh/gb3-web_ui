@@ -1,4 +1,4 @@
-import {Component, inject, output} from '@angular/core';
+import {Component, inject, output, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {Basemap} from '../../../../../shared/interfaces/basemap.interface';
@@ -12,6 +12,7 @@ import {BasemapImageLinkPipe} from '../../../../../shared/pipes/background-map-i
   selector: 'basemap-selection-list',
   templateUrl: './basemap-selection-list.component.html',
   styleUrls: ['./basemap-selection-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatButton, BasemapImageLinkPipe],
 })
 export class BasemapSelectionListComponent {
