@@ -2,8 +2,8 @@
   <div class="map-tools-desktop__list" typedTourAnchor="map.tools">
     <ng-container *featureFlag="'statisticsTool'">
       <button
-        (click)="setQueryMode('feature')"
-        [class.map-tools-desktop__list__button--active]="queryMode() === 'feature'"
+        (click)="toggleToolMenu('feature')"
+        [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'feature'"
         class="map-tools-desktop__list__button"
         color="accent"
         data-test-id="map-select-feature"
@@ -15,8 +15,8 @@
         <mat-icon svgIcon="ktzh_select_feature" />
       </button>
       <button
-        (click)="setQueryMode('statistics')"
-        [class.map-tools-desktop__list__button--active]="queryMode() === 'statistics'"
+        (click)="toggleToolMenu('statistics')"
+        [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'statistics'"
         class="map-tools-desktop__list__button"
         color="accent"
         data-test-id="map-select-statistic"
@@ -106,7 +106,7 @@
       <mat-icon svgIcon="ktzh_map_management" />
     </button>
   </div>
-  @if (toolMenuVisibility() !== undefined; as toolMenuVisiblity) {
+  @if (toolMenuVisibility() !== undefined && toolMenuVisibility() !== 'feature') {
     <div class="map-tools-desktop__list" [attr.data-tool]="activeTool()">
       @if (toolMenuVisibility() === 'measurement') {
         <measurement-tools />

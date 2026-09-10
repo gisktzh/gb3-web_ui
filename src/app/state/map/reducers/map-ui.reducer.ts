@@ -15,7 +15,7 @@ export const initialState: MapUiState = {
   hideUiElements: false,
   hideToggleUiElementsButton: false,
   hideZoomButtons: false,
-  toolMenuVisibility: undefined,
+  toolMenuVisibility: 'feature',
   bottomSheetContent: 'none',
   sideBarWidth: undefined,
 };
