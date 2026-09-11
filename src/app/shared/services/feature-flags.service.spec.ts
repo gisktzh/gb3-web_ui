@@ -6,7 +6,7 @@ import {FeatureFlags} from '../interfaces/feature-flags.interface';
 
 const mockConfigService: ConfigService = {
   featureFlags: {
-    oerebExtract: true,
+    koPlaNavItem: true,
   },
 } as unknown as ConfigService;
 
@@ -27,10 +27,10 @@ describe('FeatureFlagsService', () => {
 
   describe('getFeatureFlag', () => {
     it('should return the value of the feature flag from the config service', () => {
-      const featureFlag: keyof FeatureFlags = 'oerebExtract';
+      const featureFlag: keyof FeatureFlags = 'koPlaNavItem';
       const result = service.getFeatureFlag(featureFlag);
 
-      expect(result).toEqual(mockConfigService.featureFlags.oerebExtract);
+      expect(result).toEqual(mockConfigService.featureFlags.koPlaNavItem);
     });
   });
 });

@@ -30,5 +30,7 @@ export class MapOverlayListItemComponent {
   public readonly toggleButtonPosition = input<ToggleButtonPosition>('start');
   public readonly removeContentIndent = input(false);
   public readonly hasBackgroundColor = input(true);
+  public readonly hasBorder = input(false);
   public readonly showInteractiveElements = input(true);
+  public readonly nestingLevel = input(0);
 }

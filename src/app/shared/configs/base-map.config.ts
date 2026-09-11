@@ -1,5 +1,6 @@
 import {Basemap} from '../interfaces/basemap.interface';
 import {DrawingLayerPrefix} from '../enums/drawing-layer.enum';
+import {OerebMaps} from './oereb-maps.config';
 
 /**
  * A list of all available basemaps.
@@ -108,17 +109,7 @@ export const defaultBasemaps: Basemap[] = [
         name: 'TBBP',
       },
     ],
-    defaultForTopics: [
-      'KatOerebBelasteteStandorteZH',
-      'KatOerebEisenbahnenZH',
-      'KatOerebFlughaefenZH',
-      'KatOerebLaermZH',
-      'KatOerebRaumplanungZH',
-      'KatOerebStrassenZH',
-      'KatOerebVerEntsorgungZH',
-      'KatOerebWaldZH',
-      'KatOerebWasserZH',
-    ],
+    defaultForTopics: OerebMaps,
   },
   {
     id: 'aredtmbackgroundzh',

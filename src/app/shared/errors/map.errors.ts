@@ -25,6 +25,11 @@ export class FeatureInfoCouldNotBeLoaded extends RecoverableError {
   public override name = 'FeatureInfoCouldNotBeLoaded';
 }
 
+export class OerebExtractCouldNotBeLoaded extends RecoverableError {
+  public override message = 'ÖREB-Auszug konnte nicht geladen werden.';
+  public override name = 'OerebExtractCouldNotBeLoaded';
+}
+
 export class LegendCouldNotBeLoaded extends RecoverableError {
   public override message = 'Legende konnte nicht geladen werden.';
   public override name = 'LegendCouldNotBeLoaded';
