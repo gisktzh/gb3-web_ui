@@ -22,7 +22,7 @@ describe('EsriStylesLoaderService', () => {
     void service.ensureLoaded();
 
     const links = document.head.querySelectorAll('#esri-theme-stylesheet');
-    expect(links.length).toHaveLength(1);
+    expect(links).toHaveLength(1);
 
     const link = links[0] as HTMLLinkElement;
     expect(link.rel).toBe('stylesheet');
@@ -35,7 +35,7 @@ describe('EsriStylesLoaderService', () => {
     void service.ensureLoaded();
 
     const links = document.head.querySelectorAll('#esri-theme-stylesheet');
-    expect(links.length).toHaveLength(1);
+    expect(links).toHaveLength(1);
   });
 
   it('does not add a duplicate link if one already exists in the document', () => {
@@ -47,6 +47,6 @@ describe('EsriStylesLoaderService', () => {
     void service.ensureLoaded();
 
     const links = document.head.querySelectorAll('#esri-theme-stylesheet');
-    expect(links.length).toHaveLength(1);
+    expect(links).toHaveLength(1);
   });
 });
