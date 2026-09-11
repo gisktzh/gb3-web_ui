@@ -37,9 +37,19 @@
                 "glob": "favicon.ico",
                 "input": "src/",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@arcgis/core/assets/esri/themes/light",
+                "output": "/assets/esri-theme/light/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@arcgis/core/assets/esri/themes/base",
+                "output": "/assets/esri-theme/base/"
               }
             ],
-            "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
+            "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles", "node_modules/@material"]
             },
