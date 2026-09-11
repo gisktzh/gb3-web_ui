@@ -40,6 +40,7 @@
     <div
       class="list-item__content"
       [class.list-item__content--has-border]="hasBorder()"
+      [class.list-item__content--is-nested]="nestingLevel() > 0"
       [class.list-item__content--level-1]="nestingLevel() === 1"
       [class.list-item__content--level-2]="nestingLevel() === 2"
       [class.list-item__content--level-3]="nestingLevel() === 3"

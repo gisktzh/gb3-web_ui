@@ -160,3 +160,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
   height: 24px;
   min-width: 24px;
 }
+
+.list-item__content--is-nested .feature-info-content__resize {
+  left: 12px;
+}

@@ -98,7 +98,7 @@
                 [nestingLevel]="3"
               >
                 @if (restriction.itemType === 'list') {
-                  <ul class="oereb-detail-list">
+                  <ul class="oereb-info-list">
                     @for (item of restriction.items; track $index) {
                       <li>
                         <div class="oereb-detail-list__title">
@@ -145,7 +145,7 @@
     }
 
     @if (notConcernedThemes().tableRows.size > 0) {
-      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht betroffene Themen" [hasBackgroundColor]="false">
+      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht betroffene Themen" [hasBackgroundColor]="false" [nestingLevel]="1">
         <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
         <div class="feature-info-content" #containerNotConcernedThemes>
@@ -159,7 +159,7 @@
     }
 
     @if (notAvailableThemes().tableRows.size > 0) {
-      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht verfügbare Themen" [hasBackgroundColor]="false">
+      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht verfügbare Themen" [hasBackgroundColor]="false" [nestingLevel]="1">
         <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
         <div class="feature-info-content" #containerNotConcernedThemes>
