@@ -1,0 +1,66 @@
+<div class="statistics__controls">
+  <mat-select
+    class="statistics__controls__mode"
+    panelClass="statistics__controls__mode__panel"
+    aria-label="Modus"
+    [value]="mode()"
+    (valueChange)="setMode($event)"
+  >
+    <mat-select-trigger>
+      <span class="statistics__controls__mode__label" aria-hidden="true">Modus</span>
+      <span class="statistics__controls__mode__value">
+        @switch (mode()) {
+          @case ('umkreis') {
+            <mat-icon svgIcon="ktzh_drawing_symbol_circle" />
+            Umkreis
+          }
+          @case ('polygon') {
+            <mat-icon svgIcon="ktzh_drawing_symbol_polygon" />
+            Polygon
+          }
+        }
+      </span>
+    </mat-select-trigger>
+    <mat-option value="umkreis">
+      <mat-icon svgIcon="ktzh_drawing_symbol_circle" />
+      Umkreis
+    </mat-option>
+    <mat-option value="polygon">
+      <mat-icon svgIcon="ktzh_drawing_symbol_polygon" />
+      Polygon
+    </mat-option>
+  </mat-select>
+  @if (mode() === 'umkreis') {
+    <label class="statistics__controls__radius" for="statistics-radius-input">
+      <span class="statistics__controls__radius__label">Radius</span>
+      <span class="statistics__controls__radius__field">
+        <input
+          id="statistics-radius-input"
+          type="number"
+          [value]="radiusInMeters()"
+          [min]="minimumRadius"
+          [max]="maximumRadius"
+          (change)="setRadius($any($event.target).value)"
+        />
+        <span class="statistics__controls__radius__unit">m</span>
+      </span>
+    </label>
+  }
+</div>
+
+<loading-and-process-bar [loadingState]="loadingState()" />
+
+@if (loadingState() === 'loaded') {
+  @if (generalInfoData(); as generalInfoData) {
+    <feature-info-general-information [generalInfoData]="generalInfoData" [areaInSquareMeters]="areaInSquareMeters()" />
+    <mat-divider class="statistics__divider" />
+  }
+  @for (result of data(); track result.topic) {
+    <statistics-item [result]="result" [showInteractiveElements]="showInteractiveElements()" />
+  }
+  @if (data().length === 0) {
+    <i>Keine Statistik-Daten für das gewählte Gebiet!</i>
+  }
+} @else if (loadingState() === undefined) {
+  <i>Wählen Sie ein Gebiet auf der Karte, um die Statistik zu berechnen.</i>
+}

@@ -278,6 +278,48 @@ export const layerSymbolizations: LayerSymbolizations = {
       outline: defaultOutline,
     },
   },
+  [InternalDrawingLayer.StatisticsArea]: {
+    text: defaultSymbolization.text,
+    point: {
+      type: 'simple',
+      size: 12,
+      color: {
+        r: 0,
+        g: 112,
+        b: 180,
+        a: 0.25,
+      },
+      outline: defaultOutline,
+    },
+    line: {
+      width: 2,
+      color: {
+        r: 0,
+        g: 112,
+        b: 180,
+        a: 1,
+      },
+    },
+    polygon: {
+      fill: {
+        color: {
+          r: 0,
+          g: 112,
+          b: 180,
+          a: 0.25,
+        },
+      },
+      outline: {
+        width: 2,
+        color: {
+          r: 0,
+          g: 112,
+          b: 180,
+          a: 1,
+        },
+      },
+    },
+  },
   [InternalDrawingLayer.SearchResultHighlight]: {
     text: defaultSymbolization.text,
     point: {

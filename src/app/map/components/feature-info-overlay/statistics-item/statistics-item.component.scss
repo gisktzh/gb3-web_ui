@@ -1,0 +1,43 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.statistics-item {
+  width: 100%;
+
+  .statistics-item__icon {
+    height: 24px;
+    width: 24px;
+    font-size: 24px;
+  }
+
+  .statistics-item__status {
+    margin: 0;
+    color: ktzh-variables.$zh-black60;
+    font-size: 14px;
+  }
+
+  .statistics-item__status-link {
+    @include mixins.external-link-decoration;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 14px;
+
+    .statistics-item__status-link__icon {
+      height: 14px;
+      width: 14px;
+      font-size: 14px;
+    }
+  }
+}
+
+// A group header introduces the rows below it and spans the whole width, so it is not part of the alternating colours.
+.statistics-item__group > th {
+  background-color: ktzh-variables.$zh-white;
+  color: ktzh-variables.$zh-black100;
+}
+
+.statistics-item__unit {
+  margin-left: 4px;
+}

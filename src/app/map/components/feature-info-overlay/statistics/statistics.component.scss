@@ -1,0 +1,128 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+// The design types the caption smaller than the value it belongs to. Both boxes share the scale, and the line heights are picked so
+// that caption + gap + value fill the 40px the box has left over after its border and padding.
+$caption-font-size: 12px;
+$caption-line-height: 16px;
+$value-font-size: 16px;
+$value-line-height: 22px;
+
+.statistics__controls {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-bottom: 8px;
+
+  // Both controls are drawn as the same framed box; what sits inside it differs.
+  .statistics__controls__mode,
+  .statistics__controls__radius {
+    box-sizing: border-box;
+    height: 68px;
+    border: 2px solid #949494;
+    border-radius: ktzh-variables.$zh-border-radius;
+    background: ktzh-variables.$zh-white;
+  }
+
+  // The box is the select itself rather than a wrapper around it, and the padding belongs to the trigger rather than to the box, so
+  // that the trigger covers the frame completely: a click anywhere in it opens the dropdown and the arrow centres against the full
+  // height instead of against the value line alone.
+  .statistics__controls__mode {
+    --mat-select-enabled-arrow-color: #{ktzh-variables.$zh-black100};
+
+    // Material tracks the select wider than the surrounding text. Inheriting instead keeps it level with the radius box, which is
+    // plain text. The typography tokens cannot do this: `inherit` on a custom property inherits the token, not the letter spacing,
+    // so the real property has to be set here, where it still beats Material's own `.mat-mdc-select` rule.
+    letter-spacing: inherit;
+
+    flex: 1 1 auto;
+    min-width: 0;
+
+    ::ng-deep .mat-mdc-select-trigger {
+      box-sizing: border-box;
+      height: 100%;
+      padding: 12px 12px 12px 16px;
+      align-items: center;
+    }
+
+    .statistics__controls__mode__label {
+      display: block;
+      margin-bottom: 2px;
+      font-size: $caption-font-size;
+      line-height: $caption-line-height;
+      font-weight: 900;
+    }
+
+    .statistics__controls__mode__value {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: $value-font-size;
+      line-height: $value-line-height;
+
+      mat-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
+      }
+    }
+  }
+
+  .statistics__controls__radius {
+    // The design fixes this box to a width that fits a five digit radius plus its unit.
+    flex: 0 0 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 12px 12px 16px;
+    cursor: text;
+
+    .statistics__controls__radius__label {
+      font-size: $caption-font-size;
+      line-height: $caption-line-height;
+      font-weight: 900;
+    }
+
+    .statistics__controls__radius__field {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: $value-font-size;
+      line-height: $value-line-height;
+
+      input {
+        width: 100%;
+        padding: 0;
+        border: none;
+        outline: none;
+        background: transparent;
+        font: inherit;
+        -moz-appearance: textfield;
+        appearance: textfield;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          margin: 0;
+          -webkit-appearance: none;
+        }
+      }
+    }
+  }
+}
+
+// The mode select's overlay panel is rendered into the CDK overlay container outside this component's DOM, so it needs an
+// unscoped selector via its panelClass instead of a normal scoped one.
+::ng-deep .statistics__controls__mode__panel .mat-mdc-option {
+  // The options mirror the trigger's value, so they carry its scale. The font sits on the option itself, not on the label inside it.
+  font-size: $value-font-size;
+  letter-spacing: inherit;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.statistics__divider {
+  margin: 8px 0;
+}

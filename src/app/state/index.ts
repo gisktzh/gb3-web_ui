@@ -15,6 +15,8 @@ import {reducer as pageNotificationReducer} from './app/reducers/page-notificati
 import {reducer as geolocationReducer} from './map/reducers/geolocation.reducer';
 import {reducer as generalInfoReducer} from './map/reducers/general-info.reducer';
 import {reducer as toolReducer} from './map/reducers/tool.reducer';
+import {reducer as queryModeReducer} from './map/reducers/query-mode.reducer';
+import {reducer as statisticsReducer} from './map/reducers/statistics.reducer';
 import {reducer as appLayoutReducer} from './app/reducers/app-layout.reducer';
 import {reducer as printReducer} from './map/reducers/print.reducer';
 import {reducer as exportReducer} from './map/reducers/export.reducer';
@@ -51,6 +53,8 @@ import {DataDownloadProductState} from './map/states/data-download-product.state
 import {PrintState} from './map/states/print.state';
 import {MapUiState} from './map/states/map-ui.state';
 import {ToolState} from './map/states/tool.state';
+import {QueryModeState} from './map/states/query-mode.state';
+import {StatisticsState} from './map/states/statistics.state';
 import {ShareLinkState} from './map/states/share-link.state';
 import {ActiveMapItemEffects} from './map/effects/active-map-item.effects';
 import {DataDownloadOrderEffects} from './map/effects/data-download-order.effects';
@@ -68,6 +72,8 @@ import {PrintEffects} from './map/effects/print.effects';
 import {MapUiEffects} from './map/effects/map-ui.effects';
 import {ShareLinkEffects} from './map/effects/share-link.effects';
 import {ToolEffects} from './map/effects/tool.effects';
+import {QueryModeEffects} from './map/effects/query-mode.effects';
+import {StatisticsEffects} from './map/effects/statistics.effects';
 import {DataCatalogueState} from './data-catalogue/states/data-catalogue.state';
 import {DataCatalogueEffects} from './data-catalogue/effects/data-catalogue.effects';
 import {SearchState} from './app/states/search.state';
@@ -116,6 +122,8 @@ interface State {
   print: PrintState;
   mapUi: MapUiState;
   tool: ToolState;
+  queryMode: QueryModeState;
+  statistics: StatisticsState;
   shareLink: ShareLinkState;
   dataCatalogue: DataCatalogueState;
   search: SearchState;
@@ -154,6 +162,8 @@ export const reducers: ActionReducerMap<State> = {
   print: printReducer,
   mapUi: mapUiReducer,
   tool: toolReducer,
+  queryMode: queryModeReducer,
+  statistics: statisticsReducer,
   shareLink: shareLinkReducer,
   dataCatalogue: dataCatalogueReducer,
   search: searchReducer,
@@ -190,6 +200,8 @@ export const effects = [
   MapUiEffects,
   ShareLinkEffects,
   ToolEffects,
+  QueryModeEffects,
+  StatisticsEffects,
   DataCatalogueEffects,
   SearchEffects,
   DrawingEffects,

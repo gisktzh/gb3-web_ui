@@ -1,0 +1,26 @@
+<div class="statistics-tools">
+  <button
+    (click)="toggleCircleSelecting()"
+    [class.statistics-tools__button--active]="activeTool() === 'select-statistics-circle'"
+    class="statistics-tools__button"
+    color="accent"
+    data-test-id="statistics-select-circle"
+    mat-icon-button
+    [matTooltip]="tooltipText.circleSelecting"
+    [aria-label]="tooltipText.circleSelecting"
+  >
+    <mat-icon svgIcon="ktzh_drawing_symbol_circle" />
+  </button>
+  <button
+    (click)="togglePolygonSelecting()"
+    [class.statistics-tools__button--active]="activeTool() === 'select-statistics-polygon'"
+    class="statistics-tools__button"
+    color="accent"
+    data-test-id="statistics-select-polygon"
+    mat-icon-button
+    [matTooltip]="tooltipText.polygonSelecting"
+    [aria-label]="tooltipText.polygonSelecting"
+  >
+    <mat-icon svgIcon="ktzh_drawing_symbol_polygon" />
+  </button>
+</div>

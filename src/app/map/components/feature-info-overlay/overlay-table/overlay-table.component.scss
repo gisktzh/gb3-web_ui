@@ -1,0 +1,101 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
+
+/**
+  Encapsulation is turned off for this component so that it can style the rows its consumers project into the table; Angular's emulated
+  encapsulation does not reach projected content. Every rule is therefore rooted at the `overlay-table` element, which keeps them
+  contained to this component as reliably as the encapsulation would.
+ */
+
+overlay-table {
+  // The handle is positioned against this frame, which therefore must not be the element that scrolls: it would otherwise move along
+  // with the table when scrolling sideways.
+  .overlay-table {
+    position: relative;
+    width: 100%;
+  }
+
+  .overlay-table__scroll {
+    width: 100%;
+    overflow: auto;
+  }
+
+  .overlay-table__table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    > thead > tr,
+    > tbody > tr {
+      vertical-align: top;
+
+      > th,
+      > td {
+        background-color: ktzh-variables.$zh-white;
+        padding: 6px 8px;
+        word-break: normal;
+        hyphens: auto;
+      }
+
+      > th {
+        font-size: 12px;
+        font-family: ktzh-variables.$zh-font-family-bold;
+      }
+
+      // The label column sticks to the left while the values scroll underneath it. A cell spanning several columns is not a label, so
+      // it opts out on its own instead of having to undo this.
+      > th:first-child:not([colspan]) {
+        position: sticky;
+        left: 0;
+        color: ktzh-variables.$zh-black60;
+        box-sizing: border-box;
+        // The automatic table layout ignores max-width, so the width has to be stated for the column to actually follow the resize
+        // handle. min-width and max-width pin it against the free space the layout would otherwise distribute.
+        width: var(--overlay-table-header-width);
+        min-width: var(--overlay-table-header-width);
+        max-width: var(--overlay-table-header-width);
+        // Last resort for labels that offer no break opportunity, which would otherwise spill into the next column. Consumers should
+        // hyphenate their labels so that it rarely comes to this.
+        overflow-wrap: anywhere;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: -6px;
+          width: 6px;
+          height: 100%;
+          background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+        }
+      }
+    }
+
+    // alternate row color with grey, starting below the grey header row
+    > tbody > tr:nth-child(even) {
+      > th,
+      > td {
+        background-color: ktzh-variables.$zh-light-grey;
+      }
+    }
+
+    > thead > tr > th {
+      background-color: ktzh-variables.$zh-light-grey;
+
+      // override the upper left cell to be white (as per the design)
+      &:first-child {
+        background-color: ktzh-variables.$zh-white;
+        z-index: z-index-variables.$overlay-table-header;
+      }
+    }
+  }
+
+  .overlay-table__resize {
+    top: 0;
+    left: 0;
+    width: 140px;
+    z-index: 10;
+    // Spans the whole table, minus the horizontal scrollbar it must not sit on top of.
+    height: calc(100% - var(--calculated-scrollbar-height));
+  }
+}

@@ -9,6 +9,7 @@ import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.mod
 import {ToolService} from '../../map/interfaces/tool.service';
 import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
 import {DataDownloadSelectionTool} from '../../shared/types/data-download-selection-tool.type';
+import {StatisticsSelectionTool} from '../../shared/types/statistics-selection-tool.type';
 import {DrawingTool} from '../../shared/types/drawing-tool.type';
 import {MeasurementTool} from '../../shared/types/measurement-tool.type';
 import {
@@ -22,6 +23,7 @@ import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.int
 export class MapServiceStub implements MapService {
   private toolService: ToolService = {
     initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {},
+    initializeStatisticsSelection(selectionTool: StatisticsSelectionTool) {},
     initializeDrawing(drawingTool: DrawingTool) {},
     initializeMeasurement(measurementTool: MeasurementTool) {},
     addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
