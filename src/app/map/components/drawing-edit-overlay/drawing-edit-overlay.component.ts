@@ -1,4 +1,4 @@
-import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import {Component, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
 import {selectIsDrawingEditOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Store} from '@ngrx/store';
 import {DrawingActions} from '../../../state/map/actions/drawing.actions';
@@ -16,6 +16,8 @@ export class DrawingEditOverlayComponent {
   private readonly store = inject(Store);
 
   public readonly isVisible = this.store.selectSignal(selectIsDrawingEditOverlayVisible);
+  public readonly width = input<number | undefined>(undefined);
+  public readonly resizeEvent = output<number>();
 
   public close() {
     this.store.dispatch(DrawingActions.cancelEditMode());
