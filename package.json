@@ -76,7 +76,7 @@
     "@angular-eslint/template-parser": "^22.1.0",
     "@eslint/js": "^10.0.1",
     "@ngrx/eslint-plugin": "^22.0.0",
-    "@ngrx/schematics": "^21.0.0",
+    "@ngrx/schematics": "^22.0.0",
     "@playwright/test": "^1.61.1",
     "@types/har-format": "^1.2.16",
     "@types/node": "^25.5.0",
