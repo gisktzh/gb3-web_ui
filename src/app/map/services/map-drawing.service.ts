@@ -71,6 +71,15 @@ export class MapDrawingService {
     this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.Selection);
   }
 
+  public drawStatisticsArea(geometry: GeometryWithSrs) {
+    this.clearStatisticsArea();
+    this.mapService.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.StatisticsArea);
+  }
+
+  public clearStatisticsArea() {
+    this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsArea);
+  }
+
   public drawSearchResultHighlight(geometry: GeometryWithSrs) {
     this.clearSearchResultHighlight();
     this.mapService.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.SearchResultHighlight);

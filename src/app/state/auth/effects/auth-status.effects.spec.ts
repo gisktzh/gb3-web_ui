@@ -330,6 +330,7 @@ describe('AuthStatusEffects', () => {
           public initializeElevationProfileMeasurement = vi.fn();
           public initializeDrawing = vi.fn();
           public initializeDataDownloadSelection = vi.fn();
+          public initializeStatisticsSelection = vi.fn();
           public addExistingDrawingsToLayer = vi.fn();
           public updateDrawingStyles = vi.fn();
           public cancelTool = vi.fn();

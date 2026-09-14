@@ -8,8 +8,12 @@ import {FeatureInfoComponent} from '../feature-info-overlay/feature-info/feature
 import {MapAttributeFilterComponent} from '../map-attribute-filter/map-attribute-filter.component';
 import {ShareLinkMobileComponent} from '../share-link-mobile/share-link-mobile.component';
 import {SearchWindowMobileComponent} from '../search-window-mobile/search-window-mobile.component';
-
 import {MapManagementMobileComponent} from '../map-management-mobile/map-management-mobile.component';
+import {StatisticsComponent} from '../feature-info-overlay/statistics/statistics.component';
+import {FeatureFlagDirective} from '../../../shared/directives/feature-flag.directive';
+import {selectQueryMode} from '../../../state/map/reducers/query-mode.reducer';
+import {QueryModeActions} from '../../../state/map/actions/query-mode.actions';
+import {QueryMode} from '../../../shared/types/query-mode.type';
 
 @Component({
   selector: 'bottom-sheet-overlay',
@@ -25,6 +29,8 @@ import {MapManagementMobileComponent} from '../map-management-mobile/map-managem
     ShareLinkMobileComponent,
     SearchWindowMobileComponent,
     MapManagementMobileComponent,
+    StatisticsComponent,
+    FeatureFlagDirective,
   ],
 })
 export class BottomSheetOverlayComponent {
@@ -32,4 +38,9 @@ export class BottomSheetOverlayComponent {
 
   public readonly showInteractiveElements = input(true);
   public readonly bottomSheetContent = this.store.selectSignal(selectBottomSheetContent);
+  public readonly queryMode = this.store.selectSignal(selectQueryMode);
+
+  public setQueryMode(queryMode: QueryMode) {
+    this.store.dispatch(QueryModeActions.setQueryMode({queryMode}));
+  }
 }
