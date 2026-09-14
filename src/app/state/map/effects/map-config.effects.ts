@@ -91,16 +91,9 @@ export class MapConfigEffects {
   public setBaseMapAndInitialMaps$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchActions.initializeSearchFromUrlParameters),
-      map(({basemapId, initialMaps, initialMapsAreTopics}) => {
+      map(({basemapId, initialMaps}) => {
         const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
-        return MapConfigActions.setInitialMapConfig({
-          basemapId,
-          initialMaps,
-          ...(initialMapsAreTopics ? {initialMapsAreTopics: true} : {}),
-          x,
-          y,
-          scale,
-        });
+        return MapConfigActions.setInitialMapConfig({basemapId, initialMaps, x, y, scale});
       }),
     );
   });

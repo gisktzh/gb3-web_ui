@@ -11,6 +11,8 @@ export const LayerCatalogActions = createActionGroup({
     'Clear Layer Catalog': emptyProps(),
     'Set Filter String': props<{filterString: string}>(),
     'Clear Filter String': emptyProps(),
+    'Set Initial Topics': props<{topicIds: string[]}>(),
+    'Clear Initial Topics': emptyProps(),
     'Set Initial Maps Error': errorProps(),
   },
 });

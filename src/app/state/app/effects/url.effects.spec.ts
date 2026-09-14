@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
+import {Observable, of, toArray} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {routerNavigatedAction} from '@ngrx/router-store';
@@ -138,17 +138,17 @@ describe('UrlEffects', () => {
       vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.subscribe((action) => {
-        expect(action).toEqual(
+      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
+        expect(actions).toEqual([
+          LayerCatalogActions.setInitialTopics({topicIds: ['topic-a', 'topic-b']}),
           MapConfigActions.setInitialMapConfig({
             x: 11,
             y: 22,
             scale: 33,
             basemapId: 'base',
-            initialMaps: ['topic-a', 'topic-b'],
-            initialMapsAreTopics: true,
+            initialMaps: [],
           }),
-        );
+        ]);
       });
     });
 
@@ -158,17 +158,35 @@ describe('UrlEffects', () => {
       vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.subscribe((action) => {
-        expect(action).toEqual(
+      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
+        expect(actions).toEqual([
+          LayerCatalogActions.setInitialTopics({topicIds: []}),
           MapConfigActions.setInitialMapConfig({
             x: 11,
             y: 22,
             scale: 33,
             basemapId: expect.any(String),
             initialMaps: [],
-            initialMapsAreTopics: true,
           }),
-        );
+        ]);
+      });
+    });
+
+    it('initializes topics independently from URL search parameters', () => {
+      store.overrideSelector(selectQueryParams, {topics: 'topic-a,topic-b', searchTerm: 'search'});
+      store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: 'base', topics: null});
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
+        expect(actions).toEqual([
+          LayerCatalogActions.setInitialTopics({topicIds: ['topic-a', 'topic-b']}),
+          SearchActions.initializeSearchFromUrlParameters({
+            searchTerm: 'search',
+            searchIndex: undefined,
+            basemapId: expect.any(String),
+            initialMaps: [],
+          }),
+        ]);
       });
     });
 

@@ -21,7 +21,6 @@ export const SearchActions = createActionGroup({
       searchIndex: string | undefined;
       basemapId: string;
       initialMaps: string[];
-      initialMapsAreTopics?: boolean;
     }>(),
     'Set Search Api Error': errorProps(),
     'Set Search Api Results': props<{results: SearchApiResultMatch[]}>(),

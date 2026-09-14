@@ -21,7 +21,6 @@ export const initialState: MapConfigState = {
   isMaxZoomedIn: defaultMapConfig.isMaxZoomedIn,
   isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut,
   initialMaps: defaultMapConfig.initialMaps,
-  initialMapsAreTopics: false,
   predefinedInitialExtent: defaultMapConfig.predefinedInitialExtent,
   initialMapPadding: defaultMapConfig.initialMapPadding,
   initialMapPaddingMobile: defaultMapConfig.initialMapPaddingMobile,
@@ -39,7 +38,7 @@ export const mapConfigFeature = createFeature({
     on(MapConfigActions.markMapServiceAsDeinitialized, (state): MapConfigState => {
       return {...state, isMapServiceInitialized: false};
     }),
-    on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId, initialMaps, initialMapsAreTopics}): MapConfigState => {
+    on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId, initialMaps}): MapConfigState => {
       const initialExtent = {
         center: {
           x: x ?? initialState.center.x,
@@ -53,7 +52,6 @@ export const mapConfigFeature = createFeature({
         ...state,
         activeBasemapId,
         initialMaps,
-        initialMapsAreTopics: initialMapsAreTopics ?? false,
         ...initialExtent,
         predefinedInitialExtent: true,
       };
@@ -107,13 +105,13 @@ export const mapConfigFeature = createFeature({
       return {...state, activeBasemapId};
     }),
     on(MapConfigActions.clearInitialMapsConfig, (state): MapConfigState => {
-      return {...state, initialMaps: [], initialMapsAreTopics: false};
+      return {...state, initialMaps: []};
     }),
     on(ActiveMapItemActions.addInitialMapItems, (state): MapConfigState => {
-      return {...state, initialMaps: [], initialMapsAreTopics: false};
+      return {...state, initialMaps: []};
     }),
     on(LayerCatalogActions.setInitialMapsError, (state): MapConfigState => {
-      return {...state, initialMaps: [], initialMapsAreTopics: false};
+      return {...state, initialMaps: []};
     }),
     on(MapConfigActions.setRotation, (state, {rotation}): MapConfigState => {
       return {...state, rotation: rotation};
