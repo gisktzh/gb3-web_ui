@@ -85,6 +85,14 @@ describe('ActiveMapItemEffects', () => {
       },
       {name: 'removing all items', action: ActiveMapItemActions.removeAllActiveMapItems()},
       {
+        name: 'reordering items',
+        action: ActiveMapItemActions.reorderActiveMapItem({previousPosition: 1, currentPosition: 0}),
+      },
+      {
+        name: 'moving an item to the top',
+        action: ActiveMapItemActions.moveToTop({activeMapItem: createGb2WmsMapItemMock('moved')}),
+      },
+      {
         name: 'adding a favourite',
         action: ActiveMapItemActions.addFavourite({
           activeMapItems: [],

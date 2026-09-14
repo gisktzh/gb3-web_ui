@@ -47,6 +47,8 @@ export class ActiveMapItemEffects {
         ActiveMapItemActions.removeAllActiveMapItems,
         ActiveMapItemActions.addFavourite,
         ActiveMapItemActions.addInitialMapItems,
+        ActiveMapItemActions.reorderActiveMapItem,
+        ActiveMapItemActions.moveToTop,
       ),
       concatLatestFrom(() => this.store.select(selectMapPageParams)),
       map(([_, params]) => UrlActions.setMapPageParams({params})),
