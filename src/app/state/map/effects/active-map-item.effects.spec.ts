@@ -39,6 +39,8 @@ import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {MAP_SERVICE} from '../../../app.tokens';
 import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
+import {selectMapPageParams} from '../selectors/map-config-params.selector';
+import {UrlActions} from '../../app/actions/url.actions';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -69,6 +71,50 @@ describe('ActiveMapItemEffects', () => {
 
   afterEach(() => {
     store.resetSelectors();
+  });
+
+  describe('updateMapPageQueryParams$', () => {
+    it.each([
+      {
+        name: 'adding an item',
+        action: ActiveMapItemActions.addActiveMapItem({activeMapItem: createGb2WmsMapItemMock('added'), position: 0}),
+      },
+      {
+        name: 'removing an item',
+        action: ActiveMapItemActions.removeActiveMapItem({activeMapItem: createGb2WmsMapItemMock('removed')}),
+      },
+      {name: 'removing all items', action: ActiveMapItemActions.removeAllActiveMapItems()},
+      {
+        name: 'adding a favourite',
+        action: ActiveMapItemActions.addFavourite({
+          activeMapItems: [],
+          baseConfig: {center: {x: 1, y: 2}, scale: 3, basemap: 'base'},
+          drawingsToAdd: [],
+        }),
+      },
+      {name: 'adding initial items', action: ActiveMapItemActions.addInitialMapItems({initialMapItems: []})},
+    ])('updates the complete map page params after $name', ({action}) => {
+      const params = {x: 1, y: 2, scale: 3, basemap: 'base', topics: 'one,two'};
+      store.overrideSelector(selectMapPageParams, params);
+      actions$ = of(action);
+
+      effects.updateMapPageQueryParams$.subscribe((result) => {
+        expect(result).toEqual(UrlActions.setMapPageParams({params}));
+      });
+    });
+
+    it('does not react to changes of non-standard topic state', () => {
+      const activeMapItem = createGb2WmsMapItemMock('topic');
+      store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: 'base', topics: 'topic'});
+      actions$ = of(ActiveMapItemActions.setOpacity({activeMapItem, opacity: 0.5}));
+      let wasCalled = false;
+
+      effects.updateMapPageQueryParams$.subscribe(() => {
+        wasCalled = true;
+      });
+
+      expect(wasCalled).toBe(false);
+    });
   });
 
   describe('addMapItem$', () => {

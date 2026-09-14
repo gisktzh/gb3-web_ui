@@ -10,7 +10,7 @@ import {MainPage} from '../../../shared/enums/main-page.enum';
 import {ActivatedRouteSnapshot, NavigationEnd, Router, RouterModule} from '@angular/router';
 import {BasemapConfigService} from '../../../map/services/basemap-config.service';
 import {selectQueryParams} from '../selectors/router.selector';
-import {selectMapConfigParams} from '../../map/selectors/map-config-params.selector';
+import {selectMapPageParams} from '../../map/selectors/map-config-params.selector';
 import {MapConfigActions} from '../../map/actions/map-config.actions';
 import {selectKeepTemporaryUrlParams, selectMainPage} from '../reducers/url.reducer';
 import {SearchActions} from '../actions/search.actions';
@@ -76,9 +76,9 @@ describe('UrlEffects', () => {
 
   describe('handleInitialMapPageParameters$', () => {
     it('dispatches UrlActions.setMapPageParams() if current query params are not containing any map config parameters', () => {
-      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', topics: null};
       store.overrideSelector(selectQueryParams, {});
-      store.overrideSelector(selectMapConfigParams, params);
+      store.overrideSelector(selectMapPageParams, params);
 
       const expectedAction = UrlActions.setMapPageParams({params});
 
@@ -93,7 +93,7 @@ describe('UrlEffects', () => {
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
-      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+      store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: '4', topics: null});
 
       const expectedAction = MapConfigActions.setInitialMapConfig({
         scale: params.scale,
@@ -114,7 +114,7 @@ describe('UrlEffects', () => {
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
-      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+      store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: '4', topics: null});
       const extent = vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33})();
 
       const expectedAction = MapConfigActions.setInitialMapConfig({
@@ -129,12 +129,55 @@ describe('UrlEffects', () => {
       });
     });
 
+    it('prefers normalized topics over legacy initialMapIds', () => {
+      const params = {topics: ' topic-a,topic-b,topic-a ', initialMapIds: 'legacy-topic'};
+      const basemapConfigService = TestBed.inject(BasemapConfigService);
+      vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue('base');
+      store.overrideSelector(selectQueryParams, params);
+      store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: 'base', topics: null});
+      vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33});
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleInitialMapPageParameters$.subscribe((action) => {
+        expect(action).toEqual(
+          MapConfigActions.setInitialMapConfig({
+            x: 11,
+            y: 22,
+            scale: 33,
+            basemapId: 'base',
+            initialMaps: ['topic-a', 'topic-b'],
+            initialMapsAreTopics: true,
+          }),
+        );
+      });
+    });
+
+    it('treats an explicitly empty topics parameter as authoritative', () => {
+      store.overrideSelector(selectQueryParams, {topics: '', initialMapIds: 'legacy-topic'});
+      store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: 'base', topics: null});
+      vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33});
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleInitialMapPageParameters$.subscribe((action) => {
+        expect(action).toEqual(
+          MapConfigActions.setInitialMapConfig({
+            x: 11,
+            y: 22,
+            scale: 33,
+            basemapId: expect.any(String),
+            initialMaps: [],
+            initialMapsAreTopics: true,
+          }),
+        );
+      });
+    });
+
     it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchTerm', () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchTerm: 'search'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
-      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+      store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: '4', topics: null});
 
       const expectedAction = SearchActions.initializeSearchFromUrlParameters({
         searchTerm: params.searchTerm,
@@ -154,7 +197,7 @@ describe('UrlEffects', () => {
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
-      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+      store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: '4', topics: null});
 
       const expectedAction = SearchActions.initializeSearchFromUrlParameters({
         searchTerm: undefined,
@@ -251,6 +294,22 @@ describe('UrlEffects', () => {
 
       expect(routerSpy).not.toHaveBeenCalled();
 
+      vi.useRealTimers();
+    });
+
+    it('does not navigate when the current page is not the maps page', async () => {
+      vi.useFakeTimers();
+      const router = TestBed.inject(Router);
+      const routerSpy = vi.spyOn(router, 'navigate');
+      store.overrideSelector(selectMainPage, MainPage.Data);
+      store.overrideSelector(selectQueryParams, {});
+      store.overrideSelector(selectKeepTemporaryUrlParams, false);
+
+      actions$ = of(UrlActions.setMapPageParams({params: {topics: 'one'}}));
+      effects.setMapPageParameters$.subscribe();
+      await vi.runAllTimersAsync();
+
+      expect(routerSpy).not.toHaveBeenCalled();
       vi.useRealTimers();
     });
   });
