@@ -7,7 +7,12 @@
   hideToggle
 >
   <mat-expansion-panel-header class="list-item__header" [class.list-item__header--no-background]="!hasBackgroundColor()">
-    <div class="list-item__header__content">
+    <div
+      class="list-item__header__content"
+      [class.list-item__header__content--level-1]="nestingLevel() === 1"
+      [class.list-item__header__content--level-2]="nestingLevel() === 2"
+      [class.list-item__header__content--level-3]="nestingLevel() === 3"
+    >
       <mat-icon
         [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
         [class.list-item__header__content__toggle--position-end]="toggleButtonPosition() === 'end'"
@@ -32,6 +37,15 @@
     </div>
   </mat-expansion-panel-header>
   <ng-template matExpansionPanelContent>
-    <ng-content />
+    <div
+      class="list-item__content"
+      [class.list-item__content--has-border]="hasBorder()"
+      [class.list-item__content--is-nested]="nestingLevel() > 0"
+      [class.list-item__content--level-1]="nestingLevel() === 1"
+      [class.list-item__content--level-2]="nestingLevel() === 2"
+      [class.list-item__content--level-3]="nestingLevel() === 3"
+    >
+      <ng-content />
+    </div>
   </ng-template>
 </mat-expansion-panel>

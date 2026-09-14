@@ -21,6 +21,7 @@
           [metaDataLink]="layer.metaDataLink"
           [hasBackgroundColor]="false"
           [showInteractiveElements]="showInteractiveElements()"
+          [nestingLevel]="1"
         >
           <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
           <ng-container *ngTemplateOutlet="featureInfoContent" />
