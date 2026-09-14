@@ -92,6 +92,7 @@ describe('ActiveMapItemEffects', () => {
         name: 'moving an item to the top',
         action: ActiveMapItemActions.moveToTop({activeMapItem: createGb2WmsMapItemMock('moved')}),
       },
+      {name: 'finishing initial topic loading', action: LayerCatalogActions.clearInitialTopics()},
       {
         name: 'adding a favourite',
         action: ActiveMapItemActions.addFavourite({

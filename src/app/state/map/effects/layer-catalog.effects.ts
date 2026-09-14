@@ -9,7 +9,7 @@ import {selectMaps} from '../selectors/maps.selector';
 import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../reducers/map-config.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {selectItems} from '../reducers/layer-catalog.reducer';
+import {selectItems, selectPendingInitialTopicIds} from '../reducers/layer-catalog.reducer';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
@@ -60,21 +60,7 @@ export class LayerCatalogEffects {
       // create an array of ActiveMapItems for each id in the initialMaps configuration that has a matching map in the layer catalog
       // the map-config reducer reacts to both addInitialMapItems and setInitialMapsError by clearing initialMaps,
       // preventing double-firing when both triggers arrive close together
-      map(([_, availableMaps, {initialMaps, initialMapsAreTopics}]) => {
-        if (initialMapsAreTopics) {
-          const invalidTopicIds = initialMaps.filter((initialMap) => !availableMaps.some((availableMap) => availableMap.id === initialMap));
-          const initialMapItems = initialMaps.flatMap((initialMap) => {
-            const availableMap = availableMaps.find((mapItem) => mapItem.id === initialMap);
-            return availableMap ? [ActiveMapItemFactory.createGb2WmsMapItem(availableMap)] : [];
-          });
-
-          if (invalidTopicIds.length > 0) {
-            this.errorHandler.handleError(new SomeTopicsCouldNotBeLoaded(invalidTopicIds));
-          }
-
-          return ActiveMapItemActions.addInitialMapItems({initialMapItems});
-        }
-
+      map(([_, availableMaps, {initialMaps}]) => {
         try {
           const initialMapItems = initialMaps.map((initialMap) => {
             const actualAvailableMap = availableMaps.find((availableMap) => availableMap.id === initialMap);
@@ -89,6 +75,37 @@ export class LayerCatalogEffects {
           return LayerCatalogActions.setInitialMapsError({error});
         }
       }),
+    );
+  });
+
+  public handleInitialTopicLoad$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(LayerCatalogActions.setLayerCatalog, LayerCatalogActions.setInitialTopics),
+      concatLatestFrom(() => [this.store.select(selectMaps), this.store.select(selectPendingInitialTopicIds)]),
+      filter(([, availableMaps, pendingTopicIds]) => availableMaps.length > 0 && pendingTopicIds !== undefined),
+      map(([, availableMaps, pendingTopicIds]) => {
+        const requestedTopicIds = pendingTopicIds ?? [];
+        const invalidTopicIds = requestedTopicIds.filter((topicId) => !availableMaps.some((availableMap) => availableMap.id === topicId));
+        const initialMapItems = requestedTopicIds.flatMap((topicId) => {
+          const availableMap = availableMaps.find((mapItem) => mapItem.id === topicId);
+          return availableMap ? [ActiveMapItemFactory.createGb2WmsMapItem(availableMap)] : [];
+        });
+
+        if (invalidTopicIds.length > 0) {
+          this.errorHandler.handleError(new SomeTopicsCouldNotBeLoaded(invalidTopicIds));
+        }
+
+        return ActiveMapItemActions.addInitialMapItems({initialMapItems});
+      }),
+    );
+  });
+
+  public clearInitialTopicsAfterLoad$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.addInitialMapItems),
+      concatLatestFrom(() => this.store.select(selectPendingInitialTopicIds)),
+      filter(([, pendingTopicIds]) => pendingTopicIds !== undefined),
+      map(() => LayerCatalogActions.clearInitialTopics()),
     );
   });
 

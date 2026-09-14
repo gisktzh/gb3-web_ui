@@ -14,7 +14,6 @@ export const MapConfigActions = createActionGroup({
       scale: number | undefined;
       basemapId: string;
       initialMaps: string[];
-      initialMapsAreTopics?: boolean;
     }>(),
     'Set Map Extent': props<Coordinate & {scale: number}>(),
     'Set Reference Distance': props<{referenceDistanceInMeters: number}>(),
