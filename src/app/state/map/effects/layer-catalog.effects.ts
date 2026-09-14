@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import {ErrorHandler, inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {catchError, filter, iif, map, of, switchMap} from 'rxjs';
@@ -13,7 +13,11 @@ import {selectItems} from '../reducers/layer-catalog.reducer';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
-import {InitialMapIdsParameterInvalid, InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
+import {
+  InitialMapIdsParameterInvalid,
+  InitialMapsCouldNotBeLoaded,
+  SomeTopicsCouldNotBeLoaded,
+} from '../../../shared/errors/initial-maps.errors';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 @Injectable()
@@ -21,6 +25,7 @@ export class LayerCatalogEffects {
   private readonly actions$ = inject(Actions);
   private readonly topicsService = inject(Gb3TopicsService);
   private readonly store = inject(Store);
+  private readonly errorHandler = inject(ErrorHandler);
 
   public requestLayerCatalog$ = createEffect(() => {
     return this.actions$.pipe(
@@ -55,7 +60,21 @@ export class LayerCatalogEffects {
       // create an array of ActiveMapItems for each id in the initialMaps configuration that has a matching map in the layer catalog
       // the map-config reducer reacts to both addInitialMapItems and setInitialMapsError by clearing initialMaps,
       // preventing double-firing when both triggers arrive close together
-      map(([_, availableMaps, {initialMaps}]) => {
+      map(([_, availableMaps, {initialMaps, initialMapsAreTopics}]) => {
+        if (initialMapsAreTopics) {
+          const invalidTopicIds = initialMaps.filter((initialMap) => !availableMaps.some((availableMap) => availableMap.id === initialMap));
+          const initialMapItems = initialMaps.flatMap((initialMap) => {
+            const availableMap = availableMaps.find((mapItem) => mapItem.id === initialMap);
+            return availableMap ? [ActiveMapItemFactory.createGb2WmsMapItem(availableMap)] : [];
+          });
+
+          if (invalidTopicIds.length > 0) {
+            this.errorHandler.handleError(new SomeTopicsCouldNotBeLoaded(invalidTopicIds));
+          }
+
+          return ActiveMapItemActions.addInitialMapItems({initialMapItems});
+        }
+
         try {
           const initialMapItems = initialMaps.map((initialMap) => {
             const actualAvailableMap = availableMaps.find((availableMap) => availableMap.id === initialMap);

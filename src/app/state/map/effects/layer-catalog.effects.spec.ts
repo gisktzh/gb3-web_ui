@@ -15,11 +15,16 @@ import {Map} from '../../../shared/interfaces/topic.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {InitialMapIdsParameterInvalid, InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
+import {
+  InitialMapIdsParameterInvalid,
+  InitialMapsCouldNotBeLoaded,
+  SomeTopicsCouldNotBeLoaded,
+} from '../../../shared/errors/initial-maps.errors';
 import {selectItems} from '../reducers/layer-catalog.reducer';
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 import {catchError} from 'rxjs';
+import {ErrorHandler} from '@angular/core';
 
 describe('LayerCatalogEffects', () => {
   let actions$: Observable<Action>;
@@ -120,6 +125,44 @@ describe('LayerCatalogEffects', () => {
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.handleInitialMapLoad.subscribe((action) => {
         expect(action).toEqual(expectedAction);
+      });
+    });
+
+    it('loads valid topics and ignores unknown topic ids', () => {
+      const mapConfigStateMock = {
+        initialMaps: ['1', 'unknown', '2'],
+        initialMapsAreTopics: true,
+      } as MapConfigState;
+      const mapMock = [{id: '1'}, {id: '2'}] as Map[];
+
+      store.overrideSelector(selectMaps, mapMock);
+      store.overrideSelector(selectMapConfigState, mapConfigStateMock);
+      const errorHandlerSpy = vi.spyOn(TestBed.inject(ErrorHandler), 'handleError');
+      actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
+
+      effects.handleInitialMapLoad.subscribe((action) => {
+        expect(action).toEqual(
+          ActiveMapItemActions.addInitialMapItems({
+            initialMapItems: mapMock.map((mapItem) => ActiveMapItemFactory.createGb2WmsMapItem(mapItem)),
+          }),
+        );
+        expect(errorHandlerSpy).toHaveBeenCalledWith(new SomeTopicsCouldNotBeLoaded(['unknown']));
+      });
+    });
+
+    it('clears initialization and reports a warning if all topic ids are unknown', () => {
+      const mapConfigStateMock = {
+        initialMaps: ['unknown'],
+        initialMapsAreTopics: true,
+      } as MapConfigState;
+      store.overrideSelector(selectMaps, [{id: '1'}] as Map[]);
+      store.overrideSelector(selectMapConfigState, mapConfigStateMock);
+      const errorHandlerSpy = vi.spyOn(TestBed.inject(ErrorHandler), 'handleError');
+      actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
+
+      effects.handleInitialMapLoad.subscribe((action) => {
+        expect(action).toEqual(ActiveMapItemActions.addInitialMapItems({initialMapItems: []}));
+        expect(errorHandlerSpy).toHaveBeenCalledWith(new SomeTopicsCouldNotBeLoaded(['unknown']));
       });
     });
 

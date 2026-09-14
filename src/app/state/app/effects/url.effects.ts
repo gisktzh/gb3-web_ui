@@ -10,7 +10,7 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {distinctUntilChanged, filter, switchMap} from 'rxjs';
 import {MapConfigActions} from '../../map/actions/map-config.actions';
 import {MapConstants} from '../../../shared/constants/map.constants';
-import {selectMapConfigParams} from '../../map/selectors/map-config-params.selector';
+import {selectMapPageParams} from '../../map/selectors/map-config-params.selector';
 import {selectKeepTemporaryUrlParams, selectMainPage} from '../reducers/url.reducer';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {Store} from '@ngrx/store';
@@ -66,10 +66,14 @@ export class UrlEffects {
       map((action) => action.mainPage),
       distinctUntilChanged(),
       filter((mainPage) => mainPage === MainPage.Maps),
-      concatLatestFrom(() => [this.store.select(selectQueryParams), this.store.select(selectMapConfigParams)]),
+      concatLatestFrom(() => [this.store.select(selectQueryParams), this.store.select(selectMapPageParams)]),
       map(([_, currentParams, mapConfigParams]) => {
-        const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex} = UrlUtils.extractUrlParamsForMapInitialization(currentParams);
-        const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
+        const {x, y, scale, basemap, topics, initialMapIds, searchTerm, searchIndex} =
+          UrlUtils.extractUrlParamsForMapInitialization(currentParams);
+        const initialMapsAreTopics = topics !== undefined;
+        const initialMapsParam = initialMapsAreTopics ? topics : initialMapIds;
+        const initialMaps = initialMapsParam ? initialMapsParam.split(',') : [];
+        const initialMapsSource = initialMapsAreTopics ? {initialMapsAreTopics: true} : {};
         const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap, initialMaps);
         if (searchTerm || searchIndex) {
           return SearchActions.initializeSearchFromUrlParameters({
@@ -77,13 +81,14 @@ export class UrlEffects {
             searchIndex,
             basemapId,
             initialMaps,
+            ...initialMapsSource,
           });
-        } else if (x || y || scale || basemap || initialMapIds) {
+        } else if (x || y || scale || basemap || initialMapIds || initialMapsAreTopics) {
           if (!x && !y && !scale) {
             const initialExtent = this.initalMapExtentService.calculateInitialExtent();
-            return MapConfigActions.setInitialMapConfig({...initialExtent, initialMaps, basemapId});
+            return MapConfigActions.setInitialMapConfig({...initialExtent, initialMaps, ...initialMapsSource, basemapId});
           }
-          return MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps});
+          return MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps, ...initialMapsSource});
         } else {
           return UrlActions.setMapPageParams({params: mapConfigParams});
         }

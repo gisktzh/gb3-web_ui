@@ -13,6 +13,7 @@ describe('selectFavouriteBaseConfig', () => {
       scale: 9001,
       rotation: 0,
       initialMaps: [],
+      initialMapsAreTopics: false,
       isMaxZoomedIn: true,
       isMaxZoomedOut: false,
       ready: true,

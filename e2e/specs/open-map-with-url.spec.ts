@@ -10,12 +10,18 @@ test.describe('Map with URL', () => {
 
     await expect(page.locator('active-map-item-header', {hasText: 'Orthofoto'})).toBeVisible();
     await expect(page.locator('active-map-item-header', {hasText: 'Amtliche Vermessung in Farbe'})).toBeVisible();
+    await expect.poll(() => new URL(page.url()).searchParams.get('topics')).toBe('OrthoZH,AVfarbigZH');
+    expect(new URL(page.url()).searchParams.has('initialMapIds')).toBe(false);
 
-    await page.goto('/maps?initialMapIds=OerebKatasterZH');
+    await page.goto('/maps?topics=OerebKatasterZH,UnknownTopic');
     await page.waitForLoadState('networkidle');
 
     await expect(page.locator('active-map-item-header', {hasText: 'Orthofoto'})).not.toBeVisible();
     await expect(page.locator('active-map-item-header', {hasText: 'Amtliche Vermessung in Farbe'})).not.toBeVisible();
     await expect(page.locator('active-map-item-header', {hasText: 'ÖREB-Kataster'})).toBeVisible();
+    await expect.poll(() => new URL(page.url()).searchParams.get('topics')).toBe('OerebKatasterZH');
+
+    await page.locator('active-map-item-header', {hasText: 'ÖREB-Kataster'}).getByTestId('delete').click();
+    await expect.poll(() => new URL(page.url()).searchParams.has('topics')).toBe(false);
   });
 });

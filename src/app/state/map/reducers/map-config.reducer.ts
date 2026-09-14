@@ -21,6 +21,7 @@ export const initialState: MapConfigState = {
   isMaxZoomedIn: defaultMapConfig.isMaxZoomedIn,
   isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut,
   initialMaps: defaultMapConfig.initialMaps,
+  initialMapsAreTopics: false,
   predefinedInitialExtent: defaultMapConfig.predefinedInitialExtent,
   initialMapPadding: defaultMapConfig.initialMapPadding,
   initialMapPaddingMobile: defaultMapConfig.initialMapPaddingMobile,
@@ -38,7 +39,7 @@ export const mapConfigFeature = createFeature({
     on(MapConfigActions.markMapServiceAsDeinitialized, (state): MapConfigState => {
       return {...state, isMapServiceInitialized: false};
     }),
-    on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId, initialMaps}): MapConfigState => {
+    on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId, initialMaps, initialMapsAreTopics}): MapConfigState => {
       const initialExtent = {
         center: {
           x: x ?? initialState.center.x,
@@ -48,7 +49,14 @@ export const mapConfigFeature = createFeature({
       };
       const activeBasemapId = basemapId ?? initialState.activeBasemapId;
 
-      return {...state, activeBasemapId, initialMaps, ...initialExtent, predefinedInitialExtent: true};
+      return {
+        ...state,
+        activeBasemapId,
+        initialMaps,
+        initialMapsAreTopics: initialMapsAreTopics ?? false,
+        ...initialExtent,
+        predefinedInitialExtent: true,
+      };
     }),
     on(MapConfigActions.setMapExtent, (state, {x, y, scale}): MapConfigState => {
       /**
@@ -99,13 +107,13 @@ export const mapConfigFeature = createFeature({
       return {...state, activeBasemapId};
     }),
     on(MapConfigActions.clearInitialMapsConfig, (state): MapConfigState => {
-      return {...state, initialMaps: []};
+      return {...state, initialMaps: [], initialMapsAreTopics: false};
     }),
     on(ActiveMapItemActions.addInitialMapItems, (state): MapConfigState => {
-      return {...state, initialMaps: []};
+      return {...state, initialMaps: [], initialMapsAreTopics: false};
     }),
     on(LayerCatalogActions.setInitialMapsError, (state): MapConfigState => {
-      return {...state, initialMaps: []};
+      return {...state, initialMaps: [], initialMapsAreTopics: false};
     }),
     on(MapConfigActions.setRotation, (state, {rotation}): MapConfigState => {
       return {...state, rotation: rotation};

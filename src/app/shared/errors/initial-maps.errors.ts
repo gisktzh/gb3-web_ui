@@ -25,3 +25,12 @@ export class InitialMapsCouldNotBeLoaded extends RecoverableError {
     this.message = message;
   }
 }
+
+export class SomeTopicsCouldNotBeLoaded extends RecoverableError {
+  public override name = 'SomeTopicsCouldNotBeLoaded';
+
+  constructor(topicIds: string[]) {
+    super();
+    this.message = `Folgende Karten konnten nicht geladen werden: ${topicIds.map((topicId) => `"${topicId}"`).join(', ')}.`;
+  }
+}

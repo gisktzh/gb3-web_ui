@@ -4,7 +4,7 @@ import {concatLatestFrom} from '@ngrx/operators';
 import {tap} from 'rxjs';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapService} from '../../../map/interfaces/map.service';
-import {selectMapConfigParams} from '../selectors/map-config-params.selector';
+import {selectMapPageParams} from '../selectors/map-config-params.selector';
 import {map} from 'rxjs';
 import {UrlActions} from '../../app/actions/url.actions';
 import {Store} from '@ngrx/store';
@@ -76,7 +76,7 @@ export class MapConfigEffects {
         MapConfigActions.setBasemap,
         MapConfigActions.setMapExtent,
       ),
-      concatLatestFrom(() => this.store.select(selectMapConfigParams)),
+      concatLatestFrom(() => this.store.select(selectMapPageParams)),
       map(([_, params]) => UrlActions.setMapPageParams({params})),
     );
   });
@@ -91,9 +91,16 @@ export class MapConfigEffects {
   public setBaseMapAndInitialMaps$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchActions.initializeSearchFromUrlParameters),
-      map(({basemapId, initialMaps}) => {
+      map(({basemapId, initialMaps, initialMapsAreTopics}) => {
         const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
-        return MapConfigActions.setInitialMapConfig({basemapId, initialMaps, x, y, scale});
+        return MapConfigActions.setInitialMapConfig({
+          basemapId,
+          initialMaps,
+          ...(initialMapsAreTopics ? {initialMapsAreTopics: true} : {}),
+          x,
+          y,
+          scale,
+        });
       }),
     );
   });
