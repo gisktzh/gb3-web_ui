@@ -11,7 +11,40 @@
   }
   @if (bottomSheetContent() === 'feature-info') {
     <bottom-sheet-item overlayTitle="Info" bottomSheetHeight="large">
-      <feature-info body />
+      <ng-container body *featureFlag="'statisticsTool'">
+        <div
+          class="bottom-sheet-overlay__tabs"
+          [class.bottom-sheet-overlay__tabs--statistics]="queryMode() === 'statistics'"
+          role="tablist"
+        >
+          <button
+            class="bottom-sheet-overlay__tabs__tab"
+            [class.bottom-sheet-overlay__tabs__tab--active]="queryMode() === 'feature'"
+            (click)="setQueryMode('feature')"
+            [attr.aria-selected]="queryMode() === 'feature'"
+            role="tab"
+            type="button"
+          >
+            Features
+          </button>
+          <button
+            class="bottom-sheet-overlay__tabs__tab"
+            [class.bottom-sheet-overlay__tabs__tab--active]="queryMode() === 'statistics'"
+            (click)="setQueryMode('statistics')"
+            [attr.aria-selected]="queryMode() === 'statistics'"
+            role="tab"
+            type="button"
+          >
+            Statistik
+          </button>
+        </div>
+      </ng-container>
+
+      @if (queryMode() === 'statistics') {
+        <statistics body [showInteractiveElements]="showInteractiveElements()" />
+      } @else {
+        <feature-info body [showInteractiveElements]="showInteractiveElements()" />
+      }
     </bottom-sheet-item>
   }
   @if (bottomSheetContent() === 'map-attributes') {
