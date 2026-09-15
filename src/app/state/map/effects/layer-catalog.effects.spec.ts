@@ -15,11 +15,16 @@ import {Map} from '../../../shared/interfaces/topic.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {InitialMapIdsParameterInvalid, InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
-import {selectItems} from '../reducers/layer-catalog.reducer';
+import {
+  InitialMapIdsParameterInvalid,
+  InitialMapsCouldNotBeLoaded,
+  SomeTopicsCouldNotBeLoaded,
+} from '../../../shared/errors/initial-maps.errors';
+import {selectItems, selectPendingInitialTopicIds} from '../reducers/layer-catalog.reducer';
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 import {catchError} from 'rxjs';
+import {ErrorHandler} from '@angular/core';
 
 describe('LayerCatalogEffects', () => {
   let actions$: Observable<Action>;
@@ -176,6 +181,64 @@ describe('LayerCatalogEffects', () => {
       expect(actualAction).toBeUndefined();
 
       vi.useRealTimers();
+    });
+  });
+
+  describe('handleInitialTopicLoad$', () => {
+    it('loads valid topics in URL order and reports unknown topic ids', () => {
+      const pendingTopicIds = ['1', 'unknown', '2'];
+      const mapMock = [{id: '1'}, {id: '2'}] as Map[];
+
+      store.overrideSelector(selectMaps, mapMock);
+      store.overrideSelector(selectPendingInitialTopicIds, pendingTopicIds);
+      const errorHandlerSpy = vi.spyOn(TestBed.inject(ErrorHandler), 'handleError');
+      actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
+
+      effects.handleInitialTopicLoad$.subscribe((action) => {
+        expect(action).toEqual(
+          ActiveMapItemActions.addInitialMapItems({
+            initialMapItems: mapMock.map((mapItem) => ActiveMapItemFactory.createGb2WmsMapItem(mapItem)),
+          }),
+        );
+        expect(errorHandlerSpy).toHaveBeenCalledWith(new SomeTopicsCouldNotBeLoaded(['unknown']));
+      });
+    });
+
+    it('completes initialization and reports a warning if all topic ids are unknown', () => {
+      store.overrideSelector(selectMaps, [{id: '1'}] as Map[]);
+      store.overrideSelector(selectPendingInitialTopicIds, ['unknown']);
+      const errorHandlerSpy = vi.spyOn(TestBed.inject(ErrorHandler), 'handleError');
+      actions$ = of(LayerCatalogActions.setInitialTopics({topicIds: ['unknown']}));
+
+      effects.handleInitialTopicLoad$.subscribe((action) => {
+        expect(action).toEqual(ActiveMapItemActions.addInitialMapItems({initialMapItems: []}));
+        expect(errorHandlerSpy).toHaveBeenCalledWith(new SomeTopicsCouldNotBeLoaded(['unknown']));
+      });
+    });
+
+    it('waits until the layer catalogue is available', async () => {
+      vi.useFakeTimers();
+      store.overrideSelector(selectMaps, []);
+      store.overrideSelector(selectPendingInitialTopicIds, ['requested']);
+      actions$ = of(LayerCatalogActions.setInitialTopics({topicIds: ['requested']}));
+      let actualAction;
+
+      effects.handleInitialTopicLoad$.subscribe((action) => (actualAction = action));
+      await vi.runAllTimersAsync();
+
+      expect(actualAction).toBeUndefined();
+      vi.useRealTimers();
+    });
+  });
+
+  describe('clearInitialTopicsAfterLoad$', () => {
+    it('clears pending topics after initial map items were added', () => {
+      store.overrideSelector(selectPendingInitialTopicIds, ['requested']);
+      actions$ = of(ActiveMapItemActions.addInitialMapItems({initialMapItems: []}));
+
+      effects.clearInitialTopicsAfterLoad$.subscribe((action) => {
+        expect(action).toEqual(LayerCatalogActions.clearInitialTopics());
+      });
     });
   });
 

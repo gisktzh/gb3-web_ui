@@ -48,7 +48,13 @@ export const mapConfigFeature = createFeature({
       };
       const activeBasemapId = basemapId ?? initialState.activeBasemapId;
 
-      return {...state, activeBasemapId, initialMaps, ...initialExtent, predefinedInitialExtent: true};
+      return {
+        ...state,
+        activeBasemapId,
+        initialMaps,
+        ...initialExtent,
+        predefinedInitialExtent: true,
+      };
     }),
     on(MapConfigActions.setMapExtent, (state, {x, y, scale}): MapConfigState => {
       /**

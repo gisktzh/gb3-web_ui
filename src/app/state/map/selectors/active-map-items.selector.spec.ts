@@ -1,8 +1,15 @@
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {selectAllItems, selectGb2WmsActiveMapItemsWithMapNotices, selectItems, selectTemporaryMapItems} from './active-map-items.selector';
+import {
+  selectAllItems,
+  selectGb2WmsActiveMapItemsWithMapNotices,
+  selectItems,
+  selectTemporaryMapItems,
+  selectTopicIdsForUrl,
+} from './active-map-items.selector';
 import {ActiveMapItemState} from '../states/active-map-item.state';
+import {createExternalWmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 
 const drawingsActiveMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
 const measurementsActiveMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawingLayerPrefix.Drawing);
@@ -62,6 +69,37 @@ describe('activeMapItemsSelector', () => {
       const actual = selectGb2WmsActiveMapItemsWithMapNotices.projector(activeMapItems);
 
       expect(actual).toEqual([gb2ActiveMapItemWithNotice]);
+    });
+  });
+
+  describe('selectTopicIdsForUrl', () => {
+    it('returns deduplicated topic ids in active item order', () => {
+      const firstTopic = ActiveMapItemFactory.createGb2WmsMapItem({id: 'first'} as Map);
+      const duplicateFirstTopic = ActiveMapItemFactory.createGb2WmsMapItem({id: 'first'} as Map);
+      const secondTopic = ActiveMapItemFactory.createGb2WmsMapItem({id: 'second'} as Map);
+
+      const actual = selectTopicIdsForUrl.projector([firstTopic, duplicateFirstTopic, secondTopic]);
+
+      expect(actual).toEqual(['first', 'second']);
+    });
+
+    it('excludes temporary topics, single layers, drawings and external services', () => {
+      const map = {id: 'topic', layers: [{layer: 'single'}]} as Map;
+      const topic = ActiveMapItemFactory.createGb2WmsMapItem(map);
+      const temporaryTopic = ActiveMapItemFactory.createTemporaryGb2WmsMapItem({id: 'temporary'} as Map);
+      const singleLayer = ActiveMapItemFactory.createGb2WmsMapItem(map, map.layers[0]);
+      const externalService = createExternalWmsMapItemMock('https://example.com/wms', 'external', []);
+
+      const actual = selectTopicIdsForUrl.projector([
+        topic,
+        temporaryTopic,
+        singleLayer,
+        drawingsActiveMapItem,
+        measurementsActiveMapItem,
+        externalService,
+      ]);
+
+      expect(actual).toEqual(['topic']);
     });
   });
 

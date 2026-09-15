@@ -136,4 +136,23 @@ describe('UrlUtils', () => {
       expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBe(false);
     });
   });
+
+  describe('extractUrlParamsForMapInitialization', () => {
+    it('extracts and normalizes topics', () => {
+      const result = UrlUtils.extractUrlParamsForMapInitialization({topics: ' topic-a,topic-b,topic-a,, topic-c '});
+
+      expect(result.topics).toBe('topic-a,topic-b,topic-c');
+    });
+
+    it('uses the last topics parameter occurrence', () => {
+      const result = UrlUtils.extractUrlParamsForMapInitialization({topics: ['old-topic', 'new-topic,new-topic']});
+
+      expect(result.topics).toBe('new-topic');
+    });
+
+    it('distinguishes a missing topics parameter from an empty one', () => {
+      expect(UrlUtils.extractUrlParamsForMapInitialization({}).topics).toBeUndefined();
+      expect(UrlUtils.extractUrlParamsForMapInitialization({topics: ''}).topics).toBe('');
+    });
+  });
 });

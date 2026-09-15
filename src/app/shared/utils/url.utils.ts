@@ -85,6 +85,7 @@ export class UrlUtils {
       y: yParam,
       scale: scaleParam,
       basemap: basemapParam,
+      topics: topicsParam,
       initialMapIds: initialMapIdsParam,
       searchTerm: searchTermParam,
       searchIndex: searchIndexParam,
@@ -95,12 +96,32 @@ export class UrlUtils {
     const y = UrlUtils.extractLastOccurrenceOfParam(yParam);
     const scale = UrlUtils.extractLastOccurrenceOfParam(scaleParam);
     const basemap = UrlUtils.extractLastOccurrenceOfParam(basemapParam);
+    const topics = UrlUtils.normalizeCommaSeparatedIds(UrlUtils.extractLastOccurrenceOfParam(topicsParam));
     const initialMapIds = UrlUtils.extractLastOccurrenceOfParam(initialMapIdsParam);
     const searchTerm = UrlUtils.extractLastOccurrenceOfParam(searchTermParam);
     const searchIndex = searchIndexParam ? UrlUtils.extractLastOccurrenceOfParam(searchIndexParam).split(',')[0] : undefined;
     const collapsed = UrlUtils.extractLastOccurrenceOfParam(collapsedParam) === 'true';
 
-    return {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex, collapsed};
+    return {x, y, scale, basemap, topics, initialMapIds, searchTerm, searchIndex, collapsed};
+  }
+
+  /**
+   * Normalizes a comma-separated list of ids while preserving their order.
+   * Empty entries and duplicates are removed.
+   */
+  public static normalizeCommaSeparatedIds(param: string | undefined): string | undefined {
+    if (param === undefined) {
+      return undefined;
+    }
+
+    return [
+      ...new Set(
+        param
+          .split(',')
+          .map((id) => id.trim())
+          .filter(Boolean),
+      ),
+    ].join(',');
   }
 
   /**
