@@ -51,15 +51,13 @@ export class EsriMapLoaderService implements MapLoaderService {
     return this.loadService(layer).pipe(
       map((wmsLayer) => {
         const subLayers: ExternalWmsLayer[] = wmsLayer.sublayers
-          .map(
-            (wmsSubLayer): ExternalWmsLayer => ({
-              type: 'wms',
-              id: wmsSubLayer.id,
-              name: wmsSubLayer.name,
-              title: wmsSubLayer.title ?? '',
-              visible: wmsSubLayer.visible,
-            }),
-          )
+          .map((wmsSubLayer): ExternalWmsLayer => ({
+            type: 'wms',
+            id: wmsSubLayer.id,
+            name: wmsSubLayer.name,
+            title: wmsSubLayer.title ?? '',
+            visible: wmsSubLayer.visible,
+          }))
           .toArray();
         if (subLayers.length === 0) {
           throw new ExternalServiceHasNoLayers();
@@ -86,14 +84,12 @@ export class EsriMapLoaderService implements MapLoaderService {
       filter((kmlLayer) => hasNonNullishProperty(kmlLayer, 'sublayers')),
       map((kmlLayer) => {
         const subLayers: ExternalKmlLayer[] = kmlLayer.sublayers
-          .map(
-            (kmlSubLayer): ExternalKmlLayer => ({
-              type: 'kml',
-              id: kmlSubLayer.id,
-              title: kmlSubLayer.title ?? '',
-              visible: kmlSubLayer.visible,
-            }),
-          )
+          .map((kmlSubLayer): ExternalKmlLayer => ({
+            type: 'kml',
+            id: kmlSubLayer.id,
+            title: kmlSubLayer.title ?? '',
+            visible: kmlSubLayer.visible,
+          }))
           .toArray();
         if (subLayers.length === 0) {
           throw new ExternalServiceHasNoLayers();

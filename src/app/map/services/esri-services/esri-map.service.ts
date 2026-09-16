@@ -291,9 +291,13 @@ export class EsriMapService implements MapService {
       mapItem.settings.url,
       mapItem.visible,
       mapItem.opacity,
-      mapItem.settings.layers.map(
-        (layer): ExternalWmsLayer => ({type: 'wms', id: layer.id, name: layer.layer, title: layer.title, visible: layer.visible}),
-      ),
+      mapItem.settings.layers.map((layer): ExternalWmsLayer => ({
+        type: 'wms',
+        id: layer.id,
+        name: layer.layer,
+        title: layer.title,
+        visible: layer.visible,
+      })),
       this.wmsImageFormatMimeType,
     );
     if (mapItem.settings.timeSliderExtent) {
