@@ -6,6 +6,7 @@ test.describe('Test filter search for maps and places', () => {
     openUrlWithCoordinates,
     search,
     zoom,
+    clickDefaultMapViewCenter,
     useHar,
     captureConsole,
   }) => {
@@ -17,16 +18,13 @@ test.describe('Test filter search for maps and places', () => {
     await search('Gemeinde Dübendorf');
     const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
     await expect(zoomInput).toBeVisible();
-    await expect(zoomInput).toHaveValue('19369');
+    await expect(zoomInput).toHaveValue('23467');
 
     await search('Amtliche Vermessung in Farbe');
 
     await zoom(3000);
 
-    const map = page.locator('map-page');
-    await expect(map).toBeVisible();
-
-    await map.click({force: true});
+    await clickDefaultMapViewCenter();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(500);
 

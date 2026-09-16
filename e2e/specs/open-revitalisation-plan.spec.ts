@@ -6,6 +6,7 @@ test.describe('Revitalisierungsplanung', () => {
     openUrlWithCoordinates,
     filterForLayer,
     clickMapInTheList,
+    clickDefaultMapViewCenter,
     useHar,
     captureConsole,
   }) => {
@@ -17,10 +18,7 @@ test.describe('Revitalisierungsplanung', () => {
     await filterForLayer('Gewässerökologie: Revitalisierungsplanung');
     await clickMapInTheList('Gewässerökologie: Revitalisierungsplanung');
 
-    const map = page.locator('map-page');
-    await expect(map).toBeVisible();
-
-    await map.click({force: true});
+    await clickDefaultMapViewCenter();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(500);
 

@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
 import path from 'node:path';
 import {expect} from '@playwright/test';
+import {canonicalizeUrl} from './utils/canonicalize.utils';
 
 // URL pattern. If pattern matches,
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
@@ -23,7 +24,10 @@ type Gb3Fixtures = {
   login: () => Promise<void>;
   search: (searchTerm: string) => Promise<void>;
   zoom: (zoomLevel: number) => Promise<void>;
+  clickDefaultMapViewCenter: () => Promise<void>;
 };
+
+const DEFAULT_DESKTOP_MAP_VIEW_PADDING = {top: 88, right: 180, bottom: 88, left: 474};
 
 function getRequestKey(url: string, method: string) {
   return crypto.createHash('sha256').update(JSON.stringify({url, method}), 'utf8').digest('hex');
@@ -75,8 +79,11 @@ export const test = base.extend<Gb3Fixtures>({
                   .frame()
                   .evaluate(([key]) => Promise.resolve(Number.parseInt(sessionStorage.getItem(key) || '0')), [requestKey]);
 
-                const entry = candidates[requestIndex];
-                const newRequestIndex = requestIndex + 1;
+                // A browser may repeat an otherwise identical request more often than it occurred while the HAR was
+                // recorded. Once all recorded variants have been consumed, keep serving the last known response.
+                const candidateIndex = Math.min(requestIndex, candidates.length - 1);
+                const entry = candidates[candidateIndex];
+                const newRequestIndex = Math.min(candidateIndex + 1, candidates.length - 1);
 
                 await redactedRequest
                   .frame()
@@ -90,7 +97,7 @@ export const test = base.extend<Gb3Fixtures>({
           },
           matchFunction: customMatcher({
             urlComparator(a, b) {
-              return a === b;
+              return canonicalizeUrl(a) === canonicalizeUrl(b);
             },
             postDataComparator(a, b) {
               return a === b;
@@ -245,6 +252,26 @@ export const test = base.extend<Gb3Fixtures>({
       await zoomInput.focus();
       await zoomInput.clear();
       await zoomInput.fill(zoomLevel.toString());
+    });
+  },
+
+  clickDefaultMapViewCenter: async ({page}, use) => {
+    await use(async () => {
+      const mapContainer = page.locator('map-container');
+      await expect(mapContainer).toBeVisible();
+
+      const boundingBox = await mapContainer.boundingBox();
+      expect(boundingBox).not.toBeNull();
+
+      const horizontalViewportStart = boundingBox!.x + DEFAULT_DESKTOP_MAP_VIEW_PADDING.left;
+      const horizontalViewportEnd = boundingBox!.x + boundingBox!.width - DEFAULT_DESKTOP_MAP_VIEW_PADDING.right;
+      const verticalViewportStart = boundingBox!.y + DEFAULT_DESKTOP_MAP_VIEW_PADDING.top;
+      const verticalViewportEnd = boundingBox!.y + boundingBox!.height - DEFAULT_DESKTOP_MAP_VIEW_PADDING.bottom;
+
+      await page.mouse.click(
+        horizontalViewportStart + (horizontalViewportEnd - horizontalViewportStart) / 2,
+        verticalViewportStart + (verticalViewportEnd - verticalViewportStart) / 2,
+      );
     });
   },
 });

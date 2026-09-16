@@ -66,7 +66,7 @@
     "ng-click-outside2": "^20.0.0",
     "ng2-charts": "^10.0.0",
     "ngx-ui-tour-md-menu": "^17.0.0",
-    "playwright": "^1.61.1",
+    "playwright": "1.62.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "uuid": "^14.0.0"
@@ -77,7 +77,7 @@
     "@eslint/js": "^10.0.1",
     "@ngrx/eslint-plugin": "^22.0.0",
     "@ngrx/schematics": "^22.0.0",
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "1.62.1",
     "@types/har-format": "^1.2.16",
     "@types/node": "^25.5.0",
     "@vitest/coverage-v8": "^4.1.0",
