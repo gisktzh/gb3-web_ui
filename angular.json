@@ -54,7 +54,23 @@
               "includePaths": ["src/styles", "node_modules/@material"]
             },
             "scripts": [],
-            "allowedCommonJsDependencies": ["dayjs"]
+            "allowedCommonJsDependencies": ["dayjs"],
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": [
+                "localhost",
+                "127.0.0.1",
+                "dev.geo.zh.ch",
+                "staging.geo.ktzh.ch",
+                "uat.geo.ktzh.ch",
+                "geo.zh.ch",
+                "geo.ktzh.ch"
+              ]
+            },
+            "ssr": {
+              "entry": "src/server.ts"
+            }
           },
           "configurations": {
             "production": {
@@ -158,6 +174,9 @@
               "outputHashing": "all"
             },
             "production-dev-ebp": {
+              "server": false,
+              "ssr": false,
+              "outputMode": "static",
               "budgets": [
                 {
                   "type": "initial",

@@ -1,5 +1,5 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {Component, ElementRef, Renderer2, computed, effect, inject, viewChildren, ChangeDetectionStrategy} from '@angular/core';
+import {Component, DOCUMENT, ElementRef, Renderer2, computed, effect, inject, viewChildren, ChangeDetectionStrategy} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
@@ -47,6 +47,7 @@ export class AppComponent {
   private readonly store = inject(Store);
   private readonly iconsService = inject(IconsService);
   private readonly renderer = inject(Renderer2);
+  private readonly document = inject(DOCUMENT);
   private readonly elements = viewChildren<HTMLElement, ElementRef<HTMLElement>>(Object.values(SkipLinkTemplateVariable).join(', '), {
     read: ElementRef<HTMLElement>,
   });
@@ -121,9 +122,9 @@ export class AppComponent {
 
     effect(() => {
       if (this.isIntranet()) {
-        this.renderer.addClass(document.body, 'body--is-intranet');
+        this.renderer.addClass(this.document.body, 'body--is-intranet');
       } else {
-        this.renderer.removeClass(document.body, 'body--is-intranet');
+        this.renderer.removeClass(this.document.body, 'body--is-intranet');
       }
     });
   }

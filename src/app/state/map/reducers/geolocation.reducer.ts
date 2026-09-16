@@ -2,10 +2,16 @@ import {createFeature, createReducer, on} from '@ngrx/store';
 import {GeolocationState} from '../states/geolocation.state';
 import {GeolocationActions} from '../actions/geolocation.actions';
 
+const GEOLOCATION_ERROR_CODE = {
+  permissionDenied: 1,
+  positionUnavailable: 2,
+  timeout: 3,
+} as const;
+
 const GEOLOCATION_ERRORS = new Map<number, string>([
-  [GeolocationPositionError.TIMEOUT, 'Die Berechtiungsanfrage hat das Zeitlimit überschritten.'],
-  [GeolocationPositionError.PERMISSION_DENIED, 'Die Berechtiungsanfrage wurde abgelehnt.'],
-  [GeolocationPositionError.POSITION_UNAVAILABLE, 'Die Position konnte nicht korrekt eruiert werden.'],
+  [GEOLOCATION_ERROR_CODE.timeout, 'Die Berechtiungsanfrage hat das Zeitlimit überschritten.'],
+  [GEOLOCATION_ERROR_CODE.permissionDenied, 'Die Berechtiungsanfrage wurde abgelehnt.'],
+  [GEOLOCATION_ERROR_CODE.positionUnavailable, 'Die Position konnte nicht korrekt eruiert werden.'],
 ]);
 
 export const geolocationFeatureConfigKey = 'geolocation';

@@ -1,4 +1,5 @@
-import {AfterViewInit, Component, ElementRef, inject, viewChild, ChangeDetectionStrategy} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, PLATFORM_ID, viewChild, ChangeDetectionStrategy} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
 import {Store} from '@ngrx/store';
 import {AppLayoutActions} from '../../../state/app/actions/app-layout.actions';
 
@@ -14,10 +15,15 @@ import {AppLayoutActions} from '../../../state/app/actions/app-layout.actions';
 })
 export class ScrollbarWidthCalculationComponent implements AfterViewInit {
   private readonly store = inject(Store);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private readonly containerRef = viewChild.required<ElementRef>('container');
 
   public ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const container = this.containerRef().nativeElement;
     const scrollbarWidth = container.offsetWidth - container.clientWidth;
     this.store.dispatch(AppLayoutActions.setScrollbarWidth({scrollbarWidth: scrollbarWidth}));

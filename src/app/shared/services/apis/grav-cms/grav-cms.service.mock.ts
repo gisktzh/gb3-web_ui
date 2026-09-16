@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {DOCUMENT, inject, Injectable} from '@angular/core';
 import {delay, map} from 'rxjs';
 import {Observable, of} from 'rxjs';
 import {GravCmsService} from './grav-cms.service';
@@ -14,7 +14,7 @@ import {discoverMapsDataMock, frequentlyUsedDataMock, pageInfosDataMock} from '.
   providedIn: 'root',
 })
 export class GravCmsServiceMock extends GravCmsService {
-  protected override apiBaseUrl: string = window.location.origin;
+  protected override apiBaseUrl: string = inject(DOCUMENT).location.origin;
 
   public override loadDiscoverMapsData(): Observable<DiscoverMapsItem[]> {
     return of(discoverMapsDataMock).pipe(
