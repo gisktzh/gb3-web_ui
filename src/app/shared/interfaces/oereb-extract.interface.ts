@@ -14,11 +14,11 @@ export interface OerebExtractMeasurementLine {
   lineLength: number;
 }
 
-export interface OereExtractbMeasurementPoints {
+export interface OereExtractMeasurementPoints {
   pointsCount: number;
 }
 
-export type OerebExtractMeasurement = OerebExtractMeasurementArea | OerebExtractMeasurementLine | OereExtractbMeasurementPoints;
+export type OerebExtractMeasurement = OerebExtractMeasurementArea | OerebExtractMeasurementLine | OereExtractMeasurementPoints;
 
 export interface OerebExtractValue {
   title: string;
@@ -38,7 +38,7 @@ export interface OerebConcernedTheme {
   legalProvisions: OerebExtractValue[];
   laws: OerebExtractValue[];
   hints: OerebExtractValue[];
-  resonsibleOffices: OerebExtractValue[];
+  responsibleOffices: OerebExtractValue[];
   restrictions: OerebExtractRestriction[];
 }
 

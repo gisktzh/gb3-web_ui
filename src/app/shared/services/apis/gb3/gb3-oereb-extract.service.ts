@@ -67,19 +67,19 @@ export class Gb3OerebExtractService extends Gb3ApiService {
           legalProvisions: t.legal_provisions.map((v) => this.mapLinkObjectToOerebValue(v)),
           laws: t.laws.map((v) => this.mapLinkObjectToOerebValue(v)),
           hints: t.hints.map((v) => this.mapLinkObjectToOerebValue(v)),
-          resonsibleOffices: t.responsible_offices.map((v) => this.mapLinkObjectToOerebValue(v)),
+          responsibleOffices: t.responsible_offices.map((v) => this.mapLinkObjectToOerebValue(v)),
         }),
       ),
       notConcernedThemes: info.not_concerned_themes.map((t) =>
-        this.mapNotConcernedThemeFromOerebfeatureTooOerebExtratResponseNotConcernedTheme(t),
+        this.mapNotConcernedThemeFromOerebfeatureTooOerebExtractResponseNotConcernedTheme(t),
       ),
       notAvailableThemes: info.not_available_themes.map((t) =>
-        this.mapNotConcernedThemeFromOerebfeatureTooOerebExtratResponseNotConcernedTheme(t),
+        this.mapNotConcernedThemeFromOerebfeatureTooOerebExtractResponseNotConcernedTheme(t),
       ),
     };
   }
 
-  private mapNotConcernedThemeFromOerebfeatureTooOerebExtratResponseNotConcernedTheme(
+  private mapNotConcernedThemeFromOerebfeatureTooOerebExtractResponseNotConcernedTheme(
     data: OerebAPINotConcernedTheme,
   ): OerebNotConcernedTheme {
     return {...data};

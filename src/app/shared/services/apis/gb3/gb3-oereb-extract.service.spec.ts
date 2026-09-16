@@ -237,7 +237,7 @@ describe('Gb3OerebExtractService', () => {
                 href: 'https://example.com/hint',
               },
             ],
-            resonsibleOffices: [
+            responsibleOffices: [
               {
                 title: 'Zuständige Stelle',
                 href: 'https://example.com/office',

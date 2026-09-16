@@ -16,7 +16,7 @@
       </a>
     </div>
 
-    <map-overlay-list-item [forceExpanded]="true" overlayTitle="Grundstücksinformationen" [hasBackgroundColor]="false" [nestingLevel]="1">
+    <map-overlay-list-item [forceExpanded]="true" overlayTitle="Grundstücksinformationen" [hasBackgroundColor]="false">
       <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
       <div class="feature-info-content" #containerCadastreInfo>
@@ -28,7 +28,7 @@
       </div>
     </map-overlay-list-item>
 
-    <map-overlay-list-item [forceExpanded]="true" overlayTitle="Zuständige Stelle" [hasBackgroundColor]="false" [nestingLevel]="1">
+    <map-overlay-list-item [forceExpanded]="true" overlayTitle="Zuständige Stelle" [hasBackgroundColor]="false">
       <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
       <div class="feature-info-content" #containerKboAndSurveyor>
@@ -41,23 +41,12 @@
     </map-overlay-list-item>
 
     @if (concernedThemes().length > 0) {
-      <map-overlay-list-item
-        [forceExpanded]="true"
-        overlayTitle="Betroffene Themen"
-        [hasBackgroundColor]="false"
-        [hasBorder]="true"
-        [nestingLevel]="1"
-      >
+      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Betroffene Themen" [hasBackgroundColor]="false" [hasBorder]="true">
         <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
         @for (theme of concernedThemes(); track $index) {
-          <map-overlay-list-item [forceExpanded]="true" [overlayTitle]="theme.name" [hasBackgroundColor]="false" [nestingLevel]="2">
+          <map-overlay-list-item [forceExpanded]="true" [overlayTitle]="theme.name" [hasBackgroundColor]="false">
             <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
-            <map-overlay-list-item
-              [forceExpanded]="true"
-              overlayTitle="Allgemeine Informationen"
-              [hasBackgroundColor]="false"
-              [nestingLevel]="3"
-            >
+            <map-overlay-list-item [forceExpanded]="true" overlayTitle="Allgemeine Informationen" [hasBackgroundColor]="false">
               <ul class="oereb-info-list">
                 @for (infoList of theme.generalInfo; track $index) {
                   <li>
@@ -91,12 +80,7 @@
             </map-overlay-list-item>
 
             @for (restriction of theme.restrictions; track $index) {
-              <map-overlay-list-item
-                [forceExpanded]="true"
-                [overlayTitle]="restriction.displayValue"
-                [hasBackgroundColor]="false"
-                [nestingLevel]="3"
-              >
+              <map-overlay-list-item [forceExpanded]="true" [overlayTitle]="restriction.displayValue" [hasBackgroundColor]="false">
                 @if (restriction.itemType === 'list') {
                   <ul class="oereb-info-list">
                     @for (item of restriction.items; track $index) {
@@ -145,13 +129,13 @@
     }
 
     @if (notConcernedThemes().tableRows.size > 0) {
-      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht betroffene Themen" [hasBackgroundColor]="false" [nestingLevel]="1">
+      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht betroffene Themen" [hasBackgroundColor]="false">
         <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
         <div class="feature-info-content" #containerNotConcernedThemes>
           <resizable-info-table
             [tableData]="notConcernedThemes()"
-            tableLabel="Zuständige Stelle"
+            tableLabel="Nicht betroffene Themen"
             [resizeContainer]="containerNotConcernedThemes"
           />
         </div>
@@ -159,13 +143,13 @@
     }
 
     @if (notAvailableThemes().tableRows.size > 0) {
-      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht verfügbare Themen" [hasBackgroundColor]="false" [nestingLevel]="1">
+      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht verfügbare Themen" [hasBackgroundColor]="false">
         <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
         <div class="feature-info-content" #containerNotConcernedThemes>
           <resizable-info-table
             [tableData]="notAvailableThemes()"
-            tableLabel="Zuständige Stelle"
+            tableLabel="Nicht verfügbare Themen"
             [resizeContainer]="containerNotConcernedThemes"
           />
         </div>

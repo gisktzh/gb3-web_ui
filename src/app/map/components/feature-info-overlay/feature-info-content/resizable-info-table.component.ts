@@ -115,21 +115,8 @@ export class ResizableInfoTableComponent implements OnDestroy, AfterViewInit {
         return;
       }
 
-      const effectiveWidth = container.clientWidth;
-      let scrollWidth = container.scrollWidth;
-
-      this.containerWidth.set(effectiveWidth);
-      this.containerScrollWidth.set(scrollWidth);
-
-      if (this.maxTableHeaderWidth() > effectiveWidth * TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO) {
-        this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
-
-        // Resizing automatically means different scrollWidth, using a timeout here too to let the browser catch up.
-        setTimeout(() => {
-          scrollWidth = container.scrollWidth;
-          this.containerScrollWidth.set(scrollWidth);
-        });
-      }
+      this.containerWidth.set(container.clientWidth);
+      this.containerScrollWidth.set(container.scrollWidth);
     });
   }
 
