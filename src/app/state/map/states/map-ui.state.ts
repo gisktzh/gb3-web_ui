@@ -15,6 +15,8 @@ export interface MapUiState {
   hideZoomButtons: boolean;
   toolMenuVisibility: ToolMenuVisibility | undefined;
   bottomSheetContent: BottomSheetContent;
-  /** Width of the right hand side bar in pixels; `undefined` means the default width defined in CSS. */
-  sideBarWidth: number | undefined;
+  /** Width of the legend overlay in pixels; `undefined` means the default width defined in CSS. */
+  legendOverlayWidth: number | undefined;
+  /** Width of the shared right hand side bar in pixels; `undefined` means the default width defined in CSS. */
+  rightSideBarWidth: number | undefined;
 }

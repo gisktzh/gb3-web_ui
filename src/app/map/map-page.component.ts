@@ -90,8 +90,8 @@ export class MapPageComponent implements AfterViewInit, OnInit {
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
   public readonly rotation = this.store.selectSignal(selectRotation);
-  public readonly sideBarWidth = computed(() => this.mapUiState().sideBarWidth);
-  private readonly legendOverlayWidth = signal<number | undefined>(undefined);
+  public readonly legendOverlayWidth = computed(() => this.mapUiState().legendOverlayWidth);
+  public readonly rightSideBarWidth = computed(() => this.mapUiState().rightSideBarWidth);
   public readonly isSideBarOverlayVisible = computed(() => {
     const mapUiState = this.mapUiState();
     return mapUiState.isFeatureInfoOverlayVisible || mapUiState.isElevationProfileOverlayVisible || mapUiState.isDrawingEditOverlayVisible;
@@ -109,7 +109,7 @@ export class MapPageComponent implements AfterViewInit, OnInit {
       isLegendVisible: mapUiState.isLegendOverlayVisible,
       legendWidth: this.legendOverlayWidth(),
       isRightSideBarVisible: this.isSideBarOverlayVisible(),
-      rightSideBarWidth: this.sideBarWidth(),
+      rightSideBarWidth: this.rightSideBarWidth(),
       viewportWidth: window.innerWidth,
     });
   });
@@ -150,12 +150,12 @@ export class MapPageComponent implements AfterViewInit, OnInit {
     this.isMapDataCatalogueMinimized.set(isMinimized);
   }
 
-  public setSideBarWidth(width: number) {
-    this.store.dispatch(MapUiActions.setSideBarWidth({width}));
+  public setRightSideBarWidth(width: number) {
+    this.store.dispatch(MapUiActions.setRightSideBarWidth({width}));
   }
 
-  public setLegendOverlayWidth(width: number | undefined) {
-    this.legendOverlayWidth.set(width);
+  public setLegendOverlayWidth(width: number) {
+    this.store.dispatch(MapUiActions.setLegendOverlayWidth({width}));
   }
 
   public closeSideDrawer() {
