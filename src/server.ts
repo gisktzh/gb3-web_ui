@@ -34,10 +34,27 @@ app.use(
  * Handle all other requests by rendering the Angular application.
  */
 app.use((req, res, next) => {
+  const start = Date.now();
+  // eslint-disable-next-line no-console
+  console.log(`[SSR] Rendering request: ${req.method} ${req.originalUrl || req.url}`);
+
   angularApp
     .handle(req)
-    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
-    .catch(next);
+    .then((response) => {
+      if (response) {
+        const duration = Date.now() - start;
+        // eslint-disable-next-line no-console
+        console.log(`[SSR] Rendered ${req.method} ${req.originalUrl || req.url} [${response.status}] in ${duration}ms`);
+        writeResponseToNodeResponse(response, res);
+      } else {
+        next();
+      }
+    })
+    .catch((err) => {
+      const duration = Date.now() - start;
+      console.error(`[SSR] Failed ${req.method} ${req.originalUrl || req.url} after ${duration}ms:`, err);
+      next(err);
+    });
 });
 
 /**
