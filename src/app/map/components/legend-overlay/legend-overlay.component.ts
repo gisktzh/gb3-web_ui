@@ -1,4 +1,4 @@
-import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import {Component, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
@@ -26,8 +26,10 @@ export class LegendOverlayComponent {
   public readonly printLoadingState = this.store.selectSignal(selectLegendPrintState);
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly legendItems = this.store.selectSignal(selectLegendItemsForDisplay);
+  public readonly resizeEvent = output<number | undefined>();
 
   public close() {
+    this.resizeEvent.emit(undefined);
     this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: false}));
   }
 
