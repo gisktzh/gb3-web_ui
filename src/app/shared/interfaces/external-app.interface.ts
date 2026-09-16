@@ -18,15 +18,7 @@ type ExternalAppTopic =
   | 'Wasser';
 
 type ExternalAppCategory =
-  | 'Fachapplikationen'
-  | 'WebMap'
-  | 'Datenanalyse'
-  | 'Visualisierung'
-  | '3D'
-  | 'Notebook'
-  | 'Mobile GIS'
-  | 'Dashboard'
-  | 'Erfassungstool';
+  'Fachapplikationen' | 'WebMap' | 'Datenanalyse' | 'Visualisierung' | '3D' | 'Notebook' | 'Mobile GIS' | 'Dashboard' | 'Erfassungstool';
 
 export interface ExternalApp {
   visibility: AccessMode | 'both';
