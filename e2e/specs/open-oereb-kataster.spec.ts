@@ -4,6 +4,7 @@ test.describe('OEREB-Kataster', () => {
   test('opens the OEREB-Kataster and searches for a specific address, returning its data in the info request', async ({
     page,
     search,
+    clickDefaultMapViewCenter,
     useHar,
     captureConsole,
   }) => {
@@ -18,10 +19,7 @@ test.describe('OEREB-Kataster', () => {
     await search('Weststrasse 49, 8003');
     await page.waitForTimeout(5000); // Until the zoom is done
 
-    const map = page.locator('map-page');
-    await expect(map).toBeVisible();
-
-    await map.click();
+    await clickDefaultMapViewCenter();
     await page.waitForLoadState('networkidle');
 
     await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
