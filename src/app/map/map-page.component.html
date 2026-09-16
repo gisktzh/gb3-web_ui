@@ -17,7 +17,11 @@
   @if (screenMode() !== 'mobile') {
     <div class="overlays" [class.overlays--sidebar-open]="isSideBarOverlayVisible()" [style.--side-bar-width.px]="sideBarWidth()">
       <div class="main-overlays">
-        <legend-overlay class="map-container__overlay" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
+        <legend-overlay
+          class="map-container__overlay"
+          [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+          (resizeEvent)="setLegendOverlayWidth($event)"
+        />
         <map-attribute-filter-overlay
           class="map-container__overlay"
           [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
@@ -109,7 +113,7 @@
     <bottom-sheet-overlay />
     <ng-container [ngTemplateOutlet]="mapToolsTemplate" />
   }
-  <map-container class="map-container__map" />
+  <map-container class="map-container__map" [viewPadding]="viewPadding()" />
 </mat-drawer-container>
 
 <ng-template #mapToolsTemplate>

@@ -80,7 +80,7 @@ export class UrlEffects {
           });
         } else if (x || y || scale || basemap || initialMapIds) {
           if (!x && !y && !scale) {
-            const initialExtent = this.initalMapExtentService.calculateInitialExtent();
+            const initialExtent = this.initalMapExtentService.calculateInitialExtentForPaddedView();
             return MapConfigActions.setInitialMapConfig({...initialExtent, initialMaps, basemapId});
           }
           return MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps});

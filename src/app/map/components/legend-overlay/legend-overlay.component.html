@@ -1,6 +1,7 @@
 <map-overlay
   (closeEvent)="close()"
   (printButtonEvent)="print()"
+  (resizeEvent)="resizeEvent.emit($event)"
   [isPrintButtonEnabled]="showInteractiveElements() && loadingState() === 'loaded' && legendItems().length > 0"
   [printLoadingState]="printLoadingState()"
   [showPrintButton]="showInteractiveElements()"

@@ -75,10 +75,12 @@ import LayerView from '@arcgis/core/views/layers/LayerView';
 import {RequestInterceptor} from '@arcgis/core/request/types';
 import {ResourceHandle} from '@arcgis/core/core/Handles';
 import {ClickEvent, LayerViewCreateEvent} from '@arcgis/core/views/input/types';
+import {MapViewPadding} from '../../../shared/interfaces/map-view-padding.interface';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
 const DEFAULT_COPYRIGHT = '© Kanton Zürich and MapServer Developers';
+const NO_VIEW_PADDING: MapViewPadding = {top: 0, right: 0, bottom: 0, left: 0};
 
 // used to distinguish between info-click and drawing-edit in the click listener
 enum EsriMouseButtonType {
@@ -125,6 +127,7 @@ export class EsriMapService implements MapService {
   private readonly printPreviewHandle = signal<ResourceHandle | null>(null);
   private readonly previousPrintPreviewHandle = signal<ResourceHandle | null>(null);
   public readonly mapContainerElement = signal<HTMLDivElement | null>(null);
+  private readonly viewPadding = signal<MapViewPadding | undefined>(undefined);
 
   constructor() {
     /**
@@ -228,7 +231,18 @@ export class EsriMapService implements MapService {
     this.esriMapViewService.mapView.set(undefined);
     this.mapInitialized.set(false);
     this.mapContainerElement.set(null);
+    this.viewPadding.set(undefined);
     this.store.dispatch(MapConfigActions.markMapServiceAsDeinitialized());
+  }
+
+  public setViewPadding(padding: MapViewPadding | undefined) {
+    const copiedPadding = padding ? {...padding} : undefined;
+    this.viewPadding.set(copiedPadding);
+
+    const mapView = this.esriMapViewService.mapView();
+    if (mapView) {
+      mapView.padding = copiedPadding ?? NO_VIEW_PADDING;
+    }
   }
 
   public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {
@@ -388,7 +402,10 @@ export class EsriMapService implements MapService {
   }
 
   public resetExtent() {
-    const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
+    const padding = this.viewPadding();
+    const {x, y, scale} = padding
+      ? this.initialMapExtentService.calculateInitialExtentForPaddedView(padding)
+      : this.initialMapExtentService.calculateInitialExtent();
     this.getMapView().center = new Point({x, y, spatialReference: new SpatialReference({wkid: this.defaultMapConfig.srsId})});
     this.getMapView().scale = scale;
   }
@@ -851,6 +868,7 @@ export class EsriMapService implements MapService {
       },
       spatialReference,
       popupEnabled: false,
+      padding: this.viewPadding() ?? NO_VIEW_PADDING,
     });
 
     // Removes the extra default zoom buttons.

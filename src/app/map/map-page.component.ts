@@ -34,6 +34,7 @@ import {CenterAnchorComponent} from '../onboarding-guide/components/center-ancho
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {NgTemplateOutlet} from '@angular/common';
+import {calculateMapViewPadding} from './utils/map-view-padding.utils';
 
 @Component({
   selector: 'map-page',
@@ -90,14 +91,35 @@ export class MapPageComponent implements AfterViewInit, OnInit {
   public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
   public readonly rotation = this.store.selectSignal(selectRotation);
   public readonly sideBarWidth = computed(() => this.mapUiState().sideBarWidth);
+  private readonly legendOverlayWidth = signal<number | undefined>(undefined);
   public readonly isSideBarOverlayVisible = computed(() => {
     const mapUiState = this.mapUiState();
     return mapUiState.isFeatureInfoOverlayVisible || mapUiState.isElevationProfileOverlayVisible || mapUiState.isDrawingEditOverlayVisible;
   });
+  public readonly viewPadding = computed(() => {
+    if (this.screenMode() === 'mobile') {
+      return undefined;
+    }
+
+    const mapUiState = this.mapUiState();
+    return calculateMapViewPadding({
+      basePadding: this.mapConfigState().initialMapPadding,
+      isEnabled: true,
+      isUiHidden: mapUiState.hideUiElements,
+      isLegendVisible: mapUiState.isLegendOverlayVisible,
+      legendWidth: this.legendOverlayWidth(),
+      isRightSideBarVisible: this.isSideBarOverlayVisible(),
+      rightSideBarWidth: this.sideBarWidth(),
+      viewportWidth: window.innerWidth,
+    });
+  });
 
   public ngOnInit() {
     if (!this.mapConfigState().predefinedInitialExtent) {
-      const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
+      const padding = this.viewPadding();
+      const {x, y, scale} = padding
+        ? this.initialMapExtentService.calculateInitialExtentForPaddedView(padding)
+        : this.initialMapExtentService.calculateInitialExtent();
       this.store.dispatch(
         MapConfigActions.setInitialMapConfig({
           x,
@@ -130,6 +152,10 @@ export class MapPageComponent implements AfterViewInit, OnInit {
 
   public setSideBarWidth(width: number) {
     this.store.dispatch(MapUiActions.setSideBarWidth({width}));
+  }
+
+  public setLegendOverlayWidth(width: number | undefined) {
+    this.legendOverlayWidth.set(width);
   }
 
   public closeSideDrawer() {
