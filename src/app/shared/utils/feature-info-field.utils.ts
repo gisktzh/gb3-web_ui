@@ -7,21 +7,7 @@ const DATE_TIME_WITH_SECONDS_PATTERN = /[T ]\d{2}:\d{2}:\d{2}/;
 const DATE_TIME_WITH_MINUTES_PATTERN = /[T ]\d{2}:\d{2}/;
 const EXPLICIT_TIMEZONE_PATTERN = /(Z|[+-]\d{2}:?\d{2})$/i;
 
-export function formatFeatureInfoFieldValue(value: string | number | null, type: 'text' | 'date'): string | null {
-  if (value === null) {
-    return null;
-  }
-
-  switch (type) {
-    case 'text':
-      return String(value);
-
-    case 'date':
-      return typeof value === 'string' ? formatDateValue(value) : null;
-  }
-}
-
-function formatDateValue(value: string): string | null {
+export function formatDateValue(value: string): string {
   const date = createDayjsObject(value);
 
   if (!date.isValid()) {
