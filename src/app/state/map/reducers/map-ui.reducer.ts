@@ -17,7 +17,8 @@ export const initialState: MapUiState = {
   hideZoomButtons: false,
   toolMenuVisibility: undefined,
   bottomSheetContent: 'none',
-  sideBarWidth: undefined,
+  legendOverlayWidth: undefined,
+  rightSideBarWidth: undefined,
 };
 
 export const mapUiFeature = createFeature({
@@ -41,6 +42,7 @@ export const mapUiFeature = createFeature({
         ...state,
         isLegendOverlayVisible: isVisible,
         bottomSheetContent: isVisible ? 'legend' : 'none',
+        legendOverlayWidth: isVisible ? state.legendOverlayWidth : undefined,
       };
     }),
     on(MapUiActions.setFeatureInfoVisibility, (state, {isVisible}): MapUiState => {
@@ -63,10 +65,16 @@ export const mapUiFeature = createFeature({
         isDrawingEditOverlayVisible: isVisible,
       };
     }),
-    on(MapUiActions.setSideBarWidth, (state, {width}): MapUiState => {
+    on(MapUiActions.setLegendOverlayWidth, (state, {width}): MapUiState => {
       return {
         ...state,
-        sideBarWidth: width,
+        legendOverlayWidth: width,
+      };
+    }),
+    on(MapUiActions.setRightSideBarWidth, (state, {width}): MapUiState => {
+      return {
+        ...state,
+        rightSideBarWidth: width,
       };
     }),
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
@@ -128,5 +136,6 @@ export const {
   selectHideToggleUiElementsButton,
   selectMapSideDrawerContent,
   selectIsMapSideDrawerOpen,
-  selectSideBarWidth,
+  selectLegendOverlayWidth,
+  selectRightSideBarWidth,
 } = mapUiFeature;

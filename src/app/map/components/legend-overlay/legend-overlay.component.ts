@@ -21,15 +21,15 @@ export class LegendOverlayComponent {
   private readonly store = inject(Store);
 
   public readonly showInteractiveElements = input(true);
+  public readonly width = input<number | undefined>(undefined);
   public readonly isVisible = this.store.selectSignal(selectIsLegendOverlayVisible);
   public readonly loadingState = this.store.selectSignal(selectLoadingState);
   public readonly printLoadingState = this.store.selectSignal(selectLegendPrintState);
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly legendItems = this.store.selectSignal(selectLegendItemsForDisplay);
-  public readonly resizeEvent = output<number | undefined>();
+  public readonly resizeEvent = output<number>();
 
   public close() {
-    this.resizeEvent.emit(undefined);
     this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: false}));
   }
 

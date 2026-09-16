@@ -48,19 +48,25 @@ describe('MapUi Reducer', () => {
       expect(result).toEqual({...initialState, isLegendOverlayVisible: expectedSetting, bottomSheetContent: 'legend'});
     });
 
-    it('sets bottomSheetContent to none if !isVisible', () => {
+    it('sets bottomSheetContent to none and resets the width if !isVisible', () => {
       const expectedSetting = false;
       const mockState: MapUiState = {
         ...initialState,
         hideZoomButtons: true,
         isLegendOverlayVisible: true,
         bottomSheetContent: 'legend',
+        legendOverlayWidth: 612,
       };
       const action = MapUiActions.setLegendOverlayVisibility({isVisible: expectedSetting});
 
       const result = reducer(mockState, action);
 
-      expect(result).toEqual({...mockState, isLegendOverlayVisible: expectedSetting, bottomSheetContent: 'none'});
+      expect(result).toEqual({
+        ...mockState,
+        isLegendOverlayVisible: expectedSetting,
+        bottomSheetContent: 'none',
+        legendOverlayWidth: undefined,
+      });
     });
   });
 
@@ -87,6 +93,18 @@ describe('MapUi Reducer', () => {
       const result = reducer(mockState, action);
 
       expect(result).toEqual({...mockState, isFeatureInfoOverlayVisible: expectedSetting, bottomSheetContent: 'none'});
+    });
+
+    it('retains the shared right side bar width when closing', () => {
+      const mockState: MapUiState = {
+        ...initialState,
+        isFeatureInfoOverlayVisible: true,
+        rightSideBarWidth: 512,
+      };
+
+      const result = reducer(mockState, MapUiActions.setFeatureInfoVisibility({isVisible: false}));
+
+      expect(result.rightSideBarWidth).toBe(512);
     });
   });
 
@@ -127,13 +145,23 @@ describe('MapUi Reducer', () => {
     });
   });
 
-  describe('setSideBarWidth', () => {
-    it('adjust sideBarWidth only', () => {
-      const action = MapUiActions.setSideBarWidth({width: 512});
+  describe('setLegendOverlayWidth', () => {
+    it('adjusts legendOverlayWidth only', () => {
+      const action = MapUiActions.setLegendOverlayWidth({width: 612});
 
       const result = reducer(initialState, action);
 
-      expect(result).toEqual({...initialState, sideBarWidth: 512});
+      expect(result).toEqual({...initialState, legendOverlayWidth: 612});
+    });
+  });
+
+  describe('setRightSideBarWidth', () => {
+    it('adjusts rightSideBarWidth only', () => {
+      const action = MapUiActions.setRightSideBarWidth({width: 512});
+
+      const result = reducer(initialState, action);
+
+      expect(result).toEqual({...initialState, rightSideBarWidth: 512});
     });
   });
 
@@ -221,7 +249,8 @@ describe('MapUi Reducer', () => {
         isElevationProfileOverlayVisible: true,
         toolMenuVisibility: 'drawing',
         bottomSheetContent: 'legend',
-        sideBarWidth: 512,
+        legendOverlayWidth: 612,
+        rightSideBarWidth: 512,
       };
       const action = MapUiActions.resetMapUiState();
 
