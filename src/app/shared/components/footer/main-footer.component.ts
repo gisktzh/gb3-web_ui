@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {MainPage} from '../../enums/main-page.enum';
 import {environment} from '../../../../environments/environment';
 import {PageSectionComponent} from '../page-section/page-section.component';
@@ -9,6 +9,7 @@ import {RouterLink} from '@angular/router';
   selector: 'main-footer',
   templateUrl: './main-footer.component.html',
   styleUrls: ['./main-footer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PageSectionComponent, ContactDetailsComponent, RouterLink],
 })
 export class MainFooterComponent {

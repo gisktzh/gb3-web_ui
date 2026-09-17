@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component';
 import {MatIconButton} from '@angular/material/button';
 
@@ -19,6 +19,7 @@ const TOOLTIP_TEXT = {
   selector: 'data-download-selection-tools',
   templateUrl: './data-download-selection-tools.component.html',
   styleUrls: ['./data-download-selection-tools.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatTooltip, MatIcon, MatDivider],
 })
 export class DataDownloadSelectionToolsComponent extends AbstractToolsComponent {

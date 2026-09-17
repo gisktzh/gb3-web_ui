@@ -1,4 +1,15 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, computed, inject, input, signal, viewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  computed,
+  inject,
+  input,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
@@ -14,7 +25,7 @@ import {KeyValuePipe} from '@angular/common';
 import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 import {HyphenatePipe} from '../../../pipes/hyphenate.pipe';
 import {selectScrollbarWidth} from 'src/app/state/app/reducers/app-layout.reducer';
-import {formatFeatureInfoFieldValue} from '../../../../shared/utils/feature-info-field.utils';
+import {formatDateValue} from '../../../../shared/utils/feature-info-field.utils';
 
 type CellType = 'text' | 'url' | 'image';
 
@@ -82,6 +93,7 @@ const TABLE_HEADER_WIDTH_TO_CONTAINER_WIDTH_RATIO = 0.8;
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TableColumnIdentifierDirective, MatRadioButton, ResizeHandlerComponent, KeyValuePipe, HyphenatePipe, MatRadioGroup],
 })
 export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
@@ -305,11 +317,16 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
 
     switch (feature.type) {
       case 'text':
+        return {
+          cellType: 'text',
+          fid,
+          displayValue: feature.value,
+        };
       case 'date':
         return {
           cellType: 'text',
           fid,
-          displayValue: formatFeatureInfoFieldValue(feature.value, feature.type) ?? DEFAULT_CELL_VALUE,
+          displayValue: formatDateValue(feature.value),
         };
       case 'image':
         return {

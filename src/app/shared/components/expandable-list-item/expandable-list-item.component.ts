@@ -1,4 +1,4 @@
-import {Component, effect, input, viewChild} from '@angular/core';
+import {Component, effect, input, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {LoadingState} from '../../types/loading-state.type';
 import {MatExpansionPanel, MatExpansionPanelHeader} from '@angular/material/expansion';
 
@@ -8,6 +8,7 @@ import {ExpandableListItemHeaderComponent} from './expandable-list-item-header/e
   selector: 'expandable-list-item',
   templateUrl: './expandable-list-item.component.html',
   styleUrls: ['./expandable-list-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatExpansionPanel, MatExpansionPanelHeader, ExpandableListItemHeaderComponent],
 })
 export class ExpandableListItemComponent {

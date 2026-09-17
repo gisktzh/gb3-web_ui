@@ -1,8 +1,9 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 
 @Component({
   selector: 'descriptive-highlighted-link',
   templateUrl: './descriptive-highlighted-link.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./descriptive-highlighted-link.component.scss'],
 })
 export class DescriptiveHighlightedLinkComponent {

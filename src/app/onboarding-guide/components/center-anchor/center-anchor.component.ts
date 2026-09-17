@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {OnboardingGuideAnchor} from '../../types/onboarding-guide-anchor.type';
 import {TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
 
@@ -9,6 +9,7 @@ import {TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
   selector: 'center-anchor',
   templateUrl: './center-anchor.component.html',
   styleUrls: ['./center-anchor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TourAnchorMatMenuDirective],
 })
 export class CenterAnchorComponent {

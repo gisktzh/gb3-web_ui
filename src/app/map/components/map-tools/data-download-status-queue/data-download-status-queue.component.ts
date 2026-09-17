@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {LayerCatalogActions} from '../../../../state/map/actions/layer-catalog.actions';
 import {OrderStatusJob} from '../../../../shared/interfaces/geoshop-order-status.interface';
@@ -18,6 +18,7 @@ import {DataDownloadOrderDownloadUrlPipe} from '../../../pipes/data-download-ord
   selector: 'data-download-status-queue',
   templateUrl: './data-download-status-queue.component.html',
   styleUrls: ['./data-download-status-queue.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCard,
     MatCardHeader,

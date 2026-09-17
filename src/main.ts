@@ -20,7 +20,7 @@ import {GravCmsServiceMock} from './app/shared/services/apis/grav-cms/grav-cms.s
 import {gravCmsFactory} from './app/shared/factories/grav-cms.factory';
 import {EFFECTS_ERROR_HANDLER, provideEffects} from '@ngrx/effects';
 import {effectErrorHandler} from './app/state/app/effects/effects-error-handler.effects';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {APP_ROUTES} from './app/app.routes';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {bootstrapApplication} from '@angular/platform-browser';
@@ -62,7 +62,7 @@ bootstrapApplication(AppComponent, {
     }),
     provideEffects(effects),
     provideRouterStore(),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     provideAnimations(),
     provideUiTour(),
   ],

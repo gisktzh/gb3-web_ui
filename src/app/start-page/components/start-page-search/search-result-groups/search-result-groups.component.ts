@@ -1,4 +1,4 @@
-import {Component, computed, inject, viewChildren} from '@angular/core';
+import {Component, computed, inject, viewChildren, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
@@ -21,6 +21,7 @@ import {OverviewSearchResultItemComponent} from '../../../../shared/components/d
   selector: 'search-result-groups',
   templateUrl: './search-result-groups.component.html',
   styleUrls: ['./search-result-groups.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatAccordion,
     SearchResultGroupComponent,

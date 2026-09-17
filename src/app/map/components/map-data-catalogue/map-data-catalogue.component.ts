@@ -1,4 +1,4 @@
-import {Component, OnDestroy, effect, inject, output, signal} from '@angular/core';
+import {Component, OnDestroy, effect, inject, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
 import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
@@ -36,6 +36,7 @@ import {ConfigService} from 'src/app/shared/services/config.service';
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
   styleUrls: ['./map-data-catalogue.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCard,
     TypedTourAnchorDirective,

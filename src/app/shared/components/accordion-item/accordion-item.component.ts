@@ -1,4 +1,4 @@
-import {Component, computed, inject, input, viewChild} from '@angular/core';
+import {Component, computed, inject, input, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {CdkAccordionItem} from '@angular/cdk/accordion';
@@ -12,6 +12,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'accordion-item',
   templateUrl: './accordion-item.component.html',
   styleUrls: ['./accordion-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CdkAccordionItem, MatIcon],
 })
 export class AccordionItemComponent {

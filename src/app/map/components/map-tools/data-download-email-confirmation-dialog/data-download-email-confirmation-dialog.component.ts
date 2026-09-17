@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ApiDialogWrapperComponent} from '../../api-dialog-wrapper/api-dialog-wrapper.component';
 import {MatIcon} from '@angular/material/icon';
@@ -8,6 +8,7 @@ import {MatButton} from '@angular/material/button';
   selector: 'data-download-email-confirmation-dialog',
   templateUrl: './data-download-email-confirmation-dialog.component.html',
   styleUrls: ['./data-download-email-confirmation-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, MatIcon, MatButton],
 })
 export class DataDownloadEmailConfirmationDialogComponent {

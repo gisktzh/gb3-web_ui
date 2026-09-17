@@ -8,7 +8,7 @@ test.describe('Printing', () => {
     captureConsole,
     filterForLayer,
     clickMapInTheList,
-  }, testInfo) => {
+  }) => {
     test.setTimeout(120_000);
 
     await useHar();
@@ -76,25 +76,26 @@ test.describe('Printing', () => {
 
     const submitButton = page.locator('[data-test-id="submit-print-from"]');
 
-    if (testInfo.project.name === 'webkit') {
-      const newPagePromise = page.waitForEvent('popup');
-      await submitButton.click();
+    // Depending on the browser, file-saver either downloads the file directly or opens it in a new tab.
+    const fileNameCandidates: Promise<string>[] = [
+      page.waitForEvent('download').then((download) => download.suggestedFilename()),
+      page.waitForEvent('popup').then(async (popup) => {
+        const popupCandidates: Promise<string>[] = [
+          popup.waitForEvent('download').then((download) => download.suggestedFilename()),
+          expect
+            .poll(() => popup.url(), {timeout: 60_000})
+            .toContain('.pdf')
+            .then(() => popup.url()),
+        ];
+        return Promise.any(popupCandidates);
+      }),
+    ];
 
-      const newPage = await newPagePromise;
-      await page.waitForTimeout(500);
-      const suggestedFileName = newPage.url();
-      await expect(suggestedFileName).toContain('geoportal_zh_A2_hoch_');
-      await expect(suggestedFileName).toContain('.pdf');
-    } else {
-      // Chrome and FF
-      const downloadPromise = page.waitForEvent('download');
-      await submitButton.click();
+    await submitButton.click();
 
-      const download = await downloadPromise;
+    const suggestedFileName = await Promise.any(fileNameCandidates);
 
-      const suggestedFileName = download.suggestedFilename();
-      await expect(suggestedFileName).toContain('geoportal_zh_A2_hoch_');
-      await expect(suggestedFileName).toContain('.pdf');
-    }
+    expect(suggestedFileName).toContain('geoportal_zh_A2_hoch_');
+    expect(suggestedFileName).toContain('.pdf');
   });
 });

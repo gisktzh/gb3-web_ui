@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {Store} from '@ngrx/store';
 import {selectNumberOfQueryLegends} from '../state/map/selectors/query-legends.selector';
@@ -19,6 +19,7 @@ import {ZoomControlsComponent} from '../map/components/map-controls/zoom-control
   selector: 'embedded-map-page',
   templateUrl: './embedded-map-page.component.html',
   styleUrls: ['./embedded-map-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MapContainerComponent,
     LegendOverlayComponent,

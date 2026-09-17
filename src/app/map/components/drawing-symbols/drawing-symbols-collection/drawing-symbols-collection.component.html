@@ -9,7 +9,7 @@
         [checked]="item.isSelected"
         (change)="value.set(item.symbol.item)"
       />
-      @defer {
+      @defer (on viewport) {
         <img
           loading="lazy"
           fetchpriority="low"

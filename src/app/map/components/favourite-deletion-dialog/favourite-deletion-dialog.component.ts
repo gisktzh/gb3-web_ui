@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {firstValueFrom} from 'rxjs';
 import {FavouritesService} from '../../services/favourites.service';
@@ -15,6 +15,7 @@ import {HasSavingStateSingal} from 'src/app/shared/interfaces/has-saving-state-s
   selector: 'app-favourite-deletion-dialog',
   templateUrl: './favourite-deletion-dialog.component.html',
   styleUrls: ['./favourite-deletion-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, MatButton],
 })
 export class FavouriteDeletionDialogComponent implements HasSavingStateSingal {

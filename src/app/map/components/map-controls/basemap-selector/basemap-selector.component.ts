@@ -1,4 +1,4 @@
-import {Component, inject, signal, viewChild} from '@angular/core';
+import {Component, inject, signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Basemap} from '../../../../shared/interfaces/basemap.interface';
 import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
@@ -15,6 +15,7 @@ import {NgClickOutsideDirective} from 'ng-click-outside2';
   selector: 'basemap-selector',
   templateUrl: './basemap-selector.component.html',
   styleUrls: ['./basemap-selector.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TypedTourAnchorDirective, MatButton, MatTooltip, BasemapSelectionListComponent, BasemapImageLinkPipe, NgClickOutsideDirective],
 })
 export class BasemapSelectorComponent {

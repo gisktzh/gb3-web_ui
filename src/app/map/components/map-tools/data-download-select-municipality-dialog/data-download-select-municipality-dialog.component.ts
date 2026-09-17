@@ -1,4 +1,4 @@
-import {Component, computed, inject, signal} from '@angular/core';
+import {Component, computed, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {Municipality} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
@@ -14,6 +14,7 @@ import {FormsModule} from '@angular/forms';
   selector: 'data-download-select-municipality-dialog',
   templateUrl: './data-download-select-municipality-dialog.component.html',
   styleUrls: ['./data-download-select-municipality-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ApiDialogWrapperComponent,
     MatFormField,

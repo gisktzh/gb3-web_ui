@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectRotation} from '../../../../state/map/reducers/map-config.reducer';
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
@@ -26,6 +26,7 @@ import {selectCenterReadable, selectRoundedScale} from 'src/app/state/map/select
   selector: 'coordinate-scale-inputs',
   templateUrl: './coordinate-scale-inputs.component.html',
   styleUrls: ['./coordinate-scale-inputs.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TypedTourAnchorDirective, DataInputComponent, FormsModule, MapRotationButtonComponent],
 })
 export class CoordinateScaleInputsComponent {

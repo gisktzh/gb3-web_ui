@@ -17,6 +17,7 @@ export class AppLayoutEffects {
   public manageScreenModeChange$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppLayoutActions.setScreenMode),
+      distinctUntilChanged((previous, current) => (previous.screenMode === 'mobile') === (current.screenMode === 'mobile')),
       map(() => {
         return MapUiActions.resetMapUiState();
       }),

@@ -1,4 +1,4 @@
-import {Component, effect, linkedSignal, model} from '@angular/core';
+import {Component, effect, linkedSignal, model, ChangeDetectionStrategy} from '@angular/core';
 import {Gb3LineStringStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {SliderEditComponent} from '../slider-edit/slider-edit.component';
 import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.component';
@@ -14,6 +14,7 @@ const DEFAULT_DATA = {
   selector: 'line-edit',
   templateUrl: './line-edit.component.html',
   styleUrl: './line-edit.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SliderEditComponent, ColorPickerEditComponent, FormField],
 })
 export class LineEditComponent {

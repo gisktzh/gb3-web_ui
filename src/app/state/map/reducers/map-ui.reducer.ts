@@ -17,6 +17,7 @@ export const initialState: MapUiState = {
   hideZoomButtons: false,
   toolMenuVisibility: undefined,
   bottomSheetContent: 'none',
+  sideBarWidth: undefined,
 };
 
 export const mapUiFeature = createFeature({
@@ -60,6 +61,12 @@ export const mapUiFeature = createFeature({
       return {
         ...state,
         isDrawingEditOverlayVisible: isVisible,
+      };
+    }),
+    on(MapUiActions.setSideBarWidth, (state, {width}): MapUiState => {
+      return {
+        ...state,
+        sideBarWidth: width,
       };
     }),
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
@@ -121,4 +128,5 @@ export const {
   selectHideToggleUiElementsButton,
   selectMapSideDrawerContent,
   selectIsMapSideDrawerOpen,
+  selectSideBarWidth,
 } = mapUiFeature;

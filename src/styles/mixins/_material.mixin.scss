@@ -107,6 +107,17 @@
   }
 }
 
+@mixin mat-icon-button-override-container-size($width, $height, $padding: null) {
+  &.mat-mdc-icon-button.mat-mdc-button-base {
+    width: $width;
+    height: $height;
+
+    @if $padding != null {
+      padding: $padding;
+    }
+  }
+}
+
 @mixin mat-icon-button-override-border-radius($radius) {
   &.mat-mdc-icon-button {
     border-radius: $radius;

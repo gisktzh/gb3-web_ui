@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {ContactDetailComponent} from './contact-detail/contact-detail.component';
 import {CdkAccordion} from '@angular/cdk/accordion';
 import {AccordionItemComponent} from '../accordion-item/accordion-item.component';
@@ -7,6 +7,7 @@ import {AccordionItemComponent} from '../accordion-item/accordion-item.component
   selector: 'contact-details',
   templateUrl: './contact-details.component.html',
   styleUrls: ['./contact-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ContactDetailComponent, CdkAccordion, AccordionItemComponent],
 })
 export class ContactDetailsComponent {}

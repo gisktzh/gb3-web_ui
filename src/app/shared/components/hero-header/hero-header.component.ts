@@ -1,10 +1,11 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 @Component({
   selector: 'hero-header',
   templateUrl: './hero-header.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hero-header.component.scss'],
 })
 export class HeroHeaderComponent {

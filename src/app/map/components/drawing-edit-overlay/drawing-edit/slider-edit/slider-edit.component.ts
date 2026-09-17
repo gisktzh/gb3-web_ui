@@ -1,4 +1,4 @@
-import {Component, input, model} from '@angular/core';
+import {Component, input, model, ChangeDetectionStrategy} from '@angular/core';
 import {SliderWrapperComponent} from '../../../../../shared/components/slider-wrapper/slider-wrapper.component';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {FormsModule} from '@angular/forms';
@@ -7,6 +7,7 @@ import {FormsModule} from '@angular/forms';
   selector: 'slider-edit',
   templateUrl: './slider-edit.component.html',
   styleUrl: './slider-edit.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SliderWrapperComponent, MatSlider, MatSliderThumb, FormsModule],
 })
 export class SliderEditComponent {

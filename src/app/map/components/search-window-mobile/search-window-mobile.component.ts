@@ -1,4 +1,4 @@
-import {Component, effect, inject, input, untracked, viewChild} from '@angular/core';
+import {Component, effect, inject, input, untracked, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {SearchFilterDialogComponent} from 'src/app/shared/components/search-filter-dialog/search-filter-dialog.component';
@@ -14,6 +14,7 @@ import {ResultGroupsComponent} from '../search-window/result-groups/result-group
   selector: 'search-window-mobile',
   templateUrl: './search-window-mobile.component.html',
   styleUrls: ['./search-window-mobile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SearchInputComponent, ResultGroupsComponent],
 })
 export class SearchWindowMobileComponent {

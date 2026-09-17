@@ -1,4 +1,4 @@
-import {Component, inject, computed} from '@angular/core';
+import {Component, inject, computed, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {GeolocationActions} from 'src/app/state/map/actions/geolocation.actions';
 import {selectQueryLegends} from 'src/app/state/map/selectors/query-legends.selector';
@@ -14,6 +14,7 @@ import {LoadingAndProcessBarComponent} from '../../../../shared/components/loadi
   selector: 'map-tools-mobile',
   templateUrl: './map-tools-mobile.component.html',
   styleUrls: ['./map-tools-mobile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatTooltip, MatIcon, MatDivider, LoadingAndProcessBarComponent],
 })
 export class MapToolsMobileComponent {

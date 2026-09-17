@@ -127,6 +127,16 @@ describe('MapUi Reducer', () => {
     });
   });
 
+  describe('setSideBarWidth', () => {
+    it('adjust sideBarWidth only', () => {
+      const action = MapUiActions.setSideBarWidth({width: 512});
+
+      const result = reducer(initialState, action);
+
+      expect(result).toEqual({...initialState, sideBarWidth: 512});
+    });
+  });
+
   describe('changeUiElementsVisibility', () => {
     it('adjust hideUiElements, hideToggleUiElementsButton and hideZoomButtons only', () => {
       const expectedSetting = true;
@@ -211,6 +221,7 @@ describe('MapUi Reducer', () => {
         isElevationProfileOverlayVisible: true,
         toolMenuVisibility: 'drawing',
         bottomSheetContent: 'legend',
+        sideBarWidth: 512,
       };
       const action = MapUiActions.resetMapUiState();
 

@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {ToggleButtonPosition} from '../../../types/toggle-button-position.type';
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelContent} from '@angular/material/expansion';
 
@@ -11,6 +11,7 @@ import {RouterLink} from '@angular/router';
   selector: 'map-overlay-list-item',
   templateUrl: './map-overlay-list-item.component.html',
   styleUrls: ['./map-overlay-list-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

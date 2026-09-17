@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
@@ -14,6 +14,7 @@ import {LegendComponent} from './legend/legend.component';
   selector: 'legend-overlay',
   templateUrl: './legend-overlay.component.html',
   styleUrls: ['./legend-overlay.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapOverlayComponent, LegendComponent],
 })
 export class LegendOverlayComponent {

@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
@@ -10,6 +10,7 @@ export interface TitleLink {
 @Component({
   selector: 'page-section',
   templateUrl: './page-section.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./page-section.component.scss'],
 })
 export class PageSectionComponent {

@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {LinkObject} from '../../../../interfaces/link-object.interface';
 import {MatIcon} from '@angular/material/icon';
 
@@ -6,6 +6,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'link-list-item',
   templateUrl: './link-list-item.component.html',
   styleUrls: ['./link-list-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIcon],
 })
 export class LinkListItemComponent {

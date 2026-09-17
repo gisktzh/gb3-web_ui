@@ -1,4 +1,4 @@
-import {Component, effect, inject, signal} from '@angular/core';
+import {Component, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -12,6 +12,7 @@ import {WaitingPageComponent} from '../../../shared/components/waiting-page/wait
   selector: 'share-link-redirect',
   templateUrl: './share-link-redirect.component.html',
   styleUrls: ['./share-link-redirect.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [WaitingPageComponent],
 })
 export class ShareLinkRedirectComponent {

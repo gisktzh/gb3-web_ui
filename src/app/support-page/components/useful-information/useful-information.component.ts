@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectUsefulInformationLinksWithDynamicUrls} from '../../../state/support/selectors/useful-information-links.selector';
 import {LinkListComponent} from '../../../shared/components/lists/link-list/link-list.component';
@@ -7,6 +7,7 @@ import {LinkListComponent} from '../../../shared/components/lists/link-list/link
   selector: 'useful-information',
   templateUrl: './useful-information.component.html',
   styleUrls: ['./useful-information.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LinkListComponent],
 })
 export class UsefulInformationComponent {

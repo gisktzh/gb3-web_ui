@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {MatExpansionPanel} from '@angular/material/expansion';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
@@ -20,6 +20,7 @@ import {CdkDragHandle} from '@angular/cdk/drag-drop';
   selector: 'active-map-item-header',
   templateUrl: './active-map-item-header.component.html',
   styleUrls: ['./active-map-item-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatIcon, MatCheckbox, LoadingAndProcessBarComponent, MatTooltip, RouterLink, MatDivider, CdkDragHandle],
 })
 export class ActiveMapItemHeaderComponent {

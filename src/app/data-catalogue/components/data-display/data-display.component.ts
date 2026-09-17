@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {DataDisplayElement} from '../../types/data-display-element.type';
 import {TextOrPlaceholderPipe} from '../../../shared/pipes/text-or-placeholder.pipe';
 
@@ -6,6 +6,7 @@ import {TextOrPlaceholderPipe} from '../../../shared/pipes/text-or-placeholder.p
   selector: 'data-display',
   imports: [TextOrPlaceholderPipe],
   templateUrl: './data-display.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./data-display.component.scss'],
 })
 export class DataDisplayComponent {

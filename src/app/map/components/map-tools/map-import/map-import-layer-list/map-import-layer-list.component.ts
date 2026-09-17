@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {Store} from '@ngrx/store';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
@@ -9,6 +9,7 @@ import {ExternalLayerId} from '../../../../../shared/types/external-layer-id.typ
   selector: 'map-import-layer-list',
   imports: [MatCheckboxModule],
   templateUrl: './map-import-layer-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './map-import-layer-list.component.scss',
 })
 export class MapImportLayerListComponent {

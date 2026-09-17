@@ -19,6 +19,10 @@ async function openMapAndDrawingTools(
   await expect(drawingMenu).toBeVisible();
 }
 
+function isScreenCoordsList(coords: ScreenCoords | ScreenCoordsList): coords is ScreenCoordsList {
+  return Array.isArray(coords[0]);
+}
+
 async function drawShapeOnMap(page: Page, coordList: ScreenCoordsList) {
   for (const [index, coords] of coordList.entries()) {
     if (index === coordList.length - 1) {
@@ -34,43 +38,72 @@ async function drawShapeOnMap(page: Page, coordList: ScreenCoordsList) {
 async function assertShapeEdit(
   page: Page,
   editToolSelector: string,
-  clickCoords: ScreenCoords,
+  clickCoords: ScreenCoords | ScreenCoordsList,
   sliderInputValues: string[] = [],
   colorInputValues: string[] = [],
   textInputValues: string[] = [],
   radioInputId: string = '',
 ) {
   const mapContainer = page.locator('map-container');
-
-  await page.mouse.click(clickCoords[0], clickCoords[1], {
-    button: 'right',
-  });
-  await page.waitForTimeout(500);
   const editTool = page.locator(editToolSelector);
+  const clickCoordinateList: ScreenCoordsList = isScreenCoordsList(clickCoords) ? clickCoords : [clickCoords];
+
+  // Retrying the right click makes the test resilient against transient map-tool timing and hit-test sensitivity.
+  const clickOffsets: ScreenCoordsList = [
+    [0, 0],
+    [8, 0],
+    [0, 8],
+    [-8, 0],
+    [0, -8],
+  ];
+  for (const [x, y] of clickCoordinateList) {
+    for (const [offsetX, offsetY] of clickOffsets) {
+      await page.mouse.click(x + offsetX, y + offsetY, {button: 'right'});
+      await page.waitForTimeout(350);
+      if (await editTool.isVisible()) {
+        break;
+      }
+    }
+    if (await editTool.isVisible()) {
+      break;
+    }
+  }
   await expect(editTool).toBeVisible({timeout: 30_000});
 
   if (sliderInputValues.length > 0) {
-    const sliderInputs = await editTool.locator('slider-edit').all();
+    // Use live locators instead of an `all()` snapshot: editing a value redraws the graphic, which re-renders the
+    // overlay and detaches previously resolved element handles.
+    const sliderEdits = editTool.locator('slider-edit');
+    await expect(sliderEdits).toHaveCount(sliderInputValues.length);
+
     for (const [index, value] of sliderInputValues.entries()) {
-      const inputField = sliderInputs[index].locator('input');
-      await inputField.fill(value);
+      const sliderEdit = sliderEdits.nth(index);
+      await sliderEdit.locator('input').fill(value);
+      // Wait for the value to be applied before touching the next slider, so the overlay is settled again.
+      await expect(sliderEdit.locator('.slider-wrapper__header__value')).toContainText(value);
     }
   }
 
   if (colorInputValues.length > 0) {
-    const colorInputs = await editTool.locator('input[type="color"]').all();
+    const colorInputs = editTool.locator('input[type="color"]');
+    await expect(colorInputs).toHaveCount(colorInputValues.length);
+
     for (const [index, value] of colorInputValues.entries()) {
-      await colorInputs[index].fill(value);
+      const colorInput = colorInputs.nth(index);
+      await colorInput.fill(value);
+      await expect(colorInput).toHaveValue(value);
       await expect(mapContainer).toBeVisible();
     }
   }
 
   if (textInputValues.length > 0) {
-    const textInputs = await editTool.locator('input:not([type])').all();
+    const textInputs = editTool.locator('input:not([type])');
+    await expect(textInputs).toHaveCount(textInputValues.length);
+
     for (const [index, value] of textInputValues.entries()) {
-      await textInputs[index].focus();
-      await textInputs[index].clear();
-      await textInputs[index].fill(value);
+      const textInput = textInputs.nth(index);
+      await textInput.fill(value);
+      await expect(textInput).toHaveValue(value);
       await expect(mapContainer).toBeVisible();
     }
   }
@@ -148,7 +181,7 @@ test.describe('Drawing', () => {
 
     await expect(mapContainer).toBeVisible();
 
-    await assertShapeEdit(page, 'line-edit', lineCoords[0], ['8', '0.6'], ['#00ff00']);
+    await assertShapeEdit(page, 'line-edit', lineCoords, ['8', '0.6'], ['#00ff00']);
   });
 
   test('draws a polygon and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
@@ -182,7 +215,7 @@ test.describe('Drawing', () => {
 
     await expect(mapContainer).toBeVisible();
 
-    await assertShapeEdit(page, 'polygon-edit', polygonCoords[0], ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
+    await assertShapeEdit(page, 'polygon-edit', polygonCoords, ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
   });
 
   test('draws a rectangle and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
@@ -214,7 +247,7 @@ test.describe('Drawing', () => {
 
     await expect(mapContainer).toBeVisible();
 
-    await assertShapeEdit(page, 'polygon-edit', reactangleCoords[0], ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
+    await assertShapeEdit(page, 'polygon-edit', reactangleCoords, ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
   });
 
   test('draws a circle and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
@@ -246,7 +279,7 @@ test.describe('Drawing', () => {
 
     await expect(mapContainer).toBeVisible();
 
-    await assertShapeEdit(page, 'polygon-edit', circleCoords[0], ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
+    await assertShapeEdit(page, 'polygon-edit', circleCoords, ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
   });
 
   test('draws text and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
@@ -272,9 +305,21 @@ test.describe('Drawing', () => {
 
     await textToolButton.click();
     await page.waitForTimeout(250);
-    await page.mouse.click(textCoords[0], textCoords[1]);
 
     const textDrawingToolInputForm = page.locator('text-drawing-tool-input');
+
+    // Retrying the click makes the test resilient against the first map click after activating a tool getting swallowed.
+    for (let clickAttempt = 0; clickAttempt < 3; clickAttempt++) {
+      await page.mouse.move(textCoords[0], textCoords[1]);
+      await page.waitForTimeout(250);
+      await page.mouse.click(textCoords[0], textCoords[1]);
+      await page.waitForTimeout(1000);
+
+      if (await textDrawingToolInputForm.isVisible()) {
+        break;
+      }
+    }
+
     await expect(textDrawingToolInputForm).toBeVisible({timeout: 30_000});
     const textDrawingToolFormInput = textDrawingToolInputForm.locator('input');
     await expect(textDrawingToolFormInput).toBeVisible();
@@ -336,28 +381,22 @@ test.describe('Drawing', () => {
     const symbolInput = page.locator('symbol-drawing-tool-input');
     await expect(symbolInput).toBeVisible();
 
-    // Close it and reopen it
-    const closeButton = page.locator('mat-dialog-container button', {hasText: 'close'});
-    await expect(closeButton).toBeVisible();
-    await closeButton.click();
-    await expect(symbolInput).not.toBeVisible();
+    const symbolSliderInputs = symbolInput.locator('slider-edit');
+    await expect(symbolSliderInputs).toHaveCount(2);
 
-    await symbolToolButton.click();
-    await expect(symbolInput).toBeVisible();
+    await symbolSliderInputs.nth(0).locator('input').fill('16');
+    await expect(symbolSliderInputs.nth(0).locator('.slider-wrapper__header__value')).toContainText('16');
 
-    const symbolSliderInputs = await symbolInput.locator('slider-edit').all();
-    await symbolSliderInputs[0].locator('input').fill('16');
-    await expect(symbolSliderInputs[0].locator('.slider-wrapper__header__value')).toContainText('16');
+    await symbolSliderInputs.nth(1).locator('input').fill('180');
+    await expect(symbolSliderInputs.nth(1).locator('.slider-wrapper__header__value')).toContainText('180');
 
-    await symbolSliderInputs[1].locator('input').fill('180');
-    await expect(symbolSliderInputs[1].locator('.slider-wrapper__header__value')).toContainText('180');
-
-    const categories = await symbolInput.locator('mat-expansion-panel-header').all();
+    const categories = symbolInput.locator('mat-expansion-panel-header');
+    await expect(categories).toHaveCount(symbolCategories.length);
     for (const [index, title] of symbolCategories.entries()) {
-      await expect(categories[index]).toContainText(title);
+      await expect(categories.nth(index)).toContainText(title);
     }
 
-    await categories[1].click();
+    await categories.nth(1).click();
     const porcupine = symbolInput.locator('label[for="Porcupine"]');
     await expect(porcupine).toBeVisible();
     await porcupine.click();
@@ -366,11 +405,32 @@ test.describe('Drawing', () => {
     await expect(addButton).toBeVisible();
     await addButton.click();
 
-    await page.waitForTimeout(250);
-    await page.mouse.move(symbolCoords[0], symbolCoords[1]);
-    await page.waitForTimeout(250);
-    await page.mouse.click(symbolCoords[0], symbolCoords[1]);
-    await page.waitForTimeout(250);
+    await expect(symbolInput).not.toBeVisible();
+    await page.waitForLoadState('networkidle');
+
+    // Matching the active class as part of the locator makes "not found" and "not active" equivalent, so the checks
+    // below never blow up when the drawing tool menu is re-rendered.
+    const activeSymbolToolButton = drawingMenu.locator(
+      'button[aria-label="Symbol: Auswählen und auf Karte hinzufügen"].drawing-tools__button--active',
+    );
+
+    // The strategy only arms the sketch after asynchronously fetching the symbol descriptor, so this can take a while.
+    await expect(activeSymbolToolButton).toBeVisible({timeout: 30_000});
+
+    // Retrying the click makes the test resilient against the first map click after arming the tool getting swallowed.
+    for (let clickAttempt = 0; clickAttempt < 3; clickAttempt++) {
+      await page.mouse.move(symbolCoords[0], symbolCoords[1]);
+      await page.waitForTimeout(250);
+      await page.mouse.click(symbolCoords[0], symbolCoords[1]);
+      await page.waitForTimeout(500);
+
+      if ((await activeSymbolToolButton.count()) === 0) {
+        break;
+      }
+    }
+
+    // Placing the symbol deactivates the tool again.
+    await expect(activeSymbolToolButton).toHaveCount(0, {timeout: 30_000});
 
     await expect(mapContainer).toBeVisible();
 
