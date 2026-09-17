@@ -15,7 +15,7 @@ export const defaultBasemaps: Basemap[] = [
     id: 'areosmbackgroundzh',
     type: 'wms',
     relativeImagePath: 'assets/images/basemaps/areosmbackgroundzh.webp',
-    url: 'https://maps.zh.ch/wms/AREOSMBackgroundZH',
+    path: '/AREOSMBackgroundZH',
     title: 'Situationsplan',
     srsId: 2056,
     layers: [
@@ -37,7 +37,7 @@ export const defaultBasemaps: Basemap[] = [
     id: 'areavbackgroundzh',
     type: 'wms',
     relativeImagePath: 'assets/images/basemaps/areavbackgroundzh.webp',
-    url: 'https://maps.zh.ch/wms/AREAVBackgroundZH',
+    path: '/AREAVBackgroundZH',
     title: 'Amtliche Vermessung',
     srsId: 2056,
     layers: [
@@ -124,7 +124,7 @@ export const defaultBasemaps: Basemap[] = [
     id: 'aredtmbackgroundzh',
     type: 'wms',
     relativeImagePath: 'assets/images/basemaps/aredtmbackgroundzh.webp',
-    url: 'https://maps.zh.ch/wms/AREDTMBackgroundZH',
+    path: '/AREDTMBackgroundZH',
     title: 'Gelände',
     srsId: 2056,
     layers: [
@@ -146,7 +146,7 @@ export const defaultBasemaps: Basemap[] = [
     id: 'areorthobackgroundzh',
     type: 'wms',
     relativeImagePath: 'assets/images/basemaps/areorthobackgroundzh.webp',
-    url: 'https://maps.zh.ch/wms/AREOrthoBackgroundZH',
+    path: '/AREOrthoBackgroundZH',
     title: 'Luftbild',
     srsId: 2056,
     layers: [
@@ -165,7 +165,7 @@ export const defaultBasemaps: Basemap[] = [
     id: 'arewildbackgroundzh',
     type: 'wms',
     relativeImagePath: 'assets/images/basemaps/arewildbackgroundzh.webp',
-    url: 'https://maps.zh.ch/wms/AREWildBackgroundZH',
+    path: '/AREWildBackgroundZH',
     title: 'Historische Karte J. Wild (~1850)',
     srsId: 2056,
     layers: [
@@ -178,7 +178,7 @@ export const defaultBasemaps: Basemap[] = [
     id: 'arelkbackgroundswzh',
     type: 'wms',
     relativeImagePath: 'assets/images/basemaps/arelkbackgroundswzh.webp',
-    url: 'https://maps.zh.ch/wms/ARElkBackgroundSWZH',
+    path: '/ARElkBackgroundSWZH',
     title: 'Basiskarte schwarz-weiss',
     srsId: 2056,
     layers: [
@@ -224,7 +224,7 @@ export const defaultBasemaps: Basemap[] = [
     id: 'arelkbackgroundzh',
     type: 'wms',
     relativeImagePath: 'assets/images/basemaps/arelkbackgroundzh.webp',
-    url: 'https://maps.zh.ch/wms/ARElkBackgroundZH',
+    path: '/ARElkBackgroundZH',
     title: 'Basiskarte',
     srsId: 2056,
     layers: [

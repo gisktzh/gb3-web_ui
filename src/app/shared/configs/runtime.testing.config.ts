@@ -16,7 +16,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://maps.zh.ch',
       },
       gb2WmsCapabilities: {
-        baseUrl: 'https://maps.zh.ch/wms',
+        baseUrl: 'https://wms.zh.ch ',
       },
       gb2Wms: {
         baseUrl: 'https://wms.zh.ch',

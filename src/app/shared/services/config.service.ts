@@ -26,11 +26,11 @@ import {dataDownloadConfig} from '../configs/data-download.config';
 import {defaultFillColor, defaultLineColor, defaultLineWidth, defaultOutline} from '../configs/drawing.config';
 import {Store} from '@ngrx/store';
 import {AppActions} from '../../state/app/actions/app.actions';
-
 import {DynamicInternalUrlsConfiguration} from '../types/dynamic-internal-url.type';
 import {defaultFeatureFlags} from '../configs/feature-flags.config';
 import {FeatureFlags} from '../interfaces/feature-flags.interface';
 import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {CallableBasemap} from '../interfaces/basemap.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -40,10 +40,7 @@ export class ConfigService {
   private readonly store = inject(Store);
 
   public readonly featureFlags: FeatureFlags;
-  public readonly basemapConfig = {
-    availableBasemaps: defaultBasemaps,
-    defaultBasemap: defaultBasemap,
-  };
+  public readonly basemapConfig: {availableBasemaps: CallableBasemap[]; defaultBasemap: CallableBasemap};
   public readonly layerSymbolizations = layerSymbolizations;
   public readonly gb2Config = {
     wmsFormatMimeType: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE,
@@ -94,6 +91,18 @@ export class ConfigService {
     this.overridesConfig = runtimeConfig.overrides;
     this.authConfig = runtimeConfig.authSettings;
     this.featureFlags = {...defaultFeatureFlags, ...runtimeConfig.featureFlags};
+
+    const basemapWmsUrl = this.apiConfig.gb2WmsCapabilities.baseUrl.trim();
+    this.basemapConfig = {
+      availableBasemaps: defaultBasemaps.map((basemap) => {
+        if (basemap.type === 'wms') {
+          return {...basemap, url: `${basemapWmsUrl}${basemap.path}`};
+        }
+
+        return basemap;
+      }),
+      defaultBasemap: defaultBasemap.type === 'wms' ? {...defaultBasemap, url: `${basemapWmsUrl}${defaultBasemap.path}`} : defaultBasemap,
+    };
 
     this.store.dispatch(AppActions.setAccessMode({accessMode: runtimeConfig.accessMode}));
     this.initializeDynamicInternalUrlsState();
