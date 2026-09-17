@@ -14,9 +14,13 @@ import {MatDivider} from '@angular/material/divider';
 import {MeasurementToolsComponent} from '../measurement-tools/measurement-tools.component';
 import {DrawingToolsComponent} from '../drawing-tools/drawing-tools.component';
 import {DataDownloadSelectionToolsComponent} from '../data-download-selection-tools/data-download-selection-tools.component';
+import {StatisticsToolsComponent} from '../statistics-tools/statistics-tools.component';
+import {FeatureFlagDirective} from '../../../../shared/directives/feature-flag.directive';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 
 const TOOLTIP_TEXT = {
+  selectFeature: 'Objekt-Abfrage',
+  selectStatistic: 'Statistik-Abfrage',
   measurement: 'Messen',
   drawing: 'Zeichnen',
   dataDownload: 'Daten beziehen',
@@ -38,6 +42,8 @@ const TOOLTIP_TEXT = {
     MeasurementToolsComponent,
     DrawingToolsComponent,
     DataDownloadSelectionToolsComponent,
+    StatisticsToolsComponent,
+    FeatureFlagDirective,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   host: {
@@ -47,15 +53,18 @@ const TOOLTIP_TEXT = {
 export class MapToolsDesktopComponent {
   private readonly store = inject(Store);
 
-  // public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
   public readonly toolMenuVisibility = this.store.selectSignal(selectToolMenuVisibility);
   public readonly isMapReady = this.store.selectSignal(selectReady);
   public readonly activeTool = this.store.selectSignal(selectActiveTool);
 
   public tooltipText = TOOLTIP_TEXT;
 
+  /**
+   * Closing a tool menu does not leave the map without an active tool; it falls back to the plain object query, which keeps exactly one
+   * button of the tool bar highlighted at all times.
+   */
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
-    const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility() === toolToToggle ? undefined : toolToToggle;
+    const tool: ToolMenuVisibility = this.toolMenuVisibility() === toolToToggle ? 'feature' : toolToToggle;
     this.store.dispatch(MapUiActions.toggleToolMenu({tool: tool}));
   }
 
