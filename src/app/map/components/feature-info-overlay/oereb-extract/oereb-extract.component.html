@@ -46,82 +46,10 @@
         @for (theme of concernedThemes(); track $index) {
           <map-overlay-list-item [forceExpanded]="true" [overlayTitle]="theme.name" [hasBackgroundColor]="false">
             <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
-            <map-overlay-list-item [forceExpanded]="true" overlayTitle="Allgemeine Informationen" [hasBackgroundColor]="false">
-              <ul class="oereb-info-list">
-                @for (infoList of theme.generalInfo; track $index) {
-                  <li>
-                    <div class="oereb-detail-list__title">
-                      {{ infoList.displayValue }}
-                    </div>
-                    @if (infoList.itemType === 'list') {
-                      <ul class="oereb-detail-list">
-                        @for (item of infoList.items; track $index) {
-                          <li>
-                            @if (item.itemType === 'url') {
-                              <a
-                                class="oereb-detail-list__link"
-                                [href]="item.url"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                [title]="item.displayValue"
-                              >
-                                {{ item.displayValue }}
-                              </a>
-                            } @else {
-                              {{ item.displayValue }}
-                            }
-                          </li>
-                        }
-                      </ul>
-                    }
-                  </li>
-                }
-              </ul>
-            </map-overlay-list-item>
+            <oereb-info-list-map-overlay [listItem]="theme.generalInfo" />
 
             @for (restriction of theme.restrictions; track $index) {
-              <map-overlay-list-item [forceExpanded]="true" [overlayTitle]="restriction.displayValue" [hasBackgroundColor]="false">
-                @if (restriction.itemType === 'list') {
-                  <ul class="oereb-info-list">
-                    @for (item of restriction.items; track $index) {
-                      <li>
-                        <div class="oereb-detail-list__title">
-                          {{ item.displayValue }}
-                        </div>
-                        <div class="oereb-detail-list__item">
-                          @if (item.itemType === 'list') {
-                            @for (value of item.items; track $index) {
-                              @if (value.itemType === 'text') {
-                                {{ value.displayValue }}
-                              } @else if (value.itemType === 'url') {
-                                <a
-                                  class="oereb-detail-list__link"
-                                  [href]="value.url"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  [title]="value.displayValue"
-                                >
-                                  {{ value.displayValue }}
-                                </a>
-                              } @else if (value.itemType === 'image') {
-                                <a [href]="value.url" target="_blank" rel="noopener noreferrer" [title]="value.displayValue">
-                                  <img
-                                    class="feature-info-content__table__row__column__image"
-                                    [src]="value.src"
-                                    [alt]="value.alt"
-                                    [width]="value.width"
-                                    [height]="value.height"
-                                  />
-                                </a>
-                              }
-                            }
-                          }
-                        </div>
-                      </li>
-                    }
-                  </ul>
-                }
-              </map-overlay-list-item>
+              <oereb-info-list-map-overlay [listItem]="restriction" />
             }
           </map-overlay-list-item>
         }

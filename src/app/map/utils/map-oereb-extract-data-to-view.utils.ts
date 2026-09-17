@@ -9,97 +9,75 @@ export class MapOerebExtractDataToView {
   public static mapOerebExtractApiThemeToDisplayableTheme(theme: OerebConcernedTheme): OerebExtractTheme {
     return {
       name: theme.name,
-      generalInfo: [
-        {
-          displayValue: 'Gesetzliche Grundlagen',
-          itemType: 'list' as const,
-          items: theme.legalProvisions.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
-        },
-        {
-          displayValue: 'Rechtsvorschriften',
-          itemType: 'list' as const,
-          items: theme.laws.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
-        },
-        {
-          displayValue: 'Weitere Hinweise',
-          itemType: 'list' as const,
-          items: theme.hints.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
-        },
-        {
-          displayValue: 'Zuständige Stellen',
-          itemType: 'list' as const,
-          items: theme.responsibleOffices.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
-        },
-      ].filter((i) => i.items.length > 0),
+      generalInfo: {
+        itemLabel: 'Allgemeine Informationen',
+        itemType: 'list' as const,
+        items: [
+          {
+            itemLabel: 'Gesetzliche Grundlagen',
+            itemType: 'list' as const,
+            items: theme.legalProvisions.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
+          },
+          {
+            itemLabel: 'Rechtsvorschriften',
+            itemType: 'list' as const,
+            items: theme.laws.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
+          },
+          {
+            itemLabel: 'Weitere Hinweise',
+            itemType: 'list' as const,
+            items: theme.hints.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
+          },
+          {
+            itemLabel: 'Zuständige Stellen',
+            itemType: 'list' as const,
+            items: theme.responsibleOffices.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
+          },
+        ].filter((i) => i.items.length > 0),
+      },
       restrictions: theme.restrictions.map((r) => {
         const items: OerebExtractListItem[] = [];
 
         if (r.illustration) {
           items.push({
-            displayValue: 'Darstellung',
-            itemType: 'list' as const,
-            items: [
-              {
-                displayValue: r.illustration.alt,
-                itemType: 'image' as const,
-                url: r.illustration.url.href,
-                src: r.illustration.src.href,
-                alt: r.illustration.alt,
-                width: 23,
-                height: 13,
-              },
-            ],
+            itemLabel: 'Darstellung',
+            itemType: 'image' as const,
+            url: r.illustration.url.href,
+            src: r.illustration.src.href,
+            alt: r.illustration.alt,
+            width: 23,
+            height: 13,
           });
         }
 
         if ('areaM2' in r.measurement) {
           items.push({
-            displayValue: 'Fläche',
-            itemType: 'list' as const,
-            items: [
-              {
-                displayValue: `${r.measurement.areaM2}m2`,
-                itemType: 'text' as const,
-              },
-            ],
+            itemLabel: 'Fläche',
+            itemType: 'text' as const,
+            text: `${r.measurement.areaM2}m2`,
           });
 
           items.push({
-            displayValue: 'Anteil',
-            itemType: 'list' as const,
-            items: [
-              {
-                displayValue: `${Math.round(r.measurement.percentage * 100)}%`,
-                itemType: 'text' as const,
-              },
-            ],
+            itemLabel: 'Anteil',
+            itemType: 'text' as const,
+            text: `${Math.round(r.measurement.percentage * 100)}%`,
           });
         } else if ('lineLength' in r.measurement) {
           items.push({
-            displayValue: 'Länge',
-            itemType: 'list' as const,
-            items: [
-              {
-                displayValue: `${r.measurement.lineLength}m`,
-                itemType: 'text' as const,
-              },
-            ],
+            itemLabel: 'Länge',
+            itemType: 'text' as const,
+            text: `${r.measurement.lineLength}m`,
           });
         } else {
           items.push({
-            displayValue: 'Anzahl Punkte',
-            itemType: 'list' as const,
-            items: [
-              {
-                displayValue: r.measurement.pointsCount.toString(),
-                itemType: 'text' as const,
-              },
-            ],
+            itemLabel: 'Anzahl Punkte',
+            itemType: 'text' as const,
+            text: r.measurement.pointsCount.toString(),
           });
         }
 
         return {
-          displayValue: r.name,
+          itemLabel: r.name,
           itemType: 'list' as const,
           items,
         };
@@ -110,14 +88,15 @@ export class MapOerebExtractDataToView {
   public static mapOerebExtractValueToListItem(item: OerebExtractValue): OerebExtractListItem {
     if (item.href) {
       return {
-        displayValue: item.title,
+        itemLabel: item.title,
         itemType: 'url',
         url: item.href,
       };
     }
 
     return {
-      displayValue: item.title,
+      itemLabel: item.title,
+      text: item.title,
       itemType: 'text',
     };
   }

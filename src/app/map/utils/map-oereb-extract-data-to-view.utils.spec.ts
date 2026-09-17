@@ -36,54 +36,61 @@ describe('MapOerebExtractDataToView', () => {
 
       const result = MapOerebExtractDataToView.mapOerebExtractApiThemeToDisplayableTheme(theme);
 
-      expect(result.generalInfo).toEqual([
-        {
-          displayValue: 'Gesetzliche Grundlagen',
-          itemType: 'list',
-          items: [
-            {
-              displayValue: 'Legal provision',
-              itemType: 'text',
-            },
-            {
-              displayValue: 'Legal provision link',
-              itemType: 'url',
-              url: 'https://example.com/legal',
-            },
-          ],
-        },
-        {
-          displayValue: 'Rechtsvorschriften',
-          itemType: 'list',
-          items: [
-            {
-              displayValue: 'Law',
-              itemType: 'text',
-            },
-          ],
-        },
-        {
-          displayValue: 'Weitere Hinweise',
-          itemType: 'list',
-          items: [
-            {
-              displayValue: 'Hint',
-              itemType: 'text',
-            },
-          ],
-        },
-        {
-          displayValue: 'Zuständige Stellen',
-          itemType: 'list',
-          items: [
-            {
-              displayValue: 'Responsible office',
-              itemType: 'url',
-              url: 'https://example.com/office',
-            },
-          ],
-        },
-      ]);
+      expect(result.generalInfo).toEqual({
+        itemLabel: 'Allgemeine Informationen',
+        itemType: 'list',
+        items: [
+          {
+            itemLabel: 'Gesetzliche Grundlagen',
+            itemType: 'list',
+            items: [
+              {
+                itemLabel: 'Legal provision',
+                itemType: 'text',
+                text: 'Legal provision',
+              },
+              {
+                itemLabel: 'Legal provision link',
+                itemType: 'url',
+                url: 'https://example.com/legal',
+              },
+            ],
+          },
+          {
+            itemLabel: 'Rechtsvorschriften',
+            itemType: 'list',
+            items: [
+              {
+                itemLabel: 'Law',
+                itemType: 'text',
+                text: 'Law',
+              },
+            ],
+          },
+          {
+            itemLabel: 'Weitere Hinweise',
+            itemType: 'list',
+            items: [
+              {
+                itemLabel: 'Hint',
+                itemType: 'text',
+                text: 'Hint',
+              },
+            ],
+          },
+          {
+            itemLabel: 'Zuständige Stellen',
+            itemType: 'list',
+            items: [
+              {
+                itemLabel: 'Responsible office',
+                itemType: 'url',
+                url: 'https://example.com/office',
+              },
+            ],
+          },
+        ],
+      });
     });
 
     it('should omit empty general information categories', () => {
@@ -96,18 +103,23 @@ describe('MapOerebExtractDataToView', () => {
 
       const result = MapOerebExtractDataToView.mapOerebExtractApiThemeToDisplayableTheme(theme);
 
-      expect(result.generalInfo).toEqual([
-        {
-          displayValue: 'Rechtsvorschriften',
-          itemType: 'list',
-          items: [
-            {
-              displayValue: 'A law',
-              itemType: 'text',
-            },
-          ],
-        },
-      ]);
+      expect(result.generalInfo).toEqual({
+        itemLabel: 'Allgemeine Informationen',
+        itemType: 'list',
+        items: [
+          {
+            itemLabel: 'Rechtsvorschriften',
+            itemType: 'list',
+            items: [
+              {
+                itemLabel: 'A law',
+                itemType: 'text',
+                text: 'A law',
+              },
+            ],
+          },
+        ],
+      });
     });
 
     it('should return no general information when all categories are empty', () => {
@@ -120,7 +132,11 @@ describe('MapOerebExtractDataToView', () => {
 
       const result = MapOerebExtractDataToView.mapOerebExtractApiThemeToDisplayableTheme(theme);
 
-      expect(result.generalInfo).toEqual([]);
+      expect(result.generalInfo).toEqual({
+        itemLabel: 'Allgemeine Informationen',
+        itemType: 'list',
+        items: [],
+      });
     });
 
     it('should map a restriction with an illustration and area measurement', () => {
@@ -150,43 +166,27 @@ describe('MapOerebExtractDataToView', () => {
 
       expect(result.restrictions).toEqual([
         {
-          displayValue: 'Area restriction',
+          itemLabel: 'Area restriction',
           itemType: 'list',
           items: [
             {
-              displayValue: 'Darstellung',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: 'Restriction illustration',
-                  itemType: 'image',
-                  url: 'https://example.com/image-info',
-                  src: 'https://example.com/image.png',
-                  alt: 'Restriction illustration',
-                  width: 23,
-                  height: 13,
-                },
-              ],
+              itemLabel: 'Darstellung',
+              itemType: 'image',
+              url: 'https://example.com/image-info',
+              src: 'https://example.com/image.png',
+              alt: 'Restriction illustration',
+              width: 23,
+              height: 13,
             },
             {
-              displayValue: 'Fläche',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '123.45m2',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Fläche',
+              itemType: 'text',
+              text: '123.45m2',
             },
             {
-              displayValue: 'Anteil',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '57%',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Anteil',
+              itemType: 'text',
+              text: '57%',
             },
           ],
         },
@@ -210,18 +210,13 @@ describe('MapOerebExtractDataToView', () => {
 
       expect(result.restrictions).toEqual([
         {
-          displayValue: 'Line restriction',
+          itemLabel: 'Line restriction',
           itemType: 'list',
           items: [
             {
-              displayValue: 'Länge',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '42.5m',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Länge',
+              itemType: 'text',
+              text: '42.5m',
             },
           ],
         },
@@ -245,18 +240,13 @@ describe('MapOerebExtractDataToView', () => {
 
       expect(result.restrictions).toEqual([
         {
-          displayValue: 'Point restriction',
+          itemLabel: 'Point restriction',
           itemType: 'list',
           items: [
             {
-              displayValue: 'Anzahl Punkte',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '7',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Anzahl Punkte',
+              itemType: 'text',
+              text: '7',
             },
           ],
         },
@@ -295,60 +285,40 @@ describe('MapOerebExtractDataToView', () => {
 
       expect(result.restrictions).toEqual([
         {
-          displayValue: 'Zero area restriction',
+          itemLabel: 'Zero area restriction',
           itemType: 'list',
           items: [
             {
-              displayValue: 'Fläche',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '0m2',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Fläche',
+              itemType: 'text',
+              text: '0m2',
             },
             {
-              displayValue: 'Anteil',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '0%',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Anteil',
+              itemType: 'text',
+              text: '0%',
             },
           ],
         },
         {
-          displayValue: 'Zero line restriction',
+          itemLabel: 'Zero line restriction',
           itemType: 'list',
           items: [
             {
-              displayValue: 'Länge',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '0m',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Länge',
+              itemType: 'text',
+              text: '0m',
             },
           ],
         },
         {
-          displayValue: 'Zero point restriction',
+          itemLabel: 'Zero point restriction',
           itemType: 'list',
           items: [
             {
-              displayValue: 'Anzahl Punkte',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '0',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Anzahl Punkte',
+              itemType: 'text',
+              text: '0',
             },
           ],
         },
@@ -381,54 +351,34 @@ describe('MapOerebExtractDataToView', () => {
 
       expect(result.restrictions).toEqual([
         {
-          displayValue: 'Rounding restriction',
+          itemLabel: 'Rounding restriction',
           itemType: 'list',
           items: [
             {
-              displayValue: 'Fläche',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '10m2',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Fläche',
+              itemType: 'text',
+              text: '10m2',
             },
             {
-              displayValue: 'Anteil',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '13%',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Anteil',
+              itemType: 'text',
+              text: '13%',
             },
           ],
         },
         {
-          displayValue: 'Rounding restriction 2',
+          itemLabel: 'Rounding restriction 2',
           itemType: 'list',
           items: [
             {
-              displayValue: 'Fläche',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '20m2',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Fläche',
+              itemType: 'text',
+              text: '20m2',
             },
             {
-              displayValue: 'Anteil',
-              itemType: 'list',
-              items: [
-                {
-                  displayValue: '13%',
-                  itemType: 'text',
-                },
-              ],
+              itemLabel: 'Anteil',
+              itemType: 'text',
+              text: '13%',
             },
           ],
         },
@@ -465,7 +415,7 @@ describe('MapOerebExtractDataToView', () => {
 
       const result = MapOerebExtractDataToView.mapOerebExtractApiThemeToDisplayableTheme(theme);
 
-      expect(result.restrictions.map((restriction) => restriction.displayValue)).toEqual(['First', 'Second', 'Third']);
+      expect(result.restrictions.map((restriction) => restriction.itemLabel)).toEqual(['First', 'Second', 'Third']);
     });
 
     it('should return an empty restrictions array when there are no restrictions', () => {
@@ -488,8 +438,9 @@ describe('MapOerebExtractDataToView', () => {
       const result = MapOerebExtractDataToView.mapOerebExtractValueToListItem(item);
 
       expect(result).toEqual({
-        displayValue: 'Some text',
+        itemLabel: 'Some text',
         itemType: 'text',
+        text: 'Some text',
       });
     });
 
@@ -502,7 +453,7 @@ describe('MapOerebExtractDataToView', () => {
       const result = MapOerebExtractDataToView.mapOerebExtractValueToListItem(item);
 
       expect(result).toEqual({
-        displayValue: 'External information',
+        itemLabel: 'External information',
         itemType: 'url',
         url: 'https://example.com',
       });
@@ -517,8 +468,9 @@ describe('MapOerebExtractDataToView', () => {
       const result = MapOerebExtractDataToView.mapOerebExtractValueToListItem(item);
 
       expect(result).toEqual({
-        displayValue: 'Empty URL',
+        itemLabel: 'Empty URL',
         itemType: 'text',
+        text: 'Empty URL',
       });
     });
   });

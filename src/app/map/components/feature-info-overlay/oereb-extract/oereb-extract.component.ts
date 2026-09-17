@@ -7,12 +7,13 @@ import {TableCell} from '../feature-info-content/info-table-cell.component';
 import {MatButton} from '@angular/material/button';
 import {OerebExtractTheme} from 'src/app/map/interfaces/oereb-extract-theme.interface';
 import {MapOerebExtractDataToView} from 'src/app/map/utils/map-oereb-extract-data-to-view.utils';
+import {OerebInfoListMapOverlayComponent} from './oereb-info-list/oereb-info-list-map-overlay.component';
 
 @Component({
   selector: 'oereb-extract',
   templateUrl: './oereb-extract.component.html',
   styleUrls: ['./oereb-extract.component.scss'],
-  imports: [MapOverlayListItemComponent, MatIcon, MatButton, ResizableInfoTableComponent],
+  imports: [MapOverlayListItemComponent, MatIcon, MatButton, ResizableInfoTableComponent, OerebInfoListMapOverlayComponent],
   changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class OerebExtractComponent {
