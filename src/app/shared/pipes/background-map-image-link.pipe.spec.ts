@@ -1,11 +1,12 @@
 import {BasemapImageLinkPipe} from './background-map-image-link.pipe';
 import {ConfigService} from '../services/config.service';
 import {TestBed} from '@angular/core/testing';
-import {Basemap, BlankBasemap, WmsBasemap} from '../interfaces/basemap.interface';
+import {BlankBasemap, CallableBasemap, CallableWmsBasemap} from '../interfaces/basemap.interface';
 
-const wmsBasemap: WmsBasemap = {
+const wmsBasemap: CallableWmsBasemap = {
   id: 'test-1',
   type: 'wms',
+  path: '/test1',
   relativeImagePath: 'path/to/image.png',
   url: 'https://www.my-test.com/test1',
   title: 'Test 1',
@@ -14,7 +15,7 @@ const wmsBasemap: WmsBasemap = {
 };
 const blankBasemap: BlankBasemap = {id: 'test-2', type: 'blank', title: 'Test 2'};
 
-const mockBasemaps: Basemap[] = [wmsBasemap, blankBasemap];
+const mockBasemaps: CallableBasemap[] = [wmsBasemap, blankBasemap];
 
 const mockBasemapConfig = {
   availableBasemaps: mockBasemaps,
