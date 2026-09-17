@@ -317,6 +317,11 @@ export class FeatureInfoContentComponent implements OnDestroy, AfterViewInit {
 
     switch (feature.type) {
       case 'text':
+        return {
+          cellType: 'text',
+          fid,
+          displayValue: feature.value,
+        };
       case 'date':
         return {
           cellType: 'text',
