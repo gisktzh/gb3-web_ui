@@ -604,6 +604,16 @@ describe('Gb3TopicsService', () => {
                         },
                         type: 'link',
                       },
+                      {
+                        label: 'A null LinkObject',
+                        value: null,
+                        type: 'link',
+                      },
+                      {
+                        label: 'A date',
+                        value: '2026-07-15',
+                        type: 'date',
+                      },
                     ],
                     geometry: {
                       type: 'MultiPolygon',
@@ -802,6 +812,16 @@ describe('Gb3TopicsService', () => {
                             href: 'not just a LOTR location',
                           },
                           type: 'link',
+                        },
+                        {
+                          label: 'A null LinkObject',
+                          value: null,
+                          type: 'link',
+                        },
+                        {
+                          label: 'A date',
+                          value: '2026-07-15',
+                          type: 'date',
                         },
                       ],
                       geometry: {
