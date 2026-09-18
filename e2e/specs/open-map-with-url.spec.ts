@@ -21,7 +21,10 @@ test.describe('Map with URL', () => {
     await expect(page.locator('active-map-item-header', {hasText: 'ÖREB-Kataster'})).toBeVisible();
     await expect.poll(() => new URL(page.url()).searchParams.get('topics')).toBe('OerebKatasterZH');
 
-    await page.locator('active-map-item-header', {hasText: 'ÖREB-Kataster'}).getByTestId('delete').click();
+    // The header options are only revealed on hover, so the delete button has to be hovered into view first.
+    const oerebKatasterHeader = page.locator('active-map-item-header', {hasText: 'ÖREB-Kataster'});
+    await oerebKatasterHeader.locator('div.active-map-item-header').hover();
+    await oerebKatasterHeader.locator('[data-test-id="delete"]').click();
     await expect.poll(() => new URL(page.url()).searchParams.has('topics')).toBe(false);
   });
 });
