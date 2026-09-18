@@ -88,12 +88,12 @@ export class MapConfigEffects {
     );
   });
 
-  public setBaseMapAndInitialMaps$ = createEffect(() => {
+  public setInitialMapConfigFromSearchParameters$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchActions.initializeSearchFromUrlParameters),
-      map(({basemapId, initialMaps}) => {
+      map(({basemapId}) => {
         const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
-        return MapConfigActions.setInitialMapConfig({basemapId, initialMaps, x, y, scale});
+        return MapConfigActions.setInitialMapConfig({basemapId, x, y, scale});
       }),
     );
   });

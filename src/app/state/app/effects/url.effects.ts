@@ -70,23 +70,21 @@ export class UrlEffects {
       mergeMap(([_, currentParams, mapPageParams]) => {
         const {x, y, scale, basemap, topics, initialMapIds, searchTerm, searchIndex} =
           UrlUtils.extractUrlParamsForMapInitialization(currentParams);
-        const hasTopicsParameter = topics !== undefined;
-        const topicIds = topics ? topics.split(',') : [];
-        const initialMaps = !hasTopicsParameter && initialMapIds ? initialMapIds.split(',') : [];
-        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap, hasTopicsParameter ? topicIds : initialMaps);
-        const initialTopicActions = hasTopicsParameter ? [LayerCatalogActions.setInitialTopics({topicIds})] : [];
+        const {hasTopicParameter, topicIds} = UrlUtils.resolveTopicIds(topics, initialMapIds);
+        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap, topicIds);
+        const initialTopicActions = hasTopicParameter ? [LayerCatalogActions.setInitialTopics({topicIds})] : [];
 
         if (searchTerm || searchIndex) {
           return [
             ...initialTopicActions,
-            SearchActions.initializeSearchFromUrlParameters({searchTerm: searchTerm, searchIndex, basemapId, initialMaps}),
+            SearchActions.initializeSearchFromUrlParameters({searchTerm: searchTerm, searchIndex, basemapId}),
           ];
-        } else if (x || y || scale || basemap || initialMapIds || hasTopicsParameter) {
+        } else if (x || y || scale || basemap || hasTopicParameter) {
           if (!x && !y && !scale) {
             const initialExtent = this.initalMapExtentService.calculateInitialExtent();
-            return [...initialTopicActions, MapConfigActions.setInitialMapConfig({...initialExtent, initialMaps, basemapId})];
+            return [...initialTopicActions, MapConfigActions.setInitialMapConfig({...initialExtent, basemapId})];
           }
-          return [...initialTopicActions, MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps})];
+          return [...initialTopicActions, MapConfigActions.setInitialMapConfig({x, y, scale, basemapId})];
         } else {
           return [UrlActions.setMapPageParams({params: mapPageParams})];
         }
@@ -149,12 +147,7 @@ export class UrlEffects {
 
   public keepTemporaryUrlParameters$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(
-        SearchActions.setSearchApiError,
-        SearchActions.handleEmptyResultsFromUrlSearch,
-        SearchActions.handleInvalidParameters,
-        LayerCatalogActions.setInitialMapsError,
-      ),
+      ofType(SearchActions.setSearchApiError, SearchActions.handleEmptyResultsFromUrlSearch, SearchActions.handleInvalidParameters),
       map(() => {
         return UrlActions.keepTemporaryUrlParameters();
       }),

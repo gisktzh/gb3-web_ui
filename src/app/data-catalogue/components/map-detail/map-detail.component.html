@@ -7,7 +7,7 @@
         @if (gB2Url(); as gB2Url) {
           <gb2-exit-button [url]="gB2Url" />
         } @else {
-          <a [queryParams]="{initialMapIds: baseDetailMetaData()!.topic}" [routerLink]="'/' + mainPageEnum.Maps" mat-icon-button>
+          <a [queryParams]="{topics: baseDetailMetaData()!.topic}" [routerLink]="'/' + mainPageEnum.Maps" mat-icon-button>
             <mat-icon svgIcon="ktzh_arrow_right" />
           </a>
         }

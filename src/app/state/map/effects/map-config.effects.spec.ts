@@ -138,21 +138,18 @@ describe('MapConfigEffects', () => {
     });
   });
 
-  describe('setBaseMapAndInitialMaps$', () => {
+  describe('setInitialMapConfigFromSearchParameters$', () => {
     it('dispatches MapConfigActions.setInitialMapConfig()', () => {
       actions$ = of(
         SearchActions.initializeSearchFromUrlParameters({
-          initialMaps: ['one', 'two'],
           basemapId: 'base',
           searchTerm: 'search',
           searchIndex: 'index',
         }),
       );
       vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 1, y: 2, scale: 3});
-      effects.setBaseMapAndInitialMaps$.subscribe((action) => {
-        expect(action).toEqual(
-          MapConfigActions.setInitialMapConfig({initialMaps: ['one', 'two'], basemapId: 'base', x: 1, y: 2, scale: 3}),
-        );
+      effects.setInitialMapConfigFromSearchParameters$.subscribe((action) => {
+        expect(action).toEqual(MapConfigActions.setInitialMapConfig({basemapId: 'base', x: 1, y: 2, scale: 3}));
       });
     });
   });

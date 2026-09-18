@@ -4,8 +4,6 @@ import {defaultMapConfig} from '../../../shared/configs/map.config';
 import {MapConfigState} from '../states/map-config.state';
 import {produce} from 'immer';
 import {MapConstants} from '../../../shared/constants/map.constants';
-import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 
 export const mapConfigFeatureKey = 'mapConfig';
 
@@ -20,7 +18,6 @@ export const initialState: MapConfigState = {
   activeBasemapId: defaultMapConfig.activeBasemapId,
   isMaxZoomedIn: defaultMapConfig.isMaxZoomedIn,
   isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut,
-  initialMaps: defaultMapConfig.initialMaps,
   predefinedInitialExtent: defaultMapConfig.predefinedInitialExtent,
   initialMapPadding: defaultMapConfig.initialMapPadding,
   initialMapPaddingMobile: defaultMapConfig.initialMapPaddingMobile,
@@ -38,7 +35,7 @@ export const mapConfigFeature = createFeature({
     on(MapConfigActions.markMapServiceAsDeinitialized, (state): MapConfigState => {
       return {...state, isMapServiceInitialized: false};
     }),
-    on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId, initialMaps}): MapConfigState => {
+    on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId}): MapConfigState => {
       const initialExtent = {
         center: {
           x: x ?? initialState.center.x,
@@ -51,7 +48,6 @@ export const mapConfigFeature = createFeature({
       return {
         ...state,
         activeBasemapId,
-        initialMaps,
         ...initialExtent,
         predefinedInitialExtent: true,
       };
@@ -103,15 +99,6 @@ export const mapConfigFeature = createFeature({
     }),
     on(MapConfigActions.setBasemap, (state, {activeBasemapId}): MapConfigState => {
       return {...state, activeBasemapId};
-    }),
-    on(MapConfigActions.clearInitialMapsConfig, (state): MapConfigState => {
-      return {...state, initialMaps: []};
-    }),
-    on(ActiveMapItemActions.addInitialMapItems, (state): MapConfigState => {
-      return {...state, initialMaps: []};
-    }),
-    on(LayerCatalogActions.setInitialMapsError, (state): MapConfigState => {
-      return {...state, initialMaps: []};
     }),
     on(MapConfigActions.setRotation, (state, {rotation}): MapConfigState => {
       return {...state, rotation: rotation};

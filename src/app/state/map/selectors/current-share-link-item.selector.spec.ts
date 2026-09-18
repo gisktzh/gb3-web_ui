@@ -35,7 +35,6 @@ describe('selectCurrentInternalShareLinkItem', () => {
       isMaxZoomedIn: false,
       isMaxZoomedOut: false,
       activeBasemapId: 'yes',
-      initialMaps: [],
       predefinedInitialExtent: false,
       initialMapPadding: {
         top: 1,
