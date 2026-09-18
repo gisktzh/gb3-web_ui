@@ -16,6 +16,24 @@ export const selectItems = createSelector(selectAllItems, (activeMapItems) => {
 });
 
 /**
+ * Returns the topic ids which can be represented by the browser URL.
+ *
+ * Only complete, non-temporary GB2 WMS topics are included. Single layers and
+ * other active map item types need the richer share-link representation.
+ */
+export const selectTopicIdsForUrl = createSelector(selectItems, (activeMapItems) => {
+  return [
+    ...new Set(
+      activeMapItems
+        .filter((activeMapItem) => !activeMapItem.isTemporary)
+        .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
+        .filter((activeMapItem) => !activeMapItem.isSingleLayer)
+        .map((activeMapItem) => activeMapItem.settings.mapId),
+    ),
+  ];
+});
+
+/**
  * Returns all activeMapItems from the activeMapItemState that have a map notice set and are not temporary.
  */
 export const selectGb2WmsActiveMapItemsWithMapNotices = createSelector(selectItems, (activeMapItems) => {

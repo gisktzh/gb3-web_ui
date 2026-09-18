@@ -27,6 +27,8 @@ import {SearchActions} from '../../app/actions/search.actions';
 import {TimeSliderService} from '../../../map/services/time-slider.service';
 import {produce} from 'immer';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {UrlActions} from '../../app/actions/url.actions';
+import {selectMapPageParams} from '../selectors/map-config-params.selector';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -36,6 +38,23 @@ export class ActiveMapItemEffects {
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
   private readonly timeSliderService = inject(TimeSliderService);
+
+  public updateMapPageQueryParams$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(
+        ActiveMapItemActions.addActiveMapItem,
+        ActiveMapItemActions.removeActiveMapItem,
+        ActiveMapItemActions.removeAllActiveMapItems,
+        ActiveMapItemActions.addFavourite,
+        ActiveMapItemActions.addInitialMapItems,
+        ActiveMapItemActions.reorderActiveMapItem,
+        ActiveMapItemActions.moveToTop,
+        LayerCatalogActions.clearInitialTopics,
+      ),
+      concatLatestFrom(() => this.store.select(selectMapPageParams)),
+      map(([_, params]) => UrlActions.setMapPageParams({params})),
+    );
+  });
 
   public addMapItem$ = createEffect(
     () => {
