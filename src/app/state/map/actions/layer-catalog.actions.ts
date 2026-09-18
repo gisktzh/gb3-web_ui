@@ -1,6 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {Topic} from '../../../shared/interfaces/topic.interface';
-import {errorProps} from '../../../shared/utils/error-props.utils';
 
 export const LayerCatalogActions = createActionGroup({
   source: 'LayerCatalog',
@@ -13,6 +12,5 @@ export const LayerCatalogActions = createActionGroup({
     'Clear Filter String': emptyProps(),
     'Set Initial Topics': props<{topicIds: string[]}>(),
     'Clear Initial Topics': emptyProps(),
-    'Set Initial Maps Error': errorProps(),
   },
 });

@@ -125,6 +125,25 @@ export class UrlUtils {
   }
 
   /**
+   * Resolves the topic ids to use for map initialization from the `topics` and legacy `initialMapIds` URL
+   * parameters. `initialMapIds` is a legacy alias for `topics` and is always merged into it - it is never
+   * dropped, even if `topics` is explicitly empty; there is no separate, strict legacy loading path anymore,
+   * invalid topic ids are simply skipped when loading the layer catalog.
+   */
+  public static resolveTopicIds(
+    topics: string | undefined,
+    initialMapIds: string | undefined,
+  ): {hasTopicParameter: boolean; topicIds: string[]} {
+    const values = [topics, initialMapIds].filter((value): value is string => value !== undefined);
+    if (values.length === 0) {
+      return {hasTopicParameter: false, topicIds: []};
+    }
+
+    const merged = UrlUtils.normalizeCommaSeparatedIds(values.join(',')) ?? '';
+    return {hasTopicParameter: true, topicIds: merged ? merged.split(',') : []};
+  }
+
+  /**
    * Extracts the last occurrence of the given parameter if it is an array; otherwise, it returns the parameter itself
    * @param param
    */

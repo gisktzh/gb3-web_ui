@@ -12,7 +12,6 @@ export interface MapConfigState {
   isMaxZoomedIn: boolean;
   isMaxZoomedOut: boolean;
   activeBasemapId: string;
-  initialMaps: string[];
   predefinedInitialExtent: boolean;
   initialMapPadding: InitialMapPadding;
   initialMapPaddingMobile: InitialMapPadding;

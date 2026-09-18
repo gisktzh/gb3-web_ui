@@ -155,4 +155,41 @@ describe('UrlUtils', () => {
       expect(UrlUtils.extractUrlParamsForMapInitialization({topics: ''}).topics).toBe('');
     });
   });
+
+  describe('resolveTopicIds', () => {
+    it('returns an empty result with hasTopicParameter false if both parameters are undefined', () => {
+      expect(UrlUtils.resolveTopicIds(undefined, undefined)).toEqual({hasTopicParameter: false, topicIds: []});
+    });
+
+    it('returns the topics ids if only topics is set', () => {
+      expect(UrlUtils.resolveTopicIds('a,b', undefined)).toEqual({hasTopicParameter: true, topicIds: ['a', 'b']});
+    });
+
+    it('returns the initialMapIds ids if only initialMapIds is set', () => {
+      expect(UrlUtils.resolveTopicIds(undefined, 'x')).toEqual({hasTopicParameter: true, topicIds: ['x']});
+    });
+
+    it('merges topics and initialMapIds if both are set', () => {
+      expect(UrlUtils.resolveTopicIds('a', 'x')).toEqual({hasTopicParameter: true, topicIds: ['a', 'x']});
+    });
+
+    it('merges initialMapIds into an explicitly empty topics parameter instead of treating it as authoritative', () => {
+      expect(UrlUtils.resolveTopicIds('', 'x')).toEqual({hasTopicParameter: true, topicIds: ['x']});
+    });
+
+    it('returns hasTopicParameter true and an empty topicIds list if topics is empty and initialMapIds is undefined', () => {
+      expect(UrlUtils.resolveTopicIds('', undefined)).toEqual({hasTopicParameter: true, topicIds: []});
+    });
+
+    it('trims whitespace around ids', () => {
+      expect(UrlUtils.resolveTopicIds(' topic-a , topic-b ', undefined)).toEqual({
+        hasTopicParameter: true,
+        topicIds: ['topic-a', 'topic-b'],
+      });
+    });
+
+    it('de-duplicates ids across the merge boundary while preserving order (topics first, then initialMapIds)', () => {
+      expect(UrlUtils.resolveTopicIds('a,b', 'b,c')).toEqual({hasTopicParameter: true, topicIds: ['a', 'b', 'c']});
+    });
+  });
 });
