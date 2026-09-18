@@ -515,6 +515,46 @@ describe('EsriMapService', () => {
     });
   });
 
+  describe('setViewPadding', () => {
+    it('updates the padding of an initialized map view', () => {
+      const padding = {top: 88, right: 474, bottom: 88, left: 474};
+      service = TestBed.inject(EsriMapService);
+
+      service.setViewPadding(padding);
+
+      expect(mapViewMock.padding).toEqual(padding);
+
+      service.setViewPadding(undefined);
+
+      expect(mapViewMock.padding).toEqual({top: 0, right: 0, bottom: 0, left: 0});
+    });
+
+    it('applies padding that is set before the map view is initialized', async () => {
+      vi.useFakeTimers();
+      const padding = {top: 88, right: 474, bottom: 88, left: 612};
+      store.overrideSelector(selectMapConfigState, {
+        ...defaultMapConfig,
+        isMapServiceInitialized: false,
+        center: {x: 1408, y: 1337},
+        scale: 12,
+        rotation: 0,
+        srsId: 2056,
+        ready: true,
+      });
+      store.refreshState();
+      mapViewService.mapView.set(undefined);
+      service = TestBed.inject(EsriMapService);
+
+      service.setViewPadding(padding);
+      service.assignMapElement(document.createElement('div'));
+      await vi.runAllTimersAsync();
+
+      expect(service.getMapView().padding).toEqual(padding);
+      service.deInit();
+      vi.useRealTimers();
+    });
+  });
+
   describe('resetExtent', () => {
     it('should reset the extent correctly', () => {
       vi.spyOn(initialMapExtentService, 'calculateInitialExtent').mockReturnValue({x: 12, y: 13, scale: 14});
@@ -523,6 +563,34 @@ describe('EsriMapService', () => {
       expect(mapViewMock.center.x).toBe(12);
       expect(mapViewMock.center.y).toBe(13);
       expect(mapViewMock.scale).toBe(14);
+    });
+
+    it('uses the effective MapView padding when resetting a padded view', () => {
+      const padding = {top: 88, right: 474, bottom: 88, left: 474};
+      vi.spyOn(initialMapExtentService, 'calculateInitialExtentForPaddedView').mockReturnValue({x: 22, y: 23, scale: 24});
+      service = TestBed.inject(EsriMapService);
+      service.setViewPadding(padding);
+
+      service.resetExtent();
+
+      expect(initialMapExtentService.calculateInitialExtentForPaddedView).toHaveBeenCalledWith(padding);
+      expect(mapViewMock.center.x).toBe(22);
+      expect(mapViewMock.center.y).toBe(23);
+      expect(mapViewMock.scale).toBe(24);
+    });
+
+    it('uses the padded-view calculation when desktop UI is explicitly hidden', () => {
+      const padding = {top: 0, right: 0, bottom: 0, left: 0};
+      vi.spyOn(initialMapExtentService, 'calculateInitialExtentForPaddedView').mockReturnValue({x: 32, y: 33, scale: 34});
+      service = TestBed.inject(EsriMapService);
+      service.setViewPadding(padding);
+
+      service.resetExtent();
+
+      expect(initialMapExtentService.calculateInitialExtentForPaddedView).toHaveBeenCalledWith(padding);
+      expect(mapViewMock.center.x).toBe(32);
+      expect(mapViewMock.center.y).toBe(33);
+      expect(mapViewMock.scale).toBe(34);
     });
   });
 });

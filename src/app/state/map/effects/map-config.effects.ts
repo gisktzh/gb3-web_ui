@@ -92,7 +92,7 @@ export class MapConfigEffects {
     return this.actions$.pipe(
       ofType(SearchActions.initializeSearchFromUrlParameters),
       map(({basemapId, initialMaps}) => {
-        const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
+        const {x, y, scale} = this.initialMapExtentService.calculateInitialExtentForPaddedView();
         return MapConfigActions.setInitialMapConfig({basemapId, initialMaps, x, y, scale});
       }),
     );
