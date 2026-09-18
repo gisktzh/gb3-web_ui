@@ -1,6 +1,7 @@
 import {createSelector} from '@ngrx/store';
 import {selectLoadingState as selectFeatureInfoLoadingState} from '../reducers/feature-info.reducer';
 import {selectLoadingState as selectGeneralInfoLoadingState} from '../reducers/general-info.reducer';
+import {selectLoadingState as selectOerebExtractLoadingState} from '../reducers/oereb-extract.reducer';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 
 /**
@@ -12,19 +13,32 @@ import {LoadingState} from '../../../shared/types/loading-state.type';
  * * If either one of the queries is loaded, return loaded
  * * Else return undefined, which basically only happens as initial state
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- official Record type from ngrx
-export const selectFeatureInfoQueryLoadingState = createSelector<Record<string, any>, LoadingState, LoadingState, LoadingState>(
+
+export const selectFeatureInfoQueryLoadingState = createSelector<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- official Record type from ngrx
+  Record<string, any>,
+  LoadingState,
+  LoadingState,
+  LoadingState,
+  LoadingState
+>(
   selectFeatureInfoLoadingState,
   selectGeneralInfoLoadingState,
-  (featureInfoLoadingState, generalInfoLoadingState) => {
-    if (featureInfoLoadingState === 'error' || generalInfoLoadingState === 'error') {
+  selectOerebExtractLoadingState,
+  (featureInfoLoadingState, generalInfoLoadingState, oerebExtractLoadingState) => {
+    if (featureInfoLoadingState === 'error' || generalInfoLoadingState === 'error' || oerebExtractLoadingState === 'error') {
       return 'error';
     }
-    if (featureInfoLoadingState === 'loading' || generalInfoLoadingState === 'loading') {
+
+    if (featureInfoLoadingState === 'loading' || generalInfoLoadingState === 'loading' || oerebExtractLoadingState === 'loading') {
       return 'loading';
     }
 
-    if (featureInfoLoadingState === 'loaded' && generalInfoLoadingState === 'loaded') {
+    if (
+      featureInfoLoadingState === 'loaded' &&
+      generalInfoLoadingState === 'loaded' &&
+      (oerebExtractLoadingState === 'loaded' || oerebExtractLoadingState === undefined)
+    ) {
       return 'loaded';
     }
 

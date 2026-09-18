@@ -1,0 +1,14 @@
+<map-overlay-list-item [forceExpanded]="true" [overlayTitle]="listItem().itemLabel" [hasBackgroundColor]="false">
+  <ul class="oereb-info-list">
+    @for (item of listItem().items; track $index) {
+      <li>
+        <div class="oereb-detail-list__title">
+          {{ item.itemLabel }}
+        </div>
+        <div class="oereb-detail-list__item" data-foo="bar" [attr.data-type]="item.itemType">
+          <oereb-info-value [item]="item" />
+        </div>
+      </li>
+    }
+  </ul>
+</map-overlay-list-item>
