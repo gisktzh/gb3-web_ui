@@ -47,8 +47,7 @@
 
   .map-data-item-map-layer__add-button {
     aspect-ratio: 1 / 1;
-    height: 100%;
-    width: auto;
+    @include mat-mixins.mat-icon-button-override-container-size(auto, 100%);
 
     @include mat-mixins.mat-icon-button-override-unthemed-color(
       functions.get-color-from-palette('secondary-accent'),

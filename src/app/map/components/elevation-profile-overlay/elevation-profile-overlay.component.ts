@@ -1,4 +1,4 @@
-import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
+import {Component, computed, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
 import {selectIsElevationProfileOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
@@ -32,6 +32,8 @@ export class ElevationProfileOverlayComponent {
   private readonly swisstopoApiService = inject(SwisstopoApiService);
 
   public readonly isVisible = this.store.selectSignal(selectIsElevationProfileOverlayVisible);
+  public readonly width = input<number | undefined>(undefined);
+  public readonly resizeEvent = output<number>();
   public readonly elevationProfileData = this.store.selectSignal(selectData);
   public readonly loadingState = this.store.selectSignal(selectLoadingState);
   public readonly downloadCsvUrl = computed(() => {

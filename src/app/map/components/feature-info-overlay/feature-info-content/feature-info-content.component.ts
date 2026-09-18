@@ -11,7 +11,7 @@ import {MAP_SERVICE} from '../../../../app.tokens';
 import {ResizableInfoTableComponent, TableHeader, TableRows} from './resizable-info-table.component';
 import {Store} from '@ngrx/store';
 import {TableCell} from './info-table-cell.component';
-import {formatFeatureInfoFieldValue} from 'src/app/shared/utils/feature-info-field.utils';
+import {formatDateValue} from '../../../../shared/utils/feature-info-field.utils';
 
 /**
  * Default value to be displayed when a field has no value (i.e. undefined)
@@ -175,11 +175,16 @@ export class FeatureInfoContentComponent {
 
     switch (feature.type) {
       case 'text':
+        return {
+          cellType: 'text',
+          fid,
+          displayValue: feature.value,
+        };
       case 'date':
         return {
           cellType: 'text',
           fid,
-          displayValue: formatFeatureInfoFieldValue(feature.value, feature.type) ?? DEFAULT_CELL_VALUE,
+          displayValue: formatDateValue(feature.value),
         };
       case 'image':
         return {

@@ -27,13 +27,11 @@ import {
   TopicsListData,
 } from '../../../models/gb3-api-generated.interfaces';
 import {Gb3ApiService} from './gb3-api.service';
-
 import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
-import {formatFeatureInfoFieldValue} from '../../../utils/feature-info-field.utils';
 import {OerebMaps} from 'src/app/shared/configs/oereb-maps.config';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
@@ -416,11 +414,14 @@ export class Gb3TopicsService extends Gb3ApiService {
         };
 
       case 'text':
-      case 'date':
         return {
-          ...field,
-          value: formatFeatureInfoFieldValue(field.value, field.type),
+          type: field.type,
+          value: typeof field.value === 'number' ? field.value.toString() : field.value,
+          label: field.label,
         };
+
+      case 'date':
+        return field;
     }
   }
 }

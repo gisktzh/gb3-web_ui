@@ -15,61 +15,72 @@
   </mat-drawer>
 
   @if (screenMode() !== 'mobile') {
-    <legend-overlay class="map-container__overlay" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
-    <map-attribute-filter-overlay class="map-container__overlay" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
-    <div class="map-container__all-map-items-container">
-      <div class="map-container__all-map-items-container__inner-container">
-        <active-map-items
-          class="map-container__all-map-items-container__inner-container__active-map-items"
-          [class.map-container__all-map-items-container__inner-container__active-map-items--maximized]="isMapDataCatalogueMinimized()"
+    <div class="overlays" [class.overlays--sidebar-open]="isSideBarOverlayVisible()" [style.--side-bar-width.px]="sideBarWidth()">
+      <div class="main-overlays">
+        <legend-overlay class="map-container__overlay" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
+        <map-attribute-filter-overlay
+          class="map-container__overlay"
           [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
         />
-        <span class="map-container__all-map-items-container__inner-container__divider"></span>
-        <map-data-catalogue
-          class="map-container__all-map-items-container__inner-container__map-data-catalogue"
-          [class.map-container__all-map-items-container__inner-container__map-data-catalogue--minimized]="isMapDataCatalogueMinimized()"
+        <div class="map-container__all-map-items-container">
+          <div class="map-container__all-map-items-container__inner-container">
+            <active-map-items
+              class="map-container__all-map-items-container__inner-container__active-map-items"
+              [class.map-container__all-map-items-container__inner-container__active-map-items--maximized]="isMapDataCatalogueMinimized()"
+              [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+            />
+            <span class="map-container__all-map-items-container__inner-container__divider"></span>
+            <map-data-catalogue
+              class="map-container__all-map-items-container__inner-container__map-data-catalogue"
+              [class.map-container__all-map-items-container__inner-container__map-data-catalogue--minimized]="isMapDataCatalogueMinimized()"
+              [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+              (changeIsMinimizedEvent)="setIsMapDataCatalogueMinimized($event)"
+            />
+          </div>
+        </div>
+        <button
+          mat-flat-button
+          (click)="showLegend()"
+          [disabled]="numberOfQueryLegends() === 0"
+          class="map-container__legend-button"
           [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-          (changeIsMinimizedEvent)="setIsMapDataCatalogueMinimized($event)"
+        >
+          <mat-icon svgIcon="ktzh_legend" />
+          Legende
+        </button>
+        <search-window class="map-container__search-window" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
+        <ng-container [ngTemplateOutlet]="mapToolsTemplate" />
+        <map-controls class="map-container__map-controls" />
+      </div>
+
+      <div class="sidebar-right-overlays">
+        <feature-info-overlay
+          class="sidebar-right-overlays__item"
+          [width]="sideBarWidth()"
+          (resizeEvent)="setSideBarWidth($event)"
+          [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+        />
+        <elevation-profile-overlay
+          class="sidebar-right-overlays__item"
+          [width]="sideBarWidth()"
+          (resizeEvent)="setSideBarWidth($event)"
+          [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+        />
+        <drawing-edit-overlay
+          class="sidebar-right-overlays__item"
+          [width]="sideBarWidth()"
+          (resizeEvent)="setSideBarWidth($event)"
+          [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
         />
       </div>
     </div>
-    <button
-      mat-flat-button
-      (click)="showLegend()"
-      [disabled]="numberOfQueryLegends() === 0"
-      class="map-container__legend-button"
-      [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-    >
-      <mat-icon svgIcon="ktzh_legend" />
-      Legende
-    </button>
+
     <data-download-status-queue
       class="map-container__data-download-status-queue"
       [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
     />
-    <feature-info-overlay
-      class="map-container__overlay map-container__overlay--right"
-      [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-    />
-    <elevation-profile-overlay
-      class="map-container__overlay map-container__overlay--right"
-      [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-    />
-    <drawing-edit-overlay
-      class="map-container__overlay map-container__overlay--right"
-      [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-    />
-    <search-window class="map-container__search-window" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
   }
 
-  <map-tools
-    class="map-container__map-tools"
-    [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-    [class.map-container__map-tools--mobile]="screenMode() === 'mobile'"
-  />
-  @if (screenMode() !== 'mobile') {
-    <map-controls class="map-container__map-controls" />
-  }
   @if (screenMode() === 'mobile') {
     <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--right">
       <button
@@ -96,9 +107,18 @@
     />
 
     <bottom-sheet-overlay />
+    <ng-container [ngTemplateOutlet]="mapToolsTemplate" />
   }
   <map-container class="map-container__map" />
 </mat-drawer-container>
+
+<ng-template #mapToolsTemplate>
+  <map-tools
+    class="map-container__map-tools"
+    [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+    [class.map-container__map-tools--mobile]="screenMode() === 'mobile'"
+  />
+</ng-template>
 <onboarding-guide />
 <center-anchor anchorName="map.tour.start" />
 <center-anchor anchorName="map.info" />

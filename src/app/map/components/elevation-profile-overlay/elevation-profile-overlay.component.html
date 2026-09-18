@@ -1,5 +1,7 @@
 <map-overlay
   (closeEvent)="close()"
+  (resizeEvent)="resizeEvent.emit($event)"
+  [width]="width()"
   [isVisible]="isVisible()"
   [showPrintButton]="false"
   class="elevation-profile-overlay"
