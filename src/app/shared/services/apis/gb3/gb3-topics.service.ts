@@ -49,6 +49,7 @@ export class Gb3TopicsService extends Gb3ApiService {
   private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   private readonly dataDatasetTabUrl = `/${MainPage.Data}/${DataCataloguePage.Datasets}`;
   private readonly dataMapTabUrl = `/${MainPage.Data}/${DataCataloguePage.Maps}`;
+  private readonly oerebMaps = this.configService.oerebMaps;
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -166,7 +167,13 @@ export class Gb3TopicsService extends Gb3ApiService {
         return {
           title: category.title,
           maps: [...category.topics]
-            .sort((a, b) => a.title.localeCompare(b.title))
+            .sort((a, b) => {
+              if (category.title === 'ÖREB') {
+                return this.oerebMaps.indexOf(a.topic) - this.oerebMaps.indexOf(b.topic);
+              }
+
+              return a.title.localeCompare(b.title);
+            })
             .map((topic) => {
               return {
                 id: topic.topic,
