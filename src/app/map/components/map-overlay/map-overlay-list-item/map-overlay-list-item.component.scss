@@ -82,6 +82,50 @@
       }
     }
   }
+
+  .list-item__content--has-border {
+    border-left: 1px solid #cccccb;
+    margin-left: 12px;
+  }
+}
+
+:host([data-nesting-level='1']) {
+  .list-item__content {
+    padding-left: 12px;
+
+    &.list-item__content--has-border {
+      padding-left: 22px;
+    }
+  }
+
+  &,
+  :host([data-nesting-level='3']) {
+    .list-item__header__content__title {
+      overflow: visible;
+      line-clamp: initial;
+      -webkit-line-clamp: initial;
+    }
+  }
+}
+
+:host([data-nesting-level='2']) {
+  .list-item__content {
+    padding-left: 36px;
+  }
+}
+
+:host([data-nesting-level='3']) {
+  .list-item__content {
+    padding-left: 24px;
+  }
+
+  .list-item__header__content {
+    margin-top: 8px;
+  }
+
+  .list-item__header__content__title {
+    font-size: 12px;
+  }
 }
 
 /**
