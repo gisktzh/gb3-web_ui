@@ -2,25 +2,13 @@
 
 @switch (cell.cellType) {
   @case ('url') {
-    <a
-      class="feature-info-content__table__row__column__link"
-      [href]="cell.url"
-      target="_blank"
-      rel="noopener noreferrer"
-      [title]="cell.displayValue"
-    >
+    <a class="info-table-cell__link" [href]="cell.url" target="_blank" rel="noopener noreferrer" [title]="cell.displayValue">
       {{ cell.displayValue }}
     </a>
   }
   @case ('image') {
     <a [href]="cell.url" target="_blank" rel="noopener noreferrer" [title]="cell.displayValue">
-      <img
-        class="feature-info-content__table__row__column__image"
-        [src]="cell.src"
-        [alt]="cell.alt"
-        [width]="cell.width ?? 200"
-        [height]="cell.height ?? 200"
-      />
+      <img class="info-table-cell__image" [src]="cell.src" [alt]="cell.alt" [width]="cell.width ?? 200" [height]="cell.height ?? 200" />
     </a>
   }
   @case ('text') {

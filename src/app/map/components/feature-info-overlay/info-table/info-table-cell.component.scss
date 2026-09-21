@@ -1,0 +1,19 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+.info-table-cell__link {
+  @include mixins.external-link-decoration;
+}
+
+.info-table-cell__image {
+  object-fit: contain;
+}
+
+.info-table-cell__list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  li:not(:last-child) {
+    padding-bottom: 8px;
+  }
+}
