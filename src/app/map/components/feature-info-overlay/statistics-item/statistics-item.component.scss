@@ -31,13 +31,3 @@
     }
   }
 }
-
-// A group header introduces the rows below it and spans the whole width, so it is not part of the alternating colours.
-.statistics-item__group > th {
-  background-color: ktzh-variables.$zh-white;
-  color: ktzh-variables.$zh-black100;
-}
-
-.statistics-item__unit {
-  margin-left: 4px;
-}

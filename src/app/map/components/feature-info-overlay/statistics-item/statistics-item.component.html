@@ -3,16 +3,16 @@
   [overlayTitle]="result().title"
   [metaDataLink]="showInteractiveElements() ? result().metaDataLink : undefined"
 >
-  @for (layer of result().layers; track layer.layer) {
+  @for (layerView of layerViews(); track layerView.layer.layer) {
     <div class="statistics-item">
       <map-overlay-list-item
         [forceExpanded]="true"
-        [overlayTitle]="layer.title"
+        [overlayTitle]="layerView.layer.title"
         [hasBackgroundColor]="false"
         [showInteractiveElements]="showInteractiveElements()"
       >
         <mat-icon class="statistics-item__icon" header-icon>layers</mat-icon>
-        @if (getStatusText(layer); as statusText) {
+        @if (layerView.statusText; as statusText) {
           <p class="statistics-item__status">{{ statusText.text }}</p>
           @if (statusText.link; as link) {
             <a class="statistics-item__status-link" [href]="link.url" target="_blank" rel="noopener noreferrer">
@@ -21,33 +21,21 @@
             </a>
           }
         } @else {
-          <overlay-table [ariaDescription]="'Statistik zu ' + layer.title">
-            <tr header>
-              <th scope="col"></th>
-              @for (column of layer.columns; track column) {
-                <th scope="col">{{ column }}</th>
-              }
-            </tr>
-            @for (row of layer.rows; track $index) {
-              <tr [class.statistics-item__group]="row.isGroupHeader">
-                <th scope="row" [attr.colspan]="row.isGroupHeader ? layer.columns.length + 1 : null">{{ row.label | hyphenate }}</th>
-                @if (!row.isGroupHeader) {
-                  @for (value of row.values; track $index) {
-                    <td>
-                      @if (value.value !== null) {
-                        {{ value.value | number: '1.0-2' }}
-                        @if (value.unit) {
-                          <span class="statistics-item__unit">{{ value.unit }}</span>
-                        }
-                      } @else {
-                        &ndash;
-                      }
-                    </td>
-                  }
-                }
-              </tr>
+          @for (section of layerView.tableSections; track $index) {
+            @if (section.title !== undefined) {
+              <map-overlay-list-item
+                [forceExpanded]="true"
+                [overlayTitle]="section.title"
+                [hasBackgroundColor]="false"
+                [showInteractiveElements]="showInteractiveElements()"
+              >
+                <mat-icon class="statistics-item__icon" header-icon>layers</mat-icon>
+                <resizable-info-table [tableData]="section.data" [tableLabel]="section.tableLabel" />
+              </map-overlay-list-item>
+            } @else {
+              <resizable-info-table [tableData]="section.data" [tableLabel]="section.tableLabel" />
             }
-          </overlay-table>
+          }
         }
       </map-overlay-list-item>
     </div>
