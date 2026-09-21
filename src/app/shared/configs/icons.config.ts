@@ -263,6 +263,10 @@ const printIconsConfig = [
   },
 ];
 
+const oerebExtractIcons: {id: string; path: string}[] = [
+  // TODO GHUB-451: Add icons
+];
+
 export const iconsConfig = [
   ...toolIconsConfig,
   ...controlIconsConfig,
@@ -272,4 +276,5 @@ export const iconsConfig = [
   ...selectingSymbolIconsConfig,
   ...searchSymbolIconsConfig,
   ...printIconsConfig,
+  ...oerebExtractIcons,
 ];

@@ -2,6 +2,7 @@ import {ActionReducerMap, MetaReducer} from '@ngrx/store';
 import {reducer as mapConfigReducer} from './map/reducers/map-config.reducer';
 import {reducer as legendReducer} from './map/reducers/legend.reducer';
 import {reducer as featureInfoReducer} from './map/reducers/feature-info.reducer';
+import {reducer as oerebExtractReducer} from './map/reducers/oereb-extract.reducer';
 import {reducer as layerCatalogReducer} from './map/reducers/layer-catalog.reducer';
 import {reducer as activeMapItemReducer} from './map/reducers/active-map-item.reducer';
 import {reducer as dataDownloadOrderReducer} from './map/reducers/data-download-order.reducer';
@@ -38,6 +39,7 @@ import {reducer as externalAppsReducer} from './external-apps/reducers/external-
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
+import {OerebExtractState} from './map/states/oereb-extract.state';
 import {LayerCatalogState} from './map/states/layer-catalog.state';
 import {LegendState} from './map/states/legend.state';
 import {MapAttributeFiltersItemState} from './map/states/map-attribute-filters-item.state';
@@ -60,6 +62,7 @@ import {ActiveMapItemEffects} from './map/effects/active-map-item.effects';
 import {DataDownloadOrderEffects} from './map/effects/data-download-order.effects';
 import {DataDownloadProductEffects} from './map/effects/data-download-product.effects';
 import {FeatureInfoEffects} from './map/effects/feature-info.effects';
+import {OerebExtractEffects} from './map/effects/oereb-extract.effects';
 import {LayerCatalogEffects} from './map/effects/layer-catalog.effects';
 import {LegendEffects} from './map/effects/legend.effects';
 import {MapConfigEffects} from './map/effects/map-config.effects';
@@ -109,6 +112,7 @@ interface State {
   mapConfig: MapConfigState;
   legend: LegendState;
   featureInfo: FeatureInfoState;
+  oerebExtract: OerebExtractState;
   layerCatalog: LayerCatalogState;
   activeMapItem: ActiveMapItemState;
   authStatus: AuthStatusState;
@@ -149,6 +153,7 @@ export const reducers: ActionReducerMap<State> = {
   mapConfig: mapConfigReducer,
   legend: legendReducer,
   featureInfo: featureInfoReducer,
+  oerebExtract: oerebExtractReducer,
   layerCatalog: layerCatalogReducer,
   activeMapItem: activeMapItemReducer,
   authStatus: authStatusReducer,
@@ -188,6 +193,7 @@ export const reducers: ActionReducerMap<State> = {
 export const effects = [
   ActiveMapItemEffects,
   FeatureInfoEffects,
+  OerebExtractEffects,
   LayerCatalogEffects,
   LegendEffects,
   MapConfigEffects,

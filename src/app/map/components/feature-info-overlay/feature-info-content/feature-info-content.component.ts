@@ -1,62 +1,17 @@
-import {Component, computed, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ElementRef, computed, inject, input, signal, viewChild, ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
-import {Store} from '@ngrx/store';
 import {selectPinnedFeatureId} from '../../../../state/map/reducers/feature-info.reducer';
 import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {TableColumnIdentifierDirective} from './table-column-identifier.directive';
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapService} from '../../../interfaces/map.service';
 import {MAP_SERVICE} from '../../../../app.tokens';
-import {KeyValuePipe} from '@angular/common';
-import {HyphenatePipe} from '../../../pipes/hyphenate.pipe';
-import {formatFeatureInfoFieldValue} from '../../../../shared/utils/feature-info-field.utils';
-import {OverlayTableComponent} from '../overlay-table/overlay-table.component';
-
-type CellType = 'text' | 'url' | 'image';
-
-/**
- * Each TableCell has an fid (identifying the feature), a displayvalue and a type. These are then further narrowed down to handle string
- * and linkobject values.
- */
-interface AbstractTableCell {
-  fid: number;
-  displayValue: string;
-  cellType: CellType;
-}
-
-interface TextTableCell extends AbstractTableCell {
-  cellType: 'text';
-}
-
-interface UrlTableCell extends AbstractTableCell {
-  cellType: 'url';
-  url: string;
-}
-
-interface ImageTableCell extends AbstractTableCell {
-  cellType: 'image';
-  url: string;
-  src: string;
-  alt: string;
-}
-
-type TableCell = TextTableCell | UrlTableCell | ImageTableCell;
-
-/**
- * A TableHeader is a AbstractTableCell with a displayValue that is string only.
- */
-interface TableHeader extends Omit<AbstractTableCell, 'cellType'> {
-  displayValue: string;
-  hasGeometry: boolean;
-}
-
-/**
- * A row consists of a key which represents the attribute value ("header" in the transposed table) and a set of AbstractTableCell
- * objects.
- */
-type TableRows = Map<string, TableCell[]>;
+import {ResizableInfoTableComponent, TableHeader, TableRows} from './resizable-info-table.component';
+import {Store} from '@ngrx/store';
+import {TableCell} from './info-table-cell.component';
+import {formatDateValue} from '../../../../shared/utils/feature-info-field.utils';
 
 /**
  * Default value to be displayed when a field has no value (i.e. undefined)
@@ -75,14 +30,16 @@ const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 @Component({
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
-  styleUrls: ['./feature-info-content.component.scss'],
+  imports: [TableColumnIdentifierDirective, MatRadioButton, MatRadioGroup, ResizableInfoTableComponent],
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [TableColumnIdentifierDirective, MatRadioButton, KeyValuePipe, HyphenatePipe, MatRadioGroup, OverlayTableComponent],
 })
 export class FeatureInfoContentComponent {
-  private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
+  private readonly store = inject(Store);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
+
+  public readonly container = viewChild.required<ElementRef<HTMLElement>>('container');
 
   public readonly layer = input.required<FeatureInfoResultLayer>();
   public readonly topicId = input.required<string>();
@@ -113,12 +70,13 @@ export class FeatureInfoContentComponent {
 
     return pinnedFeatureIdCandidate;
   });
-  public readonly hoveredFeatureId = signal<number | null>(null);
-  public readonly hoverEnabled = signal(true);
 
   public readonly highlightedFeatureId = computed(() => {
     return this.pinnedFeatureId() ?? this.hoveredFeatureId();
   });
+
+  public readonly hoveredFeatureId = signal<number | null>(null);
+  public readonly hoverEnabled = signal(true);
 
   public readonly tableData = computed(() => {
     const tableHeaders: TableHeader[] = [];
@@ -143,9 +101,6 @@ export class FeatureInfoContentComponent {
 
     return {tableHeaders, tableRows};
   });
-
-  public readonly tableRows = computed(() => this.tableData().tableRows);
-  public readonly tableHeaders = computed(() => this.tableData().tableHeaders);
 
   public readonly featureGeometries = computed(() => {
     const featureGeometries: Map<number, GeometryWithSrs | undefined> = new Map();
@@ -190,14 +145,6 @@ export class FeatureInfoContentComponent {
     }
   }
 
-  /**
-   * Fixed compareFn for KeyValuePipe that always returns 0, essentially preserving the key order of the object. This
-   * is necessary because the KeyValuePipe orders the keys ascending: https://angular.io/api/common/KeyValuePipe#description
-   */
-  public preserveKeyValueOrder(): number {
-    return 0;
-  }
-
   private createUniqueColumnIdentifierForFid(fid: number): string {
     return TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId(), this.layer().layer, fid);
   }
@@ -228,11 +175,16 @@ export class FeatureInfoContentComponent {
 
     switch (feature.type) {
       case 'text':
+        return {
+          cellType: 'text',
+          fid,
+          displayValue: feature.value,
+        };
       case 'date':
         return {
           cellType: 'text',
           fid,
-          displayValue: formatFeatureInfoFieldValue(feature.value, feature.type) ?? DEFAULT_CELL_VALUE,
+          displayValue: formatDateValue(feature.value),
         };
       case 'image':
         return {
@@ -251,5 +203,13 @@ export class FeatureInfoContentComponent {
           url: feature.value.href,
         };
     }
+  }
+
+  public onResizeHandlerResizeEnd() {
+    this.hoverEnabled.set(true);
+  }
+
+  public onResizeHandlerResizeStart() {
+    this.hoverEnabled.set(false);
   }
 }

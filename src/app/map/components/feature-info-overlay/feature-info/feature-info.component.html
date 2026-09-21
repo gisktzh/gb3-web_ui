@@ -4,10 +4,16 @@
     <feature-info-general-information [generalInfoData]="generalInfoData" />
     <mat-divider class="feature-info__divider" />
   }
+  @if (oerebExtract(); as oerebExtract) {
+    <oereb-extract [data]="oerebExtract" />
+    @if (featureInfoData().length > 0) {
+      <mat-divider class="feature-info__divider" />
+    }
+  }
   @for (featureInfo of featureInfoData(); track trackById($index, featureInfo)) {
     <feature-info-item [featureInfo]="featureInfo" [showInteractiveElements]="showInteractiveElements()" />
   }
-  @if (featureInfoData().length === 0) {
+  @if (hasNoInfoData()) {
     <i>Keine kartenspezifischen Treffer!</i>
   }
 }
