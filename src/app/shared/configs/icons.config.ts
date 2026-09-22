@@ -7,6 +7,14 @@
  */
 const toolIconsConfig = [
   {
+    id: 'ktzh_select_feature',
+    path: 'assets/icons/tools/select-feature.svg',
+  },
+  {
+    id: 'ktzh_select_statistic',
+    path: 'assets/icons/tools/select-statistic.svg',
+  },
+  {
     id: 'ktzh_measure_menu',
     path: 'assets/icons/tools/measure-menu.svg',
   },

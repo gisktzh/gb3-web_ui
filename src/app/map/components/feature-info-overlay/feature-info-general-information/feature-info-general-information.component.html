@@ -3,6 +3,9 @@
     <mat-panel-title>
       <mat-icon [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'" class="general-information__header__toggle" />
       <div class="general-information__header__title">
+        @if (areaInSquareMeters(); as areaInSquareMeters) {
+          <span> <b>Fläche:</b> {{ areaInSquareMeters / 1000000 | number: '1.0-3' }} km² </span>
+        }
         <span>
           <b>Koordinaten:</b> {{ generalInfoData().locationInformation.queryPosition.coordinates[0] }} /
           {{ generalInfoData().locationInformation.queryPosition.coordinates[1] }}

@@ -6,12 +6,12 @@
     [featureId]="tableHeader.fid"
     [layerId]="layer().layer"
     [topicId]="topicId()"
-    class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
-    [class.feature-info-content__table__row__column--highlighted]="highlightedFeatureId() === tableHeader.fid"
+    class="info-table__cell info-table__cell--header feature-info-content__feature-header"
+    [class.feature-info-content__feature-cell--highlighted]="highlightedFeatureId() === tableHeader.fid"
     scope="col"
     tableColumnIdentifier
   >
-    <div class="feature-info-content__table__row__column__wrapper">
+    <div class="feature-info-content__feature-header-content">
       {{ tableHeader.displayValue.split(' ')[1] }}
       <mat-radio-button [disabled]="!tableHeader.hasGeometry" [checked]="highlightedFeatureId() === tableHeader.fid" labelPosition="before">
         Markieren:
@@ -27,14 +27,14 @@
     [featureId]="cellValue.fid"
     [layerId]="layer().layer"
     [topicId]="topicId()"
-    class="feature-info-content__table__row__column"
-    [class.feature-info-content__table__row__column--highlighted]="highlightedFeatureId() === cellValue.fid"
+    class="info-table__cell"
+    [class.feature-info-content__feature-cell--highlighted]="highlightedFeatureId() === cellValue.fid"
     tableColumnIdentifier
   >
     @switch (cellValue.cellType) {
       @case ('url') {
         <a
-          class="feature-info-content__table__row__column__link"
+          class="feature-info-content__link"
           [href]="cellValue.url"
           target="_blank"
           rel="noopener noreferrer"
@@ -45,13 +45,7 @@
       }
       @case ('image') {
         <a [href]="cellValue.url" target="_blank" rel="noopener noreferrer" [title]="cellValue.displayValue">
-          <img
-            class="feature-info-content__table__row__column__image"
-            [src]="cellValue.src"
-            [alt]="cellValue.alt"
-            width="200"
-            height="200"
-          />
+          <img class="feature-info-content__image" [src]="cellValue.src" [alt]="cellValue.alt" width="200" height="200" />
         </a>
       }
       @case ('text') {
@@ -61,16 +55,15 @@
   </td>
 </ng-template>
 
-<div class="feature-info-content" #container>
+<div class="feature-info-content">
   <mat-radio-group [value]="highlightedFeatureId()">
     <resizable-info-table
       [tableLabel]="`Informationen zu ${this.layer().title}`"
       [tableData]="tableData()"
       [tableHeaderTemplate]="tableHeader"
       [tableCellTemplate]="tableCell"
-      [resizeContainer]="container"
-      (resizeHandlerResizeStart)="onResizeHandlerResizeStart()"
-      (resizeHandlerResizeEnd)="onResizeHandlerResizeEnd()"
+      (resizeStart)="onResizeHandlerResizeStart()"
+      (resizeEnd)="onResizeHandlerResizeEnd()"
     />
   </mat-radio-group>
 </div>

@@ -1,0 +1,51 @@
+<map-overlay-list-item
+  [forceExpanded]="true"
+  [overlayTitle]="result().title"
+  [metaDataLink]="showInteractiveElements() ? result().metaDataLink : undefined"
+>
+  @for (layerView of layerViews(); track layerView.layer.layer) {
+    <div class="statistics-item">
+      <map-overlay-list-item
+        [forceExpanded]="true"
+        [overlayTitle]="layerView.layer.title"
+        [hasBackgroundColor]="false"
+        [showInteractiveElements]="showInteractiveElements()"
+      >
+        <mat-icon class="statistics-item__icon" header-icon>layers</mat-icon>
+        @if (layerView.statusText; as statusText) {
+          <p class="statistics-item__status">{{ statusText.text }}</p>
+          @if (statusText.link; as link) {
+            <a class="statistics-item__status-link" [href]="link.url" target="_blank" rel="noopener noreferrer">
+              {{ link.label }}
+              <mat-icon class="statistics-item__status-link__icon">north_east</mat-icon>
+            </a>
+          }
+        } @else {
+          @for (section of layerView.tableSections; track $index) {
+            @if (section.title !== undefined) {
+              <map-overlay-list-item
+                [forceExpanded]="true"
+                [overlayTitle]="section.title"
+                [hasBackgroundColor]="false"
+                [showInteractiveElements]="showInteractiveElements()"
+              >
+                <mat-icon class="statistics-item__icon" header-icon>layers</mat-icon>
+                <resizable-info-table [tableData]="section.data" [tableLabel]="section.tableLabel" />
+              </map-overlay-list-item>
+            } @else {
+              <resizable-info-table [tableData]="section.data" [tableLabel]="section.tableLabel" />
+            }
+          }
+        }
+      </map-overlay-list-item>
+    </div>
+  }
+
+  <ng-container header-icon>
+    @if (result().icon; as icon) {
+      <img class="statistics-item__icon" [src]="icon" [alt]="result().title" width="24" height="24" />
+    } @else {
+      <mat-icon class="statistics-item__icon">layers</mat-icon>
+    }
+  </ng-container>
+</map-overlay-list-item>

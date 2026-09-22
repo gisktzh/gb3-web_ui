@@ -1,4 +1,4 @@
-<div class="feature-info-content">
+<div class="oereb-extract">
   <map-overlay-list-item [forceExpanded]="true" overlayTitle="ÖREB-Kataster">
     <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
@@ -19,24 +19,16 @@
     <map-overlay-list-item [forceExpanded]="true" overlayTitle="Grundstücksinformationen" [hasBackgroundColor]="false">
       <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
-      <div class="feature-info-content" #containerCadastreInfo>
-        <resizable-info-table
-          [tableData]="oerebCadastreData()"
-          tableLabel="Grundstücksinformationen"
-          [resizeContainer]="containerCadastreInfo"
-        />
+      <div class="oereb-extract__table">
+        <resizable-info-table [tableData]="oerebCadastreData()" tableLabel="Grundstücksinformationen" />
       </div>
     </map-overlay-list-item>
 
     <map-overlay-list-item [forceExpanded]="true" overlayTitle="Zuständige Stelle" [hasBackgroundColor]="false">
       <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
-      <div class="feature-info-content" #containerKboAndSurveyor>
-        <resizable-info-table
-          [tableData]="kboAndSurveyorData()"
-          tableLabel="Zuständige Stelle"
-          [resizeContainer]="containerKboAndSurveyor"
-        />
+      <div class="oereb-extract__table">
+        <resizable-info-table [tableData]="kboAndSurveyorData()" tableLabel="Zuständige Stelle" />
       </div>
     </map-overlay-list-item>
 
@@ -56,30 +48,22 @@
       </map-overlay-list-item>
     }
 
-    @if (notConcernedThemes().tableRows.size > 0) {
+    @if (notConcernedThemes().rows.length > 0) {
       <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht betroffene Themen" [hasBackgroundColor]="false">
         <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
-        <div class="feature-info-content" #containerNotConcernedThemes>
-          <resizable-info-table
-            [tableData]="notConcernedThemes()"
-            tableLabel="Nicht betroffene Themen"
-            [resizeContainer]="containerNotConcernedThemes"
-          />
+        <div class="oereb-extract__table">
+          <resizable-info-table [tableData]="notConcernedThemes()" tableLabel="Nicht betroffene Themen" />
         </div>
       </map-overlay-list-item>
     }
 
-    @if (notAvailableThemes().tableRows.size > 0) {
+    @if (notAvailableThemes().rows.length > 0) {
       <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht verfügbare Themen" [hasBackgroundColor]="false">
         <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
-        <div class="feature-info-content" #containerNotConcernedThemes>
-          <resizable-info-table
-            [tableData]="notAvailableThemes()"
-            tableLabel="Nicht verfügbare Themen"
-            [resizeContainer]="containerNotConcernedThemes"
-          />
+        <div class="oereb-extract__table">
+          <resizable-info-table [tableData]="notAvailableThemes()" tableLabel="Nicht verfügbare Themen" />
         </div>
       </map-overlay-list-item>
     }

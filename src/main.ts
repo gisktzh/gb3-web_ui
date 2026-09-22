@@ -22,6 +22,8 @@ import {EFFECTS_ERROR_HANDLER, provideEffects} from '@ngrx/effects';
 import {effectErrorHandler} from './app/state/app/effects/effects-error-handler.effects';
 import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {APP_ROUTES} from './app/app.routes';
+import {StatisticsService} from './app/shared/services/apis/gb3/abstract-statistics.service';
+import {Gb3StatisticsMockService} from './app/shared/services/apis/gb3/gb3-statistics-mock.service';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {bootstrapApplication} from '@angular/platform-browser';
 import {provideStore} from '@ngrx/store';
@@ -47,6 +49,7 @@ bootstrapApplication(AppComponent, {
     {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsServiceMock, ConfigService], useFactory: newsFactory},
     {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsServiceMock, ConfigService], useFactory: gravCmsFactory},
     {provide: DRAWING_SYMBOLS_SERVICE, useClass: EsriDrawingSymbolsService},
+    {provide: StatisticsService, useClass: Gb3StatisticsMockService},
     {provide: LOCALE_ID, useValue: 'de-CH'},
     {
       provide: EFFECTS_ERROR_HANDLER,

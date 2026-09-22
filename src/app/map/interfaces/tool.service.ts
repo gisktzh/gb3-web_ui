@@ -1,6 +1,7 @@
 import {MeasurementTool} from '../../shared/types/measurement-tool.type';
 import {DrawingTool} from '../../shared/types/drawing-tool.type';
 import {DataDownloadSelectionTool} from '../../shared/types/data-download-selection-tool.type';
+import {StatisticsSelectionTool} from '../../shared/types/statistics-selection-tool.type';
 import {
   Gb3StyledInternalDrawingRepresentation,
   Gb3StyleRepresentation,
@@ -16,6 +17,8 @@ export interface ToolService {
   initializeDrawing(drawingTool: DrawingTool): void;
 
   initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool): void;
+
+  initializeStatisticsSelection(selectionTool: StatisticsSelectionTool): void;
 
   addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: DrawingLayer): Promise<void>;
 

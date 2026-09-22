@@ -138,6 +138,8 @@ export class ActiveMapItemEffects {
               case 'select-canton':
               case 'select-municipality':
               case 'select-federation':
+              case 'select-statistics-circle':
+              case 'select-statistics-polygon':
               case 'measure-elevation-profile':
                 // these tools are used on an internal layer
                 return false;
