@@ -70,18 +70,16 @@ export class Gb3GeoshopProductsService extends Gb3ApiService {
   }
 
   private mapProductsListDataToProducts(data: ProductsListData): Product[] {
-    return data.products.map(
-      (product): Product => ({
-        id: product.id,
-        name: product.name,
-        gisZHNr: product.giszhnr,
-        ogd: product.ogd,
-        nonOgdProductUrl: product.url ?? undefined,
-        themes: product.themes ?? [],
-        keywords: product.keywords ?? [],
-        geolionGeodatensatzUuid: product.geolion_geodatensatz_uuid ?? undefined,
-        formats: product.formats.map((format): ProductFormat => ({id: format.id, description: format.description})),
-      }),
-    );
+    return data.products.map((product): Product => ({
+      id: product.id,
+      name: product.name,
+      gisZHNr: product.giszhnr,
+      ogd: product.ogd,
+      nonOgdProductUrl: product.url ?? undefined,
+      themes: product.themes ?? [],
+      keywords: product.keywords ?? [],
+      geolionGeodatensatzUuid: product.geolion_geodatensatz_uuid ?? undefined,
+      formats: product.formats.map((format): ProductFormat => ({id: format.id, description: format.description})),
+    }));
   }
 }

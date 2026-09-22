@@ -268,9 +268,7 @@ export class Gb3MetadataService extends Gb3ApiService {
    */
   private extractDatasetDetail<
     T extends (
-      | MetadataMapsDetailData['map']
-      | MetadataProductsDetailData['product']
-      | MetadataServicesDetailData['service']
+      MetadataMapsDetailData['map'] | MetadataProductsDetailData['product'] | MetadataServicesDetailData['service']
     )['datasets'][number],
   >(dataset: T): LinkedDataset {
     return {
