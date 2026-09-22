@@ -7,6 +7,7 @@ test.describe('Test filter search', () => {
     filterForLayer,
     clickMapInTheList,
     search,
+    clickDefaultMapViewCenter,
     useHar,
     captureConsole,
   }) => {
@@ -20,10 +21,7 @@ test.describe('Test filter search', () => {
 
     await search('Stampfenbachstrasse 12');
 
-    const map = page.locator('map-page');
-    await expect(map).toBeVisible();
-
-    await map.click({force: true});
+    await clickDefaultMapViewCenter();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(500);
 

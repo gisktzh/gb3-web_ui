@@ -1,5 +1,6 @@
 import {SupportedSrs} from '../../../shared/types/supported-srs.type';
 import {Coordinate} from '../../../shared/interfaces/coordinate.interface';
+import {MapViewPadding} from '../../../shared/interfaces/map-view-padding.interface';
 
 export interface MapConfigState {
   isMapServiceInitialized: boolean;
@@ -20,12 +21,7 @@ export interface MapConfigState {
   referenceDistanceInMeters: number | undefined;
 }
 
-export interface InitialMapPadding {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-}
+export type InitialMapPadding = MapViewPadding;
 
 export interface BoundingBox {
   min: Coordinate;

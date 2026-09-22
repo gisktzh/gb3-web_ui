@@ -33,7 +33,7 @@ describe('UrlEffects', () => {
     effects = TestBed.inject(UrlEffects);
     store = TestBed.inject(MockStore);
     initialMapExtentServiceMock = TestBed.inject(InitialMapExtentService);
-    vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockImplementation(vi.fn());
+    vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtentForPaddedView').mockImplementation(vi.fn());
   });
 
   afterEach(() => {
@@ -115,7 +115,9 @@ describe('UrlEffects', () => {
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
       store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
-      const extent = vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33})();
+      const extent = vi
+        .spyOn(initialMapExtentServiceMock, 'calculateInitialExtentForPaddedView')
+        .mockReturnValue({x: 11, y: 22, scale: 33})();
 
       const expectedAction = MapConfigActions.setInitialMapConfig({
         ...extent,

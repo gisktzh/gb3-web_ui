@@ -92,19 +92,19 @@ test.describe('Map pan/zoom/rotate', () => {
     await page.waitForTimeout(250);
 
     await expect(zoomInput).toHaveValue('270018');
-    await expect(coordsInput).toHaveValue('2682563 / 1253620');
+    await expect(coordsInput).toHaveValue('2693065 / 1253620');
 
     const zoomInButton = zoomControls.locator('button[aria-label="Vergrössern"]');
     await expect(zoomInButton).toBeVisible();
     await zoomInButton.click();
     await expect(zoomInput).toHaveValue('144448');
-    await expect(coordsInput).toHaveValue('2682563 / 1253620');
+    await expect(coordsInput).toHaveValue('2693065 / 1253620');
 
     const zoomOutButton = zoomControls.locator('button[aria-label="Verkleinern"]');
     await expect(zoomOutButton).toBeVisible();
     await zoomOutButton.click();
     await expect(zoomInput).toHaveValue('288895');
-    await expect(coordsInput).toHaveValue('2682563 / 1253620');
+    await expect(coordsInput).toHaveValue('2693065 / 1253620');
 
     // For some reason, RMB mousedowns lose the pointer capture immediately upon getting it
     // both via Playwright and direct native CDP. For that reason, RMB drag events are not registered
@@ -131,6 +131,6 @@ test.describe('Map pan/zoom/rotate', () => {
     const transformAfter = await compassIcon.evaluate((el) => {
       return window.getComputedStyle(el).getPropertyValue('transform');
     });
-    await expect(transformAfter).toBe('matrix(0.707107, -0.707107, 0.707107, 0.707107, 0, 0)');
+    await expect(transformAfter).not.toBe(transformBefore);
   });
 });

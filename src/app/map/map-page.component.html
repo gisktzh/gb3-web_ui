@@ -15,9 +15,14 @@
   </mat-drawer>
 
   @if (screenMode() !== 'mobile') {
-    <div class="overlays" [class.overlays--sidebar-open]="isSideBarOverlayVisible()" [style.--side-bar-width.px]="sideBarWidth()">
+    <div class="overlays" [class.overlays--sidebar-open]="isSideBarOverlayVisible()" [style.--side-bar-width.px]="rightSideBarWidth()">
       <div class="main-overlays">
-        <legend-overlay class="map-container__overlay" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
+        <legend-overlay
+          class="map-container__overlay"
+          [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+          [width]="legendOverlayWidth()"
+          (resizeEvent)="setLegendOverlayWidth($event)"
+        />
         <map-attribute-filter-overlay
           class="map-container__overlay"
           [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
@@ -56,20 +61,20 @@
       <div class="sidebar-right-overlays">
         <feature-info-overlay
           class="sidebar-right-overlays__item"
-          [width]="sideBarWidth()"
-          (resizeEvent)="setSideBarWidth($event)"
+          [width]="rightSideBarWidth()"
+          (resizeEvent)="setRightSideBarWidth($event)"
           [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
         />
         <elevation-profile-overlay
           class="sidebar-right-overlays__item"
-          [width]="sideBarWidth()"
-          (resizeEvent)="setSideBarWidth($event)"
+          [width]="rightSideBarWidth()"
+          (resizeEvent)="setRightSideBarWidth($event)"
           [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
         />
         <drawing-edit-overlay
           class="sidebar-right-overlays__item"
-          [width]="sideBarWidth()"
-          (resizeEvent)="setSideBarWidth($event)"
+          [width]="rightSideBarWidth()"
+          (resizeEvent)="setRightSideBarWidth($event)"
           [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
         />
       </div>
@@ -109,7 +114,7 @@
     <bottom-sheet-overlay />
     <ng-container [ngTemplateOutlet]="mapToolsTemplate" />
   }
-  <map-container class="map-container__map" />
+  <map-container class="map-container__map" [viewPadding]="viewPadding()" />
 </mat-drawer-container>
 
 <ng-template #mapToolsTemplate>
