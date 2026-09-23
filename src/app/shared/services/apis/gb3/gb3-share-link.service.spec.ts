@@ -14,6 +14,7 @@ import {selectFavouriteBaseConfig} from '../../../../state/map/selectors/favouri
 import {selectUserDrawingsVectorLayers} from '../../../../state/map/selectors/user-drawings-vector-layers.selector';
 import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
 import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
+import {defaultMapConfig} from '../../../configs/map.config';
 
 // todo: add tests for vector layers
 const mockedVectorLayer = {type: undefined, styles: undefined, geojson: {type: undefined, features: []}} as unknown as Gb3VectorLayer;
@@ -139,6 +140,23 @@ describe('Gb3ShareLinkService', () => {
         expect(getCallSpy).toHaveBeenCalledWith(`/${shareLinkItemIdMock}`);
         expect(shareLinkItem).toBeDefined();
         expect(shareLinkItem).toEqual(shareLinkItemMock);
+      });
+    });
+
+    it('should use the default map extent when the API does not provide one', () => {
+      const httpClient = TestBed.inject(HttpClient);
+      vi.spyOn(httpClient, 'get').mockReturnValue(
+        of({
+          ...serverDataMock,
+          east: null,
+          north: null,
+          scaledenom: null,
+        } satisfies SharedFavorite),
+      );
+
+      service.loadShareLink(shareLinkItemIdMock).subscribe((shareLinkItem) => {
+        expect(shareLinkItem.center).toEqual(defaultMapConfig.center);
+        expect(shareLinkItem.scale).toBe(defaultMapConfig.scale);
       });
     });
   });

@@ -14,6 +14,7 @@ import {Gb3FavouritesService} from './gb3-favourites.service';
 import {CreateFavourite, Favourite} from '../../../interfaces/favourite.interface';
 import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
 import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
+import {defaultMapConfig} from '../../../configs/map.config';
 
 // todo: add tests for vector layers
 const mockedVectorLayer = {type: undefined, styles: undefined, geojson: {type: undefined, features: []}} as unknown as Gb3VectorLayer;
@@ -197,6 +198,28 @@ describe('Gb3FavouritesService', () => {
         expect(getCallSpy).toHaveBeenCalledTimes(1);
         expect(favouritesResponse).toBeDefined();
         expect(favouritesResponse).toEqual(favouriteItemsMock);
+      });
+    });
+
+    it('should use the default map extent when the API does not provide one', () => {
+      const httpClient = TestBed.inject(HttpClient);
+      vi.spyOn(httpClient, 'get').mockReturnValue(
+        of([
+          {
+            ...serverDataMock[0],
+            east: null,
+            north: null,
+            scaledenom: null,
+          },
+        ] satisfies UserFavoritesListData),
+      );
+
+      service.loadFavourites().subscribe(([favourite]) => {
+        expect(favourite.baseConfig).toEqual({
+          basemap: serverDataMock[0].basemap,
+          center: defaultMapConfig.center,
+          scale: defaultMapConfig.scale,
+        });
       });
     });
   });

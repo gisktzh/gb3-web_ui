@@ -45,15 +45,17 @@ export class Gb3FavouritesService extends Gb3ApiService {
   }
 
   private mapFavouritesListDataToFavouritesResponse(favouritesListData: UserFavoritesListData): FavouritesResponse {
+    const defaultMapConfig = this.configService.mapConfig.defaultMapConfig;
+
     return favouritesListData.map((data) => ({
       id: data.id,
       title: data.title,
       baseConfig: {
         basemap: data.basemap,
-        scale: data.scaledenom,
+        scale: data.scaledenom ?? defaultMapConfig.scale,
         center: {
-          x: data.east,
-          y: data.north,
+          x: data.east ?? defaultMapConfig.center.x,
+          y: data.north ?? defaultMapConfig.center.y,
         },
       },
       content: data.content.map((content) => {
