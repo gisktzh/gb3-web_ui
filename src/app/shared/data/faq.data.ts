@@ -114,6 +114,11 @@ export const faqData: FaqCollection[] = [
         answer:
           'Klicken Sie im GIS-Browser links oben unter «Aktive Karten» auf das Fragezeichen-Symbol. Dann öffnet sich der Guide erneut.',
       },
+      {
+        uuid: 'fc9dc557-13e6-4dcc-bd8c-71cea517ae5f',
+        question: 'Was sind die Nutzungsbedingungen von Open Government Data (OGD)?',
+        answer: 'Die Nutzungsbedingungen von Open Government Data finden Sie unter https://opendata.swiss/de/terms-of-use',
+      },
     ],
   },
   {
