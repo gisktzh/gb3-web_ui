@@ -10,6 +10,12 @@
  * ---------------------------------------------------------------
  */
 
+/** Manually added **/
+import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
+import {ReportOrientation, ReportType} from '../interfaces/print.interface';
+import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
+import {DrawingSymbolDefinition} from '../interfaces/drawing-symbol/drawing-symbol-definition.interface';
+
 export interface BboxGeoshop {
   /** GeoJSON geometry object */
   boundingbox: Geometry;
@@ -307,6 +313,84 @@ export interface Municipality {
   };
 }
 
+/** Manually added **/
+export interface OerebFeature {
+  oereb_info: {
+    /** name of the affected municipality */
+    municipality_name: string;
+    /** fso number (BFS code) of the affected municipality */
+    municipality_code: number;
+    /**
+     * identification number of the parcel
+     * @maxLength 12
+     */
+    parcel_number: string;
+    /**
+     * federal property identifier
+     * @maxLength 14
+     */
+    egrid: string;
+    /** link to the cadastral processing organization */
+    kbo: LinkObject;
+    /** link to the E-Mail address of the surveyor organization */
+    surveyor: LinkObject;
+    /** URL for the static extract */
+    static_extract_url: string;
+    /** list of themes which their restrictions are affected by this parcel */
+    concerned_themes: {
+      /** name of the not concerned theme */
+      name: string;
+      /** artificial identification number of the theme */
+      id: number;
+      /** list of restrictions for this theme */
+      restrictions: {
+        /** name of the current restriction */
+        name: string;
+        /** artificial identification number of the restriction */
+        id: number;
+        /** symbol image for the current restriction */
+        illustration_url?: Image;
+        /** concrete measurment for this restriction */
+        measurement:
+          | {
+              /**
+               * percentage of the area for the current restriction
+               * @min 0
+               * @max 999999999
+               */
+              area_m2: number;
+              /**
+               * restriction area in square meters
+               * @min 0
+               * @max 1
+               */
+              percentage: number;
+            }
+          | {
+              /** length of a concerned restriction line */
+              line_length: number;
+            }
+          | {
+              /** number of points of the concerned restriction */
+              points_count: number;
+            };
+      }[];
+      /** list of legal provision documents for this theme */
+      legal_provisions: LinkObject[];
+      /** list of law documents for this theme */
+      laws: LinkObject[];
+      /** list of hint documents for this theme */
+      hints: LinkObject[];
+      /** list of responsible offices for this theme */
+      responsible_offices: LinkObject[];
+    }[];
+    /** list of themes which their restrictions are not affected by this parcel */
+    not_concerned_themes: NotConcernedTheme[];
+    /** list of themes which their restrictions are not affected by this parcel */
+    not_available_themes: NotConcernedTheme[];
+  };
+}
+
 export interface PersonalFavorite {
   /** UUID of the favorite */
   id: string;
@@ -395,15 +479,15 @@ export interface PrintCapabilities {
 
 export interface PrintCapabilitiesCombination {
   /** Standard or mapset */
-  report_type: string;
+  report_type: ReportType;
   /** Portrait or landscape */
-  report_orientation: string;
+  report_orientation: ReportOrientation;
   /** Paper size, DIN A */
-  layout: string;
+  layout: DocumentFormat;
   /** DPI of the printed map */
-  dpi: number;
+  dpi: DpiSetting;
   /** File type */
-  file_format: string;
+  file_format: FileFormat;
   /** If the legend should be rendered as well */
   show_legend: boolean;
 }
@@ -1019,6 +1103,16 @@ export interface GeojsonFeature {
   type: 'Feature';
   properties: {
     /**
+     * UUID of the given feature
+     */
+    /** Manually added **/
+    id: string;
+    /**
+     * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
+     */
+    /** Manually added **/
+    belongsTo?: string;
+    /**
      * Reference to style ID in 'styles'
      * @example "a"
      */
@@ -1028,6 +1122,12 @@ export interface GeojsonFeature {
      * @example "Label text"
      */
     text?: string;
+    /**
+     * The tool used to draw the feature
+     * @example "polygon"
+     */
+    /** Manually added **/
+    tool: SupportedEsriTool;
   };
   /** GeoJSON geometry object */
   geometry: Geometry;
@@ -1108,6 +1208,15 @@ export type InfoFeatureField =
       value: Image | null;
       /** type for the image object (here 'image') */
       type: 'image';
+    }
+  /** Manually added **/
+  | {
+      /** Field label */
+      label: string;
+      /** Field date */
+      value: string | null;
+      /** type for the date object (here 'date') */
+      type: 'date';
     };
 
 /** A link MUST be represented as either: a string containing the link URL or a link object. */
@@ -1182,6 +1291,28 @@ export interface MunicipalityItem {
   /** Municipality name */
   name: string;
 }
+
+/** Manually added **/
+/** list of themes which their restrictions are not affected by this parcel */
+export type NotConcernedTheme = {
+  /** name of the not concerned theme */
+  name: string;
+  /** artificial identification number of the theme */
+  id: number;
+  /** additional information whether the theme is not applicable to this parcel or other hints */
+  hints: (
+    | {
+        /** textual information of the hint */
+        title: string;
+      }
+    | {
+        /** textual information of the hint */
+        title: string;
+        /** URL for external source of information */
+        href: string;
+      }
+  )[];
+};
 
 export interface Product {
   /** Product UUID */
@@ -1387,11 +1518,13 @@ export type VectorLayerStyles = {
     /** Geometry type of the drawing (point, line, polygon, text or symbol) */
     type?: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
     /** Size of the symbol used in map units, if any */
-    symbolSize?: numbner;
+    /** Manually added **/
+    symbolSize?: number;
     /** Rotation of the symbol in degrees, if any */
     symbolRotation?: number;
     /** JSON representation of the used symbol, if any */
-    drawingSymbolDefinition?: string;
+    /** Manually added **/
+    drawingSymbolDefinition: ReturnType<DrawingSymbolDefinition['toJSON']>;
   };
 } | null;
 
