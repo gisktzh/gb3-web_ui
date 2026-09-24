@@ -20,7 +20,7 @@ import {
 import {UserDrawingLayer} from '../../../enums/drawing-layer.enum';
 import {UuidUtils} from '../../../utils/uuid.utils';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
-import {Basemap} from '../../../interfaces/basemap.interface';
+import {CallableBasemap} from '../../../interfaces/basemap.interface';
 import {PrintData} from '../../../../map/interfaces/print-data.interface';
 import {TimeService} from '../../../interfaces/time-service.interface';
 import {TimeSliderConfiguration} from '../../../interfaces/topic.interface';
@@ -281,8 +281,9 @@ describe('Gb3PrintService', () => {
           id: 'test-basemap',
           title: 'test-basemap-title',
           url: 'https://test-basemap.com',
+          path: '',
           layers: [{name: 'layer0_test-basemap'}, {name: 'layer1_test-basemap'}],
-        } as Basemap,
+        } as CallableBasemap,
       ]);
       const dateFormat = 'YYYY-MM-DD';
       const minimumDate = timeService.createUTCDateFromString('2000-02-01', dateFormat);
