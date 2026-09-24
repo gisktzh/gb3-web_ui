@@ -7,7 +7,7 @@
   @for (discoverMapsEntry of discoverMapsItems(); track $index) {
     <link-grid-list-item
       [internalLink]="mainPageEnum.Maps"
-      [internalQueryParams]="{initialMapIds: discoverMapsEntry.mapId}"
+      [internalQueryParams]="{topics: discoverMapsEntry.mapId}"
       [title]="discoverMapsEntry.title"
       size="large"
       [imageUrl]="discoverMapsEntry.image.url"

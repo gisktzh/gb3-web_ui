@@ -20,7 +20,6 @@ export const SearchActions = createActionGroup({
       searchTerm: string | undefined;
       searchIndex: string | undefined;
       basemapId: string;
-      initialMaps: string[];
     }>(),
     'Set Search Api Error': errorProps(),
     'Set Search Api Results': props<{results: SearchApiResultMatch[]}>(),

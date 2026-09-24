@@ -8,6 +8,7 @@ export const initialState: LayerCatalogState = {
   items: [],
   loadingState: undefined,
   filterString: undefined,
+  pendingInitialTopicIds: undefined,
 };
 
 export const layerCatalogFeature = createFeature({
@@ -20,7 +21,7 @@ export const layerCatalogFeature = createFeature({
         return state;
       }
 
-      return {...initialState, loadingState: 'loading'};
+      return {...initialState, pendingInitialTopicIds: state.pendingInitialTopicIds, loadingState: 'loading'};
     }),
     on(LayerCatalogActions.setLayerCatalog, (state, {items}): LayerCatalogState => {
       return {...state, items, loadingState: 'loaded'};
@@ -37,7 +38,14 @@ export const layerCatalogFeature = createFeature({
     on(LayerCatalogActions.clearFilterString, (state): LayerCatalogState => {
       return {...state, filterString: undefined};
     }),
+    on(LayerCatalogActions.setInitialTopics, (state, {topicIds}): LayerCatalogState => {
+      return {...state, pendingInitialTopicIds: topicIds};
+    }),
+    on(LayerCatalogActions.clearInitialTopics, (state): LayerCatalogState => {
+      return {...state, pendingInitialTopicIds: undefined};
+    }),
   ),
 });
 
-export const {name, reducer, selectLayerCatalogState, selectFilterString, selectItems, selectLoadingState} = layerCatalogFeature;
+export const {name, reducer, selectLayerCatalogState, selectFilterString, selectItems, selectLoadingState, selectPendingInitialTopicIds} =
+  layerCatalogFeature;

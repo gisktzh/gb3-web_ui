@@ -11,7 +11,7 @@ import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {UrlActions} from '../../app/actions/url.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {selectRotation} from '../reducers/map-config.reducer';
-import {selectMapConfigParams} from '../selectors/map-config-params.selector';
+import {selectMapPageParams} from '../selectors/map-config-params.selector';
 import {MapConfigEffects} from './map-config.effects';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
@@ -116,8 +116,8 @@ describe('MapConfigEffects', () => {
 
   describe('updateMapPageQueryParams$', () => {
     it('dispatches UrlActions.setMapPageParams() if either the center, scale, extent or basemap is changed', () => {
-      const expectedParams = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
-      store.overrideSelector(selectMapConfigParams, expectedParams);
+      const expectedParams = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', topics: null};
+      store.overrideSelector(selectMapPageParams, expectedParams);
 
       actions$ = of(MapConfigActions.setMapExtent({x: expectedParams.x, y: expectedParams.y, scale: expectedParams.scale}));
       effects.updateMapPageQueryParams$.subscribe((action) => {
@@ -138,21 +138,18 @@ describe('MapConfigEffects', () => {
     });
   });
 
-  describe('setBaseMapAndInitialMaps$', () => {
+  describe('setInitialMapConfigFromSearchParameters$', () => {
     it('dispatches MapConfigActions.setInitialMapConfig()', () => {
       actions$ = of(
         SearchActions.initializeSearchFromUrlParameters({
-          initialMaps: ['one', 'two'],
           basemapId: 'base',
           searchTerm: 'search',
           searchIndex: 'index',
         }),
       );
       vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 1, y: 2, scale: 3});
-      effects.setBaseMapAndInitialMaps$.subscribe((action) => {
-        expect(action).toEqual(
-          MapConfigActions.setInitialMapConfig({initialMaps: ['one', 'two'], basemapId: 'base', x: 1, y: 2, scale: 3}),
-        );
+      effects.setInitialMapConfigFromSearchParameters$.subscribe((action) => {
+        expect(action).toEqual(MapConfigActions.setInitialMapConfig({basemapId: 'base', x: 1, y: 2, scale: 3}));
       });
     });
   });

@@ -85,6 +85,7 @@ export class UrlUtils {
       y: yParam,
       scale: scaleParam,
       basemap: basemapParam,
+      topics: topicsParam,
       initialMapIds: initialMapIdsParam,
       searchTerm: searchTermParam,
       searchIndex: searchIndexParam,
@@ -95,12 +96,51 @@ export class UrlUtils {
     const y = UrlUtils.extractLastOccurrenceOfParam(yParam);
     const scale = UrlUtils.extractLastOccurrenceOfParam(scaleParam);
     const basemap = UrlUtils.extractLastOccurrenceOfParam(basemapParam);
+    const topics = UrlUtils.normalizeCommaSeparatedIds(UrlUtils.extractLastOccurrenceOfParam(topicsParam));
     const initialMapIds = UrlUtils.extractLastOccurrenceOfParam(initialMapIdsParam);
     const searchTerm = UrlUtils.extractLastOccurrenceOfParam(searchTermParam);
     const searchIndex = searchIndexParam ? UrlUtils.extractLastOccurrenceOfParam(searchIndexParam).split(',')[0] : undefined;
     const collapsed = UrlUtils.extractLastOccurrenceOfParam(collapsedParam) === 'true';
 
-    return {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex, collapsed};
+    return {x, y, scale, basemap, topics, initialMapIds, searchTerm, searchIndex, collapsed};
+  }
+
+  /**
+   * Normalizes a comma-separated list of ids while preserving their order.
+   * Empty entries and duplicates are removed.
+   */
+  public static normalizeCommaSeparatedIds(param: string | undefined): string | undefined {
+    if (param === undefined) {
+      return undefined;
+    }
+
+    return [
+      ...new Set(
+        param
+          .split(',')
+          .map((id) => id.trim())
+          .filter(Boolean),
+      ),
+    ].join(',');
+  }
+
+  /**
+   * Resolves the topic ids to use for map initialization from the `topics` and legacy `initialMapIds` URL
+   * parameters. `initialMapIds` is a legacy alias for `topics` and is always merged into it - it is never
+   * dropped, even if `topics` is explicitly empty; there is no separate, strict legacy loading path anymore,
+   * invalid topic ids are simply skipped when loading the layer catalog.
+   */
+  public static resolveTopicIds(
+    topics: string | undefined,
+    initialMapIds: string | undefined,
+  ): {hasTopicParameter: boolean; topicIds: string[]} {
+    const values = [topics, initialMapIds].filter((value): value is string => value !== undefined);
+    if (values.length === 0) {
+      return {hasTopicParameter: false, topicIds: []};
+    }
+
+    const merged = UrlUtils.normalizeCommaSeparatedIds(values.join(',')) ?? '';
+    return {hasTopicParameter: true, topicIds: merged ? merged.split(',') : []};
   }
 
   /**

@@ -103,7 +103,6 @@ describe('search Reducer', () => {
       const action = SearchActions.initializeSearchFromUrlParameters({
         searchTerm: undefined,
         searchIndex: undefined,
-        initialMaps: [],
         basemapId: 'test',
       });
       const state = reducer(initialState, action);
