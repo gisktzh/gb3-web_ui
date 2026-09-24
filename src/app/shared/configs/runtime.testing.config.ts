@@ -22,7 +22,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://wms.zh.ch',
       },
       geoLion: {
-        baseUrl: 'https://www.geolion.zh.ch',
+        baseUrl: 'https://geolion.zh.ch',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
