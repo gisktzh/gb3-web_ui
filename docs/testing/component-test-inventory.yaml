@@ -1,9 +1,5 @@
 version: 1
 pending:
-  src/app/app.component.ts: {}
-  src/app/apps-page/apps-page.component.ts: {}
-  src/app/auth/components/login-redirect/login-redirect.component.ts: {}
-  src/app/auth/notifications/auth-notification-dialog/auth-notification-dialog.component.ts: {}
   src/app/data-catalogue/components/data-catalogue-detail-page-section/data-catalogue-detail-page-section.component.ts: {}
   src/app/data-catalogue/components/data-catalogue-detail-page/data-catalogue-detail-page.component.ts: {}
   src/app/data-catalogue/components/data-catalogue-filter-dialog/data-catalogue-filter-dialog.component.ts: {}
@@ -16,8 +12,6 @@ pending:
   src/app/data-catalogue/components/map-detail/map-detail.component.ts: {}
   src/app/data-catalogue/components/product-detail/product-detail.component.ts: {}
   src/app/data-catalogue/components/service-detail/service-detail.component.ts: {}
-  src/app/error-handling/components/error-notification/error-notification.component.ts: {}
-  src/app/error-handling/components/fatal-error-page/fatal-error-page.component.ts: {}
   src/app/map/components/active-map-items/active-map-item-header/active-map-item-header.component.ts: {}
   src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component.ts: {}
   src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layers.component.ts: {}
@@ -108,27 +102,25 @@ pending:
   src/app/map/components/text-drawing-tool-input/text-drawing-tool-input.component.ts: {}
   src/app/map/components/time-slider/time-slider.component.ts: {}
   src/app/map/map-page.component.ts: {}
-  src/app/onboarding-guide/components/center-anchor/center-anchor.component.ts: {}
-  src/app/onboarding-guide/components/onboarding-guide/onboarding-guide.component.ts: {}
-  src/app/privacy/privacy-page.component.ts: {}
-  src/app/share-link/components/share-link-redirect/share-link-redirect.component.ts: {}
-  src/app/start-page/components/content-loading-state/content-loading-state.component.ts: {}
-  src/app/start-page/components/discover-maps/discover-maps.component.ts: {}
-  src/app/start-page/components/frequently-used-items/frequently-used-items.component.ts: {}
-  src/app/start-page/components/gis-browser-teaser/gis-browser-teaser.component.ts: {}
-  src/app/start-page/components/news-feed/news-feed.component.ts: {}
-  src/app/start-page/components/start-page-search/search-result-entry-map/search-result-entry-map.component.ts: {}
-  src/app/start-page/components/start-page-search/search-result-group/search-result-group.component.ts: {}
-  src/app/start-page/components/start-page-search/search-result-groups/search-result-groups.component.ts: {}
-  src/app/start-page/components/start-page-search/start-page-search.component.ts: {}
-  src/app/start-page/start-page.component.ts: {}
-  src/app/support-page/components/contact/contact.component.ts: {}
-  src/app/support-page/components/faq/faq.component.ts: {}
-  src/app/support-page/components/support-page-navigation/support-page-navigation.component.ts: {}
-  src/app/support-page/components/useful-information/useful-information.component.ts: {}
-  src/app/support-page/support-page.component.ts: {}
-  src/app/terms-of-use/terms-of-use-page.component.ts: {}
 dedicated:
+  src/app/app.component.ts:
+    coveredBy:
+      - src/app/app.component.spec.ts
+  src/app/apps-page/apps-page.component.ts:
+    coveredBy:
+      - src/app/apps-page/apps-page.component.spec.ts
+  src/app/auth/components/login-redirect/login-redirect.component.ts:
+    coveredBy:
+      - src/app/auth/components/login-redirect/login-redirect.component.spec.ts
+  src/app/auth/notifications/auth-notification-dialog/auth-notification-dialog.component.ts:
+    coveredBy:
+      - src/app/auth/notifications/auth-notification-dialog/auth-notification-dialog.component.spec.ts
+  src/app/error-handling/components/error-notification/error-notification.component.ts:
+    coveredBy:
+      - src/app/error-handling/components/error-notification/error-notification.component.spec.ts
+  src/app/error-handling/components/fatal-error-page/fatal-error-page.component.ts:
+    coveredBy:
+      - src/app/error-handling/components/fatal-error-page/fatal-error-page.component.spec.ts
   src/app/map/components/active-map-items/active-map-items.component.ts:
     coveredBy:
       - src/app/map/components/active-map-items/active-map-items.component.spec.ts
@@ -138,6 +130,18 @@ dedicated:
   src/app/map/components/feature-info-overlay/feature-info-overlay.component.ts:
     coveredBy:
       - src/app/map/components/feature-info-overlay/feature-info-overlay.component.spec.ts
+  src/app/onboarding-guide/components/center-anchor/center-anchor.component.ts:
+    coveredBy:
+      - src/app/onboarding-guide/components/center-anchor/center-anchor.component.spec.ts
+  src/app/onboarding-guide/components/onboarding-guide/onboarding-guide.component.ts:
+    coveredBy:
+      - src/app/onboarding-guide/components/onboarding-guide/onboarding-guide.component.spec.ts
+  src/app/privacy/privacy-page.component.ts:
+    coveredBy:
+      - src/app/privacy/privacy-page.component.spec.ts
+  src/app/share-link/components/share-link-redirect/share-link-redirect.component.ts:
+    coveredBy:
+      - src/app/share-link/components/share-link-redirect/share-link-redirect.component.spec.ts
   src/app/shared/components/accordion-item/accordion-item.component.ts:
     coveredBy:
       - src/app/shared/components/accordion-item/accordion-item.component.spec.ts
@@ -225,6 +229,54 @@ dedicated:
   src/app/shared/components/waiting-page/waiting-page.component.ts:
     coveredBy:
       - src/app/shared/components/waiting-page/waiting-page.component.spec.ts
+  src/app/start-page/components/content-loading-state/content-loading-state.component.ts:
+    coveredBy:
+      - src/app/start-page/components/content-loading-state/content-loading-state.component.spec.ts
+  src/app/start-page/components/discover-maps/discover-maps.component.ts:
+    coveredBy:
+      - src/app/start-page/components/discover-maps/discover-maps.component.spec.ts
+  src/app/start-page/components/frequently-used-items/frequently-used-items.component.ts:
+    coveredBy:
+      - src/app/start-page/components/frequently-used-items/frequently-used-items.component.spec.ts
+  src/app/start-page/components/gis-browser-teaser/gis-browser-teaser.component.ts:
+    coveredBy:
+      - src/app/start-page/components/gis-browser-teaser/gis-browser-teaser.component.spec.ts
+  src/app/start-page/components/news-feed/news-feed.component.ts:
+    coveredBy:
+      - src/app/start-page/components/news-feed/news-feed.component.spec.ts
+  src/app/start-page/components/start-page-search/search-result-entry-map/search-result-entry-map.component.ts:
+    coveredBy:
+      - src/app/start-page/components/start-page-search/search-result-entry-map/search-result-entry-map.component.spec.ts
+  src/app/start-page/components/start-page-search/search-result-group/search-result-group.component.ts:
+    coveredBy:
+      - src/app/start-page/components/start-page-search/search-result-group/search-result-group.component.spec.ts
+  src/app/start-page/components/start-page-search/search-result-groups/search-result-groups.component.ts:
+    coveredBy:
+      - src/app/start-page/components/start-page-search/search-result-groups/search-result-groups.component.spec.ts
+  src/app/start-page/components/start-page-search/start-page-search.component.ts:
+    coveredBy:
+      - src/app/start-page/components/start-page-search/start-page-search.component.spec.ts
+  src/app/start-page/start-page.component.ts:
+    coveredBy:
+      - src/app/start-page/start-page.component.spec.ts
+  src/app/support-page/components/contact/contact.component.ts:
+    coveredBy:
+      - src/app/support-page/components/contact/contact.component.spec.ts
+  src/app/support-page/components/faq/faq.component.ts:
+    coveredBy:
+      - src/app/support-page/components/faq/faq.component.spec.ts
+  src/app/support-page/components/support-page-navigation/support-page-navigation.component.ts:
+    coveredBy:
+      - src/app/support-page/components/support-page-navigation/support-page-navigation.component.spec.ts
+  src/app/support-page/components/useful-information/useful-information.component.ts:
+    coveredBy:
+      - src/app/support-page/components/useful-information/useful-information.component.spec.ts
+  src/app/support-page/support-page.component.ts:
+    coveredBy:
+      - src/app/support-page/support-page.component.spec.ts
+  src/app/terms-of-use/terms-of-use-page.component.ts:
+    coveredBy:
+      - src/app/terms-of-use/terms-of-use-page.component.spec.ts
 host:
   src/app/data-catalogue/data-catalogue-page.component.ts:
     hostedBy:
@@ -245,7 +297,7 @@ host:
     reason: Styling-only child with no component behavior.
   src/app/privacy/components/privacy-content/privacy-content.component.ts:
     hostedBy:
-      - src/app/privacy/privacy-page.component.ts
+      - src/app/privacy/privacy-page.component.spec.ts
     reason: Static content verified through the containing page.
   src/app/shared/components/contact-details/contact-details.component.ts:
     hostedBy:
@@ -259,11 +311,11 @@ host:
     reason: Empty projection shell verified through its consumers.
   src/app/terms-of-use/components/terms-of-use-geodata-and-maps/terms-of-use-geodata-and-maps.component.ts:
     hostedBy:
-      - src/app/terms-of-use/terms-of-use-page.component.ts
+      - src/app/terms-of-use/terms-of-use-page.component.spec.ts
     reason: Static content verified through the containing page.
   src/app/terms-of-use/components/usage-rules/usage-rules.component.ts:
     hostedBy:
-      - src/app/terms-of-use/terms-of-use-page.component.ts
+      - src/app/terms-of-use/terms-of-use-page.component.spec.ts
     reason: Static content verified through the containing page.
 e2e:
   src/app/embedded-page/embedded-map-page.component.ts:
