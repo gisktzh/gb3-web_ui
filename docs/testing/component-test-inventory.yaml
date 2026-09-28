@@ -1,17 +1,5 @@
 version: 1
 pending:
-  src/app/data-catalogue/components/data-catalogue-detail-page-section/data-catalogue-detail-page-section.component.ts: {}
-  src/app/data-catalogue/components/data-catalogue-detail-page/data-catalogue-detail-page.component.ts: {}
-  src/app/data-catalogue/components/data-catalogue-filter-dialog/data-catalogue-filter-dialog.component.ts: {}
-  src/app/data-catalogue/components/data-catalogue-overview/data-catalogue-overview.component.ts: {}
-  src/app/data-catalogue/components/data-display-section/data-display-section.component.ts: {}
-  src/app/data-catalogue/components/data-display/data-display.component.ts: {}
-  src/app/data-catalogue/components/dataset-detail/dataset-detail.component.ts: {}
-  src/app/data-catalogue/components/dataset-detail/dataset-element-detail/dataset-element-detail.component.ts: {}
-  src/app/data-catalogue/components/dataset-detail/dataset-element-table/dataset-element-table.component.ts: {}
-  src/app/data-catalogue/components/map-detail/map-detail.component.ts: {}
-  src/app/data-catalogue/components/product-detail/product-detail.component.ts: {}
-  src/app/data-catalogue/components/service-detail/service-detail.component.ts: {}
   src/app/map/components/active-map-items/active-map-item-header/active-map-item-header.component.ts: {}
   src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component.ts: {}
   src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layers.component.ts: {}
@@ -115,6 +103,42 @@ dedicated:
   src/app/auth/notifications/auth-notification-dialog/auth-notification-dialog.component.ts:
     coveredBy:
       - src/app/auth/notifications/auth-notification-dialog/auth-notification-dialog.component.spec.ts
+  src/app/data-catalogue/components/data-catalogue-detail-page-section/data-catalogue-detail-page-section.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/data-catalogue-detail-page-section/data-catalogue-detail-page-section.component.spec.ts
+  src/app/data-catalogue/components/data-catalogue-detail-page/data-catalogue-detail-page.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/data-catalogue-detail-page/data-catalogue-detail-page.component.spec.ts
+  src/app/data-catalogue/components/data-catalogue-filter-dialog/data-catalogue-filter-dialog.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/data-catalogue-filter-dialog/data-catalogue-filter-dialog.component.spec.ts
+  src/app/data-catalogue/components/data-catalogue-overview/data-catalogue-overview.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/data-catalogue-overview/data-catalogue-overview.component.spec.ts
+  src/app/data-catalogue/components/data-display-section/data-display-section.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/data-display-section/data-display-section.component.spec.ts
+  src/app/data-catalogue/components/data-display/data-display.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/data-display/data-display.component.spec.ts
+  src/app/data-catalogue/components/dataset-detail/dataset-detail.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/dataset-detail/dataset-detail.component.spec.ts
+  src/app/data-catalogue/components/dataset-detail/dataset-element-detail/dataset-element-detail.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/dataset-detail/dataset-element-detail/dataset-element-detail.component.spec.ts
+  src/app/data-catalogue/components/dataset-detail/dataset-element-table/dataset-element-table.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/dataset-detail/dataset-element-table/dataset-element-table.component.spec.ts
+  src/app/data-catalogue/components/map-detail/map-detail.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/map-detail/map-detail.component.spec.ts
+  src/app/data-catalogue/components/product-detail/product-detail.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/product-detail/product-detail.component.spec.ts
+  src/app/data-catalogue/components/service-detail/service-detail.component.ts:
+    coveredBy:
+      - src/app/data-catalogue/components/service-detail/service-detail.component.spec.ts
   src/app/error-handling/components/error-notification/error-notification.component.ts:
     coveredBy:
       - src/app/error-handling/components/error-notification/error-notification.component.spec.ts
