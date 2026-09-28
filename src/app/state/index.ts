@@ -54,51 +54,26 @@ import {PrintState} from './map/states/print.state';
 import {MapUiState} from './map/states/map-ui.state';
 import {ToolState} from './map/states/tool.state';
 import {ShareLinkState} from './map/states/share-link.state';
-import {ActiveMapItemEffects} from './map/effects/active-map-item.effects';
-import {DataDownloadOrderEffects} from './map/effects/data-download-order.effects';
-import {DataDownloadProductEffects} from './map/effects/data-download-product.effects';
-import {FeatureInfoEffects} from './map/effects/feature-info.effects';
-import {OerebExtractEffects} from './map/effects/oereb-extract.effects';
-import {LayerCatalogEffects} from './map/effects/layer-catalog.effects';
-import {LegendEffects} from './map/effects/legend.effects';
-import {MapConfigEffects} from './map/effects/map-config.effects';
 import {AuthStatusEffects} from './auth/effects/auth-status.effects';
-import {FavouriteListEffects} from './map/effects/favourite-list.effects';
 import {PageNotificationEffects} from './app/effects/page-notification.effects';
-import {GeolocationEffects} from './map/effects/geolocation.effects';
-import {GeneralInfoEffects} from './map/effects/general-info.effects';
-import {PrintEffects} from './map/effects/print.effects';
-import {MapUiEffects} from './map/effects/map-ui.effects';
-import {ShareLinkEffects} from './map/effects/share-link.effects';
-import {ToolEffects} from './map/effects/tool.effects';
 import {DataCatalogueState} from './data-catalogue/states/data-catalogue.state';
 import {DataCatalogueEffects} from './data-catalogue/effects/data-catalogue.effects';
 import {SearchState} from './app/states/search.state';
 import {SearchEffects} from './app/effects/search.effects';
 import {DrawingState} from './map/states/drawing.state';
-import {DrawingEffects} from './map/effects/drawing.effects';
 import {AppLayoutEffects} from './app/effects/app-layout.effects';
-import {MapAttributeFiltersItemEffects} from './map/effects/map-attribute-filters-item.effects';
 import {routerReducer, RouterState} from '@ngrx/router-store';
 import {UrlState} from './app/states/url.state';
 import {UrlEffects} from './app/effects/url.effects';
 import {OverlayPrintState} from './map/states/overlay-print.state';
-import {OverlayPrintEffects} from './map/effects/overlay-print.effects';
 import {DataDownloadRegionState} from './map/states/data-download-region.state';
-import {DataDownloadRegionEffects} from './map/effects/data-download-region.effects';
 import {ElevationProfileState} from './map/states/elevation-profile.state';
-import {ElevationProfileEffects} from './map/effects/elevation-profile.effects';
 import {DrawingStyleState} from './map/states/drawing-style.state';
-import {DataDownloadOrderStatusJobEffects} from './map/effects/data-download-order-status-job.effects';
 import {DataDownloadOrderStatusJobState} from './map/states/data-download-order-status-job.state';
 import {MapImportState} from './map/states/map-import.state';
-import {MapImportEffects} from './map/effects/map-import.effects';
 import {ExternalMapItemState} from './map/states/external-map-item.state';
-import {ExternalMapItemEffects} from './map/effects/external-map-item.effects';
 import {AppState} from './app/states/app.state';
-import {ExportEffects} from './map/effects/export.effects';
 import {ExportState} from './map/states/export.state';
-import {ImportEffects} from './map/effects/import.effects';
 import {ImportState} from './map/states/import.state';
 import {ExternalAppsState} from './external-apps/states/external-apps.state';
 
@@ -180,38 +155,6 @@ export const reducers: ActionReducerMap<State> = {
   externalApps: externalAppsReducer,
 };
 
-export const effects = [
-  ActiveMapItemEffects,
-  FeatureInfoEffects,
-  OerebExtractEffects,
-  LayerCatalogEffects,
-  LegendEffects,
-  MapConfigEffects,
-  AuthStatusEffects,
-  FavouriteListEffects,
-  PageNotificationEffects,
-  GeolocationEffects,
-  GeneralInfoEffects,
-  PrintEffects,
-  MapUiEffects,
-  ShareLinkEffects,
-  ToolEffects,
-  DataCatalogueEffects,
-  SearchEffects,
-  DrawingEffects,
-  DataDownloadOrderEffects,
-  DataDownloadOrderStatusJobEffects,
-  DataDownloadProductEffects,
-  AppLayoutEffects,
-  MapAttributeFiltersItemEffects,
-  UrlEffects,
-  OverlayPrintEffects,
-  DataDownloadRegionEffects,
-  ElevationProfileEffects,
-  MapImportEffects,
-  ExternalMapItemEffects,
-  ExportEffects,
-  ImportEffects,
-];
+export const rootEffects = [AuthStatusEffects, PageNotificationEffects, DataCatalogueEffects, SearchEffects, AppLayoutEffects, UrlEffects];
 
 export const metaReducers: MetaReducer<State>[] = [];

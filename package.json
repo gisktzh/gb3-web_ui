@@ -12,6 +12,7 @@
     "build-staging": "ng build --configuration=production-staging",
     "build-staging-using-productive-gb2-backend": "ng build --configuration=production-staging-using-productive-gb2-backend",
     "build-production": "ng build --configuration=production",
+    "verify-initial-bundle": "node ./scripts/verify-initial-bundle.mjs",
     "watch": "ng build --configuration development",
     "test": "ng test",
     "test-ci": "ng test --no-watch --no-progress --coverage",

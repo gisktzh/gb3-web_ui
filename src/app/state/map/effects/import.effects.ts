@@ -11,7 +11,8 @@ import {MapService} from '../../../map/interfaces/map.service';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingActions} from '../actions/drawing.actions';
-import {MAP_SERVICE} from '../../../app.tokens';
+import {DRAWING_SYMBOLS_SERVICE, MAP_SERVICE} from '../../../app.tokens';
+import {DrawingSymbolsService} from '../../../shared/interfaces/drawing-symbols-service.interface';
 
 @Injectable()
 export class ImportEffects {
@@ -19,6 +20,7 @@ export class ImportEffects {
   private readonly mapService = inject<MapService>(MAP_SERVICE);
   private readonly importService = inject(Gb3ImportService);
   private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
+  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   public requestImportDrawing$ = createEffect(() => {
     return this.actions$.pipe(
@@ -36,7 +38,13 @@ export class ImportEffects {
     return this.actions$.pipe(
       ofType(ImportActions.createActiveMapItemFromDrawing),
       switchMap(({drawing}) =>
-        from(this.symbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawing, UserDrawingLayer.Drawings)),
+        from(
+          this.symbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
+            drawing,
+            UserDrawingLayer.Drawings,
+            this.drawingSymbolsService,
+          ),
+        ),
       ),
       map((drawingsToAdd) => {
         const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);

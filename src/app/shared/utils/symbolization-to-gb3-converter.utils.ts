@@ -3,9 +3,8 @@ import {Gb3GeoJsonFeature, Gb3VectorLayer, Gb3VectorLayerStyle} from '../interfa
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {MapConstants} from '../constants/map.constants';
 import {UuidUtils} from './uuid.utils';
-import {inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {DrawingSymbolsService} from '../interfaces/drawing-symbols-service.interface';
-import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
 import {DrawingSymbolDescriptor} from '../interfaces/drawing-symbol/drawing-symbol-descriptor.interface';
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {HasSrs} from '../interfaces/geojson-types-with-srs.interface';
@@ -16,8 +15,6 @@ import {ReportSizing} from '../interfaces/report-sizing.interface';
   providedIn: 'root',
 })
 export class SymbolizationToGb3ConverterUtils {
-  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
-
   /**
    * Converts a list of internal drawings to a GB3VectorLayer representation.
    */
@@ -26,6 +23,7 @@ export class SymbolizationToGb3ConverterUtils {
     mapScale?: number,
     printScale?: number,
     reportSizing?: ReportSizing,
+    drawingSymbolsService?: DrawingSymbolsService,
   ): Gb3VectorLayer {
     const gb3GeoJsonFeatures: Gb3GeoJsonFeature[] = [];
     const allStyles: Gb3VectorLayerStyle = {};
@@ -53,6 +51,9 @@ export class SymbolizationToGb3ConverterUtils {
 
         // Since print scale is given, the user wants to print. We, therefore, also need to set the external Graphic.
         if (printScale && mapScale && reportSizing) {
+          if (!drawingSymbolsService) {
+            throw new Error('DrawingSymbolsService is required to create printable symbol graphics.');
+          }
           const iconSize = this.getSvgSize(
             feature.properties.style.symbolSize,
             feature.properties.style.symbolRotation,
@@ -61,7 +62,7 @@ export class SymbolizationToGb3ConverterUtils {
             reportSizing,
           );
 
-          style.externalGraphic = this.getSVGString(feature.mapDrawingSymbol.drawingSymbolDescriptor, iconSize);
+          style.externalGraphic = this.getSVGString(feature.mapDrawingSymbol.drawingSymbolDescriptor, iconSize, drawingSymbolsService);
           style.pointRadius = iconSize / 2;
         }
       }
@@ -95,6 +96,7 @@ export class SymbolizationToGb3ConverterUtils {
   public async convertExternalToInternalRepresentation(
     gb3VectorLayer: Gb3VectorLayer,
     source: UserDrawingLayer,
+    drawingSymbolsService: DrawingSymbolsService,
   ): Promise<Gb3StyledInternalDrawingRepresentation[]> {
     return await Promise.all(
       gb3VectorLayer.geojson.features.map(async (feature) => {
@@ -118,7 +120,7 @@ export class SymbolizationToGb3ConverterUtils {
         };
 
         if (styleForFeature?.type === 'symbol') {
-          featureData.mapDrawingSymbol = await this.drawingSymbolsService.mapDrawingSymbolFromJSON(styleForFeature.drawingSymbolDefinition);
+          featureData.mapDrawingSymbol = await drawingSymbolsService.mapDrawingSymbolFromJSON(styleForFeature.drawingSymbolDefinition);
         }
 
         return featureData;
@@ -164,8 +166,8 @@ export class SymbolizationToGb3ConverterUtils {
     return size;
   }
 
-  private getSVGString(symbol: DrawingSymbolDescriptor, iconSize: number) {
-    return this.drawingSymbolsService.getSVGString(symbol, iconSize);
+  private getSVGString(symbol: DrawingSymbolDescriptor, iconSize: number, drawingSymbolsService: DrawingSymbolsService) {
+    return drawingSymbolsService.getSVGString(symbol, iconSize);
   }
 
   private supportedGeometryWithSrsToSupportedGeometry<T extends SupportedGeometry>(geometry: T & HasSrs): T {

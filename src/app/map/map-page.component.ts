@@ -34,6 +34,9 @@ import {CenterAnchorComponent} from '../onboarding-guide/components/center-ancho
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {NgTemplateOutlet} from '@angular/common';
+import {SessionStorageService} from '../shared/services/session-storage.service';
+import {RouteParamConstants} from '../shared/constants/route-param.constants';
+import {ShareLinkActions} from '../state/map/actions/share-link.actions';
 
 @Component({
   selector: 'map-page',
@@ -81,6 +84,7 @@ export class MapPageComponent implements AfterViewInit, OnInit {
   private readonly onboardingGuideService = inject(OnboardingGuideService);
   private readonly initialMapExtentService = inject(InitialMapExtentService);
   private readonly store = inject(Store);
+  private readonly sessionStorageService = inject(SessionStorageService);
 
   public readonly numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
   public readonly isMapDataCatalogueMinimized = signal(false);
@@ -96,6 +100,13 @@ export class MapPageComponent implements AfterViewInit, OnInit {
   });
 
   public ngOnInit() {
+    const pendingShareLinkId = this.sessionStorageService.get(RouteParamConstants.SHARE_LINK_ID_SESSION_STORAGE_KEY);
+    this.sessionStorageService.remove(RouteParamConstants.SHARE_LINK_ID_SESSION_STORAGE_KEY);
+    if (pendingShareLinkId) {
+      this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id: pendingShareLinkId}));
+      return;
+    }
+
     if (!this.mapConfigState().predefinedInitialExtent) {
       const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
       this.store.dispatch(
