@@ -20,11 +20,13 @@ test.describe('Overview page', () => {
     const startGisBrowserLink = page.locator('a', {hasText: 'GIS-Browser starten'});
     await expect(startGisBrowserLink).toBeVisible();
 
+    // The overview recording has no map API responses; reuse the map recording for navigation.
+    await page.routeFromHAR('e2e/hars/open-map-with-url.har', {notFound: 'fallback'});
     await startGisBrowserLink.click();
 
     await page.waitForTimeout(500);
     await page.waitForLoadState('networkidle');
 
-    expect(page.url()).toContain('/maps');
+    await expect(page).toHaveURL(/\/maps/);
   });
 });

@@ -49,4 +49,39 @@ describe('EsriStylesLoaderService', () => {
     const links = document.head.querySelectorAll('#esri-theme-stylesheet');
     expect(links).toHaveLength(1);
   });
+  it('shares one pending request and resolves only when the stylesheet loads', async () => {
+    const first = service.ensureLoaded();
+    expect(service.ensureLoaded()).toBe(first);
+    const resolved = vi.fn();
+    void first.then(resolved);
+    await Promise.resolve();
+    expect(resolved).not.toHaveBeenCalled();
+    document.getElementById('esri-theme-stylesheet')!.dispatchEvent(new Event('load'));
+    await first;
+    expect(resolved).toHaveBeenCalledOnce();
+  });
+
+  it('waits for an existing pending link', async () => {
+    const link = document.createElement('link');
+    link.id = 'esri-theme-stylesheet';
+    document.head.appendChild(link);
+    const resolved = vi.fn();
+    const pending = service.ensureLoaded().then(resolved);
+    await Promise.resolve();
+    expect(resolved).not.toHaveBeenCalled();
+    link.dispatchEvent(new Event('load'));
+    await pending;
+    expect(resolved).toHaveBeenCalledOnce();
+  });
+
+  it('removes a failed request and allows a later map visit to retry', async () => {
+    const pending = service.ensureLoaded();
+    const rejected = expect(pending).rejects.toThrow('Could not load ArcGIS theme');
+    document.getElementById('esri-theme-stylesheet')!.dispatchEvent(new Event('error'));
+    await rejected;
+    expect(document.getElementById('esri-theme-stylesheet')).toBeNull();
+    const retry = service.ensureLoaded();
+    document.getElementById('esri-theme-stylesheet')!.dispatchEvent(new Event('load'));
+    await expect(retry).resolves.toBeUndefined();
+  });
 });

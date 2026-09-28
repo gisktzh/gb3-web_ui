@@ -1,3 +1,4 @@
+import {LayerCatalogApiEffects} from './map/effects/layer-catalog-api.effects';
 import {ActionReducerMap, MetaReducer} from '@ngrx/store';
 import {reducer as mapConfigReducer} from './map/reducers/map-config.reducer';
 import {reducer as legendReducer} from './map/reducers/legend.reducer';
@@ -155,6 +156,14 @@ export const reducers: ActionReducerMap<State> = {
   externalApps: externalAppsReducer,
 };
 
-export const rootEffects = [AuthStatusEffects, PageNotificationEffects, DataCatalogueEffects, SearchEffects, AppLayoutEffects, UrlEffects];
+export const rootEffects = [
+  LayerCatalogApiEffects,
+  AuthStatusEffects,
+  PageNotificationEffects,
+  DataCatalogueEffects,
+  SearchEffects,
+  AppLayoutEffects,
+  UrlEffects,
+];
 
 export const metaReducers: MetaReducer<State>[] = [];

@@ -1,4 +1,5 @@
-import {Injectable, computed, effect, inject, signal, untracked} from '@angular/core';
+import {EsriStylesLoaderService} from './esri-styles-loader.service';
+import {ErrorHandler, Injectable, computed, effect, inject, signal, untracked} from '@angular/core';
 import esriConfig from '@arcgis/core/config';
 import * as affineTransformOperator from '@arcgis/core/geometry/operators/affineTransformOperator.js';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
@@ -92,6 +93,8 @@ enum EsriMouseButtonType {
 })
 export class EsriMapService implements MapService {
   private readonly store = inject(Store);
+  private readonly stylesLoader = inject(EsriStylesLoaderService);
+  private readonly errorHandler = inject(ErrorHandler);
   private readonly transformationService = inject(TransformationService);
   private readonly geoJSONMapperService = inject(GeoJSONMapperService);
   private readonly basemapConfigService = inject(BasemapConfigService);
@@ -182,42 +185,52 @@ export class EsriMapService implements MapService {
       }
     });
 
-    effect(async () => {
-      const mapContainerElement = this.mapContainerElement();
-      if (!mapContainerElement) {
+    effect((onCleanup) => {
+      const container = this.mapContainerElement();
+      if (!container) {
         return;
       }
 
-      const isMapInitialized = untracked(() => this.mapInitialized());
-      if (isMapInitialized) {
-        return;
-      }
-
-      this.mapInitialized.set(true);
-
-      const config = this.mapConfigState();
-      const activeMapItems = untracked(() => this.activeMapItems());
-      const drawings = untracked(() => this.drawings());
-
-      const {x, y} = config.center;
-      const {minScale, maxScale} = config.scaleSettings;
-      const {scale, srsId, activeBasemapId} = config;
-      const mapInstance = this.createMap(activeBasemapId);
-      this.setMapView(mapInstance, {x, y}, srsId, {scale, minScale, maxScale}, mapContainerElement);
-      this.attachMapViewListeners();
-      this.initDrawingLayers();
-      await Promise.all(
-        activeMapItems.map(async (mapItem, position) => {
-          mapItem.addToMap(this, position);
-
-          if (mapItem instanceof DrawingActiveMapItem) {
-            const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.drawingLayer);
-            return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.drawingLayer);
-          }
-        }),
-      );
-      this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+      let cancelled = false;
+      onCleanup(() => (cancelled = true));
+      void this.initializeMap(container, () => cancelled || this.mapContainerElement() !== container).catch((error: unknown) => {
+        if (!cancelled && this.mapContainerElement() === container) {
+          this.mapInitialized.set(false);
+          this.errorHandler.handleError(error);
+        }
+      });
     });
+  }
+
+  private async initializeMap(container: HTMLDivElement, isCancelled: () => boolean): Promise<void> {
+    await this.stylesLoader.ensureLoaded();
+    if (isCancelled()) {
+      return;
+    }
+
+    this.mapInitialized.set(true);
+    const config = this.mapConfigState();
+    const activeMapItems = this.activeMapItems();
+    const drawings = this.drawings();
+    const {x, y} = config.center;
+    const {minScale, maxScale} = config.scaleSettings;
+    const {scale, srsId, activeBasemapId} = config;
+    const mapInstance = this.createMap(activeBasemapId);
+    this.setMapView(mapInstance, {x, y}, srsId, {scale, minScale, maxScale}, container);
+    this.attachMapViewListeners();
+    this.initDrawingLayers();
+    await Promise.all(
+      activeMapItems.map(async (mapItem, position) => {
+        mapItem.addToMap(this, position);
+        if (mapItem instanceof DrawingActiveMapItem) {
+          const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.drawingLayer);
+          await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.drawingLayer);
+        }
+      }),
+    );
+    if (!isCancelled()) {
+      this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+    }
   }
 
   public getMapView(): MapView {

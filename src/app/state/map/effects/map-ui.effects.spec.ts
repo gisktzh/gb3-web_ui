@@ -1,3 +1,7 @@
+import {createEnvironmentInjector, EnvironmentInjector} from '@angular/core';
+import {FavouriteCreationDialogComponent} from '../../../map/components/favourite-creation-dialog/favourite-creation-dialog.component';
+import {FavouriteDeletionDialogComponent} from '../../../map/components/favourite-deletion-dialog/favourite-deletion-dialog.component';
+import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import type {MockedObject} from 'vitest';
 import {TestBed} from '@angular/core/testing';
 import {MapUiEffects} from './map-ui.effects';
@@ -82,6 +86,22 @@ describe('MapUiEffects', () => {
 
   afterEach(() => {
     store.resetSelectors();
+  });
+
+  it('opens favourite dialogs with the map route injector', () => {
+    const routeInjector = createEnvironmentInjector([MapUiEffects], TestBed.inject(EnvironmentInjector));
+    const routeEffects = routeInjector.get(MapUiEffects);
+    actions$ = of(MapUiActions.showCreateFavouriteDialog());
+    routeEffects.openCreateFavouriteDialog$.subscribe();
+    expect(dialogService.open).toHaveBeenCalledWith(FavouriteCreationDialogComponent, expect.objectContaining({injector: routeInjector}));
+    const favourite = {id: 'test'} as Favourite;
+    actions$ = of(MapUiActions.showDeleteFavouriteDialog({favouriteToDelete: favourite}));
+    routeEffects.openDeleteFavouriteDialog$.subscribe();
+    expect(dialogService.open).toHaveBeenCalledWith(
+      FavouriteDeletionDialogComponent,
+      expect.objectContaining({injector: routeInjector, data: {favourite}}),
+    );
+    routeInjector.destroy();
   });
 
   describe('openShareLinkDialog$', () => {
