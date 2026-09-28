@@ -188,6 +188,12 @@
               "sourceMap": true,
               "namedChunks": true
             },
+            "e2e": {
+              "optimization": true,
+              "extractLicenses": true,
+              "sourceMap": false,
+              "namedChunks": false
+            },
             "development-local-gb2": {
               "optimization": false,
               "extractLicenses": false,
@@ -233,6 +239,9 @@
             "development": {
               "buildTarget": "gb3-frontend:build:development"
             },
+            "e2e": {
+              "buildTarget": "gb3-frontend:build:e2e"
+            },
             "development-local-gb2": {
               "buildTarget": "gb3-frontend:build:development-local-gb2"
             }
@@ -264,6 +273,9 @@
             "devServerTarget": "gb3-frontend:serve"
           },
           "configurations": {
+            "ci": {
+              "devServerTarget": "gb3-frontend:serve:e2e"
+            },
             "production": {
               "devServerTarget": "gb3-frontend:serve:production"
             }

@@ -20,14 +20,17 @@ test.describe('Test filter search', () => {
 
     await search('Stampfenbachstrasse 12');
 
-    const map = page.locator('map-page');
+    const activeMapItem = page.locator('active-map-item').filter({hasText: 'Amtliche Vermessung in Farbe'}).first();
+    await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});
+
+    const map = page.locator('map-page canvas').first();
     await expect(map).toBeVisible();
 
-    await map.click({force: true});
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(500);
+    await map.click();
 
-    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
-    await expect(page.locator('th', {hasText: 'EGRIS_EGRID'}).locator('xpath=following-sibling::td')).toContainText('CH527789999186');
+    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible({timeout: 30_000});
+    await expect(page.locator('th', {hasText: 'EGRIS_EGRID'}).locator('xpath=following-sibling::td')).toContainText('CH527789999186', {
+      timeout: 30_000,
+    });
   });
 });
