@@ -8,33 +8,7 @@ pending:
   src/app/map/components/feature-info-overlay/query-results/query-results.component.ts: {}
   src/app/map/components/feature-info-overlay/statistics-item/statistics-item.component.ts: {}
   src/app/map/components/feature-info-overlay/statistics/statistics.component.ts: {}
-  src/app/map/components/map-notice-dialog/map-notice-dialog.component.ts: {}
-  src/app/map/components/map-tools/data-download-dialog/data-download-dialog.component.ts: {}
-  src/app/map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component.ts: {}
-  src/app/map/components/map-tools/data-download-email-dialog/data-download-email-dialog.component.ts: {}
-  src/app/map/components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component.ts: {}
-  src/app/map/components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component.ts: {}
-  src/app/map/components/map-tools/data-download-selection-tools/data-download-selection-tools.component.ts: {}
-  src/app/map/components/map-tools/data-download-status-queue/data-download-status-queue.component.ts: {}
-  src/app/map/components/map-tools/drawing-download-button/drawing-download-button.component.ts: {}
-  src/app/map/components/map-tools/drawing-download-dialog/drawing-download-dialog.component.ts: {}
-  src/app/map/components/map-tools/drawing-settings-dialog/drawing-settings-dialog.component.ts: {}
-  src/app/map/components/map-tools/drawing-tools/drawing-tools.component.ts: {}
-  src/app/map/components/map-tools/drawings-import-dialog/drawings-import-dialog.component.ts: {}
-  src/app/map/components/map-tools/map-import/map-import-dialog/map-import-dialog.component.ts: {}
-  src/app/map/components/map-tools/map-import/map-import-display-name/map-import-display-name.component.ts: {}
-  src/app/map/components/map-tools/map-import/map-import-layer-list/map-import-layer-list.component.ts: {}
-  src/app/map/components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component.ts: {}
-  src/app/map/components/map-tools/map-tools-desktop/map-tools-desktop.component.ts: {}
-  src/app/map/components/map-tools/map-tools-mobile/map-tools-mobile.component.ts: {}
-  src/app/map/components/map-tools/map-tools.component.ts: {}
-  src/app/map/components/map-tools/measurement-tools/measurement-tools.component.ts: {}
-  src/app/map/components/map-tools/print-dialog/print-dialog.component.ts: {}
-  src/app/map/components/map-tools/product/product.component.ts: {}
   src/app/map/components/map-tools/statistics-tools/statistics-tools.component.ts: {}
-  src/app/map/components/share-link-dialog/share-link-dialog.component.ts: {}
-  src/app/map/components/share-link-mobile/share-link-mobile.component.ts: {}
-  src/app/map/components/time-slider/time-slider.component.ts: {}
 dedicated:
   src/app/app.component.ts:
     coveredBy:
@@ -108,6 +82,9 @@ dedicated:
   src/app/map/components/active-map-items/active-map-items.component.ts:
     coveredBy:
       - src/app/map/components/active-map-items/active-map-items.component.spec.ts
+  src/app/map/components/api-dialog-wrapper/api-dialog-wrapper.component.ts:
+    coveredBy:
+      - src/app/map/components/api-dialog-wrapper/api-dialog-wrapper.component.spec.ts
   src/app/map/components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component.ts:
     coveredBy:
       - src/app/map/components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component.spec.ts
@@ -159,6 +136,9 @@ dedicated:
   src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.ts:
     coveredBy:
       - src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.spec.ts
+  src/app/map/components/favourite-deletion-dialog/favourite-deletion-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/favourite-deletion-dialog/favourite-deletion-dialog.component.spec.ts
   src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.ts:
     coveredBy:
       - src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.spec.ts
@@ -252,12 +232,81 @@ dedicated:
   src/app/map/components/map-management-mobile/map-management-mobile.component.ts:
     coveredBy:
       - src/app/map/components/map-management-mobile/map-management-mobile.component.spec.ts
+  src/app/map/components/map-notice-dialog/map-notice-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-notice-dialog/map-notice-dialog.component.spec.ts
   src/app/map/components/map-overlay/map-overlay-list-item/map-overlay-list-item.component.ts:
     coveredBy:
       - src/app/map/components/map-overlay/map-overlay-list-item/map-overlay-list-item.component.spec.ts
   src/app/map/components/map-overlay/map-overlay.component.ts:
     coveredBy:
       - src/app/map/components/map-overlay/map-overlay.component.spec.ts
+  src/app/map/components/map-tools/data-download-dialog/data-download-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/data-download-dialog/data-download-dialog.component.spec.ts
+  src/app/map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component.spec.ts
+  src/app/map/components/map-tools/data-download-email-dialog/data-download-email-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/data-download-email-dialog/data-download-email-dialog.component.spec.ts
+  src/app/map/components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component.spec.ts
+  src/app/map/components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component.spec.ts
+  src/app/map/components/map-tools/data-download-selection-tools/data-download-selection-tools.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/data-download-selection-tools/data-download-selection-tools.component.spec.ts
+  src/app/map/components/map-tools/data-download-status-queue/data-download-status-queue.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/data-download-status-queue/data-download-status-queue.component.spec.ts
+  src/app/map/components/map-tools/drawing-download-button/drawing-download-button.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/drawing-download-button/drawing-download-button.component.spec.ts
+  src/app/map/components/map-tools/drawing-download-dialog/drawing-download-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/drawing-download-dialog/drawing-download-dialog.component.spec.ts
+  src/app/map/components/map-tools/drawing-settings-dialog/drawing-settings-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/drawing-settings-dialog/drawing-settings-dialog.component.spec.ts
+  src/app/map/components/map-tools/drawing-tools/drawing-tools.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/drawing-tools/drawing-tools.component.spec.ts
+  src/app/map/components/map-tools/drawings-import-dialog/drawings-import-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/drawings-import-dialog/drawings-import-dialog.component.spec.ts
+  src/app/map/components/map-tools/map-import/map-import-dialog/map-import-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/map-import/map-import-dialog/map-import-dialog.component.spec.ts
+  src/app/map/components/map-tools/map-import/map-import-display-name/map-import-display-name.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/map-import/map-import-display-name/map-import-display-name.component.spec.ts
+  src/app/map/components/map-tools/map-import/map-import-layer-list/map-import-layer-list.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/map-import/map-import-layer-list/map-import-layer-list.component.spec.ts
+  src/app/map/components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component.spec.ts
+  src/app/map/components/map-tools/map-tools-desktop/map-tools-desktop.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/map-tools-desktop/map-tools-desktop.component.spec.ts
+  src/app/map/components/map-tools/map-tools-mobile/map-tools-mobile.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/map-tools-mobile/map-tools-mobile.component.spec.ts
+  src/app/map/components/map-tools/map-tools.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/map-tools.component.spec.ts
+  src/app/map/components/map-tools/measurement-tools/measurement-tools.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/measurement-tools/measurement-tools.component.spec.ts
+  src/app/map/components/map-tools/print-dialog/print-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/print-dialog/print-dialog.component.spec.ts
+  src/app/map/components/map-tools/product/product.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/product/product.component.spec.ts
   src/app/map/components/search-window-mobile/search-window-mobile.component.ts:
     coveredBy:
       - src/app/map/components/search-window-mobile/search-window-mobile.component.spec.ts
@@ -270,12 +319,21 @@ dedicated:
   src/app/map/components/search-window/search-window.component.ts:
     coveredBy:
       - src/app/map/components/search-window/search-window.component.spec.ts
+  src/app/map/components/share-link-dialog/share-link-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/share-link-dialog/share-link-dialog.component.spec.ts
+  src/app/map/components/share-link-mobile/share-link-mobile.component.ts:
+    coveredBy:
+      - src/app/map/components/share-link-mobile/share-link-mobile.component.spec.ts
   src/app/map/components/symbols-drawing-tool-input/symbol-drawing-tool-input.component.ts:
     coveredBy:
       - src/app/map/components/symbols-drawing-tool-input/symbol-drawing-tool-input.component.spec.ts
   src/app/map/components/text-drawing-tool-input/text-drawing-tool-input.component.ts:
     coveredBy:
       - src/app/map/components/text-drawing-tool-input/text-drawing-tool-input.component.spec.ts
+  src/app/map/components/time-slider/time-slider.component.ts:
+    coveredBy:
+      - src/app/map/components/time-slider/time-slider.component.spec.ts
   src/app/map/map-page.component.ts:
     coveredBy:
       - src/app/map/map-page.component.spec.ts
