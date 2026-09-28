@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies and check component test inventory
         run: |
           npm ci --ignore-scripts
-          npm run component-tests:check
+          npm run component-tests:check-complete
 
   lint:
     name: Run lint
