@@ -8,20 +8,22 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
-  workers: process.env['CI'] ? 3 : 1,
-  reporter: 'html',
+  // ArcGIS uses WebGL heavily. Running the browser projects concurrently on the
+  // same CI host makes WebKit in particular compete for the software renderer.
+  // CI runs one browser per matrix job, so one worker keeps each browser isolated.
+  workers: 1,
+  reporter: process.env['CI'] ? [['line'], ['html', {open: 'never'}]] : [['html', {open: 'never'}]],
   globalTeardown: require.resolve('./e2e/global.teardown'),
   use: {
     baseURL: 'http://localhost:4200',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     ignoreHTTPSErrors: true,
     screenshot: 'only-on-failure',
-    video: 'on-first-retry',
+    video: 'retain-on-failure',
 
     // DEBUGGING: The following options are left here for convenience. They're super useful for debugging.
     // headless: false,
     launchOptions: {
-      slowMo: 50,
       firefoxUserPrefs: process.env['CI']
         ? {
             'webgl.disabled': false,

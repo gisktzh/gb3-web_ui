@@ -89,10 +89,14 @@ jobs:
           NODE_OPTIONS: '--max-old-space-size=8192'
 
   e2e:
-    name: Run end-to-end tests
+    name: Run end-to-end tests (${{ matrix.browser }})
     runs-on: ${{ inputs.runner_version }}
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -111,17 +115,18 @@ jobs:
             xvfb \
             mesa-utils \
             libgl1-mesa-dri
-          ./node_modules/.bin/playwright install --with-deps
+          ./node_modules/.bin/playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run tests
         run: |
-          xvfb-run --auto-servernum npm run e2e
+          xvfb-run --auto-servernum npm run e2e -- --configuration ci --test-project ${{ matrix.browser }}
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
+          NODE_OPTIONS: '--max-old-space-size=8192'
 
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: playwright-report/
           retention-days: 30
