@@ -23,7 +23,6 @@ pending:
   src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layers.component.ts: {}
   src/app/map/components/active-map-items/active-map-item-settings/active-map-item-settings.component.ts: {}
   src/app/map/components/active-map-items/active-map-item/active-map-item.component.ts: {}
-  src/app/map/components/active-map-items/active-map-items.component.ts: {}
   src/app/map/components/api-dialog-wrapper/api-dialog-wrapper.component.ts: {}
   src/app/map/components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component.ts: {}
   src/app/map/components/bottom-sheet-overlay/bottom-sheet-overlay.component.ts: {}
@@ -41,14 +40,12 @@ pending:
   src/app/map/components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component.ts: {}
   src/app/map/components/elevation-profile-overlay/elevation-profile-overlay.component.ts: {}
   src/app/map/components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component.ts: {}
-  src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.ts: {}
   src/app/map/components/favourite-deletion-dialog/favourite-deletion-dialog.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-content/info-table-cell.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-content/resizable-info-table.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-item/feature-info-item.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-overlay.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-report-download/feature-info-report-download.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info/feature-info.component.ts: {}
   src/app/map/components/feature-info-overlay/oereb-extract/oereb-extract.component.ts: {}
@@ -119,9 +116,7 @@ pending:
   src/app/shared/components/contact-details/contact-detail/contact-detail.component.ts: {}
   src/app/shared/components/data-catalogue-overview-item/overview-search-result-item.component.ts: {}
   src/app/shared/components/descriptive-highlighted-link/descriptive-highlighted-link.component.ts: {}
-  src/app/shared/components/drop-zone/drop-zone.component.ts: {}
   src/app/shared/components/expandable-list-item/expandable-list-item-header/expandable-list-item-header.component.ts: {}
-  src/app/shared/components/expandable-list-item/expandable-list-item.component.ts: {}
   src/app/shared/components/external-link-button/external-link-button.component.ts: {}
   src/app/shared/components/external-link-button/gb2-exit-button.component.ts: {}
   src/app/shared/components/footer/main-footer.component.ts: {}
@@ -135,12 +130,10 @@ pending:
   src/app/shared/components/navbar-mobile/navbar-mobile.component.ts: {}
   src/app/shared/components/navbar/navbar.component.ts: {}
   src/app/shared/components/page-notification/page-notification.component.ts: {}
-  src/app/shared/components/page-section/page-section.component.ts: {}
   src/app/shared/components/resize-handler/resize-handler.component.ts: {}
   src/app/shared/components/scrollbar-width-calculation/scrollbar-width-calculation.component.ts: {}
   src/app/shared/components/search-filter-dialog/search-filter-dialog.component.ts: {}
   src/app/shared/components/search/search-bar/search-bar.component.ts: {}
-  src/app/shared/components/search/search-input.component.ts: {}
   src/app/shared/components/skip-link/skip-link.component.ts: {}
   src/app/shared/components/slider-wrapper/slider-wrapper.component.ts: {}
   src/app/shared/components/waiting-page/waiting-page.component.ts: {}
@@ -160,7 +153,28 @@ pending:
   src/app/support-page/components/useful-information/useful-information.component.ts: {}
   src/app/support-page/support-page.component.ts: {}
   src/app/terms-of-use/terms-of-use-page.component.ts: {}
-dedicated: {}
+dedicated:
+  src/app/map/components/active-map-items/active-map-items.component.ts:
+    coveredBy:
+      - src/app/map/components/active-map-items/active-map-items.component.spec.ts
+  src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.spec.ts
+  src/app/map/components/feature-info-overlay/feature-info-overlay.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/feature-info-overlay.component.spec.ts
+  src/app/shared/components/drop-zone/drop-zone.component.ts:
+    coveredBy:
+      - src/app/shared/components/drop-zone/drop-zone.component.spec.ts
+  src/app/shared/components/expandable-list-item/expandable-list-item.component.ts:
+    coveredBy:
+      - src/app/shared/components/expandable-list-item/expandable-list-item.component.spec.ts
+  src/app/shared/components/page-section/page-section.component.ts:
+    coveredBy:
+      - src/app/shared/components/page-section/page-section.component.spec.ts
+  src/app/shared/components/search/search-input.component.ts:
+    coveredBy:
+      - src/app/shared/components/search/search-input.component.spec.ts
 host:
   src/app/data-catalogue/data-catalogue-page.component.ts:
     hostedBy:
