@@ -117,31 +117,6 @@ pending:
   src/app/onboarding-guide/components/onboarding-guide/onboarding-guide.component.ts: {}
   src/app/privacy/privacy-page.component.ts: {}
   src/app/share-link/components/share-link-redirect/share-link-redirect.component.ts: {}
-  src/app/shared/components/accordion-item/accordion-item.component.ts: {}
-  src/app/shared/components/contact-details/contact-detail/contact-detail.component.ts: {}
-  src/app/shared/components/data-catalogue-overview-item/overview-search-result-item.component.ts: {}
-  src/app/shared/components/descriptive-highlighted-link/descriptive-highlighted-link.component.ts: {}
-  src/app/shared/components/expandable-list-item/expandable-list-item-header/expandable-list-item-header.component.ts: {}
-  src/app/shared/components/external-link-button/external-link-button.component.ts: {}
-  src/app/shared/components/external-link-button/gb2-exit-button.component.ts: {}
-  src/app/shared/components/footer/main-footer.component.ts: {}
-  src/app/shared/components/hero-header/hero-header.component.ts: {}
-  src/app/shared/components/lists/generic-unordered-list/generic-unordered-list.component.ts: {}
-  src/app/shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component.ts: {}
-  src/app/shared/components/lists/link-list/link-list-item/link-list-item.component.ts: {}
-  src/app/shared/components/lists/link-list/link-list.component.ts: {}
-  src/app/shared/components/loading-and-process-bar/loading-and-process-bar.component.ts: {}
-  src/app/shared/components/navbar-mobile/navbar-mobile-dialog/navbar-mobile-dialog.component.ts: {}
-  src/app/shared/components/navbar-mobile/navbar-mobile.component.ts: {}
-  src/app/shared/components/navbar/navbar.component.ts: {}
-  src/app/shared/components/page-notification/page-notification.component.ts: {}
-  src/app/shared/components/resize-handler/resize-handler.component.ts: {}
-  src/app/shared/components/scrollbar-width-calculation/scrollbar-width-calculation.component.ts: {}
-  src/app/shared/components/search-filter-dialog/search-filter-dialog.component.ts: {}
-  src/app/shared/components/search/search-bar/search-bar.component.ts: {}
-  src/app/shared/components/skip-link/skip-link.component.ts: {}
-  src/app/shared/components/slider-wrapper/slider-wrapper.component.ts: {}
-  src/app/shared/components/waiting-page/waiting-page.component.ts: {}
   src/app/start-page/components/content-loading-state/content-loading-state.component.ts: {}
   src/app/start-page/components/discover-maps/discover-maps.component.ts: {}
   src/app/start-page/components/frequently-used-items/frequently-used-items.component.ts: {}
@@ -168,18 +143,93 @@ dedicated:
   src/app/map/components/feature-info-overlay/feature-info-overlay.component.ts:
     coveredBy:
       - src/app/map/components/feature-info-overlay/feature-info-overlay.component.spec.ts
+  src/app/shared/components/accordion-item/accordion-item.component.ts:
+    coveredBy:
+      - src/app/shared/components/accordion-item/accordion-item.component.spec.ts
+  src/app/shared/components/contact-details/contact-detail/contact-detail.component.ts:
+    coveredBy:
+      - src/app/shared/components/contact-details/contact-detail/contact-detail.component.spec.ts
+  src/app/shared/components/data-catalogue-overview-item/overview-search-result-item.component.ts:
+    coveredBy:
+      - src/app/shared/components/data-catalogue-overview-item/overview-search-result-item.component.spec.ts
+  src/app/shared/components/descriptive-highlighted-link/descriptive-highlighted-link.component.ts:
+    coveredBy:
+      - src/app/shared/components/descriptive-highlighted-link/descriptive-highlighted-link.component.spec.ts
   src/app/shared/components/drop-zone/drop-zone.component.ts:
     coveredBy:
       - src/app/shared/components/drop-zone/drop-zone.component.spec.ts
+  src/app/shared/components/expandable-list-item/expandable-list-item-header/expandable-list-item-header.component.ts:
+    coveredBy:
+      - src/app/shared/components/expandable-list-item/expandable-list-item-header/expandable-list-item-header.component.spec.ts
   src/app/shared/components/expandable-list-item/expandable-list-item.component.ts:
     coveredBy:
       - src/app/shared/components/expandable-list-item/expandable-list-item.component.spec.ts
+  src/app/shared/components/external-link-button/external-link-button.component.ts:
+    coveredBy:
+      - src/app/shared/components/external-link-button/external-link-button.component.spec.ts
+  src/app/shared/components/external-link-button/gb2-exit-button.component.ts:
+    coveredBy:
+      - src/app/shared/components/external-link-button/gb2-exit-button.component.spec.ts
+  src/app/shared/components/footer/main-footer.component.ts:
+    coveredBy:
+      - src/app/shared/components/footer/main-footer.component.spec.ts
+  src/app/shared/components/hero-header/hero-header.component.ts:
+    coveredBy:
+      - src/app/shared/components/hero-header/hero-header.component.spec.ts
+  src/app/shared/components/lists/generic-unordered-list/generic-unordered-list.component.ts:
+    coveredBy:
+      - src/app/shared/components/lists/generic-unordered-list/generic-unordered-list.component.spec.ts
+  src/app/shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component.ts:
+    coveredBy:
+      - src/app/shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component.spec.ts
+  src/app/shared/components/lists/link-list/link-list-item/link-list-item.component.ts:
+    coveredBy:
+      - src/app/shared/components/lists/link-list/link-list-item/link-list-item.component.spec.ts
+  src/app/shared/components/lists/link-list/link-list.component.ts:
+    coveredBy:
+      - src/app/shared/components/lists/link-list/link-list.component.spec.ts
+  src/app/shared/components/loading-and-process-bar/loading-and-process-bar.component.ts:
+    coveredBy:
+      - src/app/shared/components/loading-and-process-bar/loading-and-process-bar.component.spec.ts
+  src/app/shared/components/navbar-mobile/navbar-mobile-dialog/navbar-mobile-dialog.component.ts:
+    coveredBy:
+      - src/app/shared/components/navbar-mobile/navbar-mobile-dialog/navbar-mobile-dialog.component.spec.ts
+  src/app/shared/components/navbar-mobile/navbar-mobile.component.ts:
+    coveredBy:
+      - src/app/shared/components/navbar-mobile/navbar-mobile.component.spec.ts
+  src/app/shared/components/navbar/navbar.component.ts:
+    coveredBy:
+      - src/app/shared/components/navbar/navbar.component.spec.ts
+  src/app/shared/components/page-notification/page-notification.component.ts:
+    coveredBy:
+      - src/app/shared/components/page-notification/page-notification.component.spec.ts
   src/app/shared/components/page-section/page-section.component.ts:
     coveredBy:
       - src/app/shared/components/page-section/page-section.component.spec.ts
+  src/app/shared/components/resize-handler/resize-handler.component.ts:
+    coveredBy:
+      - src/app/shared/components/resize-handler/resize-handler.component.spec.ts
+  src/app/shared/components/scrollbar-width-calculation/scrollbar-width-calculation.component.ts:
+    coveredBy:
+      - src/app/shared/components/scrollbar-width-calculation/scrollbar-width-calculation.component.spec.ts
+  src/app/shared/components/search-filter-dialog/search-filter-dialog.component.ts:
+    coveredBy:
+      - src/app/shared/components/search-filter-dialog/search-filter-dialog.component.spec.ts
+  src/app/shared/components/search/search-bar/search-bar.component.ts:
+    coveredBy:
+      - src/app/shared/components/search/search-bar/search-bar.component.spec.ts
   src/app/shared/components/search/search-input.component.ts:
     coveredBy:
       - src/app/shared/components/search/search-input.component.spec.ts
+  src/app/shared/components/skip-link/skip-link.component.ts:
+    coveredBy:
+      - src/app/shared/components/skip-link/skip-link.component.spec.ts
+  src/app/shared/components/slider-wrapper/slider-wrapper.component.ts:
+    coveredBy:
+      - src/app/shared/components/slider-wrapper/slider-wrapper.component.spec.ts
+  src/app/shared/components/waiting-page/waiting-page.component.ts:
+    coveredBy:
+      - src/app/shared/components/waiting-page/waiting-page.component.spec.ts
 host:
   src/app/data-catalogue/data-catalogue-page.component.ts:
     hostedBy:
