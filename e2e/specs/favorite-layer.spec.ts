@@ -1,7 +1,7 @@
 import {test, expect} from '../fixtures';
 
 test.describe('Favorites layers', () => {
-  test('adds and removes a favorite after logging in', async ({
+  test('adds, restores, and removes a favorite after logging in', async ({
     page,
     openUrlWithCoordinates,
     login,
@@ -42,9 +42,14 @@ test.describe('Favorites layers', () => {
     const favouriteDialog = page.locator('favourite-creation-dialog');
     await expect(favouriteDialog).toBeVisible();
 
-    const nameInput = favouriteDialog.locator('input#name');
+    const nameInput = favouriteDialog.getByLabel('Name des Favoriten');
     await expect(nameInput).toBeVisible();
     await nameInput.fill(favoriteTitle);
+
+    const storeCenterCheckbox = favouriteDialog.getByRole('checkbox', {name: 'Ausschnitt'});
+    const storeScaleCheckbox = favouriteDialog.getByRole('checkbox', {name: 'Massstab'});
+    await expect(storeCenterCheckbox).toBeChecked();
+    await expect(storeScaleCheckbox).toBeChecked();
 
     const saveButton = favouriteDialog.getByRole('button', {name: 'Speichern'});
     await expect(saveButton).toBeEnabled();
@@ -57,6 +62,19 @@ test.describe('Favorites layers', () => {
     await selectTopic('Favoriten');
     const favoriteItem = page.locator('p', {hasText: favoriteTitle});
     await expect(favoriteItem).toBeVisible({timeout: 10000});
+
+    // Move away from the stored extent, then restore it by adding the favorite.
+    const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
+    const coordsInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Koordinaten eingeben"]');
+    await zoomInput.fill('1000');
+    await coordsInput.fill('2683000 / 1249000');
+    await expect(zoomInput).toHaveValue('1000');
+    await expect(coordsInput).toHaveValue('2683000 / 1249000');
+
+    const favoriteRow = page.locator('map-data-item-favourite', {hasText: favoriteTitle});
+    await favoriteRow.getByRole('button', {name: 'Karte hinzufügen'}).click();
+    await expect(zoomInput).toHaveValue('251');
+    await expect(coordsInput).toHaveValue('2682260 / 1248390');
 
     // Delete favorite
     const deleteButton = favoriteItem.locator('//following-sibling::button');

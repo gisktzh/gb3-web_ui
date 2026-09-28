@@ -1,6 +1,6 @@
 import {Component, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
-import {FormControl, FormsModule} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {CreateFavouritePayload, FavouritesService} from '../../services/favourites.service';
 import {firstValueFrom} from 'rxjs';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
@@ -33,7 +33,6 @@ export class FavouriteCreationDialogComponent implements HasSavingStateSingal {
     pattern(fieldPath.title, /\S/);
   });
 
-  public nameFormControl!: FormControl<string | null>;
   public readonly savingState = signal<LoadingState>(undefined);
 
   public abort() {

@@ -31,7 +31,7 @@ import {MapConfigActions} from '../actions/map-config.actions';
 import {FavouriteBaseConfig} from '../../../shared/interfaces/favourite.interface';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapConstants} from '../../../shared/constants/map.constants';
-import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
+import {initialState as initialMapConfigState, selectIsMapServiceInitialized, selectMapConfigState} from '../reducers/map-config.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {SearchActions} from '../../app/actions/search.actions';
@@ -507,6 +507,78 @@ describe('ActiveMapItemEffects', () => {
         expect(mapServiceSpy).toHaveBeenCalledWith(expectedAttributeFilterParameters, expectedActiveMapItem);
         expect(action).toEqual(expectedAction);
       });
+    });
+  });
+
+  describe('zoomToAddedFavourite$', () => {
+    const currentCenter = {x: 2_682_260, y: 1_253_708};
+    const currentScale = 320_000;
+    const storedCenter = {x: 2_600_003, y: 1_100_003};
+    const storedScale = 1_003;
+
+    beforeEach(() => {
+      store.overrideSelector(selectMapConfigState, {
+        ...initialMapConfigState,
+        center: currentCenter,
+        scale: currentScale,
+      });
+      store.refreshState();
+    });
+
+    it.each([
+      {
+        description: 'both are stored',
+        baseConfig: {basemap: 'basemap3', center: storedCenter, scale: storedScale},
+        expectedCenter: storedCenter,
+        expectedScale: storedScale,
+      },
+      {
+        description: 'only center is stored',
+        baseConfig: {basemap: 'basemap3', center: storedCenter},
+        expectedCenter: storedCenter,
+        expectedScale: currentScale,
+      },
+      {
+        description: 'only scale is stored',
+        baseConfig: {basemap: 'basemap3', scale: storedScale},
+        expectedCenter: currentCenter,
+        expectedScale: storedScale,
+      },
+    ] satisfies Array<{
+      description: string;
+      baseConfig: FavouriteBaseConfig;
+      expectedCenter: {x: number; y: number};
+      expectedScale: number;
+    }>)('zooms using the stored and current values when $description', ({baseConfig, expectedCenter, expectedScale}) => {
+      const zoomToPointSpy = vi.spyOn(mapService, 'zoomToPoint');
+      actions$ = of(ActiveMapItemActions.addFavourite({activeMapItems: [], baseConfig, drawingsToAdd: []}));
+
+      effects.zoomToAddedFavourite$.subscribe();
+
+      expect(zoomToPointSpy).toHaveBeenCalledTimes(1);
+      expect(zoomToPointSpy).toHaveBeenCalledWith(
+        {
+          type: 'Point',
+          srs: MapConstants.DEFAULT_SRS,
+          coordinates: [expectedCenter.x, expectedCenter.y],
+        },
+        expectedScale,
+      );
+    });
+
+    it('does not zoom when neither center nor scale is stored', () => {
+      const zoomToPointSpy = vi.spyOn(mapService, 'zoomToPoint');
+      actions$ = of(
+        ActiveMapItemActions.addFavourite({
+          activeMapItems: [],
+          baseConfig: {basemap: 'basemap3'},
+          drawingsToAdd: [],
+        }),
+      );
+
+      effects.zoomToAddedFavourite$.subscribe();
+
+      expect(zoomToPointSpy).not.toHaveBeenCalled();
     });
   });
 

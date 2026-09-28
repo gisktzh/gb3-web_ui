@@ -14,7 +14,6 @@ import {Gb3FavouritesService} from './gb3-favourites.service';
 import {CreateFavourite, Favourite} from '../../../interfaces/favourite.interface';
 import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
 import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
-import {defaultMapConfig} from '../../../configs/map.config';
 
 // todo: add tests for vector layers
 const mockedVectorLayer = {type: undefined, styles: undefined, geojson: {type: undefined, features: []}} as unknown as Gb3VectorLayer;
@@ -201,15 +200,48 @@ describe('Gb3FavouritesService', () => {
       });
     });
 
-    it('should use the default map extent when the API does not provide one', () => {
+    it.each([
+      {
+        description: 'center and scale are missing',
+        east: null,
+        north: null,
+        scaledenom: null,
+        expectedCenter: undefined,
+        expectedScale: undefined,
+      },
+      {
+        description: 'only center is missing',
+        east: null,
+        north: null,
+        scaledenom: 1_003,
+        expectedCenter: undefined,
+        expectedScale: 1_003,
+      },
+      {
+        description: 'only scale is missing',
+        east: 2_600_003,
+        north: 1_100_003,
+        scaledenom: null,
+        expectedCenter: {x: 2_600_003, y: 1_100_003},
+        expectedScale: undefined,
+      },
+      {
+        description: 'one center coordinate is missing',
+        east: null,
+        north: 1_100_003,
+        scaledenom: 1_003,
+        expectedCenter: undefined,
+        expectedScale: 1_003,
+      },
+    ])('should preserve an omitted map extent when $description', ({east, north, scaledenom, expectedCenter, expectedScale}) => {
       const httpClient = TestBed.inject(HttpClient);
       vi.spyOn(httpClient, 'get').mockReturnValue(
         of([
           {
             ...serverDataMock[0],
-            east: null,
-            north: null,
-            scaledenom: null,
+            east,
+            north,
+            scaledenom,
           },
         ] satisfies UserFavoritesListData),
       );
@@ -217,8 +249,8 @@ describe('Gb3FavouritesService', () => {
       service.loadFavourites().subscribe(([favourite]) => {
         expect(favourite.baseConfig).toEqual({
           basemap: serverDataMock[0].basemap,
-          center: defaultMapConfig.center,
-          scale: defaultMapConfig.scale,
+          center: expectedCenter,
+          scale: expectedScale,
         });
       });
     });
@@ -233,6 +265,46 @@ describe('Gb3FavouritesService', () => {
         expect(postCallSpy).toHaveBeenCalledWith('', newPersonalFavourite, {headers: undefined});
         expect(sharedFavourite).toBeDefined();
         expect(sharedFavourite).toBe(newSharedFavouriteMock);
+      });
+    });
+
+    it.each([
+      {
+        description: 'center and scale',
+        baseConfig: {basemap: 'basemap3'},
+        expectedEast: null,
+        expectedNorth: null,
+        expectedScale: null,
+      },
+      {
+        description: 'center',
+        baseConfig: {basemap: 'basemap3', scale: 1_003},
+        expectedEast: null,
+        expectedNorth: null,
+        expectedScale: 1_003,
+      },
+      {
+        description: 'scale',
+        baseConfig: {basemap: 'basemap3', center: {x: 2_600_003, y: 1_100_003}},
+        expectedEast: 2_600_003,
+        expectedNorth: 1_100_003,
+        expectedScale: null,
+      },
+    ])('should send null for an omitted $description', ({baseConfig, expectedEast, expectedNorth, expectedScale}) => {
+      const httpClient = TestBed.inject(HttpClient);
+      const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(newSharedFavouriteMock));
+
+      service.createFavourite({...newFavouriteItemMock, baseConfig}).subscribe(() => {
+        expect(postCallSpy).toHaveBeenCalledWith(
+          '',
+          {
+            ...newPersonalFavourite,
+            east: expectedEast,
+            north: expectedNorth,
+            scaledenom: expectedScale,
+          },
+          {headers: undefined},
+        );
       });
     });
   });
