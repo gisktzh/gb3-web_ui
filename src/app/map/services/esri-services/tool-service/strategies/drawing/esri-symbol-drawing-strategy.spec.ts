@@ -16,6 +16,15 @@ import {EsriDrawingSymbolDefinition} from './drawing-symbol/esri-drawing-symbol-
 import {EsriDrawingSymbolDescriptor} from './drawing-symbol/esri-drawing-symbol-descriptor';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
+vi.mock('@arcgis/core/widgets/Sketch/SketchViewModel', () => ({
+  default: class {
+    public pointSymbol: unknown;
+    public create = vi.fn();
+    public update = vi.fn();
+    public cancel = vi.fn();
+  },
+}));
+
 class EsriSymbolDrawingStrategyWrapper extends EsriSymbolDrawingStrategy {
   public get svm() {
     return this.sketchViewModel;
