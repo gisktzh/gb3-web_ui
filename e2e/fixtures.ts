@@ -4,10 +4,12 @@ import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
 import path from 'node:path';
 import {expect, type Page} from '@playwright/test';
+import {canonicalizeUrl} from './utils/canonicalize.utils';
 
 // URL pattern. If pattern matches,
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
 const IS_WRITING_HAR = !!process.env['WRITE_HAR'];
+const DEFAULT_DESKTOP_MAP_VIEW_PADDING = {top: 88, right: 180, bottom: 88, left: 474};
 
 export type ScreenCoords = [number, number];
 export type ScreenCoordsList = ScreenCoords[];
@@ -23,6 +25,7 @@ type Gb3Fixtures = {
   login: () => Promise<void>;
   search: (searchTerm: string) => Promise<void>;
   zoom: (zoomLevel: number) => Promise<void>;
+  clickDefaultMapViewCenter: () => Promise<void>;
 };
 
 function getRequestKey(url: string, method: string) {
@@ -129,7 +132,7 @@ export const test = base.extend<Gb3Fixtures>({
           },
           matchFunction: customMatcher({
             urlComparator(a, b) {
-              return a === b;
+              return canonicalizeUrl(a) === canonicalizeUrl(b);
             },
             postDataComparator: postDataEquals,
           }),
@@ -299,6 +302,22 @@ export const test = base.extend<Gb3Fixtures>({
       await expect(zoomInput).toBeVisible();
       await zoomInput.fill(zoomLevel.toString());
       await expect(zoomInput).toHaveValue(zoomLevel.toString());
+    });
+  },
+
+  clickDefaultMapViewCenter: async ({page}, use) => {
+    await use(async () => {
+      const map = page.locator('map-page canvas').first();
+      await expect(map).toBeVisible();
+
+      const boundingBox = await map.boundingBox();
+      expect(boundingBox).not.toBeNull();
+
+      const {top, right, bottom, left} = DEFAULT_DESKTOP_MAP_VIEW_PADDING;
+      const effectiveWidth = boundingBox!.width - left - right;
+      const effectiveHeight = boundingBox!.height - top - bottom;
+
+      await page.mouse.click(boundingBox!.x + left + effectiveWidth / 2, boundingBox!.y + top + effectiveHeight / 2);
     });
   },
 });

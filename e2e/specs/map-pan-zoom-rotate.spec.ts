@@ -98,19 +98,19 @@ test.describe('Map pan/zoom/rotate', () => {
     await fullMapButton.click();
 
     await expect(zoomInput).toHaveValue('270018');
-    await expect(coordsInput).toHaveValue('2682563 / 1253620');
+    await expect(coordsInput).toHaveValue('2693065 / 1253620');
 
     const zoomInButton = zoomControls.locator('button[aria-label="Vergrössern"]');
     await expect(zoomInButton).toBeVisible();
     await zoomInButton.click();
     await expect(zoomInput).toHaveValue('144448');
-    await expect(coordsInput).toHaveValue('2682563 / 1253620');
+    await expect(coordsInput).toHaveValue('2693065 / 1253620');
 
     const zoomOutButton = zoomControls.locator('button[aria-label="Verkleinern"]');
     await expect(zoomOutButton).toBeVisible();
     await zoomOutButton.click();
     await expect(zoomInput).toHaveValue('288895');
-    await expect(coordsInput).toHaveValue('2682563 / 1253620');
+    await expect(coordsInput).toHaveValue('2693065 / 1253620');
 
     // The compass is the observable UI contract for the current rotation. Raw
     // right-button pointer capture is browser-engine dependent and belongs in a

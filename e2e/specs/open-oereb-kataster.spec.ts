@@ -17,12 +17,12 @@ test.describe('OEREB-Kataster', () => {
     await page.waitForLoadState('networkidle');
 
     await search('Weststrasse 49, 8003');
-    await page.waitForTimeout(5000); // Until the zoom is done
+    const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
+    await expect(zoomInput).toHaveValue('750', {timeout: 30_000});
 
     await clickDefaultMapViewCenter();
-    await page.waitForLoadState('networkidle');
 
-    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
+    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible({timeout: 30_000});
     await expect(page.locator('feature-info-content', {hasText: 'Markieren'})).toBeVisible();
     await expect(page.locator('th', {hasText: 'BFSNr'}).locator('xpath=following-sibling::td')).toContainText('261');
     await expect(page.locator('th', {hasText: 'Nummer'}).locator('xpath=following-sibling::td')).toContainText('WD4055');
