@@ -8,7 +8,7 @@ export default defineConfig({
     clearMocks: true,
     mockReset: true,
     isolate: true,
-    environment: 'jsdom',
+    environment: 'happy-dom',
     setupFiles: ['./src/test-setup.ts'],
     reporters: ['default'],
     server: {

@@ -1,0 +1,241 @@
+version: 1
+pending:
+  src/app/app.component.ts: {}
+  src/app/apps-page/apps-page.component.ts: {}
+  src/app/auth/components/login-redirect/login-redirect.component.ts: {}
+  src/app/auth/notifications/auth-notification-dialog/auth-notification-dialog.component.ts: {}
+  src/app/data-catalogue/components/data-catalogue-detail-page-section/data-catalogue-detail-page-section.component.ts: {}
+  src/app/data-catalogue/components/data-catalogue-detail-page/data-catalogue-detail-page.component.ts: {}
+  src/app/data-catalogue/components/data-catalogue-filter-dialog/data-catalogue-filter-dialog.component.ts: {}
+  src/app/data-catalogue/components/data-catalogue-overview/data-catalogue-overview.component.ts: {}
+  src/app/data-catalogue/components/data-display-section/data-display-section.component.ts: {}
+  src/app/data-catalogue/components/data-display/data-display.component.ts: {}
+  src/app/data-catalogue/components/dataset-detail/dataset-detail.component.ts: {}
+  src/app/data-catalogue/components/dataset-detail/dataset-element-detail/dataset-element-detail.component.ts: {}
+  src/app/data-catalogue/components/dataset-detail/dataset-element-table/dataset-element-table.component.ts: {}
+  src/app/data-catalogue/components/map-detail/map-detail.component.ts: {}
+  src/app/data-catalogue/components/product-detail/product-detail.component.ts: {}
+  src/app/data-catalogue/components/service-detail/service-detail.component.ts: {}
+  src/app/error-handling/components/error-notification/error-notification.component.ts: {}
+  src/app/error-handling/components/fatal-error-page/fatal-error-page.component.ts: {}
+  src/app/map/components/active-map-items/active-map-item-header/active-map-item-header.component.ts: {}
+  src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component.ts: {}
+  src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layers.component.ts: {}
+  src/app/map/components/active-map-items/active-map-item-settings/active-map-item-settings.component.ts: {}
+  src/app/map/components/active-map-items/active-map-item/active-map-item.component.ts: {}
+  src/app/map/components/api-dialog-wrapper/api-dialog-wrapper.component.ts: {}
+  src/app/map/components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component.ts: {}
+  src/app/map/components/bottom-sheet-overlay/bottom-sheet-overlay.component.ts: {}
+  src/app/map/components/drawing-edit-overlay/drawing-edit-overlay.component.ts: {}
+  src/app/map/components/drawing-edit-overlay/drawing-edit/color-picker-edit/color-picker-edit.component.ts: {}
+  src/app/map/components/drawing-edit-overlay/drawing-edit/drawing-edit.component.ts: {}
+  src/app/map/components/drawing-edit-overlay/drawing-edit/line-edit/line-edit.component.ts: {}
+  src/app/map/components/drawing-edit-overlay/drawing-edit/point-edit/point-edit.component.ts: {}
+  src/app/map/components/drawing-edit-overlay/drawing-edit/polygon-edit/polygon-edit.component.ts: {}
+  src/app/map/components/drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component.ts: {}
+  src/app/map/components/drawing-edit-overlay/drawing-edit/symbol-edit/symbol-edit.component.ts: {}
+  src/app/map/components/drawing-edit-overlay/drawing-edit/text-edit/text-edit.component.ts: {}
+  src/app/map/components/drawing-symbols/drawing-symbols-collection/drawing-symbols-collection.component.ts: {}
+  src/app/map/components/drawing-symbols/drawing-symbols.component.ts: {}
+  src/app/map/components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component.ts: {}
+  src/app/map/components/elevation-profile-overlay/elevation-profile-overlay.component.ts: {}
+  src/app/map/components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component.ts: {}
+  src/app/map/components/favourite-deletion-dialog/favourite-deletion-dialog.component.ts: {}
+  src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.ts: {}
+  src/app/map/components/feature-info-overlay/feature-info-content/info-table-cell.component.ts: {}
+  src/app/map/components/feature-info-overlay/feature-info-content/resizable-info-table.component.ts: {}
+  src/app/map/components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component.ts: {}
+  src/app/map/components/feature-info-overlay/feature-info-item/feature-info-item.component.ts: {}
+  src/app/map/components/feature-info-overlay/feature-info-report-download/feature-info-report-download.component.ts: {}
+  src/app/map/components/feature-info-overlay/feature-info/feature-info.component.ts: {}
+  src/app/map/components/feature-info-overlay/oereb-extract/oereb-extract.component.ts: {}
+  src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-list/oereb-info-list-map-overlay.component.ts: {}
+  src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-value/oereb-info-value.component.ts: {}
+  src/app/map/components/legend-overlay/legend-content/legend-content.component.ts: {}
+  src/app/map/components/legend-overlay/legend-item/legend-item.component.ts: {}
+  src/app/map/components/legend-overlay/legend-overlay.component.ts: {}
+  src/app/map/components/legend-overlay/legend/legend.component.ts: {}
+  src/app/map/components/map-attribute-filter-overlay/map-attribute-filter-overlay.component.ts: {}
+  src/app/map/components/map-attribute-filter/map-attribute-filter.component.ts: {}
+  src/app/map/components/map-container/map-container.component.ts: {}
+  src/app/map/components/map-controls/basemap-selector/basemap-selection-list/basemap-selection-list.component.ts: {}
+  src/app/map/components/map-controls/basemap-selector/basemap-selector.component.ts: {}
+  src/app/map/components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component.ts: {}
+  src/app/map/components/map-controls/data-input/data-input.component.ts: {}
+  src/app/map/components/map-controls/map-controls.component.ts: {}
+  src/app/map/components/map-controls/map-rotation-button/map-rotation-button.component.ts: {}
+  src/app/map/components/map-controls/scale-bar/scale-bar.component.ts: {}
+  src/app/map/components/map-controls/ui-toggle/ui-toggle.component.ts: {}
+  src/app/map/components/map-controls/zoom-controls/zoom-controls.component.ts: {}
+  src/app/map/components/map-data-catalogue/base-map-data-item/base-map-data-item.component.ts: {}
+  src/app/map/components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component.ts: {}
+  src/app/map/components/map-data-catalogue/base-map-data-item/map-data-item-map.component.ts: {}
+  src/app/map/components/map-data-catalogue/map-data-catalogue.component.ts: {}
+  src/app/map/components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component.ts: {}
+  src/app/map/components/map-management-mobile/map-management-mobile.component.ts: {}
+  src/app/map/components/map-notice-dialog/map-notice-dialog.component.ts: {}
+  src/app/map/components/map-overlay/map-overlay-list-item/map-overlay-list-item.component.ts: {}
+  src/app/map/components/map-overlay/map-overlay.component.ts: {}
+  src/app/map/components/map-tools/data-download-dialog/data-download-dialog.component.ts: {}
+  src/app/map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component.ts: {}
+  src/app/map/components/map-tools/data-download-email-dialog/data-download-email-dialog.component.ts: {}
+  src/app/map/components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component.ts: {}
+  src/app/map/components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component.ts: {}
+  src/app/map/components/map-tools/data-download-selection-tools/data-download-selection-tools.component.ts: {}
+  src/app/map/components/map-tools/data-download-status-queue/data-download-status-queue.component.ts: {}
+  src/app/map/components/map-tools/drawing-download-button/drawing-download-button.component.ts: {}
+  src/app/map/components/map-tools/drawing-download-dialog/drawing-download-dialog.component.ts: {}
+  src/app/map/components/map-tools/drawing-settings-dialog/drawing-settings-dialog.component.ts: {}
+  src/app/map/components/map-tools/drawing-tools/drawing-tools.component.ts: {}
+  src/app/map/components/map-tools/drawings-import-dialog/drawings-import-dialog.component.ts: {}
+  src/app/map/components/map-tools/map-import/map-import-dialog/map-import-dialog.component.ts: {}
+  src/app/map/components/map-tools/map-import/map-import-display-name/map-import-display-name.component.ts: {}
+  src/app/map/components/map-tools/map-import/map-import-layer-list/map-import-layer-list.component.ts: {}
+  src/app/map/components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component.ts: {}
+  src/app/map/components/map-tools/map-tools-desktop/map-tools-desktop.component.ts: {}
+  src/app/map/components/map-tools/map-tools-mobile/map-tools-mobile.component.ts: {}
+  src/app/map/components/map-tools/map-tools.component.ts: {}
+  src/app/map/components/map-tools/measurement-tools/measurement-tools.component.ts: {}
+  src/app/map/components/map-tools/print-dialog/print-dialog.component.ts: {}
+  src/app/map/components/map-tools/product/product.component.ts: {}
+  src/app/map/components/search-window-mobile/search-window-mobile.component.ts: {}
+  src/app/map/components/search-window/result-groups/result-group/result-group.component.ts: {}
+  src/app/map/components/search-window/result-groups/result-groups.component.ts: {}
+  src/app/map/components/search-window/search-window.component.ts: {}
+  src/app/map/components/share-link-dialog/share-link-dialog.component.ts: {}
+  src/app/map/components/share-link-mobile/share-link-mobile.component.ts: {}
+  src/app/map/components/symbols-drawing-tool-input/symbol-drawing-tool-input.component.ts: {}
+  src/app/map/components/text-drawing-tool-input/text-drawing-tool-input.component.ts: {}
+  src/app/map/components/time-slider/time-slider.component.ts: {}
+  src/app/map/map-page.component.ts: {}
+  src/app/onboarding-guide/components/center-anchor/center-anchor.component.ts: {}
+  src/app/onboarding-guide/components/onboarding-guide/onboarding-guide.component.ts: {}
+  src/app/privacy/privacy-page.component.ts: {}
+  src/app/share-link/components/share-link-redirect/share-link-redirect.component.ts: {}
+  src/app/shared/components/accordion-item/accordion-item.component.ts: {}
+  src/app/shared/components/contact-details/contact-detail/contact-detail.component.ts: {}
+  src/app/shared/components/data-catalogue-overview-item/overview-search-result-item.component.ts: {}
+  src/app/shared/components/descriptive-highlighted-link/descriptive-highlighted-link.component.ts: {}
+  src/app/shared/components/expandable-list-item/expandable-list-item-header/expandable-list-item-header.component.ts: {}
+  src/app/shared/components/external-link-button/external-link-button.component.ts: {}
+  src/app/shared/components/external-link-button/gb2-exit-button.component.ts: {}
+  src/app/shared/components/footer/main-footer.component.ts: {}
+  src/app/shared/components/hero-header/hero-header.component.ts: {}
+  src/app/shared/components/lists/generic-unordered-list/generic-unordered-list.component.ts: {}
+  src/app/shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component.ts: {}
+  src/app/shared/components/lists/link-list/link-list-item/link-list-item.component.ts: {}
+  src/app/shared/components/lists/link-list/link-list.component.ts: {}
+  src/app/shared/components/loading-and-process-bar/loading-and-process-bar.component.ts: {}
+  src/app/shared/components/navbar-mobile/navbar-mobile-dialog/navbar-mobile-dialog.component.ts: {}
+  src/app/shared/components/navbar-mobile/navbar-mobile.component.ts: {}
+  src/app/shared/components/navbar/navbar.component.ts: {}
+  src/app/shared/components/page-notification/page-notification.component.ts: {}
+  src/app/shared/components/resize-handler/resize-handler.component.ts: {}
+  src/app/shared/components/scrollbar-width-calculation/scrollbar-width-calculation.component.ts: {}
+  src/app/shared/components/search-filter-dialog/search-filter-dialog.component.ts: {}
+  src/app/shared/components/search/search-bar/search-bar.component.ts: {}
+  src/app/shared/components/skip-link/skip-link.component.ts: {}
+  src/app/shared/components/slider-wrapper/slider-wrapper.component.ts: {}
+  src/app/shared/components/waiting-page/waiting-page.component.ts: {}
+  src/app/start-page/components/content-loading-state/content-loading-state.component.ts: {}
+  src/app/start-page/components/discover-maps/discover-maps.component.ts: {}
+  src/app/start-page/components/frequently-used-items/frequently-used-items.component.ts: {}
+  src/app/start-page/components/gis-browser-teaser/gis-browser-teaser.component.ts: {}
+  src/app/start-page/components/news-feed/news-feed.component.ts: {}
+  src/app/start-page/components/start-page-search/search-result-entry-map/search-result-entry-map.component.ts: {}
+  src/app/start-page/components/start-page-search/search-result-group/search-result-group.component.ts: {}
+  src/app/start-page/components/start-page-search/search-result-groups/search-result-groups.component.ts: {}
+  src/app/start-page/components/start-page-search/start-page-search.component.ts: {}
+  src/app/start-page/start-page.component.ts: {}
+  src/app/support-page/components/contact/contact.component.ts: {}
+  src/app/support-page/components/faq/faq.component.ts: {}
+  src/app/support-page/components/support-page-navigation/support-page-navigation.component.ts: {}
+  src/app/support-page/components/useful-information/useful-information.component.ts: {}
+  src/app/support-page/support-page.component.ts: {}
+  src/app/terms-of-use/terms-of-use-page.component.ts: {}
+dedicated:
+  src/app/map/components/active-map-items/active-map-items.component.ts:
+    coveredBy:
+      - src/app/map/components/active-map-items/active-map-items.component.spec.ts
+  src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.ts:
+    coveredBy:
+      - src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.spec.ts
+  src/app/map/components/feature-info-overlay/feature-info-overlay.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/feature-info-overlay.component.spec.ts
+  src/app/shared/components/drop-zone/drop-zone.component.ts:
+    coveredBy:
+      - src/app/shared/components/drop-zone/drop-zone.component.spec.ts
+  src/app/shared/components/expandable-list-item/expandable-list-item.component.ts:
+    coveredBy:
+      - src/app/shared/components/expandable-list-item/expandable-list-item.component.spec.ts
+  src/app/shared/components/page-section/page-section.component.ts:
+    coveredBy:
+      - src/app/shared/components/page-section/page-section.component.spec.ts
+  src/app/shared/components/search/search-input.component.ts:
+    coveredBy:
+      - src/app/shared/components/search/search-input.component.spec.ts
+host:
+  src/app/data-catalogue/data-catalogue-page.component.ts:
+    hostedBy:
+      - src/app/data-catalogue/data-catalogue.routes.ts
+    reason: Empty routing shell; verify its routed content instead.
+  src/app/error-handling/components/not-found-error-page/not-found-error-page.component.ts:
+    hostedBy:
+      - src/app/app.routes.ts
+    reason: Static route content; verify it through routing or page-level coverage.
+  src/app/map/components/disable-overscroll-behaviour/disable-overscroll-behaviour.component.ts:
+    hostedBy:
+      - src/app/map/map-page.component.ts
+    reason: Styling-only child with no component behavior.
+  src/app/map/components/notification-indicator/notification-indicator.component.ts:
+    hostedBy:
+      - src/app/map/components/active-map-items/active-map-items.component.ts
+      - src/app/map/components/map-management-mobile/map-management-mobile.component.ts
+    reason: Styling-only child with no component behavior.
+  src/app/privacy/components/privacy-content/privacy-content.component.ts:
+    hostedBy:
+      - src/app/privacy/privacy-page.component.ts
+    reason: Static content verified through the containing page.
+  src/app/shared/components/contact-details/contact-details.component.ts:
+    hostedBy:
+      - src/app/shared/components/footer/main-footer.component.ts
+    reason: Static composition verified through its containing component.
+  src/app/shared/components/lists/link-grid-list/link-grid-list.component.ts:
+    hostedBy:
+      - src/app/apps-page/apps-page.component.ts
+      - src/app/start-page/components/discover-maps/discover-maps.component.ts
+      - src/app/start-page/components/news-feed/news-feed.component.ts
+    reason: Empty projection shell verified through its consumers.
+  src/app/terms-of-use/components/terms-of-use-geodata-and-maps/terms-of-use-geodata-and-maps.component.ts:
+    hostedBy:
+      - src/app/terms-of-use/terms-of-use-page.component.ts
+    reason: Static content verified through the containing page.
+  src/app/terms-of-use/components/usage-rules/usage-rules.component.ts:
+    hostedBy:
+      - src/app/terms-of-use/terms-of-use-page.component.ts
+    reason: Static content verified through the containing page.
+e2e:
+  src/app/embedded-page/embedded-map-page.component.ts:
+    coveredBy:
+      - e2e/specs/open-map-with-url.spec.ts
+    reason: Requires real iframe and browser lifecycle behavior.
+abstract:
+  src/app/data-catalogue/components/abstract-base-detail/abstract-base-detail.component.ts:
+    implementedBy:
+      - src/app/data-catalogue/components/dataset-detail/dataset-detail.component.ts
+      - src/app/data-catalogue/components/map-detail/map-detail.component.ts
+      - src/app/data-catalogue/components/product-detail/product-detail.component.ts
+      - src/app/data-catalogue/components/service-detail/service-detail.component.ts
+    reason: Exercise the shared contract through concrete detail components.
+  src/app/map/components/map-tools/abstract-tools/abstract-tools.component.ts:
+    implementedBy:
+      - src/app/map/components/map-tools/data-download-selection-tools/data-download-selection-tools.component.ts
+      - src/app/map/components/map-tools/drawing-tools/drawing-tools.component.ts
+      - src/app/map/components/map-tools/measurement-tools/measurement-tools.component.ts
+    reason: Empty-template base component exercised through concrete tool containers.
+  src/app/shared/components/search/base-search-container/base-search-container.component.ts:
+    implementedBy:
+      - src/app/map/components/search-window/search-window.component.ts
+      - src/app/start-page/components/start-page-search/start-page-search.component.ts
+    reason: Exercise keyboard navigation through concrete search containers.
