@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {FormControl, FormsModule} from '@angular/forms';
 import {FavouritesService} from '../../services/favourites.service';
@@ -17,6 +17,7 @@ import {form, minLength, pattern, required, FormField} from '@angular/forms/sign
   selector: 'favourite-creation-dialog',
   templateUrl: './favourite-creation-dialog.component.html',
   styleUrls: ['./favourite-creation-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, MatFormField, MatLabel, MatInput, FormsModule, MatError, MatButton, FormField],
 })
 export class FavouriteCreationDialogComponent implements HasSavingStateSingal {

@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {LegendDisplay} from '../../../../shared/interfaces/legend.interface';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
@@ -10,6 +10,7 @@ import {LegendContentComponent} from '../legend-content/legend-content.component
   selector: 'legend-item',
   templateUrl: './legend-item.component.html',
   styleUrls: ['./legend-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapOverlayListItemComponent, MatIcon, NgTemplateOutlet, LegendContentComponent],
 })
 export class LegendItemComponent {

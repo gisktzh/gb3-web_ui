@@ -1,4 +1,4 @@
-import {Component, computed, inject, input} from '@angular/core';
+import {Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 import {MatDivider} from '@angular/material/divider';
@@ -14,6 +14,7 @@ import {MatRipple} from '@angular/material/core';
   selector: 'overview-search-result-item',
   templateUrl: './overview-search-result-item.component.html',
   styleUrls: ['./overview-search-result-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterModule, MatIcon, MatDivider, MatButtonModule, MatTooltip, NgTemplateOutlet, MatRipple],
 })
 export class OverviewSearchResultItemComponent {

@@ -1,4 +1,4 @@
-import {Component, input, inject} from '@angular/core';
+import {Component, input, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {LegendDisplay} from 'src/app/shared/interfaces/legend.interface';
 import {selectLoadingState} from 'src/app/state/map/reducers/legend.reducer';
@@ -10,6 +10,7 @@ import {LegendItemComponent} from '../legend-item/legend-item.component';
   selector: 'legend',
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LoadingAndProcessBarComponent, LegendItemComponent],
 })
 export class LegendComponent {

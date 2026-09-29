@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -9,6 +10,7 @@
  * ---------------------------------------------------------------
  */
 
+/** Manually added **/
 import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
 import {ReportOrientation, ReportType} from '../interfaces/print.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
@@ -71,7 +73,7 @@ export interface ErrorObject {
   code?: string;
   /** A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization. */
   title?: string;
-  /** A human-readable explanation specific to this occurrence of the problem. Like title, this field’s value can be localized. */
+  /** A human-readable explanation specific to this occurrence of the problem. Like title, this field value can be localized. */
   detail?: string;
   /** An object containing references to the source of the error, optionally including any of the following members: pointer, parameter, header */
   source?: {
@@ -157,7 +159,6 @@ export interface General {
       municipality_name: string;
       oereb_extract: LinkObject | null;
       owner: LinkObject | null;
-      // IMPORTANT: The nullability is added manually due to this bug: https://github.com/acacode/swagger-typescript-api/issues/533
     } | null;
   };
 }
@@ -310,6 +311,83 @@ export interface Municipality {
   };
 }
 
+export interface OerebFeature {
+  oereb_info: {
+    /** name of the affected municipality */
+    municipality_name: string;
+    /** fso number (BFS code) of the affected municipality */
+    municipality_code: number;
+    /**
+     * identification number of the parcel
+     * @maxLength 12
+     */
+    parcel_number: string;
+    /**
+     * federal property identifier
+     * @maxLength 14
+     */
+    egrid: string;
+    /** link to the cadastral processing organization */
+    kbo: LinkObject;
+    /** link to the E-Mail address of the surveyor organization */
+    surveyor: LinkObject;
+    /** URL for the static extract */
+    static_extract_url: string;
+    /** list of themes which their restrictions are affected by this parcel */
+    concerned_themes: {
+      /** name of the not concerned theme */
+      name: string;
+      /** artificial identification number of the theme */
+      id: number;
+      /** list of restrictions for this theme */
+      restrictions: {
+        /** name of the current restriction */
+        name: string;
+        /** artificial identification number of the restriction */
+        id: number;
+        /** symbol image for the current restriction */
+        illustration_url?: Image;
+        /** concrete measurment for this restriction */
+        measurement:
+          | {
+              /**
+               * percentage of the area for the current restriction
+               * @min 0
+               * @max 999999999
+               */
+              area_m2: number;
+              /**
+               * restriction area in square meters
+               * @min 0
+               * @max 1
+               */
+              percentage: number;
+            }
+          | {
+              /** length of a concerned restriction line */
+              line_length: number;
+            }
+          | {
+              /** number of points of the concerned restriction */
+              points_count: number;
+            };
+      }[];
+      /** list of legal provision documents for this theme */
+      legal_provisions: LinkObject[];
+      /** list of law documents for this theme */
+      laws: LinkObject[];
+      /** list of hint documents for this theme */
+      hints: LinkObject[];
+      /** list of responsible offices for this theme */
+      responsible_offices: LinkObject[];
+    }[];
+    /** list of themes which their restrictions are not affected by this parcel */
+    not_concerned_themes: NotConcernedTheme[];
+    /** list of themes which their restrictions are not affected by this parcel */
+    not_available_themes: NotConcernedTheme[];
+  };
+}
+
 export interface PersonalFavorite {
   /** UUID of the favorite */
   id: string;
@@ -365,34 +443,34 @@ export interface PersonalFavoriteNew {
 
 export interface PrintCapabilities {
   /** Root object for print capabilities */
-  print?: {
+  print: {
     /** Possible file types for printing */
-    formats?: string[];
+    formats: string[];
     /** Accepted DPI values */
-    dpis?: number[];
+    dpis: number[];
     /** List of reports and their map sizes */
-    reports?: {
+    reports: {
       /** Name of the report */
-      name?: string;
+      name: string;
       /** Size of the map in this report */
-      map?: {
-        width?: number;
-        height?: number;
+      map: {
+        width: number;
+        height: number;
       };
     }[];
     /** List of valid print settings combinations, old implementation */
-    valid_combinations?: {
+    valid_combinations: {
       /** Paper size plus orientation, space separated */
-      report?: string;
+      report: string;
       /** If the legend should be rendered as well */
-      show_legend?: boolean;
+      show_legend: boolean;
       /** DPI of the printed map */
-      dpi?: number;
+      dpi: number;
       /** File type */
-      format?: string;
+      format: string;
     }[];
     /** List of valid print settings combinations */
-    valid_combinations_machine_readable?: PrintCapabilitiesCombination[];
+    valid_combinations_machine_readable: PrintCapabilitiesCombination[];
   };
 }
 
@@ -700,23 +778,25 @@ export interface Topics {
             date: string;
           }[];
         };
-      };
+      } | null;
       /** Filters Settings */
-      filterConfigurations: {
-        /** display name of the filter, which is used as a title for the filter options */
-        name: string;
-        /** additional description for the current filter */
-        description?: string | null;
-        /** name of the parameter which contains the filter values */
-        parameter: string;
-        /** a list of data (name/value pair) to filter by */
-        filterValues: {
-          /** name of the filter that is displayed in the UI */
-          name: string;
-          /** a list containing the values to be filtered */
-          values: (string | number)[];
-        }[];
-      }[];
+      filterConfigurations:
+        | {
+            /** display name of the filter, which is used as a title for the filter options */
+            name: string;
+            /** additional description for the current filter */
+            description?: string | null;
+            /** name of the parameter which contains the filter values */
+            parameter: string;
+            /** a list of data (name/value pair) to filter by */
+            filterValues: {
+              /** name of the filter that is displayed in the UI */
+              name: string;
+              /** a list containing the values to be filtered */
+              values: (string | number)[];
+            }[];
+          }[]
+        | null;
       /** Search Settings */
       searchConfigurations:
         | {
@@ -979,6 +1059,12 @@ export type FavoriteDrawings = VectorLayer;
 
 export type FavoriteMeasurements = VectorLayer;
 
+/**
+ * Binary file reference as used in multipart forms for uploading a single file
+ * @format binary
+ */
+export type File = File;
+
 export interface GenericGeojsonFeature {
   /** GeoJSON Feature */
   type: 'Feature';
@@ -1005,11 +1091,11 @@ export interface GeojsonFeature {
     /**
      * UUID of the given feature
      */
-    id: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
+    id: string;
     /**
      * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
      */
-    belongsTo?: string; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
+    belongsTo?: string;
     /**
      * Reference to style ID in 'styles'
      * @example "a"
@@ -1024,7 +1110,7 @@ export interface GeojsonFeature {
      * The tool used to draw the feature
      * @example "polygon"
      */
-    tool: SupportedEsriTool; // todo: specify API interface to expect these properties; see https://are-zh.atlassian.net/browse/GB3-825
+    tool: SupportedEsriTool;
   };
   /** GeoJSON geometry object */
   geometry: Geometry;
@@ -1115,19 +1201,19 @@ export type InfoFeatureField =
       type: 'date';
     };
 
-/** A link MUST be represented as either: a string containing the link’s URL or a link object. */
+/** A link MUST be represented as either: a string containing the link URL or a link object. */
 export type Link = LinkObject | string | null;
 
 export interface LinkObject {
-  /** A string whose value is a URI-reference https://datatracker.ietf.org/doc/html/rfc3986#section-4.1 pointing to the link’s target. */
+  /** A string whose value is a URI-reference https://datatracker.ietf.org/doc/html/rfc3986#section-4.1 pointing to the link target. */
   href: string;
-  /** A string indicating the link’s relation type. The string MUST be a valid link relation type. */
+  /** A string indicating the link relation type. The string MUST be a valid link relation type. */
   rel?: string;
   /** A link that leads to further information about this link. */
   describedby?: LinkObject;
   /** A string containing a human-readable description of the link. */
   title?: string;
-  /** A string or an array of strings indicating the language(s) of the link’s target. An array of strings indicates that the link’s target is available in multiple languages. Each string MUST be a valid language tag https://datatracker.ietf.org/doc/html/rfc5646. */
+  /** A string or an array of strings indicating the language(s) of the link target. An array of strings indicates that the link target is available in multiple languages. Each string MUST be a valid language tag https://datatracker.ietf.org/doc/html/rfc5646. */
   hreflang?: string;
   /** A meta object containing non-standard meta-information about the link. */
   meta?: object;
@@ -1187,6 +1273,27 @@ export interface MunicipalityItem {
   /** Municipality name */
   name: string;
 }
+
+/** list of themes which their restrictions are not affected by this parcel */
+export type NotConcernedTheme = {
+  /** name of the not concerned theme */
+  name: string;
+  /** artificial identification number of the theme */
+  id: number;
+  /** additional information whether the theme is not applicable to this parcel or other hints */
+  hints: (
+    | {
+        /** textual information of the hint */
+        title: string;
+      }
+    | {
+        /** textual information of the hint */
+        title: string;
+        /** URL for external source of information */
+        href: string;
+      }
+  )[];
+};
 
 export interface Product {
   /** Product UUID */
@@ -1391,14 +1498,14 @@ export type VectorLayerStyles = {
     labelYOffset?: string;
     /** Geometry type of the drawing (point, line, polygon, text or symbol) */
     type?: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
-    /** Size of the given symbol */
+    /** Size of the symbol used in map units, if any */
     symbolSize?: number;
-    /** Rotation of the given symbol */
+    /** Rotation of the symbol in degrees, if any */
     symbolRotation?: number;
-    /** The given symbol as in JSON format */
+    /** JSON representation of the used symbol, if any */
     drawingSymbolDefinition: ReturnType<DrawingSymbolDefinition['toJSON']>;
   };
-};
+} | null;
 
 /** Vector layer without styles */
 export interface VectorLayerWithoutStyles {
@@ -1424,11 +1531,11 @@ export type ImportKmlCreateData = VectorLayer;
 
 export type ExportKmlCreateData = any;
 
-export type TopicsFeatureInfoDetailData = Feature;
+export type TopicsFeatureInfoListData = Feature;
 
 export type GeneralInfoListData = General;
 
-export type TopicsLegendDetailData = Legend;
+export type TopicsLegendListData = Legend;
 
 export type MetadataDatasetsListData = MetadataDatasets;
 

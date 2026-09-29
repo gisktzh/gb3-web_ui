@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {GeneralInfoResponse} from '../../../../shared/interfaces/general-info.interface';
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from '@angular/material/expansion';
 import {MatIcon} from '@angular/material/icon';
@@ -13,6 +13,7 @@ import {DecimalPipe} from '@angular/common';
   selector: 'feature-info-general-information',
   templateUrl: './feature-info-general-information.component.html',
   styleUrls: ['./feature-info-general-information.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

@@ -1,4 +1,4 @@
-import {Component, input, output} from '@angular/core';
+import {Component, input, output, ChangeDetectionStrategy} from '@angular/core';
 import {SkipLink} from '../../types/skip-link.type';
 import {SkipLinkTemplateVariable} from '../../enums/skip-link-template-variable.enum';
 
@@ -6,6 +6,7 @@ import {SkipLinkTemplateVariable} from '../../enums/skip-link-template-variable.
   selector: 'skip-link',
   templateUrl: './skip-link.component.html',
   styleUrl: './skip-link.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [],
 })
 export class SkipLinkComponent {

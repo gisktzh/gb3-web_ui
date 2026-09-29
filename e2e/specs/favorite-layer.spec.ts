@@ -10,6 +10,8 @@ test.describe('Favorites layers', () => {
     useHar,
     captureConsole,
   }) => {
+    test.slow();
+
     captureConsole();
     await useHar();
 
@@ -29,19 +31,26 @@ test.describe('Favorites layers', () => {
     await clickMapInTheList('AWA-Standorte');
 
     // Add favorite
-    const starIcon = page.locator('mat-icon[svgicon="ktzh_star"]');
-    await starIcon.scrollIntoViewIfNeeded();
-    await starIcon.click({force: true});
+    const favouriteButton = page.locator('active-map-items button:has(mat-icon[svgicon="ktzh_star"])');
+    await favouriteButton.scrollIntoViewIfNeeded();
+    // The button is only enabled once the authentication state and the active map items have been propagated.
+    await expect(favouriteButton).toBeEnabled();
+    await favouriteButton.click();
 
     const favoriteTitle = 'MyTestFavorite';
 
-    const nameInput = page.locator('input#name');
+    const favouriteDialog = page.locator('favourite-creation-dialog');
+    await expect(favouriteDialog).toBeVisible();
+
+    const nameInput = favouriteDialog.locator('input#name');
+    await expect(nameInput).toBeVisible();
     await nameInput.fill(favoriteTitle);
 
-    const saveButton = page.locator('span', {hasText: 'Speichern'});
-    await saveButton.scrollIntoViewIfNeeded();
-    await saveButton.click({force: true});
+    const saveButton = favouriteDialog.getByRole('button', {name: 'Speichern'});
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
 
+    await expect(favouriteDialog).toBeHidden();
     await page.waitForLoadState('networkidle');
 
     // Wait until favorite appears in the list
@@ -52,8 +61,11 @@ test.describe('Favorites layers', () => {
     // Delete favorite
     const deleteButton = favoriteItem.locator('//following-sibling::button');
     await deleteButton.click();
-    const confirmDelete = page.locator('span', {hasText: 'Löschen'});
+    const deletionDialog = page.locator('app-favourite-deletion-dialog');
+    await expect(deletionDialog).toBeVisible();
+    const confirmDelete = deletionDialog.getByRole('button', {name: 'Löschen'});
     await confirmDelete.click();
+    await expect(deletionDialog).toBeHidden();
 
     // Assert deletion
     await selectTopic('Favoriten');

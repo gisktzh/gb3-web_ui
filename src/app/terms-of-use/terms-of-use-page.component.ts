@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {PageSectionComponent} from '../shared/components/page-section/page-section.component';
@@ -13,6 +13,7 @@ const TERMS_OF_USE_SUMMARY =
   selector: 'terms-of-use-page',
   templateUrl: './terms-of-use-page.component.html',
   styleUrls: ['./terms-of-use-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PageSectionComponent, HeroHeaderComponent, UsageRulesComponent, TermsOfUseGeodataAndMapsComponent],
 })
 export class TermsOfUsePageComponent {

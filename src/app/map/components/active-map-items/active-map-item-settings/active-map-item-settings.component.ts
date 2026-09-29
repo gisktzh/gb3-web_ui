@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, input, linkedSignal} from '@angular/core';
+import {Component, computed, effect, inject, input, linkedSignal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {isActiveMapItemOfType} from '../../../../shared/type-guards/active-map-item-type.type-guard';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
@@ -21,6 +21,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'active-map-item-settings',
   templateUrl: './active-map-item-settings.component.html',
   styleUrls: ['./active-map-item-settings.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SliderWrapperComponent, MatSlider, MatSliderThumb, FormsModule, MatDivider, TimeSliderComponent, MatBadge, MatButton, MatIcon],
 })
 export class ActiveMapItemSettingsComponent {

@@ -1,4 +1,4 @@
-import {Component, effect, inject} from '@angular/core';
+import {Component, effect, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
@@ -11,6 +11,7 @@ import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-at
   selector: 'map-attribute-filter',
   templateUrl: './map-attribute-filter.component.html',
   styleUrls: ['./map-attribute-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SharedModule],
 })
 export class MapAttributeFilterComponent {

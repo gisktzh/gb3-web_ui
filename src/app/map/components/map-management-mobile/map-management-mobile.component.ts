@@ -1,4 +1,4 @@
-import {Component, OnDestroy, computed, inject, signal} from '@angular/core';
+import {Component, OnDestroy, computed, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {isActiveMapItemOfType} from 'src/app/shared/type-guards/active-map-item-type.type-guard';
 import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.reducer';
@@ -31,6 +31,7 @@ const FAVOURITE_HELPER_MESSAGES = {
   selector: 'map-management-mobile',
   templateUrl: './map-management-mobile.component.html',
   styleUrls: ['./map-management-mobile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatButton,
     MatBadge,

@@ -22,21 +22,21 @@ import {TimeExtent} from '../../../../map/interfaces/time-extent.interface';
 import {
   Geometry,
   InfoFeatureField,
-  TopicsFeatureInfoDetailData,
-  TopicsLegendDetailData,
+  TopicsFeatureInfoListData,
+  TopicsLegendListData,
   TopicsListData,
 } from '../../../models/gb3-api-generated.interfaces';
 import {Gb3ApiService} from './gb3-api.service';
-
 import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
-import {formatFeatureInfoFieldValue} from '../../../utils/feature-info-field.utils';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
+
+type TopicTimeSliderConfig = NonNullable<TopicsListData['categories'][number]['topics'][number]['timesliderConfiguration']>;
 
 @Injectable({
   providedIn: 'root',
@@ -61,8 +61,8 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   public loadLegends(queryTopics: QueryTopic[]): Observable<LegendResponse[]> {
     const legendRequests = queryTopics.map((queryTopic) =>
-      this.get<TopicsLegendDetailData>(this.createLegendUrl(queryTopic)).pipe(
-        map((data) => this.mapTopicsLegendDetailDataToLegendResponse(data, queryTopic.isSingleLayer)),
+      this.get<TopicsLegendListData>(this.createLegendUrl(queryTopic)).pipe(
+        map((data) => this.mapTopicsLegendDetailDataToLegendListData(data, queryTopic.isSingleLayer)),
       ),
     );
     return forkJoin(legendRequests);
@@ -70,7 +70,7 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   public loadFeatureInfos(x: number, y: number, scale: number, queryTopics: QueryTopic[]): Observable<FeatureInfoResponse[]> {
     const featureInfoRequests = queryTopics.map((queryTopic) =>
-      this.get<TopicsFeatureInfoDetailData>(
+      this.get<TopicsFeatureInfoListData>(
         this.createFeatureInfoUrl(
           queryTopic.topic,
           x,
@@ -81,7 +81,7 @@ export class Gb3TopicsService extends Gb3ApiService {
           queryTopic.timeSliderConfiguration,
           queryTopic.timeSliderExtent,
         ),
-      ).pipe(map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data, queryTopic.isSingleLayer))),
+      ).pipe(map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoListData(data, queryTopic.isSingleLayer))),
     );
     return forkJoin(featureInfoRequests);
   }
@@ -116,13 +116,10 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   /**
-   * Maps the generic TopicsLegendDetailData type from the API endpoint to the internal interface LegendResponse
+   * Maps the generic TopicsLegendListData type from the API endpoint to the internal interface LegendResponse
    */
-  private mapTopicsLegendDetailDataToLegendResponse(
-    topicsLegendDetailData: TopicsLegendDetailData,
-    isSingleLayer: boolean,
-  ): LegendResponse {
-    const {legend} = topicsLegendDetailData;
+  private mapTopicsLegendDetailDataToLegendListData(topicsLegendListData: TopicsLegendListData, isSingleLayer: boolean): LegendResponse {
+    const {legend} = topicsLegendListData;
 
     return {
       legend: {
@@ -192,23 +189,21 @@ export class Gb3TopicsService extends Gb3ApiService {
                 permissionMissing: topic.permission_missing,
                 opacity: topic.opacity,
                 layers: topic.layers
-                  .map(
-                    (layer): MapLayer => ({
-                      id: layer.id,
-                      layer: layer.layer,
-                      title: layer.title,
-                      queryable: layer.queryable,
-                      uuid: layer.geolion_geodatensatz_uuid,
-                      groupTitle: layer.group_title,
-                      minScale: layer.min_scale,
-                      maxScale: layer.max_scale,
-                      wmsSort: layer.wms_sort,
-                      tocSort: layer.toc_sort,
-                      permissionMissing: layer.permission_missing,
-                      visible: layer.initially_visible,
-                      isHidden: false,
-                    }),
-                  )
+                  .map((layer): MapLayer => ({
+                    id: layer.id,
+                    layer: layer.layer,
+                    title: layer.title,
+                    queryable: layer.queryable,
+                    uuid: layer.geolion_geodatensatz_uuid,
+                    groupTitle: layer.group_title,
+                    minScale: layer.min_scale,
+                    maxScale: layer.max_scale,
+                    wmsSort: layer.wms_sort,
+                    tocSort: layer.toc_sort,
+                    permissionMissing: layer.permission_missing,
+                    visible: layer.initially_visible,
+                    isHidden: false,
+                  }))
                   .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted
                 // to the order of the WMS specifications
                 ...this.handleTimeSliderConfiguration(topic.timesliderConfiguration),
@@ -217,13 +212,11 @@ export class Gb3TopicsService extends Gb3ApiService {
                     name: filterConfiguration.name,
                     description: filterConfiguration.description,
                     parameter: filterConfiguration.parameter,
-                    filterValues: filterConfiguration.filterValues.map(
-                      (filterValue): FilterValue => ({
-                        isActive: false,
-                        values: filterValue.values,
-                        name: filterValue.name,
-                      }),
-                    ),
+                    filterValues: filterConfiguration.filterValues.map((filterValue): FilterValue => ({
+                      isActive: false,
+                      values: filterValue.values,
+                      name: filterValue.name,
+                    })),
                   };
                 }),
                 searchConfigurations: topic.searchConfigurations ?? undefined,
@@ -242,9 +235,7 @@ export class Gb3TopicsService extends Gb3ApiService {
     return topicsResponse;
   }
 
-  private handleTimeSliderConfiguration(
-    timesliderConfiguration: TopicsListData['categories'][0]['topics'][0]['timesliderConfiguration'] | undefined,
-  ): TimeSliderSettings {
+  private handleTimeSliderConfiguration(timesliderConfiguration: TopicTimeSliderConfig | undefined | null): TimeSliderSettings {
     if (!timesliderConfiguration) {
       return {
         timeSliderConfiguration: undefined,
@@ -271,7 +262,7 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   private transformTimeSliderConfigurationSource(
     // the following typing for `source` is used to extract a subtype of the generated interface `TopicsListData`
-    source: TopicsListData['categories'][0]['topics'][0]['timesliderConfiguration']['source'],
+    source: TopicTimeSliderConfig['source'],
     sourceType: string,
   ): TimeSliderParameterSource | TimeSliderLayerSource {
     const timeSliderSourceType: TimeSliderSourceType = sourceType as TimeSliderSourceType;
@@ -355,13 +346,13 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   /**
-   * Maps the generic TopicsFeatureInfoDetailData type from the API endpoint to the internal interface FeatureInfoResponse
+   * Maps the generic TopicsFeatureInfoListData type from the API endpoint to the internal interface FeatureInfoResponse
    */
-  private mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(
-    topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData,
+  private mapTopicsFeatureInfoDetailDataToFeatureInfoListData(
+    topicsFeatureInfoListData: TopicsFeatureInfoListData,
     isSingleLayer: boolean,
   ): FeatureInfoResponse {
-    const {feature_info: featureInfo} = topicsFeatureInfoDetailData;
+    const {feature_info: featureInfo} = topicsFeatureInfoListData;
 
     return {
       featureInfo: {
@@ -419,11 +410,14 @@ export class Gb3TopicsService extends Gb3ApiService {
         };
 
       case 'text':
-      case 'date':
         return {
-          ...field,
-          value: formatFeatureInfoFieldValue(field.value, field.type),
+          type: field.type,
+          value: typeof field.value === 'number' ? field.value.toString() : field.value,
+          label: field.label,
         };
+
+      case 'date':
+        return field;
     }
   }
 }

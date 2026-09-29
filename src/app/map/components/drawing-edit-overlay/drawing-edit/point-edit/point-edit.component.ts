@@ -1,4 +1,4 @@
-import {Component, effect, linkedSignal, model} from '@angular/core';
+import {Component, effect, linkedSignal, model, ChangeDetectionStrategy} from '@angular/core';
 import {Gb3PointStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {SliderEditComponent} from '../slider-edit/slider-edit.component';
 import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.component';
@@ -18,6 +18,7 @@ const DEFAULT_DATA = {
   selector: 'point-edit',
   templateUrl: './point-edit.component.html',
   styleUrl: './point-edit.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SliderEditComponent, ColorPickerEditComponent, MatDivider, FormField],
 })
 export class PointEditComponent {

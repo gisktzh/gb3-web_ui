@@ -88,6 +88,10 @@ export class CanonicalizedRedactedRequest implements Request {
     return this.originalRequest.response();
   }
 
+  public existingResponse(): null | Response {
+    return this.originalRequest.existingResponse();
+  }
+
   public serviceWorker(): null | Worker {
     return this.originalRequest.serviceWorker();
   }

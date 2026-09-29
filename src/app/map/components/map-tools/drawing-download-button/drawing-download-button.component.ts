@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatIcon} from '@angular/material/icon';
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
@@ -12,6 +12,7 @@ import {MatDialog} from '@angular/material/dialog';
   selector: 'drawing-download-button',
   imports: [MatIcon, MatTooltip, MatIconButton],
   templateUrl: './drawing-download-button.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './drawing-download-button.component.scss',
 })
 export class DrawingDownloadButtonComponent {

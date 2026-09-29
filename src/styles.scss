@@ -4,13 +4,6 @@
 @use 'overrides/esri-overrides';
 @use 'overrides/material-overrides';
 
-/*
-  Import the ArcGIS theme explicitly by using `import` instead of `use` to
-  avoid the following error after upgrading to Angular 18:
-    Could not resolve "../base/icons/fonts/CalciteWebCoreIcons.woff?qt9ftt"
- */
-@import '@arcgis/core/assets/esri/themes/light/main.css';
-
 body {
   margin: 0;
 }

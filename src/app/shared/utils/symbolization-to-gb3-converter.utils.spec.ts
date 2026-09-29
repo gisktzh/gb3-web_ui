@@ -1,7 +1,7 @@
 import {Gb3StyledInternalDrawingRepresentation, Gb3StyleRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from './symbolization-to-gb3-converter.utils';
-import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
+import {Gb3VectorLayer, Gb3VectorLayerStyle} from '../interfaces/gb3-vector-layer.interface';
 import {MapConstants} from '../constants/map.constants';
 import {TestBed} from '@angular/core/testing';
 import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
@@ -13,6 +13,16 @@ import {HasSrs} from '../interfaces/geojson-types-with-srs.interface';
 
 describe('SymbolizationToGb3ConverterUtils', () => {
   let utils: SymbolizationToGb3ConverterUtils;
+  const getStyleFromConvertedLayer = (layer: Gb3VectorLayer): Gb3VectorLayerStyle => {
+    if (!layer.styles) {
+      throw new Error('Expected styles to be defined.');
+    }
+    const style = layer.styles[layer.geojson.features[0].properties.style];
+    if (!style) {
+      throw new Error('Expected style entry to be defined.');
+    }
+    return style;
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -94,11 +104,11 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         height: 100,
       });
 
-      const actualStyle = actual.styles[actual.geojson.features[0].properties.style];
+      const actualStyle = getStyleFromConvertedLayer(actual);
 
-      expect(actualStyle.externalGraphic).toEqual(mockSVGString);
+      expect(actualStyle['externalGraphic']).toEqual(mockSVGString);
       // This value has been pre-calculated.
-      expect(actualStyle.pointRadius).toBe(50);
+      expect(actualStyle['pointRadius']).toBe(50);
       expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 100);
     });
 
@@ -137,11 +147,11 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         height: 100,
       });
 
-      const actualStyle = actual.styles[actual.geojson.features[0].properties.style];
+      const actualStyle = getStyleFromConvertedLayer(actual);
 
-      expect(actualStyle.externalGraphic).toEqual(mockSVGString);
+      expect(actualStyle['externalGraphic']).toEqual(mockSVGString);
       // This value has been pre-calculated.
-      expect(actualStyle.pointRadius).toBe(70.71067811865476);
+      expect(actualStyle['pointRadius']).toBe(70.71067811865476);
       expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 70.71067811865476 * 2);
     });
 
@@ -180,11 +190,11 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         height: 100,
       });
 
-      const actualStyle = actual.styles[actual.geojson.features[0].properties.style];
+      const actualStyle = getStyleFromConvertedLayer(actual);
 
-      expect(actualStyle.externalGraphic).toEqual(mockSVGString);
+      expect(actualStyle['externalGraphic']).toEqual(mockSVGString);
       // This value has been pre-calculated.
-      expect(actualStyle.pointRadius).toBe(64.08563820557886);
+      expect(actualStyle['pointRadius']).toBe(64.08563820557886);
       expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 64.08563820557886 * 2);
     });
 
@@ -223,11 +233,11 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         height: 100,
       });
 
-      const actualStyle = actual.styles[actual.geojson.features[0].properties.style];
+      const actualStyle = getStyleFromConvertedLayer(actual);
 
-      expect(actualStyle.externalGraphic).toEqual(mockSVGString);
+      expect(actualStyle['externalGraphic']).toEqual(mockSVGString);
       // This value has been pre-calculated.
-      expect(actualStyle.pointRadius).toBe(64.08563820557886);
+      expect(actualStyle['pointRadius']).toBe(64.08563820557886);
       expect(mapDrawingSymbolFromJSONSpy).toHaveBeenCalledWith(mockSymbolDescriptor, 64.08563820557886 * 2);
     });
   });

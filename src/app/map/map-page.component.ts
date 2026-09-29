@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, computed, inject, OnInit, signal} from '@angular/core';
+import {AfterViewInit, Component, computed, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ONBOARDING_STEPS, OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {Store} from '@ngrx/store';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
@@ -33,6 +33,7 @@ import {OnboardingGuideComponent} from '../onboarding-guide/components/onboardin
 import {CenterAnchorComponent} from '../onboarding-guide/components/center-anchor/center-anchor.component';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
+import {NgTemplateOutlet} from '@angular/common';
 
 @Component({
   selector: 'map-page',
@@ -69,7 +70,9 @@ import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
     MapContainerComponent,
     OnboardingGuideComponent,
     CenterAnchorComponent,
+    NgTemplateOutlet,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '(window:keydown.esc)': 'closeSideDrawer()',
   },
@@ -86,6 +89,11 @@ export class MapPageComponent implements AfterViewInit, OnInit {
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
   public readonly rotation = this.store.selectSignal(selectRotation);
+  public readonly sideBarWidth = computed(() => this.mapUiState().sideBarWidth);
+  public readonly isSideBarOverlayVisible = computed(() => {
+    const mapUiState = this.mapUiState();
+    return mapUiState.isFeatureInfoOverlayVisible || mapUiState.isElevationProfileOverlayVisible || mapUiState.isDrawingEditOverlayVisible;
+  });
 
   public ngOnInit() {
     if (!this.mapConfigState().predefinedInitialExtent) {
@@ -118,6 +126,10 @@ export class MapPageComponent implements AfterViewInit, OnInit {
 
   public setIsMapDataCatalogueMinimized(isMinimized: boolean) {
     this.isMapDataCatalogueMinimized.set(isMinimized);
+  }
+
+  public setSideBarWidth(width: number) {
+    this.store.dispatch(MapUiActions.setSideBarWidth({width}));
   }
 
   public closeSideDrawer() {

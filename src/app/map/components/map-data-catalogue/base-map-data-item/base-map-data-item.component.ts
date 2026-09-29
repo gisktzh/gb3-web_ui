@@ -1,4 +1,4 @@
-import {Component, computed, input, output, signal, Signal, WritableSignal} from '@angular/core';
+import {Component, computed, input, output, signal, Signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
@@ -21,6 +21,7 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
   // no selector here as it is a base component
   templateUrl: './base-map-data-item.component.html',
   styleUrls: ['./base-map-data-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

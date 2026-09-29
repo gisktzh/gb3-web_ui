@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, viewChild} from '@angular/core';
+import {Component, computed, effect, inject, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {ConfigService} from '../../../shared/services/config.service';
 import {SearchActions} from '../../../state/app/actions/search.actions';
@@ -12,6 +12,7 @@ import {SearchBarComponent} from '../../../shared/components/search/search-bar/s
   selector: 'search-window',
   templateUrl: './search-window.component.html',
   styleUrls: ['./search-window.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SearchBarComponent, ResultGroupsComponent],
 })
 export class SearchWindowComponent extends BaseSearchContainerComponent {

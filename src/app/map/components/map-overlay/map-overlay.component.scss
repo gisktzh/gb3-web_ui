@@ -2,6 +2,11 @@
 @use 'variables/z-index-variables' as z-index-variables;
 @use 'variables/map-layout-variables' as map-layout-variables;
 
+:host {
+  // the host must not introduce a box of its own, otherwise the card cannot resolve its height against the surrounding container
+  display: contents;
+}
+
 .map-overlay {
   height: 100%;
   border-radius: 0;
@@ -12,8 +17,9 @@
   width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$map-overlay-width-adjustment});
 
   &.map-overlay--right {
-    left: unset;
-    right: 0;
+    // fills the height of the side bar column while its width stays content/state driven
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   .map-overlay__header {

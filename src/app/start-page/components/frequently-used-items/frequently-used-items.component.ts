@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {FrequentlyUsedItemsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
@@ -18,6 +18,7 @@ const NUMBER_OF_FREQUENTLY_USED_ITEMS = 3;
   selector: 'frequently-used-items',
   templateUrl: './frequently-used-items.component.html',
   styleUrls: ['./frequently-used-items.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ContentLoadingStateComponent, GenericUnorderedListComponent, NgTemplateOutlet],
 })
 export class FrequentlyUsedItemsComponent implements HasLoadingStateSignal {

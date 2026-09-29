@@ -214,6 +214,96 @@ describe('MapUiEffects', () => {
     });
   });
 
+  describe('side bar overlay exclusivity', () => {
+    const testCases: {
+      description: string;
+      getEffect: (effects: MapUiEffects) => Observable<Action>;
+      openAction: Action;
+      closeAction: Action;
+      expectedActions: Action[];
+    }[] = [
+      {
+        description: 'closeOtherSideBarOverlaysOnFeatureInfoOpen$',
+        getEffect: (e) => e.closeOtherSideBarOverlaysOnFeatureInfoOpen$,
+        openAction: MapUiActions.setFeatureInfoVisibility({isVisible: true}),
+        closeAction: MapUiActions.setFeatureInfoVisibility({isVisible: false}),
+        expectedActions: [
+          MapUiActions.setElevationProfileOverlayVisibility({isVisible: false}),
+          MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}),
+        ],
+      },
+      {
+        description: 'closeOtherSideBarOverlaysOnElevationProfileOpen$',
+        getEffect: (e) => e.closeOtherSideBarOverlaysOnElevationProfileOpen$,
+        openAction: MapUiActions.setElevationProfileOverlayVisibility({isVisible: true}),
+        closeAction: MapUiActions.setElevationProfileOverlayVisibility({isVisible: false}),
+        expectedActions: [
+          MapUiActions.setFeatureInfoVisibility({isVisible: false}),
+          MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}),
+        ],
+      },
+      {
+        description: 'closeOtherSideBarOverlaysOnDrawingEditOpen$',
+        getEffect: (e) => e.closeOtherSideBarOverlaysOnDrawingEditOpen$,
+        openAction: MapUiActions.setDrawingEditOverlayVisibility({isVisible: true}),
+        closeAction: MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}),
+        expectedActions: [
+          MapUiActions.setFeatureInfoVisibility({isVisible: false}),
+          MapUiActions.setElevationProfileOverlayVisibility({isVisible: false}),
+        ],
+      },
+    ];
+
+    testCases.forEach(({description, getEffect, openAction, closeAction, expectedActions}) => {
+      describe(description, () => {
+        it('closes the other side bar overlays on desktop', async () => {
+          vi.useFakeTimers();
+
+          store.overrideSelector(selectScreenMode, 'regular');
+          const actualActions: Action[] = [];
+
+          actions$ = of(openAction);
+          getEffect(effects).subscribe((action) => actualActions.push(action));
+          await vi.runAllTimersAsync();
+
+          expect(actualActions).toEqual(expectedActions);
+
+          vi.useRealTimers();
+        });
+
+        it('dispatches nothing when the overlay is closed', async () => {
+          vi.useFakeTimers();
+
+          store.overrideSelector(selectScreenMode, 'regular');
+          const actualActions: Action[] = [];
+
+          actions$ = of(closeAction);
+          getEffect(effects).subscribe((action) => actualActions.push(action));
+          await vi.runAllTimersAsync();
+
+          expect(actualActions).toEqual([]);
+
+          vi.useRealTimers();
+        });
+
+        it('dispatches nothing on mobile', async () => {
+          vi.useFakeTimers();
+
+          store.overrideSelector(selectScreenMode, 'mobile');
+          const actualActions: Action[] = [];
+
+          actions$ = of(openAction);
+          getEffect(effects).subscribe((action) => actualActions.push(action));
+          await vi.runAllTimersAsync();
+
+          expect(actualActions).toEqual([]);
+
+          vi.useRealTimers();
+        });
+      });
+    });
+  });
+
   describe('openAttributeFilterOverlay', () => {
     it('dispatches MapUiActions.setAttributeFilterVisibility() when the attributeFilterItemID is set', () => {
       const expectedAction = MapUiActions.setAttributeFilterVisibility({isVisible: true});

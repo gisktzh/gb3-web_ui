@@ -1,0 +1,27 @@
+@let localItem = item();
+
+@if (localItem.itemType === 'text') {
+  {{ localItem.text }}
+} @else if (localItem.itemType === 'url') {
+  <a class="oereb-detail-list__link" [href]="localItem.url" target="_blank" rel="noopener noreferrer" [title]="localItem.itemLabel">
+    {{ localItem.itemLabel }}
+  </a>
+} @else if (localItem.itemType === 'image') {
+  <a [href]="localItem.url" target="_blank" rel="noopener noreferrer" [title]="localItem.alt">
+    <img
+      class="feature-info-content__table__row__column__image"
+      [src]="localItem.src"
+      [alt]="localItem.alt"
+      [width]="localItem.width"
+      [height]="localItem.height"
+    />
+  </a>
+} @else if (localItem.itemType === 'list') {
+  <ul class="oereb-detail-list">
+    @for (item of localItem.items; track $index) {
+      <li>
+        <oereb-info-value [item]="item" />
+      </li>
+    }
+  </ul>
+}

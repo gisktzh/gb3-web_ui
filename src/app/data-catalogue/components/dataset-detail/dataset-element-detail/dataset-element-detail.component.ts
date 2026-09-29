@@ -1,4 +1,4 @@
-import {Component, computed, input} from '@angular/core';
+import {Component, computed, input, ChangeDetectionStrategy} from '@angular/core';
 import {DatasetLayer} from '../../../../shared/interfaces/dataset-layer.interface';
 import {DataDisplayElement} from '../../../types/data-display-element.type';
 import {DataDisplayComponent} from '../../data-display/data-display.component';
@@ -10,6 +10,7 @@ import {DatasetElementTableComponent} from '../dataset-element-table/dataset-ele
   selector: 'dataset-element-detail',
   imports: [DataDisplayComponent, CdkAccordionModule, SharedModule, DatasetElementTableComponent],
   templateUrl: './dataset-element-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dataset-element-detail.component.scss',
 })
 export class DatasetElementDetailComponent {

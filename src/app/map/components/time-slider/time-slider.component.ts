@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, input, linkedSignal, output, signal} from '@angular/core';
+import {Component, computed, effect, inject, input, linkedSignal, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration} from '../../../shared/interfaces/topic.interface';
 import {TimeSliderService} from '../../services/time-slider.service';
@@ -25,6 +25,7 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
   selector: 'time-slider',
   templateUrl: './time-slider.component.html',
   styleUrls: ['./time-slider.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     SliderWrapperComponent,
     MatSlider,

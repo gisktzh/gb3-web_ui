@@ -1,4 +1,4 @@
-import {Component, effect, ElementRef, inject, input, output, signal, untracked, viewChild} from '@angular/core';
+import {Component, effect, ElementRef, inject, input, output, signal, untracked, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {SearchMode} from '../../types/search-mode.type';
@@ -12,6 +12,7 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
   selector: 'search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIcon, SharedModule, FormsModule],
 })
 export class SearchInputComponent {

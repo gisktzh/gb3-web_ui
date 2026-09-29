@@ -1,0 +1,9 @@
+.info-table-cell__list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  li:not(:last-child) {
+    padding-bottom: 8px;
+  }
+}

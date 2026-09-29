@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {MapLayer} from '../../../../../shared/interfaces/topic.interface';
 import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-item.actions';
@@ -15,6 +15,7 @@ import {LayerTooltipPipe} from '../../../../../shared/pipes/layer-tooltip.pipe';
   selector: 'active-map-item-layer',
   templateUrl: './active-map-item-layer.component.html',
   styleUrls: ['./active-map-item-layer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIcon, CdkDragHandle, MatCheckbox, MatTooltip, LayerTooltipPipe],
 })
 export class ActiveMapItemLayerComponent {

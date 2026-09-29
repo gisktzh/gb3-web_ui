@@ -37,9 +37,19 @@
                 "glob": "favicon.ico",
                 "input": "src/",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@arcgis/core/assets/esri/themes/light",
+                "output": "/assets/esri-theme/light/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@arcgis/core/assets/esri/themes/base",
+                "output": "/assets/esri-theme/base/"
               }
             ],
-            "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
+            "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles", "node_modules/@material"]
             },
@@ -178,6 +188,12 @@
               "sourceMap": true,
               "namedChunks": true
             },
+            "e2e": {
+              "optimization": true,
+              "extractLicenses": true,
+              "sourceMap": false,
+              "namedChunks": false
+            },
             "development-local-gb2": {
               "optimization": false,
               "extractLicenses": false,
@@ -223,6 +239,9 @@
             "development": {
               "buildTarget": "gb3-frontend:build:development"
             },
+            "e2e": {
+              "buildTarget": "gb3-frontend:build:e2e"
+            },
             "development-local-gb2": {
               "buildTarget": "gb3-frontend:build:development-local-gb2"
             }
@@ -254,6 +273,9 @@
             "devServerTarget": "gb3-frontend:serve"
           },
           "configurations": {
+            "ci": {
+              "devServerTarget": "gb3-frontend:serve:e2e"
+            },
             "production": {
               "devServerTarget": "gb3-frontend:serve:production"
             }

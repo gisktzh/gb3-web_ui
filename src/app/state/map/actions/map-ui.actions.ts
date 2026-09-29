@@ -16,6 +16,7 @@ export const MapUiActions = createActionGroup({
     'Set Feature Info Visibility': props<{isVisible: boolean}>(),
     'Set Drawing Edit Overlay Visibility': props<{isVisible: boolean}>(),
     'Set Attribute Filter Visibility': props<{isVisible: boolean}>(),
+    'Set Side Bar Width': props<{width: number}>(),
     'Show Share Link Dialog': emptyProps(),
     'Show Create Favourite Dialog': emptyProps(),
     'Show Delete Favourite Dialog': props<{favouriteToDelete: Favourite}>(),

@@ -22,7 +22,7 @@ export class MapConstants {
   /**
    * Query params that are removed upon loading the initial map configuration.
    */
-  public static readonly TEMPORARY_URL_PARAMS = ['initialMapIds', 'searchTerm', 'searchIndex'];
+  public static readonly TEMPORARY_URL_PARAMS = ['initialMapIds', 'searchTerm', 'searchIndex', 'collapsed'];
 
   /**
    * Delay in ms for triggering the temporary preview load of a hovered catalogue item.

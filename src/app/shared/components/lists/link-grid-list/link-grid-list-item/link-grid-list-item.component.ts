@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {MainPage} from '../../../../enums/main-page.enum';
 import {RouterLink} from '@angular/router';
 import {NgTemplateOutlet} from '@angular/common';
@@ -17,6 +17,7 @@ import {NgTemplateOutlet} from '@angular/common';
   selector: 'link-grid-list-item',
   templateUrl: './link-grid-list-item.component.html',
   styleUrls: ['./link-grid-list-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, NgTemplateOutlet],
 })
 export class LinkGridListItemComponent {

@@ -1,4 +1,4 @@
-import {Component, effect, inject, signal} from '@angular/core';
+import {Component, effect, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -12,6 +12,7 @@ import {form, minLength, required, pattern, FormField} from '@angular/forms/sign
   selector: 'map-import-display-name',
   imports: [FormsModule, MatFormFieldModule, MatInputModule, FormField],
   templateUrl: './map-import-display-name.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './map-import-display-name.component.scss',
 })
 export class MapImportDisplayNameComponent {

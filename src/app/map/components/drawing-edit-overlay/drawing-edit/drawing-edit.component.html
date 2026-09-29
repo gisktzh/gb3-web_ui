@@ -6,10 +6,13 @@
   } @else if (isPolygonStyle(); as style) {
     <polygon-edit [polygonStyle]="style" (polygonStyleChange)="updateStyle($event)" />
   } @else if (isTextStyle(); as style) {
-    <text-edit [textStyle]="{style, label: selectedFeature()?.labelText!}" (textStyleChange)="updateStyle($event.style, $event.label)" />
+    <text-edit
+      [textStyle]="{style, label: $safeNavigationMigration(selectedFeature()?.labelText)!}"
+      (textStyleChange)="updateStyle($event.style, $event.label)"
+    />
   } @else if (isSymbolStyle(); as style) {
     <symbol-edit
-      [symbolStyle]="{style, selectedSymbol: selectedFeature()?.mapDrawingSymbol?.drawingSymbolDefinition!}"
+      [symbolStyle]="{style, selectedSymbol: $safeNavigationMigration(selectedFeature()?.mapDrawingSymbol?.drawingSymbolDefinition)!}"
       (symbolStyleChange)="updateStyle($event.style, undefined, $event.selectedSymbol)"
     />
   }

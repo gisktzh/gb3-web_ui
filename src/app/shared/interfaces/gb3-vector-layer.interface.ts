@@ -53,5 +53,5 @@ export interface Gb3VectorLayer extends AbstractGb3Layer {
    * Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property
    * @example {"a":{"pointRadius":15,"fillColor":"#ee3333","fillOpacity":0,"strokeColor":"#ee3333","strokeWidth":3}}
    */
-  styles: Gb3VectorLayerStyle;
+  styles: Gb3VectorLayerStyle | null;
 }

@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatDialogRef, MatDialogClose} from '@angular/material/dialog';
 import {MapConstants} from '../../../shared/constants/map.constants';
@@ -11,6 +11,7 @@ import {form, maxLength, required, FormField, minLength, pattern} from '@angular
   selector: 'text-drawing-tool-input',
   templateUrl: './text-drawing-tool-input.component.html',
   styleUrls: ['./text-drawing-tool-input.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ApiDialogWrapperComponent, MatFormField, MatLabel, MatInput, FormsModule, MatError, MatButton, MatDialogClose, FormField],
 })
 export class TextDrawingToolInputComponent {

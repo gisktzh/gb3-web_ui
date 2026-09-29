@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {SupportPage} from '../../../shared/enums/support-page.enum';
 import {MatButton} from '@angular/material/button';
 import {RouterLinkActive, RouterLink} from '@angular/router';
@@ -7,6 +7,7 @@ import {RouterLinkActive, RouterLink} from '@angular/router';
   selector: 'support-page-navigation',
   templateUrl: './support-page-navigation.component.html',
   styleUrls: ['./support-page-navigation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatButton, RouterLinkActive, RouterLink],
 })
 export class SupportPageNavigationComponent {

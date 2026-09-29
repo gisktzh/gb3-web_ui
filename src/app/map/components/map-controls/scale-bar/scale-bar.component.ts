@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 
 import {selectScaleBarConfig} from '../../../../state/map/selectors/scale-bar-config.selector';
@@ -6,6 +6,7 @@ import {selectScaleBarConfig} from '../../../../state/map/selectors/scale-bar-co
 @Component({
   selector: 'scale-bar',
   templateUrl: './scale-bar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./scale-bar.component.scss'],
 })
 export class ScaleBarComponent {
