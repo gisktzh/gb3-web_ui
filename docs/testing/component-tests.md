@@ -84,7 +84,7 @@ Use `npm run component-tests:check-complete` only when closing the rollout; it a
 
 ## Rollout work packages
 
-Deliver each package in reviewable PRs of roughly 5–10 components. Each PR updates the inventory, adds or references meaningful coverage, and passes the complete test suite, lint, Knip, and application build.
+Deliver each domain package as a reviewable PR. Each PR updates the inventory, adds or references meaningful coverage, and passes the relevant focused tests; the closing package validates the complete test suite, lint, Knip, and application build.
 
 | Package | Focus                                                                                                                                      |
 | ------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -114,4 +114,4 @@ npm test -- --watch=false --include=src/app/path/example.component.spec.ts
 npm run test-ci
 ```
 
-Coverage continues to support Sonar reporting; component source files remain excluded from numeric coverage until the inventory rollout is complete.
+Coverage continues to support Sonar reporting. Component source files are included now that the inventory has reached zero `pending`; numeric thresholds remain deferred until the team has reviewed a stable baseline.

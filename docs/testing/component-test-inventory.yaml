@@ -524,7 +524,7 @@ host:
 e2e:
   src/app/embedded-page/embedded-map-page.component.ts:
     coveredBy:
-      - e2e/specs/open-map-with-url.spec.ts
+      - e2e/specs/embedded-map-page.spec.ts
     reason: Requires real iframe and browser lifecycle behavior.
 abstract:
   src/app/data-catalogue/components/abstract-base-detail/abstract-base-detail.component.ts:
