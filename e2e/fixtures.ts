@@ -280,16 +280,18 @@ export const test = base.extend<Gb3Fixtures>({
 
   search: async ({page}, use) => {
     await use(async (searchTerm: string) => {
-      const searchInput = page.locator('input[placeholder="Suchen nach Adressen, Orten, Karten und mehr..."]');
+      const searchWindow = page.locator('search-window');
+      const searchInput = searchWindow.getByPlaceholder('Suchen nach Adressen, Orten, Karten und mehr...');
 
       await expect(searchInput).toBeVisible();
-      await searchInput.fill(searchTerm);
-      await searchInput.dispatchEvent('keyup', {key: searchTerm.at(-1)});
+      await searchInput.click();
+      await searchInput.clear();
+      await searchInput.pressSequentially(searchTerm);
 
-      const searchResult = page.locator('button', {
-        hasText: searchTerm,
-      });
+      const searchResults = searchWindow.locator('.result-window__content');
+      await expect(searchResults).toBeVisible({timeout: 30_000});
 
+      const searchResult = searchResults.getByRole('button').filter({hasText: searchTerm}).first();
       await expect(searchResult).toBeVisible({timeout: 30_000});
       await searchResult.click();
     });
@@ -300,14 +302,15 @@ export const test = base.extend<Gb3Fixtures>({
       const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
 
       await expect(zoomInput).toBeVisible();
-      await zoomInput.fill(zoomLevel.toString());
+      await zoomInput.clear();
+      await zoomInput.pressSequentially(zoomLevel.toString());
       await expect(zoomInput).toHaveValue(zoomLevel.toString());
     });
   },
 
   clickDefaultMapViewCenter: async ({page}, use) => {
     await use(async () => {
-      const map = page.locator('map-page canvas').first();
+      const map = page.locator('map-page map-container .esri-view-surface');
       await expect(map).toBeVisible();
 
       const boundingBox = await map.boundingBox();
