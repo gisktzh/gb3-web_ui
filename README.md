@@ -100,6 +100,20 @@ This will now start one window per specified .spec.ts file. An additional window
 
 If you also want to capture browser console out, you can use the `CAPTURE_CONSOLE` env var: `CAPTURE_CONSOLE=1 ng e2e`.
 
+#### Accessibility (a11y) checks
+
+We use [`@axe-core/playwright`](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright) to automatically scan for WCAG 2.2 AA violations. It runs in a real browser, so unlike DOM-only tools (e.g. `vitest-axe` in `jsdom`) it can also evaluate layout-dependent rules such as color contrast, target/touch size and reflow.
+
+A `checkA11y()` fixture (see `e2e/fixtures.ts`) is available in every spec. It scans the current page/DOM state, attaches the full JSON result to the Playwright report (useful for reviewing "incomplete"/needs-manual-review findings even on green runs), and fails the test listing every violation with its impact, help text and affected selectors.
+
+To keep the suite fast and avoid tripling CI time, a11y checks:
+
+- are added as small, additional tests placed next to the relevant functional test in the same spec file, so they reuse the same HAR fixture/flow instead of re-recording or re-navigating,
+- are scanned once per distinct, meaningful DOM state (e.g. once per opened dialog/panel), not after every micro-interaction,
+- only run on `chromium` (guarded via `test.skip(browserName !== 'chromium', ...)`), since axe evaluates the DOM/CSSOM which doesn't meaningfully differ between browser engines.
+
+Automated scans catch common issues (missing/invalid ARIA, color contrast, missing labels, invalid landmarks/heading structure, insufficient target size, etc.) but should not be treated as a full accessibility audit
+
 ### Further help
 
 To get more help on the Angular CLI use `ng help` or go check out
