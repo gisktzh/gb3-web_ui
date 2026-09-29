@@ -14,8 +14,6 @@ interface AbstractBasemap {
   defaultForTopics?: string[];
 }
 
-export type Basemap = WmsBasemap | BlankBasemap;
-
 export interface BlankBasemap extends AbstractBasemap {
   type: 'blank';
 }
@@ -29,7 +27,16 @@ export interface WmsBasemap extends AbstractBasemap {
    * Path to the image that is shown in the widget, relative to the app root.
    */
   relativeImagePath: string;
-  url: string;
+  path: string;
   layers: BasemapLayer[];
   srsId: SupportedSrs;
 }
+
+export interface CallableWmsBasemap extends WmsBasemap {
+  // Actual WMS url
+  url: string;
+}
+
+export type Basemap = WmsBasemap | BlankBasemap;
+
+export type CallableBasemap = CallableWmsBasemap | BlankBasemap;

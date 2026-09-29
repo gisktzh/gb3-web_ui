@@ -15,10 +15,10 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://uatmaps.kt.ktzh.ch',
       },
       gb2WmsCapabilities: {
-        baseUrl: 'https://uatmaps.kt.ktzh.ch/wms',
+        baseUrl: 'https://uatwms.kt.ktzh.ch',
       },
       gb2Wms: {
-        baseUrl: 'https://uatmaps.kt.ktzh.ch',
+        baseUrl: 'https://uatwms.kt.ktzh.ch',
       },
       geoLion: {
         baseUrl: 'https://uatgeolion.kt.ktzh.ch',
