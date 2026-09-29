@@ -12,7 +12,6 @@ describe('selectFavouriteBaseConfig', () => {
       activeBasemapId: 'testBaseMapId',
       scale: 9001,
       rotation: 0,
-      initialMaps: [],
       isMaxZoomedIn: true,
       isMaxZoomedOut: false,
       ready: true,
