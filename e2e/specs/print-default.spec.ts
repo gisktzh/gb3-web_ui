@@ -1,32 +1,13 @@
-import {test, expect} from '../fixtures';
+import {test, expect, describeA11y} from '../fixtures';
 
 test.describe('Printing', () => {
-  test('creates a print job and downloads the file', async ({
-    page,
-    useHar,
-    openUrlWithCoordinates,
-    captureConsole,
-    filterForLayer,
-    clickMapInTheList,
-  }) => {
+  test('creates a print job and downloads the file', async ({page, useHar, openPrintDialog, captureConsole}) => {
     test.setTimeout(120_000);
 
     await useHar();
     captureConsole();
 
-    await openUrlWithCoordinates('2702555', '1241686');
-    await page.waitForLoadState('networkidle');
-
-    await filterForLayer('Amtliche Vermessung in Farbe');
-    await clickMapInTheList('Amtliche Vermessung in Farbe');
-
-    const printDialogButton = page.locator('[data-test-id="map-print"]');
-    await expect(printDialogButton).toBeVisible();
-
-    await printDialogButton.click();
-    await page.waitForLoadState('networkidle');
-
-    await expect(page.locator('.print-dialog')).toBeVisible();
+    await openPrintDialog('2702555', '1241686', 'Amtliche Vermessung in Farbe');
 
     const titleField = page.locator('[data-test-id="input-print-title"]');
     await expect(titleField).toBeVisible();
@@ -94,5 +75,21 @@ test.describe('Printing', () => {
 
     expect(suggestedFileName).toContain('geoportal_zh_A2_hoch_');
     expect(suggestedFileName).toContain('.pdf');
+  });
+
+  describeA11y(() => {
+    test('has no detectable accessibility violations while the print dialog is open', async ({
+      useHar,
+      openPrintDialog,
+      captureConsole,
+      checkA11y,
+    }) => {
+      await useHar();
+      captureConsole();
+
+      await openPrintDialog('2702555', '1241686', 'Amtliche Vermessung in Farbe');
+
+      await checkA11y();
+    });
   });
 });
