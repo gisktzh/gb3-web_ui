@@ -3,11 +3,11 @@
 // Use :host to increase specificity and override Angular Material styles.
 :host {
   .external-link-button {
-    &--highlighted {
+    &.external-link-button--highlighted {
       background-color: ktzh-variables.$zh-light-grey;
     }
 
-    &--small {
+    &.external-link-button--small {
       /**
         Override the size of the button to the (fixed) 30px size of figma.
         Adapted from https://stackoverflow.com/a/57759753 for use with SvgIcon.

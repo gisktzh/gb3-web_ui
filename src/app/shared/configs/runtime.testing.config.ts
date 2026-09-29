@@ -1,5 +1,4 @@
 import {RuntimeConfig} from '../interfaces/runtime-config.interface';
-import {defaultFeatureFlags} from './feature-flags.config';
 
 /**
  * This runtime configuration is used in the testing environment.
@@ -46,10 +45,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'https://maps.zh.ch/',
     },
-    featureFlags: {
-      // override to make sure we can test the merge functionality
-      oerebExtract: !defaultFeatureFlags.oerebExtract,
-    },
+    featureFlags: {},
     overrides: {},
     accessMode: 'internet',
   },

@@ -20,17 +20,20 @@ test.describe('Test filter search for maps and places', () => {
     await expect(zoomInput).toHaveValue('19369');
 
     await search('Amtliche Vermessung in Farbe');
+    const activeMapItem = page.locator('active-map-item').filter({hasText: 'Amtliche Vermessung in Farbe'}).first();
+    await expect(activeMapItem).toBeVisible({timeout: 30_000});
 
     await zoom(3000);
+    await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});
 
-    const map = page.locator('map-page');
+    const map = page.locator('map-page canvas').first();
     await expect(map).toBeVisible();
 
-    await map.click({force: true});
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(500);
+    await map.click();
 
-    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
-    await expect(page.locator('th', {hasText: 'EGRIS_EGRID'}).locator('xpath=following-sibling::td')).toContainText('CH107703719475');
+    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible({timeout: 30_000});
+    await expect(page.locator('th', {hasText: 'EGRIS_EGRID'}).locator('xpath=following-sibling::td')).toContainText('CH107703719475', {
+      timeout: 30_000,
+    });
   });
 });

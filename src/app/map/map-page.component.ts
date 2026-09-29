@@ -104,7 +104,6 @@ export class MapPageComponent implements AfterViewInit, OnInit {
           y,
           scale,
           basemapId: this.mapConfigState().activeBasemapId,
-          initialMaps: [],
         }),
       );
     }

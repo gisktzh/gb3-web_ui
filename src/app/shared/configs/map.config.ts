@@ -21,7 +21,6 @@ export const defaultMapConfig: MapConfigState = {
   isMaxZoomedIn: false,
   isMaxZoomedOut: false,
   activeBasemapId: defaultBasemap.id,
-  initialMaps: [],
   predefinedInitialExtent: false,
   initialMapPadding: MapConstants.INITIAL_MAP_PADDING,
   initialMapPaddingMobile: MapConstants.INITIAL_MAP_PADDING_MOBILE,

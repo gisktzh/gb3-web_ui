@@ -31,6 +31,7 @@ import {defaultFeatureFlags} from '../configs/feature-flags.config';
 import {FeatureFlags} from '../interfaces/feature-flags.interface';
 import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {CallableBasemap} from '../interfaces/basemap.interface';
+import {OerebMaps} from '../configs/oereb-maps.config';
 
 @Injectable({
   providedIn: 'root',
@@ -80,6 +81,8 @@ export class ConfigService {
     defaultLineWidth: defaultLineWidth,
     defaultOutline: defaultOutline,
   };
+
+  public readonly oerebMaps = OerebMaps;
 
   constructor() {
     const runtimeConfig = this.findRuntimeConfig();
