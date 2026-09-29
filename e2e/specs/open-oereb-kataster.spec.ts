@@ -1,9 +1,9 @@
-import {test, expect} from '../fixtures';
+import {test, expect, describeA11y} from '../fixtures';
 
 test.describe('OEREB-Kataster', () => {
   test('opens the OEREB-Kataster and searches for a specific address, returning its data in the info request', async ({
     page,
-    search,
+    openOerebInfoRequest,
     clickDefaultMapViewCenter,
     useHar,
     captureConsole,
@@ -11,12 +11,7 @@ test.describe('OEREB-Kataster', () => {
     await useHar();
     captureConsole();
 
-    await page.goto('/maps?topics=OerebKatasterZH');
-    await page.waitForLoadState('networkidle');
-
-    await search('Weststrasse 49, 8003');
-    const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
-    await expect(zoomInput).toHaveValue('750', {timeout: 30_000});
+    await openOerebInfoRequest('Weststrasse 49, 8003');
 
     await clickDefaultMapViewCenter();
 
@@ -28,5 +23,21 @@ test.describe('OEREB-Kataster', () => {
     await expect(page.locator('th', {hasText: 'Vollstaendigkeit'}).locator('xpath=following-sibling::td')).toContainText('Vollstaendig');
     await expect(page.locator('th', {hasText: 'Fläche'}).locator('xpath=following-sibling::td')).toContainText('544');
     await expect(page.locator('button', {hasText: 'Info drucken'})).toBeVisible();
+  });
+
+  describeA11y(() => {
+    test('has no detectable accessibility violations while showing an info request result', async ({
+      openOerebInfoRequest,
+      useHar,
+      captureConsole,
+      checkA11y,
+    }) => {
+      await useHar();
+      captureConsole();
+
+      await openOerebInfoRequest('Weststrasse 49, 8003');
+
+      await checkA11y();
+    });
   });
 });
