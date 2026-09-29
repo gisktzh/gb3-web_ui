@@ -31,6 +31,8 @@ import {TimeSliderParameterSource} from '../../../interfaces/topic.interface';
 import {DocumentFormat} from 'src/app/shared/interfaces/print-rules.interface';
 import {printConfig} from 'src/app/shared/configs/print.config';
 import {ReportSizing} from 'src/app/shared/interfaces/report-sizing.interface';
+import {DRAWING_SYMBOLS_SERVICE} from '../../../../app.tokens';
+import {DrawingSymbolsService} from '../../../interfaces/drawing-symbols-service.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -39,6 +41,7 @@ export class Gb3PrintService extends Gb3ApiService {
   private readonly basemapConfigService = inject(BasemapConfigService);
   private readonly gb3TopicsService = inject(Gb3TopicsService);
   private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
+  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   protected readonly endpoint = 'print';
 
@@ -274,6 +277,7 @@ export class Gb3PrintService extends Gb3ApiService {
       mapScale,
       printScale,
       reportSizing,
+      this.drawingSymbolsService,
     );
   }
 

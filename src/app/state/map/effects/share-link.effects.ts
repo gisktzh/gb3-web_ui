@@ -5,7 +5,7 @@ import {combineLatestWith, filter, of, switchMap, take, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
 import {ShareLinkActions} from '../actions/share-link.actions';
 import {Gb3ShareLinkService} from '../../../shared/services/apis/gb3/gb3-share-link.service';
-import {Store} from '@ngrx/store';
+import {createSelector, Store} from '@ngrx/store';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
@@ -19,6 +19,11 @@ import {selectItems} from '../selectors/active-map-items.selector';
 import {DrawingActions} from '../actions/drawing.actions';
 import {selectDrawings} from '../reducers/drawing.reducer';
 import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../auth/reducers/auth-status.reducer';
+
+const selectRestorationContents = createSelector(selectItems, selectDrawings, (activeMapItems, drawings) => ({
+  activeMapItems,
+  drawings,
+}));
 
 /**
  * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or
@@ -124,17 +129,13 @@ export class ShareLinkEffects {
   public initializeApplicationByVerifyingSharedItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.completedAuthenticationInitialization),
-      // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully
-      // loaded
-      combineLatestWith(
+      switchMap(() =>
         this.store.select(selectLoadedLayerCatalogueAndShareItem).pipe(
           filter((value) => value !== undefined),
           take(1),
+          map((value) => ShareLinkActions.validateItem({item: value.shareLinkItem})),
         ),
       ),
-      map(([_, value]) => {
-        return ShareLinkActions.validateItem({item: value!.shareLinkItem});
-      }),
     );
   });
 
@@ -205,16 +206,17 @@ export class ShareLinkEffects {
   public completeInitialization$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.completeValidation),
-      combineLatestWith(this.store.select(selectItems), this.store.select(selectDrawings)),
-      // ensure that the active map items and initial drawings have been set before continuing
-      filter(
-        ([{mapRestoreItem}, activeMapItems, drawings]) =>
-          mapRestoreItem.activeMapItems.length === activeMapItems.length && mapRestoreItem.drawings.length === drawings.length,
+      switchMap(({mapRestoreItem}) =>
+        this.store.select(selectRestorationContents).pipe(
+          // Wait for this restoration's items and drawings without completing the effect itself.
+          filter(
+            ({activeMapItems, drawings}) =>
+              mapRestoreItem.activeMapItems.length === activeMapItems.length && mapRestoreItem.drawings.length === drawings.length,
+          ),
+          take(1),
+          map(() => ShareLinkActions.completeApplicationInitialization()),
+        ),
       ),
-      take(1),
-      map(() => {
-        return ShareLinkActions.completeApplicationInitialization();
-      }),
     );
   });
 }

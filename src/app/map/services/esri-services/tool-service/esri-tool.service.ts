@@ -1,4 +1,4 @@
-import {Injectable, inject} from '@angular/core';
+import {Injectable, inject, Injector} from '@angular/core';
 import {ToolService} from '../../../interfaces/tool.service';
 import {EsriMapViewService} from '../esri-map-view.service';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
@@ -73,15 +73,14 @@ export const HANDLE_GROUP_KEY = 'EsriToolService';
  * * Because Esri cancels drawings when pressing escape, we need to intercept this in order for our state to become updated. This is
  * done via custom handles on the MapView object which manually fire the deactivation event for our state to become updated.
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class EsriToolService implements ToolService {
   private readonly esriMapViewService = inject(EsriMapViewService);
   private readonly store = inject(Store);
   private readonly esriSymbolizationService = inject(EsriSymbolizationService);
   private readonly configService = inject(ConfigService);
   private readonly dialogService = inject(MatDialog);
+  private readonly injector = inject(Injector);
   private readonly geoshopMunicipalitiesService = inject(Gb3GeoshopMunicipalitiesService);
 
   private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
@@ -578,6 +577,7 @@ export class EsriToolService implements ToolService {
               ? this.completeMapSymbolDrawing(geometry, mode, mapDrawingSymbol, symbolSize, symbolRotation)
               : this.endDrawing(),
           this.dialogService,
+          this.injector,
         );
         break;
     }

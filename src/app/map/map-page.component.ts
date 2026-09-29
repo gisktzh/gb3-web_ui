@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, computed, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import {afterRenderEffect, effect, untracked, Component, computed, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import {ONBOARDING_STEPS, OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {Store} from '@ngrx/store';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
@@ -34,6 +34,15 @@ import {CenterAnchorComponent} from '../onboarding-guide/components/center-ancho
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {NgTemplateOutlet} from '@angular/common';
+import {SessionStorageService} from '../shared/services/session-storage.service';
+import {RouteParamConstants} from '../shared/constants/route-param.constants';
+import {ShareLinkActions} from '../state/map/actions/share-link.actions';
+import {
+  selectApplicationInitializationLoadingState,
+  selectLoadingState as selectShareLinkLoadingState,
+} from '../state/map/reducers/share-link.reducer';
+import {WaitingPageComponent} from '../shared/components/waiting-page/waiting-page.component';
+import {MainPage} from '../shared/enums/main-page.enum';
 
 @Component({
   selector: 'map-page',
@@ -45,6 +54,7 @@ import {NgTemplateOutlet} from '@angular/common';
     provideCharts(withDefaultRegisterables()),
   ],
   imports: [
+    WaitingPageComponent,
     DisableOverscrollBehaviourComponent,
     MatDrawerContainer,
     MatDrawer,
@@ -77,10 +87,37 @@ import {NgTemplateOutlet} from '@angular/common';
     '(window:keydown.esc)': 'closeSideDrawer()',
   },
 })
-export class MapPageComponent implements AfterViewInit, OnInit {
+export class MapPageComponent implements OnInit {
   private readonly onboardingGuideService = inject(OnboardingGuideService);
   private readonly initialMapExtentService = inject(InitialMapExtentService);
   private readonly store = inject(Store);
+  private readonly sessionStorageService = inject(SessionStorageService);
+
+  public readonly isRestoringShareLink = signal(false);
+  protected readonly mainPage = MainPage;
+  private readonly initializationState = this.store.selectSignal(selectApplicationInitializationLoadingState);
+  private readonly shareLinkLoadingState = this.store.selectSignal(selectShareLinkLoadingState);
+
+  constructor() {
+    effect(() => {
+      if (!this.isRestoringShareLink()) {
+        return;
+      }
+      const state = this.initializationState();
+      const failed = state === 'error' || this.shareLinkLoadingState() === 'error';
+      if (state === 'loaded' || failed) {
+        if (failed) {
+          untracked(() => this.initializeDefaultExtent());
+        }
+        this.isRestoringShareLink.set(false);
+      }
+    });
+    afterRenderEffect(() => {
+      if (!this.isRestoringShareLink() && this.screenMode() !== 'mobile') {
+        untracked(() => this.onboardingGuideService.autoStart());
+      }
+    });
+  }
 
   public readonly numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
   public readonly isMapDataCatalogueMinimized = signal(false);
@@ -96,6 +133,18 @@ export class MapPageComponent implements AfterViewInit, OnInit {
   });
 
   public ngOnInit() {
+    const pendingShareLinkId = this.sessionStorageService.get(RouteParamConstants.SHARE_LINK_ID_SESSION_STORAGE_KEY);
+    this.sessionStorageService.remove(RouteParamConstants.SHARE_LINK_ID_SESSION_STORAGE_KEY);
+    if (pendingShareLinkId) {
+      this.isRestoringShareLink.set(true);
+      this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id: pendingShareLinkId}));
+      return;
+    }
+
+    this.initializeDefaultExtent();
+  }
+
+  private initializeDefaultExtent() {
     if (!this.mapConfigState().predefinedInitialExtent) {
       const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
       this.store.dispatch(
@@ -107,12 +156,6 @@ export class MapPageComponent implements AfterViewInit, OnInit {
           initialMaps: [],
         }),
       );
-    }
-  }
-
-  public ngAfterViewInit() {
-    if (this.screenMode() !== 'mobile') {
-      this.onboardingGuideService.autoStart();
     }
   }
 

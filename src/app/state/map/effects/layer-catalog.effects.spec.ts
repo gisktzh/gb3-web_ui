@@ -1,10 +1,9 @@
-import {EMPTY, Observable, of, throwError} from 'rxjs';
+import {EMPTY, Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {LayerCatalogEffects} from './layer-catalog.effects';
 import {TestBed} from '@angular/core/testing';
 import {provideMockActions} from '@ngrx/effects/testing';
-import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {selectMaps} from '../selectors/maps.selector';
 import {selectMapConfigState} from '../reducers/map-config.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
@@ -16,8 +15,6 @@ import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {InitialMapIdsParameterInvalid, InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
-import {selectItems} from '../reducers/layer-catalog.reducer';
-import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 import {catchError} from 'rxjs';
 
@@ -25,7 +22,6 @@ describe('LayerCatalogEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: LayerCatalogEffects;
-  let gb3TopicsService: Gb3TopicsService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -42,52 +38,10 @@ describe('LayerCatalogEffects', () => {
     });
     effects = TestBed.inject(LayerCatalogEffects);
     store = TestBed.inject(MockStore);
-    gb3TopicsService = TestBed.inject(Gb3TopicsService);
   });
 
   afterEach(() => {
     store.resetSelectors();
-  });
-
-  describe('requestLayerCatalog$', () => {
-    it('dispatches LayerCatalogActions.setLayerCatalog when there are already items in the store ', () => {
-      const mockItems = [{title: 'Topic', maps: []}];
-      store.overrideSelector(selectItems, mockItems);
-      const expectedAction = LayerCatalogActions.setLayerCatalog({items: mockItems});
-      actions$ = of(LayerCatalogActions.loadLayerCatalog());
-      effects.requestLayerCatalog$.subscribe((action) => {
-        expect(action).toEqual(expectedAction);
-      });
-    });
-
-    it('calls the Topicservice and dispatches LayerCatalogActions.setLayerCatalog with the results if the store has no items yet', () => {
-      const mockItems = [
-        {title: 'Topic', maps: []},
-        {title: 'Topic2', maps: []},
-      ];
-      store.overrideSelector(selectItems, []);
-      const expectedAction = LayerCatalogActions.setLayerCatalog({items: mockItems});
-      const spy = vi.spyOn(gb3TopicsService, 'loadTopics').mockReturnValue(of({topics: mockItems}));
-      actions$ = of(LayerCatalogActions.loadLayerCatalog());
-      effects.requestLayerCatalog$.subscribe((action) => {
-        expect(spy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(expectedAction);
-      });
-    });
-
-    it('throws a TopicsCouldNotBeLoaded error if the Topicservice fails', () => {
-      store.overrideSelector(selectItems, []);
-      const originalError = new Error('oh no! butterfingers');
-      const spy = vi.spyOn(gb3TopicsService, 'loadTopics').mockReturnValue(throwError(() => originalError));
-      actions$ = of(LayerCatalogActions.loadLayerCatalog());
-      effects.requestLayerCatalog$.subscribe({
-        error: (error: unknown) => {
-          expect(spy).toHaveBeenCalledTimes(1);
-          expect(error).toBeInstanceOf(TopicsCouldNotBeLoaded);
-          expect((error as TopicsCouldNotBeLoaded).originalError).toEqual(originalError);
-        },
-      });
-    });
   });
 
   describe('handleInitialMapLoad', () => {

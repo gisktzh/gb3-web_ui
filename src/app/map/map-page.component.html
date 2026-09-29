@@ -1,125 +1,131 @@
-<disable-overscroll-behaviour />
-<mat-drawer-container class="map-container" [class.map-container--mobile]="screenMode() === 'mobile'">
-  <mat-drawer
-    mode="side"
-    position="end"
-    [opened]="mapSideDrawerContent() !== 'none'"
-    (closedStart)="closeSideDrawer()"
-    (opened)="mapSideDrawerFullyOpened()"
-  >
-    @if (mapSideDrawerContent() === 'print') {
-      <print-dialog />
-    } @else if (mapSideDrawerContent() === 'data-download') {
-      <data-download-dialog />
-    }
-  </mat-drawer>
+@if (isRestoringShareLink()) {
+  <waiting-page waitingText="Karte wird geladen..." [redirectMainPage]="mainPage.Start" />
+} @else {
+  <disable-overscroll-behaviour />
+  <mat-drawer-container class="map-container" [class.map-container--mobile]="screenMode() === 'mobile'">
+    <mat-drawer
+      mode="side"
+      position="end"
+      [opened]="mapSideDrawerContent() !== 'none'"
+      (closedStart)="closeSideDrawer()"
+      (opened)="mapSideDrawerFullyOpened()"
+    >
+      @if (mapSideDrawerContent() === 'print') {
+        <print-dialog />
+      } @else if (mapSideDrawerContent() === 'data-download') {
+        <data-download-dialog />
+      }
+    </mat-drawer>
 
-  @if (screenMode() !== 'mobile') {
-    <div class="overlays" [class.overlays--sidebar-open]="isSideBarOverlayVisible()" [style.--side-bar-width.px]="sideBarWidth()">
-      <div class="main-overlays">
-        <legend-overlay class="map-container__overlay" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
-        <map-attribute-filter-overlay
-          class="map-container__overlay"
-          [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-        />
-        <div class="map-container__all-map-items-container">
-          <div class="map-container__all-map-items-container__inner-container">
-            <active-map-items
-              class="map-container__all-map-items-container__inner-container__active-map-items"
-              [class.map-container__all-map-items-container__inner-container__active-map-items--maximized]="isMapDataCatalogueMinimized()"
-              [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-            />
-            <span class="map-container__all-map-items-container__inner-container__divider"></span>
-            <map-data-catalogue
-              class="map-container__all-map-items-container__inner-container__map-data-catalogue"
-              [class.map-container__all-map-items-container__inner-container__map-data-catalogue--minimized]="isMapDataCatalogueMinimized()"
-              [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-              (changeIsMinimizedEvent)="setIsMapDataCatalogueMinimized($event)"
-            />
+    @if (screenMode() !== 'mobile') {
+      <div class="overlays" [class.overlays--sidebar-open]="isSideBarOverlayVisible()" [style.--side-bar-width.px]="sideBarWidth()">
+        <div class="main-overlays">
+          <legend-overlay class="map-container__overlay" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
+          <map-attribute-filter-overlay
+            class="map-container__overlay"
+            [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+          />
+          <div class="map-container__all-map-items-container">
+            <div class="map-container__all-map-items-container__inner-container">
+              <active-map-items
+                class="map-container__all-map-items-container__inner-container__active-map-items"
+                [class.map-container__all-map-items-container__inner-container__active-map-items--maximized]="isMapDataCatalogueMinimized()"
+                [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+              />
+              <span class="map-container__all-map-items-container__inner-container__divider"></span>
+              <map-data-catalogue
+                class="map-container__all-map-items-container__inner-container__map-data-catalogue"
+                [class.map-container__all-map-items-container__inner-container__map-data-catalogue--minimized]="
+                  isMapDataCatalogueMinimized()
+                "
+                [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+                (changeIsMinimizedEvent)="setIsMapDataCatalogueMinimized($event)"
+              />
+            </div>
           </div>
+          <button
+            mat-flat-button
+            (click)="showLegend()"
+            [disabled]="numberOfQueryLegends() === 0"
+            class="map-container__legend-button"
+            [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+          >
+            <mat-icon svgIcon="ktzh_legend" />
+            Legende
+          </button>
+          <search-window class="map-container__search-window" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
+          <ng-container [ngTemplateOutlet]="mapToolsTemplate" />
+          <map-controls class="map-container__map-controls" />
         </div>
+
+        <div class="sidebar-right-overlays">
+          <feature-info-overlay
+            class="sidebar-right-overlays__item"
+            [width]="sideBarWidth()"
+            (resizeEvent)="setSideBarWidth($event)"
+            [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+          />
+          <elevation-profile-overlay
+            class="sidebar-right-overlays__item"
+            [width]="sideBarWidth()"
+            (resizeEvent)="setSideBarWidth($event)"
+            [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+          />
+          <drawing-edit-overlay
+            class="sidebar-right-overlays__item"
+            [width]="sideBarWidth()"
+            (resizeEvent)="setSideBarWidth($event)"
+            [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+          />
+        </div>
+      </div>
+
+      <data-download-status-queue
+        class="map-container__data-download-status-queue"
+        [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+      />
+    }
+
+    @if (screenMode() === 'mobile') {
+      <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--right">
         <button
-          mat-flat-button
-          (click)="showLegend()"
-          [disabled]="numberOfQueryLegends() === 0"
-          class="map-container__legend-button"
+          mat-icon-button
+          (click)="showMapManagement()"
+          color="accent"
+          class="map-management__button"
           [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
         >
-          <mat-icon svgIcon="ktzh_legend" />
-          Legende
+          <mat-icon svgIcon="ktzh_map_management" />
         </button>
-        <search-window class="map-container__search-window" [class.map-container__map-element--hidden]="mapUiState().hideUiElements" />
-        <ng-container [ngTemplateOutlet]="mapToolsTemplate" />
-        <map-controls class="map-container__map-controls" />
       </div>
+      @if (rotation() !== 0) {
+        <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--left">
+          <map-rotation-button [rotation]="rotation()" />
+        </div>
+      }
+      <search-bar
+        class="map-container__search-window map-container__search-window--mobile"
+        mode="compact"
+        [hasFocusEvent]="true"
+        [showFilterButton]="false"
+        placeholderText="Suchen nach Adressen, Orten, Karten und mehr..."
+      />
 
-      <div class="sidebar-right-overlays">
-        <feature-info-overlay
-          class="sidebar-right-overlays__item"
-          [width]="sideBarWidth()"
-          (resizeEvent)="setSideBarWidth($event)"
-          [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-        />
-        <elevation-profile-overlay
-          class="sidebar-right-overlays__item"
-          [width]="sideBarWidth()"
-          (resizeEvent)="setSideBarWidth($event)"
-          [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-        />
-        <drawing-edit-overlay
-          class="sidebar-right-overlays__item"
-          [width]="sideBarWidth()"
-          (resizeEvent)="setSideBarWidth($event)"
-          [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-        />
-      </div>
-    </div>
-
-    <data-download-status-queue
-      class="map-container__data-download-status-queue"
-      [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-    />
-  }
-
-  @if (screenMode() === 'mobile') {
-    <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--right">
-      <button
-        mat-icon-button
-        (click)="showMapManagement()"
-        color="accent"
-        class="map-management__button"
-        [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-      >
-        <mat-icon svgIcon="ktzh_map_management" />
-      </button>
-    </div>
-    @if (rotation() !== 0) {
-      <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--left">
-        <map-rotation-button [rotation]="rotation()" />
-      </div>
+      <bottom-sheet-overlay />
+      <ng-container [ngTemplateOutlet]="mapToolsTemplate" />
     }
-    <search-bar
-      class="map-container__search-window map-container__search-window--mobile"
-      mode="compact"
-      [hasFocusEvent]="true"
-      [showFilterButton]="false"
-      placeholderText="Suchen nach Adressen, Orten, Karten und mehr..."
+    <map-container class="map-container__map" />
+  </mat-drawer-container>
+
+  <ng-template #mapToolsTemplate>
+    <map-tools
+      class="map-container__map-tools"
+      [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
+      [class.map-container__map-tools--mobile]="screenMode() === 'mobile'"
     />
-
-    <bottom-sheet-overlay />
-    <ng-container [ngTemplateOutlet]="mapToolsTemplate" />
-  }
-  <map-container class="map-container__map" />
-</mat-drawer-container>
-
-<ng-template #mapToolsTemplate>
-  <map-tools
-    class="map-container__map-tools"
-    [class.map-container__map-element--hidden]="mapUiState().hideUiElements"
-    [class.map-container__map-tools--mobile]="screenMode() === 'mobile'"
-  />
-</ng-template>
-<onboarding-guide />
-<center-anchor anchorName="map.tour.start" />
-<center-anchor anchorName="map.info" />
-<center-anchor anchorName="map.tour.end" />
+  </ng-template>
+  <onboarding-guide />
+  <center-anchor anchorName="map.tour.start" />
+  <center-anchor anchorName="map.info" />
+  <center-anchor anchorName="map.tour.end" />
+}

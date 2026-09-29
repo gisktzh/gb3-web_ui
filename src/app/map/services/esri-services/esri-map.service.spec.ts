@@ -1,3 +1,5 @@
+import {ErrorHandler} from '@angular/core';
+import {EsriStylesLoaderService} from './esri-styles-loader.service';
 import {TestBed} from '@angular/core/testing';
 import {EsriMapService} from './esri-map.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -92,6 +94,7 @@ describe('EsriMapService', () => {
           },
         }),
         {provide: AuthService, useValue: mockAuthService},
+        {provide: EsriStylesLoaderService, useValue: {ensureLoaded: vi.fn().mockResolvedValue(undefined)}},
         {
           provide: EsriMapViewService,
           useValue: mapViewService,
@@ -110,7 +113,7 @@ describe('EsriMapService', () => {
     } as MapView;
     mapViewService.mapView.set(mapViewMock);
     store = TestBed.inject(MockStore);
-    toolServiceSpy = TestBed.inject(EsriToolService);
+    toolServiceSpy = EsriToolService.prototype;
     initialMapExtentService = TestBed.inject(InitialMapExtentService);
     vi.spyOn(toolServiceSpy, 'initializeMeasurement').mockImplementation(vi.fn());
     vi.spyOn(toolServiceSpy, 'addExistingDrawingsToLayer').mockImplementation(vi.fn());
@@ -119,6 +122,36 @@ describe('EsriMapService', () => {
   it('should be created', () => {
     service = TestBed.inject(EsriMapService);
     expect(service).toBeTruthy();
+  });
+
+  it('does not create a view until CSS loads, and cancels when the container is removed', async () => {
+    vi.useFakeTimers();
+    let resolveCss!: () => void;
+    const css = new Promise<void>((resolve) => (resolveCss = resolve));
+    vi.spyOn(TestBed.inject(EsriStylesLoaderService), 'ensureLoaded').mockReturnValue(css);
+    service = TestBed.inject(EsriMapService);
+    service.assignMapElement(document.createElement('div'));
+    await vi.runAllTimersAsync();
+    expect(service.mapInitialized()).toBe(false);
+    service.deInit();
+    resolveCss();
+    await vi.runAllTimersAsync();
+    expect(service.mapInitialized()).toBe(false);
+    expect(mapViewService.mapView()).toBeUndefined();
+    vi.useRealTimers();
+  });
+
+  it('reports stylesheet failures without marking the map initialized', async () => {
+    vi.useFakeTimers();
+    const error = new Error('stylesheet unavailable');
+    vi.spyOn(TestBed.inject(EsriStylesLoaderService), 'ensureLoaded').mockRejectedValue(error);
+    const report = vi.spyOn(TestBed.inject(ErrorHandler), 'handleError').mockImplementation(vi.fn());
+    service = TestBed.inject(EsriMapService);
+    service.assignMapElement(document.createElement('div'));
+    await vi.runAllTimersAsync();
+    expect(report).toHaveBeenCalledWith(error);
+    expect(service.mapInitialized()).toBe(false);
+    vi.useRealTimers();
   });
 
   it('should init and deinit correctly', async () => {
