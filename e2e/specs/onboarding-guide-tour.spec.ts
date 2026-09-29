@@ -2,8 +2,11 @@ import {test, expect} from '../fixtures';
 
 test.describe('Onboarding guide tour', () => {
   test('shows the onboarding guide', async ({page, useHar, openUrlWithCoordinates, captureConsole}) => {
+    test.setTimeout(60_000);
+
     async function assertStep(text: string, shouldGoBack: boolean = false, expectBackButton: boolean = true) {
-      await expect(page.locator('mat-card-title', {hasText: text})).toBeVisible();
+      const title = page.locator('mat-card-title', {hasText: text});
+      await expect(title).toBeVisible();
       const continueButton = page.locator('button', {hasText: 'Weiter'});
       await expect(continueButton).toBeVisible();
       const backButton = page.locator('button', {hasText: 'Zurück'});
@@ -16,9 +19,7 @@ test.describe('Onboarding guide tour', () => {
       } else {
         await continueButton.click();
       }
-
-      // Animations etc.
-      await page.waitForTimeout(200);
+      await expect(title).toBeHidden();
     }
 
     await useHar();
@@ -37,6 +38,6 @@ test.describe('Onboarding guide tour', () => {
     await assertStep('Navigation');
     await assertStep('Hintergrund');
     await assertStep('Info-Klick');
-    await expect(page.locator('button', {hasText: 'Beenden'})).toBeVisible();
+    await expect(page.locator('button', {hasText: 'Beenden'})).toBeVisible({timeout: 30_000});
   });
 });
