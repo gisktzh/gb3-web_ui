@@ -89,14 +89,26 @@ jobs:
           NODE_OPTIONS: '--max-old-space-size=8192'
 
   e2e:
-    name: Run end-to-end tests (${{ matrix.browser }})
+    name: Run end-to-end tests (${{ matrix.name }})
     runs-on: ${{ inputs.runner_version }}
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        include:
+          - name: chromium
+            browser: chromium
+            grep: --grep-invert accessibility
+          - name: firefox
+            browser: firefox
+            grep: --grep-invert accessibility
+          - name: webkit
+            browser: webkit
+            grep: --grep-invert accessibility
+          - name: accessibility
+            browser: chromium
+            grep: --grep accessibility
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -119,7 +131,7 @@ jobs:
 
       - name: Run tests
         run: |
-          xvfb-run --auto-servernum npm run e2e -- --configuration ci --test-project ${{ matrix.browser }}
+          xvfb-run --auto-servernum npm run e2e -- --configuration ci --test-project ${{ matrix.browser }} ${{ matrix.grep }}
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
           NODE_OPTIONS: '--max-old-space-size=8192'
@@ -127,6 +139,6 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report-${{ matrix.browser }}
+          name: playwright-report-${{ matrix.name }}
           path: playwright-report/
           retention-days: 30
