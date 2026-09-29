@@ -6,7 +6,4 @@ import {
 } from '../models/overview-search-result.model';
 
 export type DataCatalogueFilterKey =
-  | keyof DatasetOverviewMetadataItem
-  | keyof ProductOverviewMetadataItem
-  | keyof MapOverviewMetadataItem
-  | keyof ServiceOverviewMetadataItem;
+  keyof DatasetOverviewMetadataItem | keyof ProductOverviewMetadataItem | keyof MapOverviewMetadataItem | keyof ServiceOverviewMetadataItem;
