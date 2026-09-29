@@ -20,7 +20,8 @@ export class EsriStylesLoaderService {
 
     const existingLink = this.document.getElementById(EsriStylesLoaderService.STYLESHEET_ID) as HTMLLinkElement | null;
     if (existingLink?.sheet || existingLink?.dataset['loaded'] === 'true') {
-      return (this.loadPromise = Promise.resolve());
+      this.loadPromise = Promise.resolve();
+      return this.loadPromise;
     }
 
     const link = existingLink ?? this.document.createElement('link');

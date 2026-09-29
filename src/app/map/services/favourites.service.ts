@@ -27,8 +27,7 @@ import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeSliderService} from './time-slider.service';
-import {TIME_SERVICE} from '../../app.tokens';
-import {DRAWING_SYMBOLS_SERVICE} from '../../app.tokens';
+import {TIME_SERVICE, DRAWING_SYMBOLS_SERVICE} from '../../app.tokens';
 import {DrawingSymbolsService} from '../../shared/interfaces/drawing-symbols-service.interface';
 
 @Injectable({
