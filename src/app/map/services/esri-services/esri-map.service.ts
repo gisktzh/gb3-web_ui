@@ -172,6 +172,14 @@ export class EsriMapService implements MapService {
     });
 
     effect(() => {
+      const viewPadding = this.viewPadding();
+      const mapView = untracked(() => this.esriMapViewService.mapView());
+      if (mapView) {
+        mapView.padding = viewPadding ?? NO_VIEW_PADDING;
+      }
+    });
+
+    effect(() => {
       const rotation = this.rotation();
       if (rotation === 0 && untracked(() => this.esriMapViewService.mapView())) {
         this.setRotationAngle(rotation);
@@ -238,11 +246,6 @@ export class EsriMapService implements MapService {
   public setViewPadding(padding: MapViewPadding | undefined) {
     const copiedPadding = padding ? {...padding} : undefined;
     this.viewPadding.set(copiedPadding);
-
-    const mapView = this.esriMapViewService.mapView();
-    if (mapView) {
-      mapView.padding = copiedPadding ?? NO_VIEW_PADDING;
-    }
   }
 
   public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {
