@@ -113,7 +113,7 @@ describe('EsriMapService', () => {
     } as MapView;
     mapViewService.mapView.set(mapViewMock);
     store = TestBed.inject(MockStore);
-    toolServiceSpy = TestBed.inject(EsriToolService);
+    toolServiceSpy = EsriToolService.prototype;
     initialMapExtentService = TestBed.inject(InitialMapExtentService);
     vi.spyOn(toolServiceSpy, 'initializeMeasurement').mockImplementation(vi.fn());
     vi.spyOn(toolServiceSpy, 'addExistingDrawingsToLayer').mockImplementation(vi.fn());

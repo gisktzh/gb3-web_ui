@@ -37,6 +37,7 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
 import {EsriToolService} from './tool-service/esri-tool.service';
+import {ToolService} from '../../interfaces/tool.service';
 import {TransformationService} from './transformation.service';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
@@ -102,7 +103,8 @@ export class EsriMapService implements MapService {
   private readonly authService = inject(AuthService);
   private readonly esriSymbolizationService = inject(EsriSymbolizationService);
   private readonly esriMapViewService = inject(EsriMapViewService);
-  private readonly esriToolService = inject(EsriToolService);
+  // Construct within the map service injection context so dialogs inherit its route injector.
+  private readonly esriToolService = new EsriToolService();
   private readonly gb3TopicsService = inject(Gb3TopicsService);
   private readonly initialMapExtentService = inject(InitialMapExtentService);
   private readonly timeSliderService = inject(TimeSliderService);
@@ -533,7 +535,7 @@ export class EsriMapService implements MapService {
     return graphics;
   }
 
-  public getToolService(): EsriToolService {
+  public getToolService(): ToolService {
     return this.esriToolService;
   }
 

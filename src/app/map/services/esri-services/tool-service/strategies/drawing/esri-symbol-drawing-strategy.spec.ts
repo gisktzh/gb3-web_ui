@@ -1,6 +1,7 @@
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {TestBed} from '@angular/core/testing';
+import {Injector} from '@angular/core';
 import {provideMockStore} from '@ngrx/store/testing';
 import MapView from '@arcgis/core/views/MapView';
 import Map from '@arcgis/core/Map';
@@ -57,6 +58,7 @@ describe('EsriSymbolDrawingStrategy', () => {
     },
   };
   let dialog: MatDialog;
+  let injector: Injector;
   const mockDrawingsSymbolService = {
     getCollection: vi.fn().mockName('DrawingSymbolsService.getCollection'),
     getCollectionInfos: vi.fn().mockName('DrawingSymbolsService.getCollectionInfos'),
@@ -68,6 +70,7 @@ describe('EsriSymbolDrawingStrategy', () => {
       providers: [provideMockStore({}), {provide: DRAWING_SYMBOLS_SERVICE, useValue: mockDrawingsSymbolService}],
     });
     dialog = TestBed.inject(MatDialog);
+    injector = TestBed.inject(Injector);
 
     mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
@@ -76,12 +79,36 @@ describe('EsriSymbolDrawingStrategy', () => {
     mapView.map!.layers.add(layer);
   });
 
+  it('opens the real dialog with a symbols service provided only by the map injector', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({imports: [MatDialogModule], providers: [provideMockStore({})]});
+    const rootInjector = TestBed.inject(Injector);
+    const mapInjector = Injector.create({
+      parent: rootInjector,
+      providers: [{provide: DRAWING_SYMBOLS_SERVICE, useValue: mockDrawingsSymbolService}],
+    });
+    const rootDialog = TestBed.inject(MatDialog);
+    mockDrawingsSymbolService.getCollectionInfos.mockReturnValue({});
+    expect(rootInjector.get(DRAWING_SYMBOLS_SERVICE, null)).toBeNull();
+    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, rootDialog, mapInjector);
+
+    try {
+      strategy.start();
+      TestBed.tick();
+      expect(document.querySelector('symbol-drawing-tool-input drawing-symbols')).not.toBeNull();
+      expect(mockDrawingsSymbolService.getCollectionInfos).toHaveBeenCalled();
+    } finally {
+      rootDialog.closeAll();
+      mapInjector.destroy();
+    }
+  });
+
   it('should not attempt to add anything when the initial dialog was closed without a value', async () => {
     vi.useFakeTimers();
 
     mockDrawingsSymbolService.getCollectionInfos.mockReturnValue({});
     const callbackSpy = vi.spyOn(callbackHandler, 'handle');
-    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, dialog);
+    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, dialog, injector);
     vi.spyOn(dialog, 'open').mockReturnValue({
       afterClosed: () => of(null),
     } as MatDialogRef<typeof SymbolDrawingToolInputComponent, null>);
@@ -91,6 +118,7 @@ describe('EsriSymbolDrawingStrategy', () => {
     await vi.runAllTimersAsync();
 
     expect(callbackSpy).toHaveBeenCalledWith(undefined, 'add');
+    expect(dialog.open).toHaveBeenCalledWith(SymbolDrawingToolInputComponent, expect.objectContaining({injector}));
 
     vi.useRealTimers();
   });
@@ -116,7 +144,7 @@ describe('EsriSymbolDrawingStrategy', () => {
 
     mockDrawingsSymbolService.getCollectionInfos.mockReturnValue({});
     const callbackSpy = vi.spyOn(callbackHandler, 'handle');
-    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, dialog);
+    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, dialog, injector);
     vi.spyOn(dialog, 'open').mockReturnValue({
       afterClosed: () =>
         of({
@@ -161,7 +189,7 @@ describe('EsriSymbolDrawingStrategy', () => {
 
     mockDrawingsSymbolService.getCollectionInfos.mockReturnValue({});
     const callbackSpy = vi.spyOn(callbackHandler, 'handle');
-    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, dialog);
+    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, dialog, injector);
     vi.spyOn(mockEsriDrawingSymbolDefinition, 'fetchDrawingSymbolDescriptor').mockResolvedValue(transformedDrawingSymbolDescriptor);
     vi.spyOn(dialog, 'open').mockReturnValue({
       afterClosed: () =>
@@ -225,7 +253,7 @@ describe('EsriSymbolDrawingStrategy', () => {
 
     mockDrawingsSymbolService.getCollectionInfos.mockReturnValue({});
     const callbackSpy = vi.spyOn(callbackHandler, 'handle');
-    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, dialog);
+    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, dialog, injector);
     vi.spyOn(mockInitialEsriDrawingSymbolDefinition, 'fetchDrawingSymbolDescriptor').mockResolvedValue(
       initialTransformedDrawingSymbolDescriptor,
     );
