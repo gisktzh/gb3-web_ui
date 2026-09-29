@@ -9,6 +9,14 @@ export default defineConfig({
     mockReset: true,
     isolate: true,
     environment: 'happy-dom',
+    environmentOptions: {
+      happyDOM: {
+        settings: {
+          disableCSSFileLoading: true,
+          handleDisabledFileLoadingAsSuccess: true,
+        },
+      },
+    },
     setupFiles: ['./src/test-setup.ts'],
     reporters: ['default'],
     server: {
