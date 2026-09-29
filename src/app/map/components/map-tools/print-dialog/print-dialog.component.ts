@@ -75,6 +75,7 @@ export class PrintDialogComponent {
   private readonly printService = inject(Gb3PrintService);
   private readonly printSettingsOptionsProvider = inject(PrintSettingsOptionsProviderService);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private hasInitialisedScale = false;
 
   public readonly printFormModel = signal<PrintFormValues>({
     title: '',
@@ -192,7 +193,10 @@ export class PrintDialogComponent {
 
     effect(() => {
       const mapConfigState = this.mapConfigState();
-      if (mapConfigState && !this.printFormModel().scale) {
+      // Initialise the scale once, but do not restore it while a user is
+      // replacing the value. An empty string is a valid transient form state.
+      if (mapConfigState && !this.hasInitialisedScale) {
+        this.hasInitialisedScale = true;
         queueMicrotask(() => {
           this.printForm.scale().value.set(Math.round(mapConfigState.scale).toString());
         });

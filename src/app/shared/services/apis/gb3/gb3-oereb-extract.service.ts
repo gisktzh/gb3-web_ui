@@ -52,24 +52,20 @@ export class Gb3OerebExtractService extends Gb3ApiService {
       kbo: this.mapLinkObjectToOerebValue(info.kbo),
       surveyor: this.mapLinkObjectToOerebValue(info.surveyor),
       staticExtractUrl: info.static_extract_url,
-      concernedThemes: info.concerned_themes.map(
-        (t): OerebConcernedTheme => ({
-          id: t.id,
-          name: t.name,
-          restrictions: t.restrictions.map(
-            (r): OerebExtractRestriction => ({
-              id: r.id,
-              name: r.name,
-              illustration: r.illustration_url,
-              measurement: this.mapMeasurement(r.measurement),
-            }),
-          ),
-          legalProvisions: t.legal_provisions.map((v) => this.mapLinkObjectToOerebValue(v)),
-          laws: t.laws.map((v) => this.mapLinkObjectToOerebValue(v)),
-          hints: t.hints.map((v) => this.mapLinkObjectToOerebValue(v)),
-          responsibleOffices: t.responsible_offices.map((v) => this.mapLinkObjectToOerebValue(v)),
-        }),
-      ),
+      concernedThemes: info.concerned_themes.map((t): OerebConcernedTheme => ({
+        id: t.id,
+        name: t.name,
+        restrictions: t.restrictions.map((r): OerebExtractRestriction => ({
+          id: r.id,
+          name: r.name,
+          illustration: r.illustration_url,
+          measurement: this.mapMeasurement(r.measurement),
+        })),
+        legalProvisions: t.legal_provisions.map((v) => this.mapLinkObjectToOerebValue(v)),
+        laws: t.laws.map((v) => this.mapLinkObjectToOerebValue(v)),
+        hints: t.hints.map((v) => this.mapLinkObjectToOerebValue(v)),
+        responsibleOffices: t.responsible_offices.map((v) => this.mapLinkObjectToOerebValue(v)),
+      })),
       notConcernedThemes: info.not_concerned_themes.map((t) =>
         this.mapNotConcernedThemeFromOerebfeatureTooOerebExtractResponseNotConcernedTheme(t),
       ),

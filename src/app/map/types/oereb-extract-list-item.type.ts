@@ -13,7 +13,4 @@ export type OerebExtractImageListItem = OerebExtractListItemBase & {
 };
 
 export type OerebExtractListItem =
-  | OerebExtractTestListItem
-  | OerebExtractUrlListItem
-  | OerebExtractListListItem
-  | OerebExtractImageListItem;
+  OerebExtractTestListItem | OerebExtractUrlListItem | OerebExtractListListItem | OerebExtractImageListItem;

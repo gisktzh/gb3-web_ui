@@ -3,7 +3,7 @@ import {findEntry as defaultFindEntry} from 'playwright-advanced-har/lib/utils/s
 import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
 import path from 'node:path';
-import {expect} from '@playwright/test';
+import {expect, type Page} from '@playwright/test';
 
 // URL pattern. If pattern matches,
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
@@ -27,6 +27,43 @@ type Gb3Fixtures = {
 
 function getRequestKey(url: string, method: string) {
   return crypto.createHash('sha256').update(JSON.stringify({url, method}), 'utf8').digest('hex');
+}
+
+function canonicalizeJson(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(canonicalizeJson);
+  }
+
+  if (typeof value === 'number') {
+    // Browser geometry calculations can differ below the precision relevant to
+    // the API while still representing the same point.
+    return Math.round(value * 1_000_000) / 1_000_000;
+  }
+
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, child]) => [key, canonicalizeJson(child)]),
+    );
+  }
+
+  return value;
+}
+
+function postDataEquals(left: string, right: string): boolean {
+  try {
+    return JSON.stringify(canonicalizeJson(JSON.parse(left))) === JSON.stringify(canonicalizeJson(JSON.parse(right)));
+  } catch {
+    return left === right;
+  }
+}
+
+async function waitForMapReady(page: Page): Promise<void> {
+  await expect(page.locator('map-page')).toBeVisible({timeout: 30_000});
+  await expect(page.locator('map-page canvas').first()).toBeVisible({timeout: 30_000});
+  await expect(page.locator('input[aria-label="Massstab anpassen"]')).not.toHaveValue('', {timeout: 30_000});
+  await expect(page.locator('input[aria-label="Koordinaten eingeben"]')).not.toHaveValue('', {timeout: 30_000});
 }
 
 export const test = base.extend<Gb3Fixtures>({
@@ -60,7 +97,7 @@ export const test = base.extend<Gb3Fixtures>({
                 }),
               );
 
-              const candidates = scoredEntries.filter((se) => se.score > 0).map((se) => se.entry);
+              const candidates = scoredEntries.filter((se) => se.score >= 0).map((se) => se.entry);
               if (candidates.length === 1) {
                 return candidates[0];
               }
@@ -75,14 +112,16 @@ export const test = base.extend<Gb3Fixtures>({
                   .frame()
                   .evaluate(([key]) => Promise.resolve(Number.parseInt(sessionStorage.getItem(key) || '0')), [requestKey]);
 
-                const entry = candidates[requestIndex];
+                const entry = candidates[redactedRequest.method() === 'GET' ? requestIndex % candidates.length : requestIndex];
                 const newRequestIndex = requestIndex + 1;
 
                 await redactedRequest
                   .frame()
                   .evaluate(([key, index]) => sessionStorage.setItem(key, index), [requestKey, newRequestIndex.toString()]);
 
-                return entry;
+                if (entry) {
+                  return entry;
+                }
               }
             }
 
@@ -92,10 +131,16 @@ export const test = base.extend<Gb3Fixtures>({
             urlComparator(a, b) {
               return a === b;
             },
-            postDataComparator(a, b) {
-              return a === b;
-            },
+            postDataComparator: postDataEquals,
           }),
+        },
+        notFound: async (route) => {
+          const request = route.request();
+          const postData = request.postData();
+          console.error(
+            `[har] No response matched ${request.method()} ${request.url()}${postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : ''}`,
+          );
+          await route.abort();
         },
       });
     });
@@ -104,11 +149,19 @@ export const test = base.extend<Gb3Fixtures>({
   captureConsole: async ({page}, use) => {
     await use(() => {
       page.on('console', (msg) => {
-        if (process.env['CAPTURE_CONSOLE']) {
+        if (msg.type() === 'error' || process.env['CAPTURE_CONSOLE']) {
           const filtered = ['Animation Frame', 'prepare', 'preRender', 'render', 'postRender', 'update', 'finish'];
           if (!filtered.includes(msg.text())) {
-            console.log('[browser console]', msg.text());
+            console.log(`[browser ${msg.type()}]`, msg.text());
           }
+        }
+      });
+
+      page.on('pageerror', (error) => console.error('[browser pageerror]', error));
+      page.on('requestfailed', (request) => {
+        const errorText = request.failure()?.errorText ?? 'unknown error';
+        if (!/abort|cancel/i.test(errorText)) {
+          console.error(`[browser requestfailed] ${request.method()} ${request.url()}: ${errorText}`);
         }
       });
     });
@@ -117,47 +170,60 @@ export const test = base.extend<Gb3Fixtures>({
   filterForLayer: async ({page}, use) => {
     await use(async (searchTerm) => {
       const filterInput = page.locator('input[placeholder="Karten und Layer filtern"]');
-      await filterInput.clear();
-      await page.waitForTimeout(200);
+      await expect(filterInput).toBeVisible();
       // Since the search input listenes to KeyUp events, we need to actually type the search term.
       await filterInput.fill(searchTerm);
       await filterInput.dispatchEvent('keyup', {key: searchTerm.at(-1)});
-      await page.waitForTimeout(200);
+
+      await expect(page.locator('map-data-item-map, map-data-item-favourite').filter({hasText: searchTerm}).first()).toBeVisible({
+        timeout: 30_000,
+      });
     });
   },
 
   clickMapInTheList: async ({page}, use) => {
     await use(async (nameOfTheMap: string) => {
-      await page.locator(`span:has-text("${nameOfTheMap}") >> button[data-test-id="add-active-map"]`).first().click();
-      await page.waitForLoadState('networkidle');
+      const catalogueItem = page.locator('map-data-item-map, map-data-item-favourite').filter({hasText: nameOfTheMap}).first();
+      const addButton = catalogueItem.locator('button[data-test-id="add-active-map"]');
+      await expect(addButton).toBeVisible({timeout: 30_000});
+      await expect(addButton).toBeEnabled();
+      await addButton.click();
+
+      const activeMapItem = page.locator('active-map-item').filter({hasText: nameOfTheMap}).first();
+      await expect(activeMapItem).toBeVisible({timeout: 30_000});
+      await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});
     });
   },
 
   clickByDataTestId: async ({page}, use) => {
     await use(async (testId: string) => {
-      await page.locator(`[data-test-id="${testId}"]`).click();
-      await page.waitForLoadState('networkidle');
+      const element = page.locator(`[data-test-id="${testId}"]`);
+      await expect(element).toBeVisible();
+      await element.click();
     });
   },
 
   selectTopic: async ({page}, use) => {
     await use(async (nameOfTheTopic: string) => {
-      await page.locator(`mat-expansion-panel-header:has-text("${nameOfTheTopic}")`).click();
-      await page.waitForLoadState('networkidle');
+      const topic = page.getByRole('button', {name: nameOfTheTopic, exact: true});
+      if ((await topic.getAttribute('aria-expanded')) !== 'true') {
+        await topic.click();
+      }
+      await expect(topic).toHaveAttribute('aria-expanded', 'true');
     });
   },
 
   openUrlWithCoordinates: async ({page}, use) => {
     await use(async (x: string, y: string, shouldSkipTour: boolean = true) => {
-      await page.goto(`/maps?x=${x}&y=${y}&scale=251&basemap=arelkbackgroundzh`);
-      await page.waitForTimeout(2000);
-      await page.waitForLoadState('networkidle');
+      await page.goto(`/maps?x=${x}&y=${y}&scale=251&basemap=arelkbackgroundzh`, {waitUntil: 'domcontentloaded'});
+      await waitForMapReady(page);
 
       if (shouldSkipTour) {
-        const skipButton = await page.getByText('Überspringen').all();
-        if (skipButton.length === 1) {
-          await skipButton.at(0)?.click();
-          await page.waitForLoadState('networkidle');
+        const skipButton = page.getByRole('button', {name: 'Überspringen'});
+        await skipButton.waitFor({state: 'visible', timeout: 5_000}).catch(() => undefined);
+        if (await skipButton.isVisible()) {
+          await skipButton.click();
+          await expect(skipButton).toBeHidden();
         }
       }
     });
@@ -214,25 +280,15 @@ export const test = base.extend<Gb3Fixtures>({
       const searchInput = page.locator('input[placeholder="Suchen nach Adressen, Orten, Karten und mehr..."]');
 
       await expect(searchInput).toBeVisible();
-
-      await searchInput.focus();
-      await searchInput.clear();
-
       await searchInput.fill(searchTerm);
       await searchInput.dispatchEvent('keyup', {key: searchTerm.at(-1)});
-
-      await page.waitForTimeout(200);
-      await page.waitForLoadState('networkidle');
 
       const searchResult = page.locator('button', {
         hasText: searchTerm,
       });
 
-      await expect(searchResult).toBeVisible();
+      await expect(searchResult).toBeVisible({timeout: 30_000});
       await searchResult.click();
-
-      await page.waitForTimeout(2000);
-      await page.waitForLoadState('networkidle');
     });
   },
 
@@ -241,10 +297,8 @@ export const test = base.extend<Gb3Fixtures>({
       const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
 
       await expect(zoomInput).toBeVisible();
-
-      await zoomInput.focus();
-      await zoomInput.clear();
       await zoomInput.fill(zoomLevel.toString());
+      await expect(zoomInput).toHaveValue(zoomLevel.toString());
     });
   },
 });
