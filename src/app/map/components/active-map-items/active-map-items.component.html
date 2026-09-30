@@ -32,10 +32,10 @@
           [aria-label]="tooltipText.mapNotices"
           matTooltipPosition="below"
         >
+          <mat-icon>info</mat-icon>
           @if (mapNoticesService.numberOfUnreadNotices() > 0) {
             <notification-indicator />
           }
-          <mat-icon svgIcon="ktzh_notification" />
         </button>
         <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true" />
         <button
