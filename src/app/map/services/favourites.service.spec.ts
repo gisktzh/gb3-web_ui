@@ -34,6 +34,33 @@ describe('FavouritesService', () => {
   let timeSliderService: TimeSliderService;
   let symbolizationToGb3ConverterUtils: SymbolizationToGb3ConverterUtils;
 
+  const createFavouriteOptions = [
+    {
+      storeCenter: false,
+      storeScale: false,
+      expectedCenter: undefined,
+      expectedScale: undefined,
+    },
+    {
+      storeCenter: true,
+      storeScale: false,
+      expectedCenter: {x: 2_600_003, y: 1_100_003},
+      expectedScale: undefined,
+    },
+    {
+      storeCenter: false,
+      storeScale: true,
+      expectedCenter: undefined,
+      expectedScale: 1_003,
+    },
+    {
+      storeCenter: true,
+      storeScale: true,
+      expectedCenter: {x: 2_600_003, y: 1_100_003},
+      expectedScale: 1_003,
+    },
+  ];
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
@@ -65,32 +92,7 @@ describe('FavouritesService', () => {
   });
 
   describe('createFavourite', () => {
-    it.each([
-      {
-        storeCenter: false,
-        storeScale: false,
-        expectedCenter: undefined,
-        expectedScale: undefined,
-      },
-      {
-        storeCenter: true,
-        storeScale: false,
-        expectedCenter: {x: 2_600_003, y: 1_100_003},
-        expectedScale: undefined,
-      },
-      {
-        storeCenter: false,
-        storeScale: true,
-        expectedCenter: undefined,
-        expectedScale: 1_003,
-      },
-      {
-        storeCenter: true,
-        storeScale: true,
-        expectedCenter: {x: 2_600_003, y: 1_100_003},
-        expectedScale: 1_003,
-      },
-    ])(
+    it.each(createFavouriteOptions)(
       'forwards center=$storeCenter and scale=$storeScale according to the creation options',
       ({storeCenter, storeScale, expectedCenter, expectedScale}) => {
         const title = 'test title';

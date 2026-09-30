@@ -104,6 +104,41 @@ describe('Gb3ShareLinkService', () => {
     measurements: mockedVectorLayer,
   };
 
+  const loadShareLinkExtentCases = [
+    {
+      description: 'the whole extent is missing',
+      east: null,
+      north: null,
+      scaledenom: null,
+      expectedCenter: defaultMapConfig.center,
+      expectedScale: defaultMapConfig.scale,
+    },
+    {
+      description: 'the east coordinate is missing',
+      east: null,
+      north: 1_100_003,
+      scaledenom: 1_003,
+      expectedCenter: {x: defaultMapConfig.center.x, y: 1_100_003},
+      expectedScale: 1_003,
+    },
+    {
+      description: 'the north coordinate is missing',
+      east: 2_600_003,
+      north: null,
+      scaledenom: 1_003,
+      expectedCenter: {x: 2_600_003, y: defaultMapConfig.center.y},
+      expectedScale: 1_003,
+    },
+    {
+      description: 'the scale is missing',
+      east: 2_600_003,
+      north: 1_100_003,
+      scaledenom: null,
+      expectedCenter: {x: 2_600_003, y: 1_100_003},
+      expectedScale: defaultMapConfig.scale,
+    },
+  ];
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
@@ -143,55 +178,25 @@ describe('Gb3ShareLinkService', () => {
       });
     });
 
-    it.each([
-      {
-        description: 'the whole extent is missing',
-        east: null,
-        north: null,
-        scaledenom: null,
-        expectedCenter: defaultMapConfig.center,
-        expectedScale: defaultMapConfig.scale,
-      },
-      {
-        description: 'the east coordinate is missing',
-        east: null,
-        north: 1_100_003,
-        scaledenom: 1_003,
-        expectedCenter: {x: defaultMapConfig.center.x, y: 1_100_003},
-        expectedScale: 1_003,
-      },
-      {
-        description: 'the north coordinate is missing',
-        east: 2_600_003,
-        north: null,
-        scaledenom: 1_003,
-        expectedCenter: {x: 2_600_003, y: defaultMapConfig.center.y},
-        expectedScale: 1_003,
-      },
-      {
-        description: 'the scale is missing',
-        east: 2_600_003,
-        north: 1_100_003,
-        scaledenom: null,
-        expectedCenter: {x: 2_600_003, y: 1_100_003},
-        expectedScale: defaultMapConfig.scale,
-      },
-    ])('should use the matching default when $description', ({east, north, scaledenom, expectedCenter, expectedScale}) => {
-      const httpClient = TestBed.inject(HttpClient);
-      vi.spyOn(httpClient, 'get').mockReturnValue(
-        of({
-          ...serverDataMock,
-          east,
-          north,
-          scaledenom,
-        } satisfies SharedFavorite),
-      );
+    it.each(loadShareLinkExtentCases)(
+      'should use the matching default when $description',
+      ({east, north, scaledenom, expectedCenter, expectedScale}) => {
+        const httpClient = TestBed.inject(HttpClient);
+        vi.spyOn(httpClient, 'get').mockReturnValue(
+          of({
+            ...serverDataMock,
+            east,
+            north,
+            scaledenom,
+          } satisfies SharedFavorite),
+        );
 
-      service.loadShareLink(shareLinkItemIdMock).subscribe((shareLinkItem) => {
-        expect(shareLinkItem.center).toEqual(expectedCenter);
-        expect(shareLinkItem.scale).toBe(expectedScale);
-      });
-    });
+        service.loadShareLink(shareLinkItemIdMock).subscribe((shareLinkItem) => {
+          expect(shareLinkItem.center).toEqual(expectedCenter);
+          expect(shareLinkItem.scale).toBe(expectedScale);
+        });
+      },
+    );
   });
 
   describe('createShareLink', () => {

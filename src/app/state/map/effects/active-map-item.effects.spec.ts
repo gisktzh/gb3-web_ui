@@ -515,17 +515,7 @@ describe('ActiveMapItemEffects', () => {
     const currentScale = 320_000;
     const storedCenter = {x: 2_600_003, y: 1_100_003};
     const storedScale = 1_003;
-
-    beforeEach(() => {
-      store.overrideSelector(selectMapConfigState, {
-        ...initialMapConfigState,
-        center: currentCenter,
-        scale: currentScale,
-      });
-      store.refreshState();
-    });
-
-    it.each([
+    const zoomToFavouriteExtentCases = [
       {
         description: 'both are stored',
         baseConfig: {basemap: 'basemap3', center: storedCenter, scale: storedScale},
@@ -549,22 +539,36 @@ describe('ActiveMapItemEffects', () => {
       baseConfig: FavouriteBaseConfig;
       expectedCenter: {x: number; y: number};
       expectedScale: number;
-    }>)('zooms using the stored and current values when $description', ({baseConfig, expectedCenter, expectedScale}) => {
-      const zoomToPointSpy = vi.spyOn(mapService, 'zoomToPoint');
-      actions$ = of(ActiveMapItemActions.addFavourite({activeMapItems: [], baseConfig, drawingsToAdd: []}));
+    }>;
 
-      effects.zoomToAddedFavourite$.subscribe();
-
-      expect(zoomToPointSpy).toHaveBeenCalledTimes(1);
-      expect(zoomToPointSpy).toHaveBeenCalledWith(
-        {
-          type: 'Point',
-          srs: MapConstants.DEFAULT_SRS,
-          coordinates: [expectedCenter.x, expectedCenter.y],
-        },
-        expectedScale,
-      );
+    beforeEach(() => {
+      store.overrideSelector(selectMapConfigState, {
+        ...initialMapConfigState,
+        center: currentCenter,
+        scale: currentScale,
+      });
+      store.refreshState();
     });
+
+    it.each(zoomToFavouriteExtentCases)(
+      'zooms using the stored and current values when $description',
+      ({baseConfig, expectedCenter, expectedScale}) => {
+        const zoomToPointSpy = vi.spyOn(mapService, 'zoomToPoint');
+        actions$ = of(ActiveMapItemActions.addFavourite({activeMapItems: [], baseConfig, drawingsToAdd: []}));
+
+        effects.zoomToAddedFavourite$.subscribe();
+
+        expect(zoomToPointSpy).toHaveBeenCalledTimes(1);
+        expect(zoomToPointSpy).toHaveBeenCalledWith(
+          {
+            type: 'Point',
+            srs: MapConstants.DEFAULT_SRS,
+            coordinates: [expectedCenter.x, expectedCenter.y],
+          },
+          expectedScale,
+        );
+      },
+    );
 
     it('does not zoom when neither center nor scale is stored', () => {
       const zoomToPointSpy = vi.spyOn(mapService, 'zoomToPoint');
