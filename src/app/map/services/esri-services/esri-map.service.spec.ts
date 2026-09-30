@@ -521,10 +521,12 @@ describe('EsriMapService', () => {
       service = TestBed.inject(EsriMapService);
 
       service.setViewPadding(padding);
+      TestBed.tick();
 
       expect(mapViewMock.padding).toEqual(padding);
 
       service.setViewPadding(undefined);
+      TestBed.tick();
 
       expect(mapViewMock.padding).toEqual({top: 0, right: 0, bottom: 0, left: 0});
     });
