@@ -102,6 +102,20 @@ export const test = base.extend<Gb3Fixtures>({
                 return candidates[0];
               }
 
+              // Returning to a recorded map extent can request the same image more often than during recording.
+              if (
+                candidates.length > 1 &&
+                redactedRequest.method() === 'GET' &&
+                candidates.every(
+                  ({response}) =>
+                    response.content.mimeType.startsWith('image/') &&
+                    response.status === candidates[0].response.status &&
+                    JSON.stringify(response.content) === JSON.stringify(candidates[0].response.content),
+                )
+              ) {
+                return candidates[0];
+              }
+
               // We're dealing with several instances of the same request, so we need to figure out which one we actually want.
               // We do that by keeping a counter in the browser's session storage. The storage gets reset once the browser is closed
               // (i.e. once the tests are done), so there's no cross-run pollution.
@@ -294,7 +308,7 @@ export const test = base.extend<Gb3Fixtures>({
 
   zoom: async ({page}, use) => {
     await use(async (zoomLevel: number) => {
-      const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
+      const zoomInput = page.locator('[data-test-id="input-map-scale"]');
 
       await expect(zoomInput).toBeVisible();
       await zoomInput.fill(zoomLevel.toString());

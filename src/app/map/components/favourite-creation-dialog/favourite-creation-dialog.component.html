@@ -2,16 +2,18 @@
   <ng-container content>
     <mat-form-field appearance="fill" class="favourite-dialog__form">
       <mat-label>Name des Favoriten</mat-label>
-      <input [formField]="form.title" id="title" matInput />
+      <input [formField]="form.title" id="title" matInput data-test-id="input-favourite-title" />
       @if (!form().valid() && (form().dirty() || form().touched())) {
         <mat-error> Geben Sie einen gültigen, nicht leeren Namen ein. </mat-error>
       }
     </mat-form-field>
-    <mat-checkbox [formField]="form.storeCenter"> Ausschnitt </mat-checkbox>
-    <mat-checkbox [formField]="form.storeScale"> Massstab </mat-checkbox>
+    <mat-checkbox [formField]="form.storeCenter" data-test-id="input-favourite-store-center"> Ausschnitt </mat-checkbox>
+    <mat-checkbox [formField]="form.storeScale" data-test-id="input-favourite-store-scale"> Massstab </mat-checkbox>
   </ng-container>
   <ng-container actions>
     <button (click)="abort()" [disabled]="savingState() === 'loading'" mat-button>Abbrechen</button>
-    <button (click)="save()" [disabled]="!form().valid() || savingState() === 'loading'" mat-button>Speichern</button>
+    <button (click)="save()" [disabled]="!form().valid() || savingState() === 'loading'" mat-button data-test-id="submit-create-favourite">
+      Speichern
+    </button>
   </ng-container>
 </api-dialog-wrapper>
