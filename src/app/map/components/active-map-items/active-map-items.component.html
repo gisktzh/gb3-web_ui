@@ -26,13 +26,13 @@
         <button
           class="active-map-items__header__buttons__action active-map-items__header__buttons__action--notices"
           (click)="showMapNotices()"
-          [disabled]="numberOfNotices() === 0"
+          [disabled]="mapNoticesService.numberOfNotices() === 0"
           mat-icon-button
           [matTooltip]="tooltipText.mapNotices"
           [aria-label]="tooltipText.mapNotices"
           matTooltipPosition="below"
         >
-          @if (numberOfUnreadNotices() > 0) {
+          @if (mapNoticesService.numberOfUnreadNotices() > 0) {
             <notification-indicator />
           }
           <mat-icon svgIcon="ktzh_notification" />

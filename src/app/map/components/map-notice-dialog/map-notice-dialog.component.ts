@@ -5,6 +5,7 @@ import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
 import {MatDivider} from '@angular/material/divider';
 import {MatButton} from '@angular/material/button';
+import {MapNoticesService} from '../../services/map-notices.service';
 
 @Component({
   selector: 'map-notice-dialog',
@@ -15,9 +16,19 @@ import {MatButton} from '@angular/material/button';
 })
 export class MapNoticeDialogComponent {
   protected readonly activeMapItemsWithNotices = inject<Gb2WmsActiveMapItem[]>(MAT_DIALOG_DATA);
+  protected readonly mapNoticesService = inject(MapNoticesService);
   private readonly dialogRef = inject<MatDialogRef<MapNoticeDialogComponent>>(MatDialogRef);
 
   public close() {
     this.dialogRef.close();
+  }
+
+  public closeAndDisableAutoOpening() {
+    this.mapNoticesService.disableAutoOpening();
+    this.close();
+  }
+
+  public enableAutoOpening() {
+    this.mapNoticesService.enableAutoOpening();
   }
 }

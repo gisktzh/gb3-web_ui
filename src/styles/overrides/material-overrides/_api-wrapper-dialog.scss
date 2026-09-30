@@ -42,6 +42,10 @@
       width: 137px;
       padding: 12px 24px 12px 24px;
 
+      &.mdc-button--auto-width {
+        width: auto;
+      }
+
       &:last-of-type {
         background-color: functions.get-color-from-palette('accent');
         color: functions.get-contrast-color-from-palette('accent');
