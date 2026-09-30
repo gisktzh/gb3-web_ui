@@ -1,4 +1,5 @@
 import {test, expect} from '../fixtures';
+import type {TopicsStatisticInfoListData} from '../../src/app/shared/models/gb3-api-generated.interfaces';
 
 test.describe('OEREB-Kataster', () => {
   test('opens the OEREB-Kataster and searches for a specific address, returning its data in the info request', async ({
@@ -37,6 +38,31 @@ test.describe('OEREB-Kataster', () => {
   test('switches between feature and statistics results in the mobile info bottom sheet', async ({page, useHar, captureConsole}) => {
     await page.setViewportSize({width: 390, height: 844});
     await useHar();
+    await page.route('**/topics/StatBeschaeftigteZH/statistic_info?**', (route) => {
+      const url = new URL(route.request().url());
+      return route.fulfill({
+        json: {
+          statistic_info: {
+            topic: 'StatBeschaeftigteZH',
+            topic_title: 'Beschäftigtenstatistik im ausgewählten Gebiet',
+            geolion_karten_uuid: null,
+            layer: 'stat-ent-p',
+            layer_title: 'Beschäftigte',
+            geolion_geodatensatz_uuid: null,
+            fields: ['anz_besch', 'anz_vzae', 'anz_ast'],
+            statistic: 'sum',
+            geometry: url.searchParams.get('geometry')!,
+            srid: Number(url.searchParams.get('srid')),
+            feature_geometry: null,
+            results: {
+              anz_besch: {alias: 'Anzahl Beschäftigte', value: 42, count: 3},
+              anz_vzae: {alias: 'Vollzeitäquivalente', value: 35.5, count: 3},
+              anz_ast: {alias: 'Arbeitsstätten', value: 3, count: 3},
+            },
+          },
+        } satisfies TopicsStatisticInfoListData,
+      });
+    });
     captureConsole();
 
     await page.goto('/maps?initialMapIds=OerebKatasterZH');
@@ -80,6 +106,8 @@ test.describe('OEREB-Kataster', () => {
     await expect(featuresTab).toHaveAttribute('aria-selected', 'false');
     await expect(bottomSheet.locator('statistics')).toBeVisible();
     await expect(bottomSheet.getByText('Beschäftigtenstatistik im ausgewählten Gebiet')).toBeVisible();
+    await expect(bottomSheet.getByText('Anzahl Beschäftigte', {exact: true})).toBeVisible();
+    await expect(bottomSheet.getByText('Summe', {exact: true})).toBeVisible();
 
     await featuresTab.click();
 

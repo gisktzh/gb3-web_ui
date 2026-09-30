@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
@@ -18,7 +18,6 @@ import {MapService} from '../../../map/interfaces/map.service';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {MAP_SERVICE} from '../../../app.tokens';
 import {StatisticsService} from '../../../shared/services/apis/gb3/abstract-statistics.service';
-import {Gb3StatisticsMockService} from '../../../shared/services/apis/gb3/gb3-statistics-mock.service';
 import {PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {deriveBoundingBoxCenter} from '../../../shared/utils/statistics-geometry.utils';
 
@@ -26,6 +25,7 @@ describe('StatisticsEffects', () => {
   let actions$: Observable<Action>;
   let effects: StatisticsEffects;
   let store: MockStore;
+  const statisticsService = {loadStatistics: vi.fn()};
 
   const square: PolygonWithSrs = {
     type: 'Polygon',
@@ -43,6 +43,7 @@ describe('StatisticsEffects', () => {
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
+    statisticsService.loadStatistics.mockReturnValue(of([]));
 
     TestBed.configureTestingModule({
       providers: [
@@ -51,7 +52,7 @@ describe('StatisticsEffects', () => {
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
-        {provide: StatisticsService, useClass: Gb3StatisticsMockService},
+        {provide: StatisticsService, useValue: statisticsService},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -224,6 +225,42 @@ describe('StatisticsEffects', () => {
       effects.openOverlayOnRequest$.subscribe((action) => (actualAction = action));
 
       expect(actualAction).toEqual(MapUiActions.setFeatureInfoVisibility({isVisible: true}));
+    });
+
+    describe('loadStatistics$', () => {
+      it('loads statistics for the selected geometry', () => {
+        store.overrideSelector(selectGeometry, square);
+        actions$ = of(StatisticsActions.sendRequest());
+
+        let actualAction;
+        effects.loadStatistics$.subscribe((action) => (actualAction = action));
+
+        expect(statisticsService.loadStatistics).toHaveBeenCalledExactlyOnceWith(square);
+        expect(actualAction).toEqual(StatisticsActions.updateContent({results: []}));
+      });
+
+      it('surfaces endpoint errors in the statistics state', () => {
+        const error = new Error('Statistics request failed');
+        statisticsService.loadStatistics.mockReturnValue(throwError(() => error));
+        store.overrideSelector(selectGeometry, square);
+        actions$ = of(StatisticsActions.sendRequest());
+
+        let actualAction;
+        effects.loadStatistics$.subscribe((action) => (actualAction = action));
+
+        expect(actualAction).toEqual(StatisticsActions.setError({error}));
+      });
+
+      it('clears content without querying when no area is selected', () => {
+        store.overrideSelector(selectGeometry, undefined);
+        actions$ = of(StatisticsActions.sendRequest());
+
+        let actualAction;
+        effects.loadStatistics$.subscribe((action) => (actualAction = action));
+
+        expect(statisticsService.loadStatistics).not.toHaveBeenCalled();
+        expect(actualAction).toEqual(StatisticsActions.clearContent());
+      });
     });
   });
 });

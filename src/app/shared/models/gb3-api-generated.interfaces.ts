@@ -15,6 +15,58 @@ import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service
 import {ReportOrientation, ReportType} from '../interfaces/print.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
 import {DrawingSymbolDefinition} from '../interfaces/drawing-symbol/drawing-symbol-definition.interface';
+/** Manually added for statistic_info, which is not yet in Swagger. */
+import {Geometry as GeoJsonGeometry} from 'geojson';
+
+/** Manually added: statistic_info aggregate operation. */
+export type StatisticOperation = 'sum' | 'mean' | 'median' | 'min' | 'max';
+
+/** Manually added: GET topics/:topic_name/statistic_info query parameters. */
+export interface StatisticInfoQueryParameters {
+  layer: string;
+  /** Numeric database columns, comma-separated or sent as field[] parameters. */
+  field: string | readonly string[];
+  statistic: StatisticOperation;
+  /** Circle in x,y,radius syntax or a closed POLYGON WKT. */
+  geometry: string;
+  /** EPSG identifier of the input geometry. */
+  srid: number;
+}
+
+/** Manually added: aggregate for one numeric database column. */
+export interface StatisticInfoResult {
+  alias: string;
+  /** Null if no matching feature has a non-null value for this field. */
+  value: number | string | null;
+  count: number;
+}
+
+/** Manually added: statistic_info response body. */
+export interface StatisticInfo {
+  topic: string;
+  topic_title: string;
+  geolion_karten_uuid: string | null;
+  layer: string;
+  layer_title: string;
+  geolion_geodatensatz_uuid: string | null;
+  fields: string[];
+  statistic: StatisticOperation;
+  geometry: string;
+  srid: number;
+  /** Matching feature geometries in EPSG:2056. */
+  feature_geometry: GeoJsonGeometry | null;
+  results: Record<string, StatisticInfoResult>;
+}
+
+/** Manually added: GET topics/:topic_name/statistic_info response. */
+export interface TopicsStatisticInfoListData {
+  statistic_info: StatisticInfo;
+}
+
+/** Manually added: statistic_info returns string errors on HTTP 400/404. */
+export interface StatisticInfoErrorResponse {
+  errors: string[];
+}
 
 export interface BboxGeoshop {
   /** GeoJSON geometry object */

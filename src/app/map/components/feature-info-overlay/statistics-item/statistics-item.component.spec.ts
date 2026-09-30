@@ -1,5 +1,6 @@
 import {Component, input} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
 import {StatisticsResult} from 'src/app/shared/interfaces/statistics.interface';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {TableData} from '../info-table/info-table.types';
@@ -74,5 +75,33 @@ describe('StatisticsItemComponent', () => {
       'Statistik zu Layer: Named group',
     );
     expect(layer.querySelectorAll('resizable-info-table')).toHaveLength(2);
+  });
+
+  it('shows map and dataset metadata links only when interactive elements are enabled', () => {
+    fixture.componentRef.setInput('result', {
+      topic: 'topic',
+      title: 'Statistics',
+      metaDataLink: '/data/maps/map-uuid',
+      layers: [
+        {
+          layer: 'layer',
+          title: 'Layer',
+          metaDataLink: '/data/datasets/dataset-uuid',
+          columns: ['Summe'],
+          rows: [],
+          status: 'noData',
+        },
+      ],
+    } satisfies StatisticsResult);
+    fixture.detectChanges();
+
+    const items = fixture.debugElement
+      .queryAll(By.directive(MapOverlayListItemStubComponent))
+      .map((item) => item.componentInstance as MapOverlayListItemStubComponent);
+    expect(items.map((item) => item.metaDataLink())).toEqual(['/data/maps/map-uuid', '/data/datasets/dataset-uuid']);
+
+    fixture.componentRef.setInput('showInteractiveElements', false);
+    fixture.detectChanges();
+    expect(items.map((item) => item.metaDataLink())).toEqual([undefined, undefined]);
   });
 });

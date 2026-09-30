@@ -16,7 +16,8 @@ export interface StatisticsResultRow {
 export interface StatisticsResultLayer {
   layer: string;
   title: string;
-  /** The value column names are supplied by the API and differ per layer, e.g. ['Summe']. */
+  metaDataLink?: string;
+  /** Display labels for the aggregate columns, e.g. ['Summe']. */
   columns: string[];
   rows: StatisticsResultRow[];
   status: QueryResultStatus;

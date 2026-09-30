@@ -8,6 +8,7 @@
       <map-overlay-list-item
         [forceExpanded]="true"
         [overlayTitle]="layerView.layer.title"
+        [metaDataLink]="showInteractiveElements() ? layerView.layer.metaDataLink : undefined"
         [hasBackgroundColor]="false"
         [showInteractiveElements]="showInteractiveElements()"
       >
