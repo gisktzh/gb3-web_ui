@@ -77,7 +77,7 @@ test.describe('Favorites layers', () => {
         url.searchParams.get('x') === '2683000' && url.searchParams.get('y') === '1249000' && url.searchParams.get('scale') === '1000',
     );
 
-    await clickMapInTheList(favoriteTitle);
+    await clickMapInTheList(favoriteTitle, 'AWA-Standorte');
     await expect(zoomInput).toHaveValue('251');
     await expect(coordsInput).toHaveValue('2682260 / 1248390');
 

@@ -16,7 +16,7 @@ type Gb3Fixtures = {
   useHar: (postFix?: string) => Promise<void>;
   captureConsole: () => void;
   filterForLayer: (searchTerm: string) => Promise<void>;
-  clickMapInTheList: (nameOfTheMap: string) => Promise<void>;
+  clickMapInTheList: (nameOfTheMap: string, expectedActiveMapName?: string) => Promise<void>;
   clickByDataTestId: (testId: string) => Promise<void>;
   selectTopic: (nameOfTheTopic: string) => Promise<void>;
   openUrlWithCoordinates: (x: string, y: string, shouldSkipTour?: boolean) => Promise<void>;
@@ -196,14 +196,14 @@ export const test = base.extend<Gb3Fixtures>({
   },
 
   clickMapInTheList: async ({page}, use) => {
-    await use(async (nameOfTheMap: string) => {
+    await use(async (nameOfTheMap: string, expectedActiveMapName: string = nameOfTheMap) => {
       const catalogueItem = page.locator('map-data-item-map, map-data-item-favourite').filter({hasText: nameOfTheMap}).first();
       const addButton = catalogueItem.locator('button[data-test-id="add-active-map"]');
       await expect(addButton).toBeVisible({timeout: 30_000});
       await expect(addButton).toBeEnabled();
       await addButton.click();
 
-      const activeMapItem = page.locator('active-map-item').filter({hasText: nameOfTheMap}).first();
+      const activeMapItem = page.locator('active-map-item').filter({hasText: expectedActiveMapName}).first();
       await expect(activeMapItem).toBeVisible({timeout: 30_000});
       await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});
     });
