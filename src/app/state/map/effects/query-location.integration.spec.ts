@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {provideEffects} from '@ngrx/effects';
 import {provideStore, Store} from '@ngrx/store';
 import {EMPTY, firstValueFrom, Observable, of, Subject} from 'rxjs';
-import {STATISTICS_SERVICE} from '../../../app.tokens';
+import {DRAWING_SYMBOLS_SERVICE, MAP_SERVICE, STATISTICS_SERVICE} from '../../../app.tokens';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -37,6 +37,21 @@ import {reducer as mapConfigReducer} from '../reducers/map-config.reducer';
 import {reducer as activeMapItemReducer} from '../reducers/active-map-item.reducer';
 import {reducer as queryModeReducer} from '../reducers/query-mode.reducer';
 import {reducer as toolReducer} from '../reducers/tool.reducer';
+import {reducer as mapUiReducer, selectIsFeatureInfoOverlayVisible} from '../reducers/map-ui.reducer';
+import {reducer as appLayoutReducer} from '../../app/reducers/app-layout.reducer';
+import {QueryModeEffects} from './query-mode.effects';
+import {ToolEffects} from './tool.effects';
+import {MapUiEffects} from './map-ui.effects';
+import {FeatureFlagsService} from '../../../shared/services/feature-flags.service';
+import {MatDialog} from '@angular/material/dialog';
+import {DrawingSymbolServiceStub} from '../../../testing/map-testing/drawing-symbol-service.stub';
+import {GeneralInfoResponse} from '../../../shared/interfaces/general-info.interface';
+import {selectFeatureInfoQueryLoadingState} from '../selectors/feature-info-query-loading-state.selector';
+import {FeatureHighlightingService} from '../../../map/services/feature-highlighting.service';
+import {ToolActions} from '../actions/tool.actions';
+import {MapUiActions} from '../actions/map-ui.actions';
+import {FeatureInfoActions} from '../actions/feature-info.actions';
+import {selectActiveTool} from '../reducers/tool.reducer';
 
 describe('shared feature/statistics query location', () => {
   let store: Store;
@@ -51,7 +66,10 @@ describe('shared feature/statistics query location', () => {
     clearFeatureQueryLocation: vi.fn(),
     drawStatisticsHighlights: vi.fn(),
     clearStatisticsHighlights: vi.fn(),
+    drawFeatureInfoHighlight: vi.fn(),
+    clearFeatureInfoHighlight: vi.fn(),
   };
+  const tools = {initializeStatisticsSelection: vi.fn(), initializeMeasurement: vi.fn(), cancelTool: vi.fn()};
   const point: PointWithSrs = {type: 'Point', coordinates: [2680000, 1254000], srs: 2056};
   const polygon: PolygonWithSrs = {
     type: 'Polygon',
@@ -87,7 +105,13 @@ describe('shared feature/statistics query location', () => {
 
   beforeEach(() => {
     topics.loadFeatureInfos.mockReturnValue(of([]));
-    generalInfo.loadGeneralInfo.mockReturnValue(EMPTY);
+    generalInfo.loadGeneralInfo.mockImplementation((x: number, y: number) =>
+      of({
+        locationInformation: {queryPosition: {type: 'Point', coordinates: [x, y], srs: 2056}, heightDom: 410, heightDtm: 400},
+        alternativeSpatialReferences: [],
+        externalMaps: [],
+      } satisfies GeneralInfoResponse),
+    );
     oerebExtract.loadOerebExtract.mockReturnValue(of(null));
     statistics.loadStatistics.mockReturnValue(of([]));
     TestBed.configureTestingModule({
@@ -102,20 +126,78 @@ describe('shared feature/statistics query location', () => {
           activeMapItem: activeMapItemReducer,
           queryMode: queryModeReducer,
           tool: toolReducer,
+          mapUi: mapUiReducer,
+          appLayout: appLayoutReducer,
         }),
         {provide: Gb3TopicsService, useValue: topics},
         {provide: Gb3GeneralInfoService, useValue: generalInfo},
         {provide: Gb3OerebExtractService, useValue: oerebExtract},
         {provide: STATISTICS_SERVICE, useValue: statistics},
         {provide: MapDrawingService, useValue: drawing},
-        provideEffects(FeatureInfoEffects, GeneralInfoEffects, OerebExtractEffects, StatisticsEffects),
+        {provide: MAP_SERVICE, useValue: {getToolService: () => tools}},
+        {provide: FeatureFlagsService, useValue: {getFeatureFlag: () => true}},
+        {provide: MatDialog, useValue: {open: vi.fn()}},
+        {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
+        FeatureHighlightingService,
+        provideEffects(
+          FeatureInfoEffects,
+          GeneralInfoEffects,
+          OerebExtractEffects,
+          StatisticsEffects,
+          QueryModeEffects,
+          ToolEffects,
+          MapUiEffects,
+        ),
       ],
     });
     store = TestBed.inject(Store);
+    TestBed.inject(FeatureHighlightingService).init();
     store.dispatch(MapConfigActions.setScale({scale: 1000}));
     const item = createGb2WmsMapItemMock('StatBeschaeftigteZH', 1);
     Object.assign(item.settings.layers[0], {layer: 'stat-ent-p', queryable: true, minScale: 1, maxScale: 1000000});
     store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: item, position: 0}));
+  });
+
+  it('loads complete feature results, hands off measurement, and restores the retained selection after map recreation', async () => {
+    store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+    store.dispatch(MapConfigActions.setReady({calculatedMinScale: 1_000_000, calculatedMaxScale: 1}));
+    store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+    expect(await firstValueFrom(store.select(selectFeatureInfoQueryLoadingState))).toBe('loaded');
+    store.dispatch(MapUiActions.toggleToolMenu({tool: 'measurement'}));
+    store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
+    expect(await firstValueFrom(store.select(selectActiveTool))).toBeUndefined();
+    expect(tools.cancelTool).toHaveBeenCalledOnce();
+    expect(await firstValueFrom(store.select(selectIsFeatureInfoOverlayVisible))).toBe(true);
+    const geometry = await firstValueFrom(store.select(selectGeometry));
+    expect(drawing.drawStatisticsArea).toHaveBeenLastCalledWith(geometry);
+    drawing.drawStatisticsArea.mockClear();
+    store.dispatch(MapConfigActions.markMapServiceAsDeinitialized());
+    expect(drawing.drawStatisticsArea).not.toHaveBeenCalled();
+    store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+    expect(drawing.drawStatisticsArea).toHaveBeenCalledExactlyOnceWith(geometry);
+    store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'feature'}));
+    expect(drawing.clearStatisticsArea).toHaveBeenCalled();
+    expect(await firstValueFrom(store.select(selectFeatureInfoQueryLoadingState))).toBe('loaded');
+    expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
+  });
+
+  it('scopes feature pins to their mode, restores them, and clears all graphics on real overlay closure', () => {
+    store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+    store.dispatch(MapConfigActions.setReady({calculatedMinScale: 1_000_000, calculatedMaxScale: 1}));
+    store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+    store.dispatch(FeatureInfoActions.highlightFeature({feature: point, pinnedFeatureId: 'topic_layer_1'}));
+    expect(drawing.drawFeatureInfoHighlight).toHaveBeenLastCalledWith(point);
+    drawing.drawFeatureInfoHighlight.mockClear();
+    store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
+    expect(drawing.clearFeatureInfoHighlight).toHaveBeenCalled();
+    expect(drawing.drawFeatureInfoHighlight).not.toHaveBeenCalled();
+    store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'feature'}));
+    expect(drawing.drawFeatureInfoHighlight).toHaveBeenCalledExactlyOnceWith(point);
+    store.dispatch(MapUiActions.setFeatureInfoVisibility({isVisible: false}));
+    expect(drawing.clearFeatureInfoHighlight).toHaveBeenCalled();
+    expect(drawing.clearStatisticsArea).toHaveBeenCalled();
+    expect(drawing.clearFeatureQueryLocation).toHaveBeenCalled();
   });
 
   it('uses a map click as the shared point and derives a circle without duplicate feature requests', async () => {
