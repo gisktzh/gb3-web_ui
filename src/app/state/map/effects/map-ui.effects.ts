@@ -1,5 +1,4 @@
 import {Injectable, inject} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
@@ -33,6 +32,7 @@ import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-i
 import {selectMapAttributeFiltersItem} from '../selectors/map-attribute-filters-item.selector';
 import {SymbolizationToGb3ConverterUtils} from 'src/app/shared/utils/symbolization-to-gb3-converter.utils';
 import {ShareLinkItem} from 'src/app/shared/interfaces/share-link.interface';
+import {AnimatedDialogService} from 'src/app/shared/services/animated-dialog.service';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -42,7 +42,7 @@ const MAP_NOTICES_DIALOG_MAX_WIDTH = 968;
 export class MapUiEffects {
   private readonly actions$ = inject(Actions);
   private readonly store = inject(Store);
-  private readonly dialogService = inject(MatDialog);
+  private readonly dialogService = inject(AnimatedDialogService);
   private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
   public hideUiElementsDependingOnShownSideDrawer$ = createEffect(() => {
@@ -303,11 +303,12 @@ export class MapUiEffects {
       concatLatestFrom(() => this.store.select(selectGb2WmsActiveMapItemsWithMapNotices)),
       tap(([_, gb2WmsActiveMapItemsWithMapNotices]) =>
         this.dialogService.open(MapNoticeDialogComponent, {
-          panelClass: PanelClass.ApiWrapperDialog,
+          panelClass: [PanelClass.ApiWrapperDialog, PanelClass.ApiWrapperDialogWithClosingTarget],
           restoreFocus: false,
           data: gb2WmsActiveMapItemsWithMapNotices,
           maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH,
           autoFocus: false,
+          exitAnimationDuration: 750,
         }),
       ),
       map(() => ActiveMapItemActions.markAllActiveMapItemNoticeAsRead()),

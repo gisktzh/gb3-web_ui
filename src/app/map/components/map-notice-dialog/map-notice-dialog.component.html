@@ -15,6 +15,13 @@
     }
   </ng-container>
   <ng-container actions>
-    <button (click)="close()" mat-button>Schliessen</button>
+    <div>
+      @if (mapNoticesService.skipAutoOpeningOfMapNotices() === '1') {
+        <button (click)="enableAutoOpening()" mat-button class="mdc-button--auto-width">Automatisch anzeigen</button>
+      } @else {
+        <button (click)="closeAndDisableAutoOpening()" mat-button class="mdc-button--auto-width">Nicht mehr automatisch anzeigen</button>
+      }
+      <button (click)="close()" mat-button>Schliessen</button>
+    </div>
   </ng-container>
 </api-dialog-wrapper>

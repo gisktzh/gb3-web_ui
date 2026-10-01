@@ -2,12 +2,10 @@ import {CdkDrag, CdkDragDrop, CdkDropList, CdkDragHandle, CdkDragPlaceholder} fr
 import {Component, computed, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {ActiveMapItem} from '../../models/active-map-item.model';
-import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {selectActiveTool} from '../../../state/map/reducers/tool.reducer';
 import {OnboardingGuideService} from '../../../onboarding-guide/services/onboarding-guide.service';
 import {selectItems} from '../../../state/map/selectors/active-map-items.selector';
@@ -24,6 +22,9 @@ import {MatAccordion} from '@angular/material/expansion';
 import {ActiveMapItemComponent} from './active-map-item/active-map-item.component';
 import {DragCursorDirective} from '../../../shared/directives/drag-cursor.directive';
 import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MapNoticesService} from '../../services/map-notices.service';
+import {AnimationTargetForDialogDirective} from '../../directives/animation-target-for-dialog.directive';
+import {MapNoticeDialogComponent} from '../../components/map-notice-dialog/map-notice-dialog.component';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Um einen Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
@@ -60,11 +61,13 @@ const TOOLTIP_TEXT = {
     DragCursorDirective,
     CdkDragHandle,
     CdkDragPlaceholder,
+    AnimationTargetForDialogDirective,
   ],
 })
 export class ActiveMapItemsComponent {
   private readonly store = inject(Store);
   private readonly onboardingGuideService = inject(OnboardingGuideService);
+  protected readonly mapNoticesService = inject(MapNoticesService);
 
   public tooltipText = TOOLTIP_TEXT;
   public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
@@ -83,17 +86,8 @@ export class ActiveMapItemsComponent {
   });
   public readonly isActiveMapItemDragAndDropDisabled = computed(() => !!this.activeTool());
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
-  public readonly gb2ActiveMapItems = computed<Gb2WmsActiveMapItem[]>(() =>
-    this.activeMapItems().filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)),
-  );
-  public readonly activeMapItemsWithNotices = computed(() =>
-    this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice),
-  );
-
-  public readonly numberOfNotices = computed(() => this.activeMapItemsWithNotices().length);
-  public readonly numberOfUnreadNotices = computed(
-    () => this.activeMapItemsWithNotices().filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length,
-  );
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- So it looks like the actual class name in the template.
+  public readonly MapNoticeDialogComponent = MapNoticeDialogComponent;
 
   public trackByMapItemId(_: number, item: ActiveMapItem) {
     return item.id;
@@ -114,7 +108,7 @@ export class ActiveMapItemsComponent {
   }
 
   public showMapNotices() {
-    this.store.dispatch(MapUiActions.showMapNoticesDialog());
+    this.mapNoticesService.openMapNotices();
   }
 
   public restartOnboardingGuide() {
