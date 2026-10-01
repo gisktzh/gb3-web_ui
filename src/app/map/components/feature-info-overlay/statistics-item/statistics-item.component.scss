@@ -5,6 +5,14 @@
   display: block;
 }
 
+.statistics-item__icon {
+  margin: 0 12px;
+  height: 24px;
+  width: 24px;
+  min-width: 24px;
+  font-size: 24px;
+}
+
 .statistics-item__table-header {
   cursor: pointer;
 }
@@ -40,12 +48,6 @@
 
 .statistics-item {
   width: 100%;
-
-  .statistics-item__icon {
-    height: 24px;
-    width: 24px;
-    font-size: 24px;
-  }
 
   .statistics-item__status {
     margin: 0;

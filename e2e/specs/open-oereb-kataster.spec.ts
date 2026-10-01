@@ -197,6 +197,15 @@ test.describe('OEREB-Kataster', () => {
     await expect(featuresTab).toHaveAttribute('aria-selected', 'true');
     await expect(bottomSheet.locator('feature-info')).toBeVisible();
     expect(statisticsRequests).toBe(0);
+    const readIconSpacing = (icons: Element[]) =>
+      icons.map((icon) => {
+        const title = icon.closest('mat-expansion-panel-header')?.querySelector('.list-item__header__content__title');
+        if (!title) {
+          throw new Error('A section icon must have a header title to measure its spacing.');
+        }
+        const bounds = icon.getBoundingClientRect();
+        return {width: bounds.width, labelGap: title.getBoundingClientRect().left - bounds.right};
+      });
 
     await statisticsTab.click();
 
@@ -206,6 +215,10 @@ test.describe('OEREB-Kataster', () => {
     await expect(bottomSheet.getByText('Beschäftigtenstatistik im ausgewählten Gebiet')).toBeVisible();
     await expect(bottomSheet.getByText('Anzahl Beschäftigte', {exact: true})).toBeVisible();
     await expect(bottomSheet.getByText('Summe', {exact: true})).toBeVisible();
+    expect(await bottomSheet.locator('statistics-item .statistics-item__icon').evaluateAll(readIconSpacing)).toEqual([
+      {width: 24, labelGap: 12},
+      {width: 24, labelGap: 12},
+    ]);
     expect(statisticsRequests).toBe(1);
     await expect.poll(statisticsHighlights).toEqual([]);
     const markHeader = bottomSheet.locator('statistics-item th', {hasText: 'Markieren:'});
