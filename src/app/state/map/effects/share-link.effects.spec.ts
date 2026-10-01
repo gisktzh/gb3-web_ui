@@ -502,7 +502,6 @@ describe('ShareLinkEffects', () => {
             y: expectedCompleteItem.y,
             scale: expectedCompleteItem.scale,
             basemapId: expectedCompleteItem.basemapId,
-            initialMaps: [],
           };
 
           effects.setMapConfigAfterValidation$.subscribe((action) => {

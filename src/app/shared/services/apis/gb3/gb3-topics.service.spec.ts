@@ -328,6 +328,62 @@ describe('Gb3TopicsService', () => {
       await vi.runAllTimersAsync();
       vi.useRealTimers();
     });
+
+    it('should sort topics of the ÖREB category by the configured oerebMaps order instead of alphabetically', async () => {
+      vi.useFakeTimers();
+
+      const shuffledOerebMaps = [...configService.oerebMaps].reverse();
+      const data: TopicsListData = {
+        categories: [
+          {
+            title: 'ÖREB',
+            topics: shuffledOerebMaps.map((topic) => ({
+              title: topic,
+              topic,
+              print_title: topic,
+              icon: '/images/custom/themekl-statgebalterzh.gif',
+              organisation: 'Statistisches Amt',
+              geolion_karten_uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+              geolion_gdd: null,
+              keywords: [],
+              notice: null,
+              opacity: 0.1337,
+              timesliderConfiguration: {
+                name: 'Aktueller Gebäudebestand nach Baujahr',
+                source: {
+                  layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
+                  endRangeParameter: 'FILTER_BIS',
+                  startRangeParameter: 'FILTER_VON',
+                },
+                dateFormat: 'YYYY',
+                sourceType: 'parameter',
+                description: 'Gebäude bis 2020',
+                maximumDate: '2020',
+                minimumDate: '1850',
+                minimalRange: 'P1Y',
+                alwaysMaxRange: false,
+              },
+              filterConfigurations: [],
+              searchConfigurations: null,
+              wms_url: 'https://maps.zh.ch/wms/StatGebAlterZH',
+              gb2_url: 'https://maps.zh.ch/?topic=StatGebAlterZH',
+              layers: [],
+              min_scale: null,
+            })),
+          },
+        ],
+      };
+
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(data));
+
+      service.loadTopics().subscribe((actual) => {
+        const actualTopics = actual.topics.map((topic) => topic.maps.map((map) => map.id)).flat();
+        expect(actualTopics).toEqual(configService.oerebMaps);
+      });
+
+      await vi.runAllTimersAsync();
+      vi.useRealTimers();
+    });
   });
 
   describe('loadLegends', () => {
@@ -546,10 +602,6 @@ describe('Gb3TopicsService', () => {
             topic: 'AVfarbigZH',
             geolion_gdd: 263,
             geolion_karten_uuid: '26d7c027-38f2-42cb-a17a-99f17a2e383e',
-            report: {
-              url: null,
-              description: null,
-            },
             layers: [
               {
                 layer: 'RESF-1',

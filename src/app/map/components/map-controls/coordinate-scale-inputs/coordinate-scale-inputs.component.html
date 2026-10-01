@@ -5,6 +5,7 @@
         [value]="scale()"
         (input)="setScale($event)"
         class="coordinate-scale-inputs__input"
+        data-test-id="input-map-scale"
         type="text"
         aria-label="Massstab anpassen"
       />
@@ -17,6 +18,7 @@
         (keydown.enter)="setMapCenterAndDrawHighlight($event)"
         [value]="mapCenter()"
         class="coordinate-scale-inputs__input"
+        data-test-id="input-map-coordinates"
         type="text"
         aria-label="Koordinaten eingeben"
       />

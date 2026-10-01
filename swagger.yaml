@@ -41,9 +41,15 @@ paths:
             - 'arewildbackgroundzh'
             - 'arelkbackgroundswzh'
             - 'arelkbackgroundzh'
+        - name: 'topics'
+          in: 'query'
+          description: 'This is a comma-separated list of identifiers for the topics/maps that should be displayed. This is the canonical parameter, it is persisted in the URL and kept in sync with the currently active map items. If provided more than once, last value will be used.'
+          required: false
+          default: ''
+          type: 'string'
         - name: 'initialMapIds'
           in: 'query'
-          description: 'This is a comma-separated list of identifiers for the maps that should be initially displayed. Each identifier corresponds to a specific map. This parameter will be removed after loading the page. If provided more than once, last value will be used.'
+          description: 'Deprecated legacy alias for `topics`. This is a comma-separated list of identifiers for the maps that should be initially displayed. Each identifier corresponds to a specific map. It is merged into `topics` and removed from the URL after the page loads. If provided more than once, last value will be used.'
           required: false
           default: ''
           type: 'string'

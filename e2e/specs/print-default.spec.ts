@@ -54,9 +54,8 @@ test.describe('Printing', () => {
     const scaleField = page.locator('[data-test-id="input-print-scale"]');
     await expect(scaleField).toBeVisible();
 
-    await scaleField.focus();
-    await scaleField.clear();
     await scaleField.fill('600');
+    await expect(scaleField).toHaveValue('600');
 
     const layoutField = page.locator('[data-test-id="input-print-layout"]');
     await expect(layoutField).toBeVisible();

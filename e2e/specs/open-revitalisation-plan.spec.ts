@@ -6,6 +6,7 @@ test.describe('Revitalisierungsplanung', () => {
     openUrlWithCoordinates,
     filterForLayer,
     clickMapInTheList,
+    clickDefaultMapViewCenter,
     useHar,
     captureConsole,
   }) => {
@@ -17,14 +18,12 @@ test.describe('Revitalisierungsplanung', () => {
     await filterForLayer('Gewässerökologie: Revitalisierungsplanung');
     await clickMapInTheList('Gewässerökologie: Revitalisierungsplanung');
 
-    const map = page.locator('map-page');
-    await expect(map).toBeVisible();
+    const activeMapItem = page.locator('active-map-item').filter({hasText: 'Gewässerökologie: Revitalisierungsplanung'}).first();
+    await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});
 
-    await map.click({force: true});
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(500);
+    await clickDefaultMapViewCenter();
 
-    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
+    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible({timeout: 30_000});
     await expect(page.locator('th', {hasText: 'Länge [m]'}).locator('xpath=following-sibling::td')).toContainText('1654');
     await expect(page.locator('th', {hasText: 'Gewässername'}).locator('xpath=following-sibling::td')).toContainText('Schürgigraben');
   });

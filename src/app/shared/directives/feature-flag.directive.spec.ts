@@ -6,7 +6,7 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {FeatureFlagsService} from '../services/feature-flags.service';
 import {FeatureFlags} from '../interfaces/feature-flags.interface';
 
-const featureFlagToCheck: keyof FeatureFlags = 'oerebExtract';
+const featureFlagToCheck: keyof FeatureFlags = 'koPlaNavItem';
 @Component({
   template: `<div><span *featureFlag="featureFlagToCheck">Test</span></div>`,
   imports: [FeatureFlagDirective],

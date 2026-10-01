@@ -1,4 +1,4 @@
-import {Component, input, ChangeDetectionStrategy} from '@angular/core';
+import {Component, input, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
 import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-info.interface';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {MatIcon} from '@angular/material/icon';
@@ -12,6 +12,7 @@ import {FeatureInfoReportDownloadComponent} from '../feature-info-report-downloa
   styleUrls: ['./feature-info-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapOverlayListItemComponent, MatIcon, NgTemplateOutlet, FeatureInfoContentComponent, FeatureInfoReportDownloadComponent],
+  encapsulation: ViewEncapsulation.None,
 })
 export class FeatureInfoItemComponent {
   public readonly featureInfo = input.required<FeatureInfoResultDisplay>();
