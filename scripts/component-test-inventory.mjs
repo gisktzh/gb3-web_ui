@@ -18,7 +18,7 @@ function findComponentFiles(directory = componentRoot) {
     })
     .filter((path) => path.endsWith('.component.ts') && !path.endsWith('.component.spec.ts'))
     .map(toRepositoryPath)
-    .sort();
+    .sort((left, right) => left.localeCompare(right));
 }
 
 function readInventory() {
@@ -29,7 +29,7 @@ function readInventory() {
   const source = readFileSync(inventoryPath, 'utf8');
   const inventory = parse(source);
   if (!inventory || typeof inventory !== 'object' || Array.isArray(inventory)) {
-    throw new Error('The component test inventory must be a YAML mapping.');
+    throw new TypeError('The component test inventory must be a YAML mapping.');
   }
   return inventory;
 }
@@ -40,7 +40,7 @@ function entriesFor(inventory, status) {
     return {};
   }
   if (typeof entries !== 'object' || Array.isArray(entries)) {
-    throw new Error(`The '${status}' group must be a YAML mapping.`);
+    throw new TypeError(`The '${status}' group must be a YAML mapping.`);
   }
   return entries;
 }
@@ -70,26 +70,29 @@ function collectClassifications(inventory) {
   return classifications;
 }
 
+function validateEvidencePaths(componentPath, field, evidence, errors) {
+  if (evidence === undefined) {
+    return;
+  }
+  if (!Array.isArray(evidence) || evidence.length === 0 || evidence.some((value) => typeof value !== 'string')) {
+    errors.push(`${componentPath}: '${field}' must be a non-empty list of repository paths.`);
+    return;
+  }
+  for (const evidencePath of evidence) {
+    if (!existsSync(resolve(repositoryRoot, evidencePath))) {
+      errors.push(`${componentPath}: referenced evidence does not exist: ${evidencePath}`);
+    }
+  }
+}
+
 function validateEvidence(status, componentPath, metadata, errors) {
   if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
     errors.push(`${componentPath}: inventory metadata must be a mapping.`);
     return;
   }
 
-  const evidenceFields = ['coveredBy', 'hostedBy', 'implementedBy'];
-  for (const field of evidenceFields) {
-    if (metadata[field] === undefined) {
-      continue;
-    }
-    if (!Array.isArray(metadata[field]) || metadata[field].length === 0 || metadata[field].some((value) => typeof value !== 'string')) {
-      errors.push(`${componentPath}: '${field}' must be a non-empty list of repository paths.`);
-      continue;
-    }
-    for (const evidencePath of metadata[field]) {
-      if (!existsSync(resolve(repositoryRoot, evidencePath))) {
-        errors.push(`${componentPath}: referenced evidence does not exist: ${evidencePath}`);
-      }
-    }
+  for (const field of ['coveredBy', 'hostedBy', 'implementedBy']) {
+    validateEvidencePaths(componentPath, field, metadata[field], errors);
   }
 
   if (status === 'dedicated' && !metadata.coveredBy?.length) {
@@ -126,7 +129,9 @@ function sync() {
   const discovered = new Set(components);
   const classifications = collectClassifications(inventory);
   const added = components.filter((componentPath) => !classifications.has(componentPath));
-  const stale = [...classifications.keys()].filter((componentPath) => !discovered.has(componentPath)).sort();
+  const stale = [...classifications.keys()]
+    .filter((componentPath) => !discovered.has(componentPath))
+    .sort((left, right) => left.localeCompare(right));
 
   for (const componentPath of added) {
     inventory.pending[componentPath] = {};
@@ -148,6 +153,17 @@ function sync() {
   printCounts(inventory);
 }
 
+function validateDiscoveredComponents(components, classifications, errors) {
+  for (const componentPath of components) {
+    const matches = classifications.get(componentPath) ?? [];
+    if (matches.length === 0) {
+      errors.push(`Missing component: ${componentPath} (run component-tests:sync).`);
+    } else if (matches.length > 1) {
+      errors.push(`Component appears in multiple groups: ${componentPath} (${matches.map(({status}) => status).join(', ')}).`);
+    }
+  }
+}
+
 function check({failOnPending = false} = {}) {
   const inventory = readInventory();
   const errors = [];
@@ -164,15 +180,7 @@ function check({failOnPending = false} = {}) {
   const components = findComponentFiles();
   const discovered = new Set(components);
   const classifications = collectClassifications(inventory);
-
-  for (const componentPath of components) {
-    const matches = classifications.get(componentPath) ?? [];
-    if (matches.length === 0) {
-      errors.push(`Missing component: ${componentPath} (run component-tests:sync).`);
-    } else if (matches.length > 1) {
-      errors.push(`Component appears in multiple groups: ${componentPath} (${matches.map(({status}) => status).join(', ')}).`);
-    }
-  }
+  validateDiscoveredComponents(components, classifications, errors);
 
   for (const [componentPath, matches] of classifications) {
     if (!discovered.has(componentPath)) {
