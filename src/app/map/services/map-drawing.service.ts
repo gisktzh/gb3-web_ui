@@ -80,6 +80,20 @@ export class MapDrawingService {
     this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsArea);
   }
 
+  public drawStatisticsHighlights(geometries: readonly GeometryWithSrs[]) {
+    this.clearStatisticsHighlights();
+    const uniqueGeometries = new Map(
+      geometries.flatMap((geometry) => this.flattenGeometryCollection(geometry)).map((geometry) => [JSON.stringify(geometry), geometry]),
+    );
+    for (const geometry of uniqueGeometries.values()) {
+      this.mapService.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.StatisticsHighlight);
+    }
+  }
+
+  public clearStatisticsHighlights() {
+    this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsHighlight);
+  }
+
   public drawSearchResultHighlight(geometry: GeometryWithSrs) {
     this.clearSearchResultHighlight();
     this.mapService.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.SearchResultHighlight);
@@ -87,6 +101,13 @@ export class MapDrawingService {
 
   public clearSearchResultHighlight() {
     this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.SearchResultHighlight);
+  }
+
+  private flattenGeometryCollection(geometry: GeometryWithSrs): GeometryWithSrs[] {
+    if (geometry.type === 'GeometryCollection') {
+      return geometry.geometries.flatMap((child) => this.flattenGeometryCollection({...child, srs: geometry.srs}));
+    }
+    return geometry.coordinates.length > 0 ? [geometry] : [];
   }
 
   private handleGpsLocation(location: PointWithSrs | undefined): Promise<never> | void {

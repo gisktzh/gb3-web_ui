@@ -27,6 +27,7 @@ import {QueryLocationActions} from '../actions/query-location.actions';
 import {selectScale} from '../reducers/map-config.reducer';
 import {StatisticsAreaService} from '../../../shared/services/statistics-area.service';
 import {maximumStatisticsAreaInSquareMeters} from '../../../shared/configs/statistics.config';
+import {selectStatisticsHighlights} from '../selectors/statistics-highlights.selector';
 
 @Injectable()
 export class StatisticsEffects {
@@ -56,6 +57,22 @@ export class StatisticsEffects {
       map(() => StatisticsActions.invalidateContent()),
     );
   });
+
+  public highlightResults$ = createEffect(
+    () => {
+      return this.store.select(selectStatisticsHighlights).pipe(
+        filter(({ready}) => ready),
+        tap(({geometries, queryMode}) => {
+          if (queryMode === 'statistics') {
+            this.mapDrawingService.drawStatisticsHighlights(geometries);
+          } else {
+            this.mapDrawingService.clearStatisticsHighlights();
+          }
+        }),
+      );
+    },
+    {dispatch: false},
+  );
 
   public drawSelection$ = createEffect(
     () => {

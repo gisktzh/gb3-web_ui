@@ -1,5 +1,5 @@
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
-import {StatisticsResult} from '../../../shared/interfaces/statistics.interface';
+import {StatisticsLayerIdentifier, StatisticsResult} from '../../../shared/interfaces/statistics.interface';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {StatisticsMode} from '../../../shared/types/statistics-mode.type';
 
@@ -10,4 +10,5 @@ export interface StatisticsState extends HasLoadingState {
   geometry: GeometryWithSrs | undefined;
   areaInSquareMeters: number | undefined;
   data: StatisticsResult[];
+  highlightedLayer: StatisticsLayerIdentifier | undefined;
 }

@@ -5,6 +5,7 @@ export enum InternalDrawingLayer {
   PrintPreview = 'print_preview',
   Selection = 'selection',
   StatisticsArea = 'statistics_area',
+  StatisticsHighlight = 'statistics_highlight',
   ElevationProfile = 'elevation_profile',
   SearchResultHighlight = 'search_result_highlight',
 }

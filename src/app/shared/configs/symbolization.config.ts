@@ -57,6 +57,8 @@ export const defaultSymbolization: DefaultSymbolization = {
   },
 };
 
+const statisticsHighlightColor = {r: 255, g: 255, b: 0, a: 0.8};
+
 export const layerSymbolizations: LayerSymbolizations = {
   [InternalDrawingLayer.ElevationProfile]: {
     ...defaultSymbolization,
@@ -318,6 +320,22 @@ export const layerSymbolizations: LayerSymbolizations = {
           a: 1,
         },
       },
+    },
+  },
+  [InternalDrawingLayer.StatisticsHighlight]: {
+    ...defaultSymbolization,
+    point: {
+      ...defaultSymbolization.point,
+      size: 8,
+      color: statisticsHighlightColor,
+    },
+    line: {
+      width: 2,
+      color: statisticsHighlightColor,
+    },
+    polygon: {
+      fill: {color: statisticsHighlightColor},
+      outline: defaultOutline,
     },
   },
   [InternalDrawingLayer.SearchResultHighlight]: {

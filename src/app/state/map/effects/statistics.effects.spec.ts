@@ -11,17 +11,25 @@ import {QueryLocationActions} from '../actions/query-location.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
-import {selectAreaInSquareMeters, selectGeometry, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
+import {
+  selectAreaInSquareMeters,
+  selectData,
+  selectGeometry,
+  selectHighlightedLayer,
+  selectMode,
+  selectRadiusInMeters,
+} from '../reducers/statistics.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapService} from '../../../map/interfaces/map.service';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {MAP_SERVICE, STATISTICS_SERVICE} from '../../../app.tokens';
 import {selectStatisticsQueries} from '../selectors/statistics-queries.selector';
-import {StatisticsQuery} from '../../../shared/interfaces/statistics.interface';
+import {StatisticsQuery, StatisticsResult} from '../../../shared/interfaces/statistics.interface';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {deriveBoundingBoxCenter} from '../../../shared/utils/statistics-geometry.utils';
+import {selectIsMapServiceInitialized, selectReady} from '../reducers/map-config.reducer';
 
 describe('StatisticsEffects', () => {
   let actions$: Observable<Action>;
@@ -66,6 +74,10 @@ describe('StatisticsEffects', () => {
     store.overrideSelector(selectStatisticsQueries, queries);
     store.overrideSelector(selectAreaInSquareMeters, 10_000);
     store.overrideSelector(selectQueryMode, 'feature');
+    store.overrideSelector(selectData, []);
+    store.overrideSelector(selectHighlightedLayer, undefined);
+    store.overrideSelector(selectReady, false);
+    store.overrideSelector(selectIsMapServiceInitialized, true);
     TestBed.inject<MapService>(MAP_SERVICE);
   });
 
@@ -83,6 +95,92 @@ describe('StatisticsEffects', () => {
     store.refreshState();
     expect(actual).toEqual([StatisticsActions.invalidateContent()]);
     subscription.unsubscribe();
+  });
+
+  describe('highlightResults$', () => {
+    beforeEach(() => {
+      store.overrideSelector(selectHighlightedLayer, {topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'});
+    });
+    const results: StatisticsResult[] = [
+      {
+        topic: 'StatBeschaeftigteZH',
+        title: 'Beschäftigte',
+        layers: [
+          {layer: 'stat-ent-p', title: 'Beschäftigte', columns: ['Summe'], rows: [], status: 'ok', featureGeometry: square},
+          {layer: 'no-geometry', title: 'No geometry', columns: ['Summe'], rows: [], status: 'noData'},
+        ],
+      },
+    ];
+
+    it('waits for map readiness and shows returned geometries only while the statistics tab is active', () => {
+      const drawing = TestBed.inject(MapDrawingService);
+      const draw = vi.spyOn(drawing, 'drawStatisticsHighlights');
+      const clear = vi.spyOn(drawing, 'clearStatisticsHighlights');
+      store.overrideSelector(selectData, results);
+      store.overrideSelector(selectQueryMode, 'statistics');
+      store.overrideSelector(selectIsMapServiceInitialized, false);
+      const subscription = effects.highlightResults$.subscribe();
+      expect(draw).not.toHaveBeenCalled();
+      expect(clear).not.toHaveBeenCalled();
+
+      store.overrideSelector(selectReady, true);
+      store.refreshState();
+      expect(draw).not.toHaveBeenCalled();
+      store.overrideSelector(selectIsMapServiceInitialized, true);
+      store.refreshState();
+      expect(draw).toHaveBeenLastCalledWith([square]);
+      store.overrideSelector(selectQueryMode, 'feature');
+      store.refreshState();
+      expect(clear).toHaveBeenCalled();
+      draw.mockClear();
+      store.overrideSelector(selectData, []);
+      store.refreshState();
+      expect(draw).not.toHaveBeenCalled();
+      subscription.unsubscribe();
+    });
+
+    it('avoids map calls after deinitialization and redraws cached results when the map is initialized again', () => {
+      const drawing = TestBed.inject(MapDrawingService);
+      const draw = vi.spyOn(drawing, 'drawStatisticsHighlights');
+      const clear = vi.spyOn(drawing, 'clearStatisticsHighlights');
+      store.overrideSelector(selectReady, true);
+      store.overrideSelector(selectData, results);
+      store.overrideSelector(selectQueryMode, 'statistics');
+      const subscription = effects.highlightResults$.subscribe();
+      expect(draw).toHaveBeenLastCalledWith([square]);
+      draw.mockClear();
+      clear.mockClear();
+      store.overrideSelector(selectIsMapServiceInitialized, false);
+      store.refreshState();
+      store.overrideSelector(selectData, []);
+      store.refreshState();
+      expect(draw).not.toHaveBeenCalled();
+      expect(clear).not.toHaveBeenCalled();
+      store.overrideSelector(selectData, results);
+      store.refreshState();
+      store.overrideSelector(selectIsMapServiceInitialized, true);
+      store.refreshState();
+      expect(draw).toHaveBeenLastCalledWith([square]);
+      subscription.unsubscribe();
+    });
+
+    it('restores cached geometries on tab return and removes them when results are cleared', () => {
+      const draw = vi.spyOn(TestBed.inject(MapDrawingService), 'drawStatisticsHighlights');
+      store.overrideSelector(selectReady, true);
+      store.overrideSelector(selectData, results);
+      store.overrideSelector(selectQueryMode, 'statistics');
+      const subscription = effects.highlightResults$.subscribe();
+      expect(draw).toHaveBeenLastCalledWith([square]);
+      store.overrideSelector(selectQueryMode, 'feature');
+      store.refreshState();
+      store.overrideSelector(selectQueryMode, 'statistics');
+      store.refreshState();
+      expect(draw).toHaveBeenLastCalledWith([square]);
+      store.overrideSelector(selectData, []);
+      store.refreshState();
+      expect(draw).toHaveBeenLastCalledWith([]);
+      subscription.unsubscribe();
+    });
   });
 
   it.each([

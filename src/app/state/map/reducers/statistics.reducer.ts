@@ -13,6 +13,7 @@ export const initialState: StatisticsState = {
   areaInSquareMeters: undefined,
   loadingState: undefined,
   data: [],
+  highlightedLayer: undefined,
 };
 
 export const statisticsFeature = createFeature({
@@ -29,6 +30,7 @@ export const statisticsFeature = createFeature({
         radiusInMeters: radiusInMeters ?? state.radiusInMeters,
         loadingState: undefined,
         data: [],
+        highlightedLayer: undefined,
       };
     }),
     on(StatisticsActions.setMode, (state, {mode}): StatisticsState => {
@@ -41,20 +43,26 @@ export const statisticsFeature = createFeature({
       return {...state, areaInSquareMeters};
     }),
     on(StatisticsActions.sendRequest, (state): StatisticsState => {
-      return {...state, loadingState: 'loading', data: []};
+      return {...state, loadingState: 'loading', data: [], highlightedLayer: undefined};
     }),
     on(StatisticsActions.invalidateContent, (state): StatisticsState => {
-      return {...state, loadingState: undefined, data: []};
+      return {...state, loadingState: undefined, data: [], highlightedLayer: undefined};
     }),
     on(StatisticsActions.updateContent, (state, {results}): StatisticsState => {
-      return {...state, loadingState: 'loaded', data: results};
+      return {...state, loadingState: 'loaded', data: results, highlightedLayer: undefined};
     }),
     on(StatisticsActions.clearContent, (state): StatisticsState => {
       // The mode and radius are user settings and outlive a cleared result.
       return {...initialState, mode: state.mode, radiusInMeters: state.radiusInMeters};
     }),
     on(StatisticsActions.setError, (state): StatisticsState => {
-      return {...state, loadingState: 'error', data: []};
+      return {...state, loadingState: 'error', data: [], highlightedLayer: undefined};
+    }),
+    on(StatisticsActions.highlightLayer, (state, {topic, layer}): StatisticsState => {
+      return {...state, highlightedLayer: {topic, layer}};
+    }),
+    on(StatisticsActions.clearHighlight, (state): StatisticsState => {
+      return {...state, highlightedLayer: undefined};
     }),
   ),
 });
@@ -69,6 +77,7 @@ export const {
   selectAreaInSquareMeters,
   selectLoadingState,
   selectData,
+  selectHighlightedLayer,
 } = statisticsFeature;
 
 export const selectCenter = selectQueryPoint;

@@ -92,5 +92,26 @@ describe('statistics reducer', () => {
       expect(result.loadingState).toBe('error');
       expect(result.data).toEqual([]);
     });
+
+    it('stores one highlighted layer and can clear it without discarding results or the selection', () => {
+      const state: StatisticsState = {...initialState, geometry, data: results, loadingState: 'loaded'};
+      const marked = reducer(state, StatisticsActions.highlightLayer({topic: 'topic', layer: 'layer'}));
+      expect(marked.highlightedLayer).toEqual({topic: 'topic', layer: 'layer'});
+      const switched = reducer(marked, StatisticsActions.highlightLayer({topic: 'other-topic', layer: 'other-layer'}));
+      expect(switched.highlightedLayer).toEqual({topic: 'other-topic', layer: 'other-layer'});
+      expect(reducer(switched, StatisticsActions.clearHighlight())).toEqual(state);
+    });
+
+    it.each([
+      StatisticsActions.setSelection({geometry, radiusInMeters: undefined}),
+      StatisticsActions.sendRequest(),
+      StatisticsActions.invalidateContent(),
+      StatisticsActions.updateContent({results}),
+      StatisticsActions.clearContent(),
+      StatisticsActions.setError({}),
+    ])('clears a previous marking after $type', (action) => {
+      const state: StatisticsState = {...initialState, highlightedLayer: {topic: 'topic', layer: 'layer'}};
+      expect(reducer(state, action).highlightedLayer).toBeUndefined();
+    });
   });
 });

@@ -12,6 +12,7 @@ import {Gb3GeneralInfoService} from '../../../shared/services/apis/gb3/gb3-gener
 import {Gb3OerebExtractService} from '../../../shared/services/apis/gb3/gb3-oereb-extract.service';
 import {OerebExtractResponse} from '../../../shared/interfaces/oereb-extract.interface';
 import {statisticsMapQueries} from '../../../shared/configs/statistics.config';
+import {StatisticsResult} from '../../../shared/interfaces/statistics.interface';
 import {createCircle, deriveBoundingBoxCenter} from '../../../shared/utils/statistics-geometry.utils';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
@@ -48,6 +49,8 @@ describe('shared feature/statistics query location', () => {
     clearStatisticsArea: vi.fn(),
     drawFeatureQueryLocation: vi.fn(),
     clearFeatureQueryLocation: vi.fn(),
+    drawStatisticsHighlights: vi.fn(),
+    clearStatisticsHighlights: vi.fn(),
   };
   const point: PointWithSrs = {type: 'Point', coordinates: [2680000, 1254000], srs: 2056};
   const polygon: PolygonWithSrs = {
@@ -74,6 +77,13 @@ describe('shared feature/statistics query location', () => {
       results: {topic, layers: [], isSingleLayer: false, report: {url: null, description: null}},
     },
   });
+  const statisticsResults: StatisticsResult[] = [
+    {
+      topic: 'StatBeschaeftigteZH',
+      title: 'Beschäftigte',
+      layers: [{layer: 'stat-ent-p', title: 'Beschäftigte', columns: ['Summe'], rows: [], status: 'ok', featureGeometry: point}],
+    },
+  ];
 
   beforeEach(() => {
     topics.loadFeatureInfos.mockReturnValue(of([]));
@@ -406,6 +416,76 @@ describe('shared feature/statistics query location', () => {
     expect(await firstValueFrom(store.select(selectQueryPoint))).toEqual(deriveBoundingBoxCenter(large));
     expect(statistics.loadStatistics).not.toHaveBeenCalled();
     expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
+  });
+
+  describe('statistics feature marking', () => {
+    beforeEach(() => {
+      store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+      store.dispatch(MapConfigActions.setReady({calculatedMinScale: 1_000_000, calculatedMaxScale: 1}));
+      statistics.loadStatistics.mockReturnValueOnce(of(statisticsResults)).mockReturnValue(EMPTY);
+      store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+      store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      store.dispatch(StatisticsActions.highlightLayer({topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}));
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
+    });
+
+    it('hides markings on the feature tab and restores cached markings without another statistics request', () => {
+      store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
+      expect(drawing.clearStatisticsHighlights).toHaveBeenCalled();
+      store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
+      expect(statistics.loadStatistics).toHaveBeenCalledOnce();
+    });
+
+    it.each([
+      {name: 'a changed selection', action: StatisticsActions.setSelection({geometry: polygon, radiusInMeters: undefined})},
+      {name: 'a refreshed request', action: StatisticsActions.sendRequest()},
+      {name: 'invalidated queries', action: StatisticsActions.invalidateContent()},
+      {name: 'cleared statistics', action: StatisticsActions.clearContent()},
+      {name: 'an API error', action: StatisticsActions.setError({error: new Error('Statistics failed')})},
+      {name: 'overlay closure', action: MapConfigActions.clearFeatureInfoContent()},
+      {name: 'unmarking a result', action: StatisticsActions.clearHighlight()},
+    ])('removes obsolete markings after $name', ({action}) => {
+      store.dispatch(action);
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+    });
+
+    it('removes markings when a supported map is hidden', () => {
+      store.dispatch(
+        ActiveMapItemActions.setVisibility({
+          activeMapItem: createGb2WmsMapItemMock('StatBeschaeftigteZH'),
+          visible: false,
+        }),
+      );
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+    });
+
+    it('clears old markings during radius changes and only marks features from the new response', () => {
+      const pending = new Subject<StatisticsResult[]>();
+      statistics.loadStatistics.mockReturnValueOnce(pending);
+      store.dispatch(StatisticsActions.setRadius({radiusInMeters: 1000}));
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      pending.next(statisticsResults);
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      store.dispatch(StatisticsActions.highlightLayer({topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}));
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
+    });
+
+    it('does not mark refreshed results automatically, including a response received while features are active', () => {
+      const pending = new Subject<StatisticsResult[]>();
+      statistics.loadStatistics.mockReturnValueOnce(pending);
+      store.dispatch(StatisticsActions.sendRequest());
+      store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
+      drawing.drawStatisticsHighlights.mockClear();
+      pending.next(statisticsResults);
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
+      store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      store.dispatch(StatisticsActions.highlightLayer({topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}));
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
+      expect(statistics.loadStatistics).toHaveBeenCalledTimes(2);
+    });
   });
 
   it.each([1, 10, 7756, 10000, 12927, 1_000_001])('queries statistics at scale %s regardless of rendering scale limits', (scale) => {

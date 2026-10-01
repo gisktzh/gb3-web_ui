@@ -3,6 +3,8 @@ import type {TopicsListData, TopicsStatisticInfoListData} from '../../src/app/sh
 import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Har} from 'har-format';
+import type {MapService} from '../../src/app/map/interfaces/map.service';
+import {InternalDrawingLayer} from '../../src/app/shared/enums/drawing-layer.enum';
 
 test.describe('OEREB-Kataster', () => {
   test('opens the OEREB-Kataster and searches for a specific address, returning its data in the info request', async ({
@@ -79,6 +81,26 @@ test.describe('OEREB-Kataster', () => {
     );
     let statisticsRequests = 0;
     let featureRequests = 0;
+    let highlightCoordinates: number[][] = [];
+    const statisticsHighlights = () =>
+      page.evaluate((layer) => {
+        const element = document.querySelector('map-container');
+        if (!element) {
+          throw new Error('The map container must be present to inspect its rendered highlights.');
+        }
+        const angular = (
+          window as Window & {
+            ng?: {getComponent(element: Element): {mapService: MapService}};
+          }
+        ).ng;
+        if (!angular) {
+          throw new Error('Angular development helpers must be available to inspect rendered map graphics.');
+        }
+        return angular
+          .getComponent(element)
+          .mapService.getInternalDrawingLayerGraphics(layer)
+          .map(({geometry}) => geometry);
+      }, InternalDrawingLayer.StatisticsHighlight);
     page.on('request', (request) => {
       if (request.url().includes('/feature_info?')) {
         featureRequests++;
@@ -87,6 +109,19 @@ test.describe('OEREB-Kataster', () => {
     await page.route('**/topics/StatBeschaeftigteZH/statistic_info?**', (route) => {
       statisticsRequests++;
       const url = new URL(route.request().url());
+      const positions = Array.from(url.searchParams.get('geometry')!.matchAll(/([-\d.e+]+)\s+([-\d.e+]+)/gi), ([, x, y]) => [
+        Number(x),
+        Number(y),
+      ]);
+      if (positions.length === 0) {
+        throw new Error('The statistics query must include a polygon selection.');
+      }
+      const x = (Math.min(...positions.map(([x]) => x)) + Math.max(...positions.map(([x]) => x))) / 2;
+      const y = (Math.min(...positions.map(([, y]) => y)) + Math.max(...positions.map(([, y]) => y))) / 2;
+      highlightCoordinates = [
+        [x - 20, y + 20],
+        [x + 20, y - 20],
+      ];
       expect(url.searchParams.get('field')).toBe(
         'ganzwhg,efh,wohn_m_n,geb_m_w,mfh,geb_o_w,prov_geb,andere_geb,anz_einw,anz_vzae,anz_besch',
       );
@@ -103,7 +138,19 @@ test.describe('OEREB-Kataster', () => {
             statistic: 'sum',
             geometry: url.searchParams.get('geometry')!,
             srid: Number(url.searchParams.get('srid')),
-            feature_geometry: null,
+            feature_geometry: {
+              type: 'GeometryCollection',
+              geometries: [
+                {type: 'Point', coordinates: highlightCoordinates[0]},
+                {
+                  type: 'GeometryCollection',
+                  geometries: [
+                    {type: 'Point', coordinates: highlightCoordinates[1]},
+                    {type: 'Point', coordinates: highlightCoordinates[0]},
+                  ],
+                },
+              ],
+            },
             results: {
               anz_besch: {alias: 'Anzahl Beschäftigte', value: 42, count: 3},
               anz_vzae: {alias: 'Vollzeitäquivalente', value: 35.5, count: 3},
@@ -160,11 +207,19 @@ test.describe('OEREB-Kataster', () => {
     await expect(bottomSheet.getByText('Anzahl Beschäftigte', {exact: true})).toBeVisible();
     await expect(bottomSheet.getByText('Summe', {exact: true})).toBeVisible();
     expect(statisticsRequests).toBe(1);
+    await expect.poll(statisticsHighlights).toEqual([]);
+    const markHeader = bottomSheet.locator('statistics-item th', {hasText: 'Markieren:'});
+    const markRadio = bottomSheet.locator('statistics-item input[type="radio"]');
+    await markHeader.click();
+    await expect(markRadio).toBeChecked();
+    await expect.poll(statisticsHighlights).toEqual(highlightCoordinates.map((coordinates) => ({type: 'Point', coordinates, srs: 2056})));
     const previousFeatureRequests = featureRequests;
     const radius = bottomSheet.locator('#statistics-radius-input');
     await radius.fill('1000');
     await radius.blur();
     await expect.poll(() => statisticsRequests).toBe(2);
+    await expect.poll(statisticsHighlights).toEqual([]);
+    await expect(markRadio).not.toBeChecked();
     expect(featureRequests).toBe(previousFeatureRequests);
     await radius.fill('4000');
     await radius.blur();
@@ -175,11 +230,21 @@ test.describe('OEREB-Kataster', () => {
     await radius.blur();
     await expect.poll(() => statisticsRequests).toBe(3);
     await expect(bottomSheet.locator('#statistics-radius-error')).toHaveCount(0);
+    await expect.poll(statisticsHighlights).toEqual([]);
+    await markHeader.click();
+    await expect.poll(statisticsHighlights).toEqual(highlightCoordinates.map((coordinates) => ({type: 'Point', coordinates, srs: 2056})));
 
     await featuresTab.click();
 
     await expect(featuresTab).toHaveAttribute('aria-selected', 'true');
     await expect(statisticsTab).toHaveAttribute('aria-selected', 'false');
     await expect(bottomSheet.locator('feature-info')).toBeVisible();
+    await expect.poll(statisticsHighlights).toEqual([]);
+    await statisticsTab.click();
+    await expect.poll(statisticsHighlights).toEqual(highlightCoordinates.map((coordinates) => ({type: 'Point', coordinates, srs: 2056})));
+    expect(statisticsRequests).toBe(3);
+    await markHeader.click();
+    await expect(markRadio).not.toBeChecked();
+    await expect.poll(statisticsHighlights).toEqual([]);
   });
 });

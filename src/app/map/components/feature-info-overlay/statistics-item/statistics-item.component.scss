@@ -1,6 +1,37 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+.statistics-item__highlight-group {
+  display: block;
+}
+
+.statistics-item__table-header {
+  cursor: pointer;
+}
+
+.info-table__table thead .statistics-item__table-header--highlighted {
+  background-color: ktzh-variables.$zh-active-blue !important;
+}
+
+.statistics-item__table-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+
+  .mat-mdc-radio-button {
+    pointer-events: none;
+
+    .mdc-form-field {
+      font-size: 12px;
+    }
+
+    .mdc-radio {
+      padding: 0;
+    }
+  }
+}
+
 .statistics-item {
   width: 100%;
 

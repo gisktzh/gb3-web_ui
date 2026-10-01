@@ -1,7 +1,7 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {errorProps} from '../../../shared/utils/error-props.utils';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {StatisticsResult} from '../../../shared/interfaces/statistics.interface';
+import {StatisticsLayerIdentifier, StatisticsResult} from '../../../shared/interfaces/statistics.interface';
 import {StatisticsMode} from '../../../shared/types/statistics-mode.type';
 
 export const StatisticsActions = createActionGroup({
@@ -20,6 +20,8 @@ export const StatisticsActions = createActionGroup({
     'Update Content': props<{results: StatisticsResult[]}>(),
     'Invalidate Content': emptyProps(),
     'Clear Content': emptyProps(),
+    'Highlight Layer': props<StatisticsLayerIdentifier>(),
+    'Clear Highlight': emptyProps(),
     'Set Error': errorProps(),
   },
 });

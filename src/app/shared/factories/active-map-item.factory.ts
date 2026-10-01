@@ -74,6 +74,9 @@ export class ActiveMapItemFactory {
       case InternalDrawingLayer.StatisticsArea:
         title = 'Statistics Area';
         break;
+      case InternalDrawingLayer.StatisticsHighlight:
+        title = 'Statistics Highlight';
+        break;
       case InternalDrawingLayer.ElevationProfile:
         title = 'Elevation Profiles';
         break;

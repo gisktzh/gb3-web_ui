@@ -6,6 +6,11 @@ export interface StatisticsQuery extends Omit<StatisticInfoQueryParameters, 'geo
   topic: string;
 }
 
+export interface StatisticsLayerIdentifier {
+  topic: string;
+  layer: string;
+}
+
 export interface StatisticsResultValue {
   value: number | null;
   /** Rendered inline after the value, e.g. "2'166 Betriebe". */
