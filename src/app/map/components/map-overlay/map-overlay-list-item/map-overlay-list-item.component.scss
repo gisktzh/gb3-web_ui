@@ -42,6 +42,21 @@
       overflow: hidden;
       width: 100%;
 
+      .list-item__header__content__icon {
+        display: flex;
+        flex: 0 0 24px;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin: 0 12px;
+        order: 1;
+
+        &:empty {
+          display: none;
+        }
+      }
+
       .list-item__header__content__toggle {
         min-width: 24px;
         max-width: 24px;
