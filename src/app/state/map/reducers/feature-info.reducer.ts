@@ -22,6 +22,9 @@ export const featureInfoFeature = createFeature({
     on(FeatureInfoActions.clearContent, (): FeatureInfoState => {
       return {...initialState};
     }),
+    on(FeatureInfoActions.invalidateContent, (state): FeatureInfoState => {
+      return {...initialState, queryLocation: state.queryLocation};
+    }),
     on(FeatureInfoActions.updateContent, (state, {featureInfos}): FeatureInfoState => {
       const data = featureInfos.map((featureInfo) => featureInfo.featureInfo.results);
       return {...state, loadingState: 'loaded', data};

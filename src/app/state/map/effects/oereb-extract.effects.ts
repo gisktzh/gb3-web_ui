@@ -9,6 +9,7 @@ import {selectHasOerebMapActive} from '../selectors/has-oereb-map-active.selecto
 import {OerebExtractCouldNotBeLoaded} from 'src/app/shared/errors/map.errors';
 import {Gb3OerebExtractService} from 'src/app/shared/services/apis/gb3/gb3-oereb-extract.service';
 import {QueryLocationActions} from '../actions/query-location.actions';
+import {FeatureInfoActions} from '../actions/feature-info.actions';
 
 @Injectable()
 export class OerebExtractEffects {
@@ -23,14 +24,14 @@ export class OerebExtractEffects {
     );
   });
 
-  public requestAtQueryPoint$ = createEffect(() => {
+  public requestOnFeatureQuery$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(QueryLocationActions.setPoint),
+      ofType(FeatureInfoActions.sendRequest),
       concatLatestFrom(() => this.store.select(selectHasOerebMapActive)),
-      switchMap(([{point}, hasOerebMapActive]) =>
+      switchMap(([{x, y}, hasOerebMapActive]) =>
         iif(
           () => hasOerebMapActive,
-          of(OerebExtractActions.sendRequest({x: point.coordinates[0], y: point.coordinates[1]})),
+          of(OerebExtractActions.sendRequest({x, y})),
           of(OerebExtractActions.updateContent({oerebExtract: null})),
         ),
       ),
@@ -46,7 +47,16 @@ export class OerebExtractEffects {
             return OerebExtractActions.updateContent({oerebExtract});
           }),
           catchError((error: unknown) => of(OerebExtractActions.setError({error}))),
-          takeUntil(this.actions$.pipe(ofType(QueryLocationActions.setPoint, MapConfigActions.clearFeatureInfoContent))),
+          takeUntil(
+            this.actions$.pipe(
+              ofType(
+                QueryLocationActions.setPoint,
+                FeatureInfoActions.sendRequest,
+                FeatureInfoActions.invalidateContent,
+                MapConfigActions.clearFeatureInfoContent,
+              ),
+            ),
+          ),
         ),
       ),
     );
