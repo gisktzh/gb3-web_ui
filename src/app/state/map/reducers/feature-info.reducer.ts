@@ -1,6 +1,7 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {FeatureInfoState} from '../states/feature-info.state';
+import {QueryModeActions} from '../actions/query-mode.actions';
 
 export const featureInfoFeatureKey = 'featureInfo';
 
@@ -34,6 +35,9 @@ export const featureInfoFeature = createFeature({
     }),
     on(FeatureInfoActions.clearHighlight, (state): FeatureInfoState => {
       return {...state, highlightedFeature: undefined, pinnedFeatureId: undefined};
+    }),
+    on(QueryModeActions.setQueryMode, (state, {queryMode}): FeatureInfoState => {
+      return queryMode === 'statistics' && state.pinnedFeatureId === undefined ? {...state, highlightedFeature: undefined} : state;
     }),
     on(FeatureInfoActions.setError, (): FeatureInfoState => {
       return {...initialState, loadingState: 'error'};

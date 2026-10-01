@@ -183,6 +183,40 @@ describe('StatisticsEffects', () => {
     });
   });
 
+  describe('renderSelection$', () => {
+    it('waits for initialization, restores cached areas, and hides them outside statistics', () => {
+      const drawing = TestBed.inject(MapDrawingService);
+      const draw = vi.spyOn(drawing, 'drawStatisticsArea').mockImplementation(vi.fn());
+      const clear = vi.spyOn(drawing, 'clearStatisticsArea');
+      store.overrideSelector(selectGeometry, square);
+      store.overrideSelector(selectQueryMode, 'statistics');
+      store.overrideSelector(selectReady, true);
+      store.overrideSelector(selectIsMapServiceInitialized, false);
+      const subscription = effects.renderSelection$.subscribe();
+      expect(draw).not.toHaveBeenCalled();
+      expect(clear).not.toHaveBeenCalled();
+      store.overrideSelector(selectIsMapServiceInitialized, true);
+      store.refreshState();
+      expect(draw).toHaveBeenCalledOnce();
+      expect(draw).toHaveBeenLastCalledWith(square);
+      store.overrideSelector(selectIsMapServiceInitialized, false);
+      store.refreshState();
+      store.overrideSelector(selectIsMapServiceInitialized, true);
+      store.refreshState();
+      expect(draw).toHaveBeenCalledTimes(2);
+      store.overrideSelector(selectQueryMode, 'feature');
+      store.refreshState();
+      expect(clear).toHaveBeenCalledOnce();
+      store.overrideSelector(selectQueryMode, 'statistics');
+      store.refreshState();
+      expect(draw).toHaveBeenCalledTimes(3);
+      store.overrideSelector(selectGeometry, undefined);
+      store.refreshState();
+      expect(clear).toHaveBeenCalledTimes(2);
+      subscription.unsubscribe();
+    });
+  });
+
   it.each([
     StatisticsActions.setSelection({geometry: square, radiusInMeters: undefined}),
     StatisticsActions.invalidateContent(),

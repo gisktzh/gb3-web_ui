@@ -3,8 +3,18 @@ import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {FeatureInfoState} from '../states/feature-info.state';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {FeatureInfoQueryLocation, FeatureInfoResponse, FeatureInfoResult} from '../../../shared/interfaces/feature-info.interface';
+import {QueryModeActions} from '../actions/query-mode.actions';
 
 describe('FeatureInfo Reducer', () => {
+  it('discards transient previews on mode exit but retains pinned geometry', () => {
+    const preview: FeatureInfoState = {...initialState, highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]}};
+    const action = QueryModeActions.setQueryMode({queryMode: 'statistics'});
+    expect(reducer(preview, action).highlightedFeature).toBeUndefined();
+    const pinned = {...preview, pinnedFeatureId: 'topic_layer_1'};
+    expect(reducer(pinned, action)).toBe(pinned);
+    expect(reducer(preview, QueryModeActions.setQueryMode({queryMode: 'feature'}))).toBe(preview);
+  });
+
   describe('an unknown action', () => {
     it('should return the previous state', () => {
       const action = {} as never;

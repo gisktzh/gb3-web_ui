@@ -28,6 +28,7 @@ import {selectScale} from '../reducers/map-config.reducer';
 import {StatisticsAreaService} from '../../../shared/services/statistics-area.service';
 import {maximumStatisticsAreaInSquareMeters} from '../../../shared/configs/statistics.config';
 import {selectStatisticsHighlights} from '../selectors/statistics-highlights.selector';
+import {selectStatisticsAreaToDraw} from '../selectors/query-graphics.selector';
 
 @Injectable()
 export class StatisticsEffects {
@@ -74,29 +75,12 @@ export class StatisticsEffects {
     {dispatch: false},
   );
 
-  public drawSelection$ = createEffect(
+  public renderSelection$ = createEffect(
     () => {
-      return this.actions$.pipe(
-        ofType(StatisticsActions.setSelection),
-        concatLatestFrom(() => this.store.select(selectQueryMode)),
-        filter(([, queryMode]) => queryMode === 'statistics'),
-        tap(([{geometry}]) => this.mapDrawingService.drawStatisticsArea(geometry)),
-      );
-    },
-    {dispatch: false},
-  );
-
-  /**
-   * The area belongs to the statistics tab, so it is only drawn while that tab is active and removed again on the way back to the
-   * features. The area itself stays in the state and therefore reappears unchanged when the tab is opened again.
-   */
-  public toggleAreaVisibility$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(QueryModeActions.setQueryMode),
-        concatLatestFrom(() => this.store.select(selectGeometry)),
-        tap(([{queryMode}, geometry]) => {
-          if (queryMode === 'statistics' && geometry) {
+      return this.store.select(selectStatisticsAreaToDraw).pipe(
+        filter(({ready}) => ready),
+        tap(({geometry}) => {
+          if (geometry) {
             this.mapDrawingService.drawStatisticsArea(geometry);
           } else {
             this.mapDrawingService.clearStatisticsArea();
@@ -117,16 +101,6 @@ export class StatisticsEffects {
       map(() => StatisticsActions.clearContent()),
     );
   });
-
-  public clearSelection$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(StatisticsActions.clearContent),
-        tap(() => this.mapDrawingService.clearStatisticsArea()),
-      );
-    },
-    {dispatch: false},
-  );
 
   /**
    * Changing the radius redraws the circle around the unchanged centre. Without a centre there is nothing to derive an area from, so
