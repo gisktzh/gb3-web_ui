@@ -11,6 +11,7 @@ import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.ser
 import {Gb3GeneralInfoService} from '../../../shared/services/apis/gb3/gb3-general-info.service';
 import {Gb3OerebExtractService} from '../../../shared/services/apis/gb3/gb3-oereb-extract.service';
 import {OerebExtractResponse} from '../../../shared/interfaces/oereb-extract.interface';
+import {statisticsMapQueries} from '../../../shared/configs/statistics.config';
 import {createCircle, deriveBoundingBoxCenter} from '../../../shared/utils/statistics-geometry.utils';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
@@ -407,7 +408,25 @@ describe('shared feature/statistics query location', () => {
     expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
   });
 
-  it('clears results when eligible layers are hidden and reloads when they become visible again', () => {
+  it.each([1, 10, 7756, 10000, 12927, 1_000_001])('queries statistics at scale %s regardless of rendering scale limits', (scale) => {
+    const item = createGb2WmsMapItemMock('StatBeschaeftigteZH', 1);
+    Object.assign(item.settings.layers[0], {layer: 'stat-ent-p', queryable: true, minScale: 10, maxScale: 10000});
+    store.dispatch(ActiveMapItemActions.replaceActiveMapItem({modifiedActiveMapItem: item}));
+    store.dispatch(MapConfigActions.setScale({scale}));
+    store.dispatch(QueryLocationActions.setPoint({point, scale}));
+    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+    expect(statistics.loadStatistics).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({type: 'Polygon', srs: 2056}),
+      statisticsMapQueries['StatBeschaeftigteZH'].map((query) => ({topic: 'StatBeschaeftigteZH', ...query})),
+    );
+    if (scale <= 10 || scale >= 10000) {
+      expect(topics.loadFeatureInfos).not.toHaveBeenCalled();
+    } else {
+      expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
+    }
+  });
+
+  it('clears statistics for hidden layers and reloads on visibility changes, but retains them on zoom changes', async () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
     expect(statistics.loadStatistics).toHaveBeenCalledOnce();
@@ -417,6 +436,10 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(ActiveMapItemActions.setVisibility({activeMapItem: item, visible: true}));
     expect(statistics.loadStatistics).toHaveBeenCalledTimes(2);
     store.dispatch(MapConfigActions.setScale({scale: 1_000_001}));
+    expect(statistics.loadStatistics).toHaveBeenCalledTimes(2);
+    expect(await firstValueFrom(store.select(selectLoadingState))).toBe('loaded');
+    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
+    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
     expect(statistics.loadStatistics).toHaveBeenCalledTimes(2);
   });
 });

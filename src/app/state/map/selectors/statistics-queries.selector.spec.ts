@@ -17,26 +17,29 @@ describe('selectStatisticsQueries', () => {
       mapItem('StatBeschaeftigteZH', 'stat-ent-p'),
       mapItem('StatGebaeudeZH', 'stat-geb-p'),
     ];
-    expect(selectStatisticsQueries.projector(items, 1000)).toEqual(
+    expect(selectStatisticsQueries.projector(items)).toEqual(
       items.flatMap((item) => statisticsMapQueries[item.id].map((query) => ({topic: item.id, ...query}))),
     );
   });
 
-  it.each(['hidden-map', 'hidden-layer', 'temporary', 'below-scale', 'above-scale', 'minimum-scale', 'maximum-scale'])(
-    'excludes %s layers',
-    (reason) => {
-      const item = mapItem('StatBeschaeftigteZH', 'stat-ent-p');
-      let scale = 1000;
-      if (reason === 'hidden-map') item.visible = false;
-      if (reason === 'hidden-layer') item.settings.layers[0].visible = false;
-      if (reason === 'temporary') item.isTemporary = true;
-      if (reason === 'below-scale') scale = 1;
-      if (reason === 'above-scale') scale = 20000;
-      if (reason === 'minimum-scale') scale = 10;
-      if (reason === 'maximum-scale') scale = 10000;
-      expect(selectStatisticsQueries.projector([item], scale)).toEqual([]);
-    },
-  );
+  it.each(['hidden-map', 'hidden-layer', 'temporary'])('excludes %s layers', (reason) => {
+    const item = mapItem('StatBeschaeftigteZH', 'stat-ent-p');
+    if (reason === 'hidden-map') item.visible = false;
+    if (reason === 'hidden-layer') item.settings.layers[0].visible = false;
+    if (reason === 'temporary') item.isTemporary = true;
+    expect(selectStatisticsQueries.projector([item])).toEqual([]);
+  });
+
+  it.each([1, 10, 7756, 10000, 12927, 20000, 10_000_000])('selects all supported layers at scale %s', (scale) => {
+    const items = [
+      mapItem('StatBevoelkerungZH', 'stat-bev-p'),
+      mapItem('StatBeschaeftigteZH', 'stat-ent-p'),
+      mapItem('StatGebaeudeZH', 'stat-geb-p'),
+    ];
+    expect(selectStatisticsQueries({activeMapItem: {items}, mapConfig: {scale}})).toEqual(
+      items.flatMap((item) => statisticsMapQueries[item.id].map((query) => ({topic: item.id, ...query}))),
+    );
+  });
 
   it('excludes unsupported topics, unsupported sublayers, and drawing layers', () => {
     const items = [
@@ -44,7 +47,7 @@ describe('selectStatisticsQueries', () => {
       mapItem('StatBeschaeftigteZH', 'other-layer'),
       createDrawingMapItemMock(UserDrawingLayer.Drawings),
     ];
-    expect(selectStatisticsQueries.projector(items, 1000)).toEqual([]);
+    expect(selectStatisticsQueries.projector(items)).toEqual([]);
   });
 
   it('supports individually added layers and deduplicates full-map/single-layer requests', () => {
@@ -71,7 +74,7 @@ describe('selectStatisticsQueries', () => {
       single.settings.layers[0],
     );
     const expected = [{topic: full.id, ...statisticsMapQueries[full.id][0]}];
-    expect(selectStatisticsQueries.projector([individual], 1000)).toEqual(expected);
-    expect(selectStatisticsQueries.projector([full, individual], 1000)).toEqual(expected);
+    expect(selectStatisticsQueries.projector([individual])).toEqual(expected);
+    expect(selectStatisticsQueries.projector([full, individual])).toEqual(expected);
   });
 });
