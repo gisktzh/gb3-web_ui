@@ -3,6 +3,7 @@ import {StatisticsActions} from '../actions/statistics.actions';
 import {StatisticsState} from '../states/statistics.state';
 import {defaultStatisticsRadiusInMeters} from '../../../shared/configs/statistics.config';
 import {selectQueryPoint} from './query-location.reducer';
+import {QueryModeActions} from '../actions/query-mode.actions';
 
 export const statisticsFeatureKey = 'statistics';
 
@@ -14,6 +15,7 @@ export const initialState: StatisticsState = {
   loadingState: undefined,
   data: [],
   highlightedLayer: undefined,
+  pinnedLayer: undefined,
 };
 
 export const statisticsFeature = createFeature({
@@ -31,6 +33,7 @@ export const statisticsFeature = createFeature({
         loadingState: undefined,
         data: [],
         highlightedLayer: undefined,
+        pinnedLayer: undefined,
       };
     }),
     on(StatisticsActions.setMode, (state, {mode}): StatisticsState => {
@@ -43,26 +46,35 @@ export const statisticsFeature = createFeature({
       return {...state, areaInSquareMeters};
     }),
     on(StatisticsActions.sendRequest, (state): StatisticsState => {
-      return {...state, loadingState: 'loading', data: [], highlightedLayer: undefined};
+      return {...state, loadingState: 'loading', data: [], highlightedLayer: undefined, pinnedLayer: undefined};
     }),
     on(StatisticsActions.invalidateContent, (state): StatisticsState => {
-      return {...state, loadingState: undefined, data: [], highlightedLayer: undefined};
+      return {...state, loadingState: undefined, data: [], highlightedLayer: undefined, pinnedLayer: undefined};
     }),
     on(StatisticsActions.updateContent, (state, {results}): StatisticsState => {
-      return {...state, loadingState: 'loaded', data: results, highlightedLayer: undefined};
+      return {...state, loadingState: 'loaded', data: results, highlightedLayer: undefined, pinnedLayer: undefined};
     }),
     on(StatisticsActions.clearContent, (state): StatisticsState => {
       // The mode and radius are user settings and outlive a cleared result.
       return {...initialState, mode: state.mode, radiusInMeters: state.radiusInMeters};
     }),
     on(StatisticsActions.setError, (state): StatisticsState => {
-      return {...state, loadingState: 'error', data: [], highlightedLayer: undefined};
+      return {...state, loadingState: 'error', data: [], highlightedLayer: undefined, pinnedLayer: undefined};
     }),
     on(StatisticsActions.highlightLayer, (state, {topic, layer}): StatisticsState => {
-      return {...state, highlightedLayer: {topic, layer}};
+      return {...state, highlightedLayer: {topic, layer}, pinnedLayer: {topic, layer}};
+    }),
+    on(StatisticsActions.hoverLayer, (state, {topic, layer}): StatisticsState => {
+      return state.pinnedLayer ? state : {...state, highlightedLayer: {topic, layer}};
+    }),
+    on(StatisticsActions.clearHover, (state): StatisticsState => {
+      return state.pinnedLayer ? state : {...state, highlightedLayer: undefined};
     }),
     on(StatisticsActions.clearHighlight, (state): StatisticsState => {
-      return {...state, highlightedLayer: undefined};
+      return {...state, highlightedLayer: undefined, pinnedLayer: undefined};
+    }),
+    on(QueryModeActions.setQueryMode, (state, {queryMode}): StatisticsState => {
+      return queryMode === 'statistics' ? state : {...state, highlightedLayer: state.pinnedLayer};
     }),
   ),
 });
@@ -78,6 +90,7 @@ export const {
   selectLoadingState,
   selectData,
   selectHighlightedLayer,
+  selectPinnedLayer,
 } = statisticsFeature;
 
 export const selectCenter = selectQueryPoint;

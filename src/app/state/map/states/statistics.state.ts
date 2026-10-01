@@ -11,4 +11,5 @@ export interface StatisticsState extends HasLoadingState {
   areaInSquareMeters: number | undefined;
   data: StatisticsResult[];
   highlightedLayer: StatisticsLayerIdentifier | undefined;
+  pinnedLayer: StatisticsLayerIdentifier | undefined;
 }

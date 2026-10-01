@@ -3,6 +3,7 @@ import {StatisticsActions} from '../actions/statistics.actions';
 import {StatisticsState} from '../states/statistics.state';
 import {PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {StatisticsResult} from '../../../shared/interfaces/statistics.interface';
+import {QueryModeActions} from '../actions/query-mode.actions';
 
 describe('statistics reducer', () => {
   const geometry: PolygonWithSrs = {
@@ -97,6 +98,7 @@ describe('statistics reducer', () => {
       const state: StatisticsState = {...initialState, geometry, data: results, loadingState: 'loaded'};
       const marked = reducer(state, StatisticsActions.highlightLayer({topic: 'topic', layer: 'layer'}));
       expect(marked.highlightedLayer).toEqual({topic: 'topic', layer: 'layer'});
+      expect(marked.pinnedLayer).toEqual(marked.highlightedLayer);
       const switched = reducer(marked, StatisticsActions.highlightLayer({topic: 'other-topic', layer: 'other-layer'}));
       expect(switched.highlightedLayer).toEqual({topic: 'other-topic', layer: 'other-layer'});
       expect(reducer(switched, StatisticsActions.clearHighlight())).toEqual(state);
@@ -110,8 +112,57 @@ describe('statistics reducer', () => {
       StatisticsActions.clearContent(),
       StatisticsActions.setError({}),
     ])('clears a previous marking after $type', (action) => {
-      const state: StatisticsState = {...initialState, highlightedLayer: {topic: 'topic', layer: 'layer'}};
-      expect(reducer(state, action).highlightedLayer).toBeUndefined();
+      const state: StatisticsState = {
+        ...initialState,
+        highlightedLayer: {topic: 'topic', layer: 'layer'},
+        pinnedLayer: {topic: 'topic', layer: 'layer'},
+      };
+      const cleared = reducer(state, action);
+      expect(cleared.highlightedLayer).toBeUndefined();
+      expect(cleared.pinnedLayer).toBeUndefined();
+    });
+  });
+
+  describe('hover previews', () => {
+    const layer = {topic: 'topic', layer: 'layer'};
+    const otherLayer = {topic: 'other-topic', layer: 'other-layer'};
+
+    it('highlights a hovered layer without pinning it and clears only the preview on mouse leave', () => {
+      const state: StatisticsState = {...initialState, geometry, data: results, loadingState: 'loaded'};
+      const hovered = reducer(state, StatisticsActions.hoverLayer(layer));
+      expect(hovered.highlightedLayer).toEqual(layer);
+      expect(hovered.pinnedLayer).toBeUndefined();
+      expect(reducer(hovered, StatisticsActions.clearHover())).toEqual(state);
+    });
+
+    it('pins the hovered layer on click and preserves it through subsequent hover events', () => {
+      const hovered = reducer(initialState, StatisticsActions.hoverLayer(layer));
+      const pinned = reducer(hovered, StatisticsActions.highlightLayer(layer));
+      expect(pinned.pinnedLayer).toEqual(layer);
+      expect(reducer(pinned, StatisticsActions.hoverLayer(otherLayer))).toBe(pinned);
+      expect(reducer(pinned, StatisticsActions.clearHover())).toBe(pinned);
+      expect(reducer(pinned, StatisticsActions.clearHighlight())).toEqual(initialState);
+    });
+
+    it('discards previews when leaving statistics but preserves pinned markings for restoration', () => {
+      const hovered = reducer(initialState, StatisticsActions.hoverLayer(layer));
+      const featureTab = QueryModeActions.setQueryMode({queryMode: 'feature'});
+      const statisticsTab = QueryModeActions.setQueryMode({queryMode: 'statistics'});
+      expect(reducer(reducer(hovered, featureTab), statisticsTab)).toEqual(initialState);
+      const pinned = reducer(hovered, StatisticsActions.highlightLayer(layer));
+      expect(reducer(reducer(pinned, featureTab), statisticsTab)).toEqual(pinned);
+    });
+
+    it.each([
+      StatisticsActions.setSelection({geometry, radiusInMeters: undefined}),
+      StatisticsActions.sendRequest(),
+      StatisticsActions.invalidateContent(),
+      StatisticsActions.updateContent({results}),
+      StatisticsActions.clearContent(),
+      StatisticsActions.setError({}),
+    ])('discards a transient preview after $type', (action) => {
+      const hovered = reducer(initialState, StatisticsActions.hoverLayer(layer));
+      expect(reducer(hovered, action).highlightedLayer).toBeUndefined();
     });
   });
 });

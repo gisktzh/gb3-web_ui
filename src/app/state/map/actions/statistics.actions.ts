@@ -21,6 +21,8 @@ export const StatisticsActions = createActionGroup({
     'Invalidate Content': emptyProps(),
     'Clear Content': emptyProps(),
     'Highlight Layer': props<StatisticsLayerIdentifier>(),
+    'Hover Layer': props<StatisticsLayerIdentifier>(),
+    'Clear Hover': emptyProps(),
     'Clear Highlight': emptyProps(),
     'Set Error': errorProps(),
   },

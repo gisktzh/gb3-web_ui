@@ -438,6 +438,29 @@ describe('shared feature/statistics query location', () => {
       expect(statistics.loadStatistics).toHaveBeenCalledOnce();
     });
 
+    it('renders temporary previews, clears them on mouse leave, and does not restore them after tab switches', () => {
+      const layer = {topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'};
+      store.dispatch(StatisticsActions.clearHighlight());
+      store.dispatch(StatisticsActions.hoverLayer(layer));
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
+      store.dispatch(StatisticsActions.clearHover());
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      store.dispatch(StatisticsActions.hoverLayer(layer));
+      store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
+      expect(drawing.clearStatisticsHighlights).toHaveBeenCalled();
+      store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      expect(statistics.loadStatistics).toHaveBeenCalledOnce();
+    });
+
+    it('keeps a pinned layer marked while other layers are hovered or left', () => {
+      store.dispatch(StatisticsActions.hoverLayer({topic: 'StatBevoelkerungZH', layer: 'stat-bev-p'}));
+      store.dispatch(StatisticsActions.clearHover());
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
+      store.dispatch(StatisticsActions.clearHighlight());
+      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+    });
+
     it.each([
       {name: 'a changed selection', action: StatisticsActions.setSelection({geometry: polygon, radiusInMeters: undefined})},
       {name: 'a refreshed request', action: StatisticsActions.sendRequest()},

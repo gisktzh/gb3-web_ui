@@ -1,15 +1,16 @@
-import {ChangeDetectionStrategy, Component, computed, inject, input, LOCALE_ID, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, input, LOCALE_ID, OnDestroy, signal, ViewEncapsulation} from '@angular/core';
 import {DecimalPipe} from '@angular/common';
 import {MatIcon} from '@angular/material/icon';
 import {StatisticsResult, StatisticsResultLayer} from '../../../../shared/interfaces/statistics.interface';
 import {Store} from '@ngrx/store';
 import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
-import {selectHighlightedLayer} from '../../../../state/map/reducers/statistics.reducer';
+import {selectHighlightedLayer, selectPinnedLayer} from '../../../../state/map/reducers/statistics.reducer';
 import {queryResultStatusTexts} from '../../../../shared/configs/query-result-status.config';
 import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {ResizableInfoTableComponent} from '../info-table/resizable-info-table.component';
 import {mapStatisticsDataToView} from '../../../utils/map-statistics-data-to-view.utils';
+import {InfoTableCellComponent} from '../info-table/info-table-cell.component';
 
 @Component({
   selector: 'statistics-item',
@@ -17,18 +18,24 @@ import {mapStatisticsDataToView} from '../../../utils/map-statistics-data-to-vie
   styleUrls: ['./statistics-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
-  imports: [MapOverlayListItemComponent, MatIcon, ResizableInfoTableComponent, MatRadioButton, MatRadioGroup],
+  imports: [MapOverlayListItemComponent, MatIcon, ResizableInfoTableComponent, MatRadioButton, MatRadioGroup, InfoTableCellComponent],
 })
-export class StatisticsItemComponent {
+export class StatisticsItemComponent implements OnDestroy {
   private readonly decimalPipe = new DecimalPipe(inject(LOCALE_ID));
   private readonly store = inject(Store);
 
   public readonly result = input.required<StatisticsResult>();
   public readonly showInteractiveElements = input(true);
   public readonly highlightedLayer = this.store.selectSignal(selectHighlightedLayer);
+  public readonly pinnedLayer = this.store.selectSignal(selectPinnedLayer);
+  public readonly hoverEnabled = signal(true);
   public readonly highlightedLayerName = computed(() => {
     const highlighted = this.highlightedLayer();
     return highlighted?.topic === this.result().topic ? highlighted.layer : undefined;
+  });
+  public readonly pinnedLayerName = computed(() => {
+    const pinned = this.pinnedLayer();
+    return pinned?.topic === this.result().topic ? pinned.layer : undefined;
   });
 
   public readonly layerViews = computed(() =>
@@ -58,7 +65,7 @@ export class StatisticsItemComponent {
   );
 
   public highlightLayer(layer: StatisticsResultLayer) {
-    if (this.showInteractiveElements() && layer.featureGeometry && this.highlightedLayerName() !== layer.layer) {
+    if (this.showInteractiveElements() && layer.featureGeometry && this.pinnedLayerName() !== layer.layer) {
       this.store.dispatch(StatisticsActions.highlightLayer({topic: this.result().topic, layer: layer.layer}));
     }
   }
@@ -67,10 +74,28 @@ export class StatisticsItemComponent {
     if (!this.showInteractiveElements() || !layer.featureGeometry) {
       return;
     }
-    if (this.highlightedLayerName() === layer.layer) {
+    if (this.pinnedLayerName() === layer.layer) {
       this.store.dispatch(StatisticsActions.clearHighlight());
     } else {
       this.highlightLayer(layer);
+    }
+  }
+
+  public onLayerHoverStart(layer: StatisticsResultLayer) {
+    if (this.showInteractiveElements() && this.hoverEnabled() && layer.featureGeometry && !this.pinnedLayer()) {
+      this.store.dispatch(StatisticsActions.hoverLayer({topic: this.result().topic, layer: layer.layer}));
+    }
+  }
+
+  public onLayerHoverEnd() {
+    if (this.showInteractiveElements() && !this.pinnedLayer()) {
+      this.store.dispatch(StatisticsActions.clearHover());
+    }
+  }
+
+  public ngOnDestroy() {
+    if (this.highlightedLayerName() !== undefined) {
+      this.onLayerHoverEnd();
     }
   }
 }

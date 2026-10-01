@@ -1,4 +1,4 @@
-import {Component, input, TemplateRef} from '@angular/core';
+import {Component, input, output, TemplateRef} from '@angular/core';
 import {NgTemplateOutlet} from '@angular/common';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
@@ -8,7 +8,7 @@ import {TableData} from '../info-table/info-table.types';
 import {ResizableInfoTableComponent} from '../info-table/resizable-info-table.component';
 import {StatisticsItemComponent} from './statistics-item.component';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {selectHighlightedLayer} from '../../../../state/map/reducers/statistics.reducer';
+import {selectHighlightedLayer, selectPinnedLayer} from '../../../../state/map/reducers/statistics.reducer';
 import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
 
 @Component({
@@ -26,8 +26,26 @@ class MapOverlayListItemStubComponent {
 
 @Component({
   selector: 'resizable-info-table',
-  template:
-    '<table><thead><tr><ng-container [ngTemplateOutlet]="tableHeaderTemplate() ?? null" [ngTemplateOutletContext]="{$implicit: tableData().headers[0]}" /></tr></thead></table>',
+  template: `
+    <table>
+      <thead>
+        <tr>
+          @for (header of tableData().headers; track $index) {
+            <ng-container [ngTemplateOutlet]="tableHeaderTemplate() ?? null" [ngTemplateOutletContext]="{$implicit: header}" />
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of tableData().rows; track $index) {
+          <tr>
+            @for (cell of row.cells; track $index) {
+              <ng-container [ngTemplateOutlet]="tableCellTemplate() ?? null" [ngTemplateOutletContext]="{$implicit: cell}" />
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  `,
   imports: [NgTemplateOutlet],
   host: {'[attr.data-table-label]': 'tableLabel()'},
 })
@@ -35,11 +53,29 @@ class ResizableInfoTableStubComponent {
   public readonly tableData = input.required<TableData>();
   public readonly tableLabel = input.required<string>();
   public readonly tableHeaderTemplate = input<TemplateRef<unknown>>();
+  public readonly tableCellTemplate = input<TemplateRef<unknown>>();
+  public readonly resizeStart = output();
+  public readonly resizeEnd = output();
 }
 
 describe('StatisticsItemComponent', () => {
   let fixture: ComponentFixture<StatisticsItemComponent>;
   let store: MockStore;
+  const markingResult: StatisticsResult = {
+    topic: 'topic',
+    title: 'Statistics',
+    layers: [
+      {
+        layer: 'layer',
+        title: 'Layer',
+        columns: ['Summe'],
+        status: 'ok',
+        featureGeometry: {type: 'Point', coordinates: [2680000, 1254000], srs: 2056},
+        rows: [{label: 'Total', values: [{value: 10, unit: null}], isGroupHeader: false}],
+      },
+    ],
+  };
+  const identifier = {topic: 'topic', layer: 'layer'};
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({imports: [StatisticsItemComponent], providers: [provideMockStore()]})
@@ -51,7 +87,9 @@ describe('StatisticsItemComponent', () => {
 
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectHighlightedLayer, undefined);
+    store.overrideSelector(selectPinnedLayer, undefined);
     fixture = TestBed.createComponent(StatisticsItemComponent);
+    fixture.componentRef.setInput('result', markingResult);
   });
 
   afterEach(() => store.resetSelectors());
@@ -120,21 +158,6 @@ describe('StatisticsItemComponent', () => {
   });
 
   it('ties marking to the table header control, reflects checked state, and toggles it off on repeated clicks', () => {
-    const result: StatisticsResult = {
-      topic: 'topic',
-      title: 'Statistics',
-      layers: [
-        {
-          layer: 'layer',
-          title: 'Layer',
-          columns: ['Summe'],
-          status: 'ok',
-          featureGeometry: {type: 'Point', coordinates: [2680000, 1254000], srs: 2056},
-          rows: [{label: 'Total', values: [{value: 10, unit: null}], isGroupHeader: false}],
-        },
-      ],
-    };
-    fixture.componentRef.setInput('result', result);
     const dispatch = vi.spyOn(store, 'dispatch');
     fixture.detectChanges();
     expect(dispatch).not.toHaveBeenCalled();
@@ -142,6 +165,7 @@ describe('StatisticsItemComponent', () => {
     header.click();
     expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.highlightLayer({topic: 'topic', layer: 'layer'}));
     store.overrideSelector(selectHighlightedLayer, {topic: 'topic', layer: 'layer'});
+    store.overrideSelector(selectPinnedLayer, {topic: 'topic', layer: 'layer'});
     store.refreshState();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('input[type="radio"]').checked).toBe(true);
@@ -153,7 +177,102 @@ describe('StatisticsItemComponent', () => {
     expect(fixture.nativeElement.querySelector('mat-radio-button')).toBeNull();
     dispatch.mockClear();
     header.click();
+    header.dispatchEvent(new MouseEvent('mouseenter'));
+    header.dispatchEvent(new MouseEvent('mouseleave'));
     expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it.each(['th', 'td'])('previews geometry while hovering a %s and clears it on mouse leave', (selector) => {
+    fixture.detectChanges();
+    const dispatch = vi.spyOn(store, 'dispatch');
+    const cell: HTMLElement = fixture.nativeElement.querySelector(selector);
+    cell.dispatchEvent(new MouseEvent('mouseenter'));
+    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.hoverLayer(identifier));
+    store.overrideSelector(selectHighlightedLayer, identifier);
+    store.refreshState();
+    fixture.detectChanges();
+    expect(cell.classList.contains('statistics-item__cell--highlighted')).toBe(true);
+    expect(fixture.nativeElement.querySelector('input[type="radio"]').checked).toBe(true);
+    cell.dispatchEvent(new MouseEvent('mouseleave'));
+    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.clearHover());
+    store.overrideSelector(selectHighlightedLayer, undefined);
+    store.refreshState();
+    fixture.detectChanges();
+    expect(cell.classList.contains('statistics-item__cell--highlighted')).toBe(false);
+    expect(fixture.nativeElement.querySelector('input[type="radio"]').checked).toBe(false);
+  });
+
+  it('pins an already hovered layer on click instead of clearing its preview', () => {
+    store.overrideSelector(selectHighlightedLayer, identifier);
+    store.refreshState();
+    fixture.detectChanges();
+    const dispatch = vi.spyOn(store, 'dispatch');
+    const header: HTMLElement = fixture.nativeElement.querySelector('th');
+    header.click();
+    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.highlightLayer(identifier));
+    store.overrideSelector(selectPinnedLayer, identifier);
+    store.refreshState();
+    fixture.detectChanges();
+    dispatch.mockClear();
+    header.dispatchEvent(new MouseEvent('mouseleave'));
+    expect(dispatch).not.toHaveBeenCalled();
+    header.click();
+    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.clearHighlight());
+  });
+
+  it.each([identifier, {topic: 'other-topic', layer: 'other-layer'}])(
+    'does not replace or clear a pinned marking from $topic on hover',
+    (pinned) => {
+      store.overrideSelector(selectHighlightedLayer, pinned);
+      store.overrideSelector(selectPinnedLayer, pinned);
+      store.refreshState();
+      fixture.detectChanges();
+      const dispatch = vi.spyOn(store, 'dispatch');
+      const header: HTMLElement = fixture.nativeElement.querySelector('th');
+      header.dispatchEvent(new MouseEvent('mouseenter'));
+      header.dispatchEvent(new MouseEvent('mouseleave'));
+      expect(dispatch).not.toHaveBeenCalled();
+    },
+  );
+
+  it('allows Space to pin and unpin a hovered layer even though its radio is already checked', () => {
+    store.overrideSelector(selectHighlightedLayer, identifier);
+    store.refreshState();
+    fixture.detectChanges();
+    const dispatch = vi.spyOn(store, 'dispatch');
+    const radio: HTMLInputElement = fixture.nativeElement.querySelector('input[type="radio"]');
+    const keydown = new KeyboardEvent('keydown', {key: ' ', bubbles: true, cancelable: true});
+    radio.dispatchEvent(keydown);
+    expect(keydown.defaultPrevented).toBe(true);
+    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.highlightLayer(identifier));
+    store.overrideSelector(selectPinnedLayer, identifier);
+    store.refreshState();
+    fixture.detectChanges();
+    radio.dispatchEvent(new KeyboardEvent('keydown', {key: ' ', bubbles: true, cancelable: true}));
+    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.clearHighlight());
+  });
+
+  it('suppresses hover previews while resizing a table', () => {
+    fixture.detectChanges();
+    const dispatch = vi.spyOn(store, 'dispatch');
+    const table = fixture.debugElement.query(By.directive(ResizableInfoTableStubComponent))
+      .componentInstance as ResizableInfoTableStubComponent;
+    const header: HTMLElement = fixture.nativeElement.querySelector('th');
+    table.resizeStart.emit();
+    header.dispatchEvent(new MouseEvent('mouseenter'));
+    expect(dispatch).not.toHaveBeenCalled();
+    table.resizeEnd.emit();
+    header.dispatchEvent(new MouseEvent('mouseenter'));
+    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.hoverLayer(identifier));
+  });
+
+  it('clears its temporary preview when the result component is destroyed', () => {
+    store.overrideSelector(selectHighlightedLayer, identifier);
+    store.refreshState();
+    fixture.detectChanges();
+    const dispatch = vi.spyOn(store, 'dispatch');
+    fixture.destroy();
+    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.clearHover());
   });
 
   it('disables marking when the result has no feature geometry', () => {
@@ -174,6 +293,7 @@ describe('StatisticsItemComponent', () => {
     const dispatch = vi.spyOn(store, 'dispatch');
     expect(fixture.nativeElement.querySelector('input[type="radio"]').disabled).toBe(true);
     fixture.nativeElement.querySelector('th').click();
+    fixture.nativeElement.querySelector('th').dispatchEvent(new MouseEvent('mouseenter'));
     expect(dispatch).not.toHaveBeenCalled();
   });
 });

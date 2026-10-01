@@ -9,7 +9,13 @@
   cursor: pointer;
 }
 
-.info-table__table thead .statistics-item__table-header--highlighted {
+.statistics-item__cell--highlighted {
+  box-shadow:
+    inset 2px 0 0 0 ktzh-variables.$zh-active-blue,
+    inset -2px 0 0 0 ktzh-variables.$zh-active-blue;
+}
+
+.info-table__table thead .statistics-item__cell--highlighted {
   background-color: ktzh-variables.$zh-active-blue !important;
 }
 

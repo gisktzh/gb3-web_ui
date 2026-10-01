@@ -210,7 +210,22 @@ test.describe('OEREB-Kataster', () => {
     await expect.poll(statisticsHighlights).toEqual([]);
     const markHeader = bottomSheet.locator('statistics-item th', {hasText: 'Markieren:'});
     const markRadio = bottomSheet.locator('statistics-item input[type="radio"]');
+    await markHeader.hover();
+    await expect(markRadio).toBeChecked();
+    await expect.poll(statisticsHighlights).toEqual(highlightCoordinates.map((coordinates) => ({type: 'Point', coordinates, srs: 2056})));
+    await page.mouse.move(0, 0);
+    await expect(markRadio).not.toBeChecked();
+    await expect.poll(statisticsHighlights).toEqual([]);
+    const statisticsValue = bottomSheet.locator('statistics-item td').first();
+    await statisticsValue.hover();
+    await expect.poll(statisticsHighlights).toEqual(highlightCoordinates.map((coordinates) => ({type: 'Point', coordinates, srs: 2056})));
+    await featuresTab.click();
+    await statisticsTab.click();
+    await expect.poll(statisticsHighlights).toEqual([]);
+    expect(statisticsRequests).toBe(1);
+    await markHeader.hover();
     await markHeader.click();
+    await page.mouse.move(0, 0);
     await expect(markRadio).toBeChecked();
     await expect.poll(statisticsHighlights).toEqual(highlightCoordinates.map((coordinates) => ({type: 'Point', coordinates, srs: 2056})));
     const previousFeatureRequests = featureRequests;
@@ -231,7 +246,10 @@ test.describe('OEREB-Kataster', () => {
     await expect.poll(() => statisticsRequests).toBe(3);
     await expect(bottomSheet.locator('#statistics-radius-error')).toHaveCount(0);
     await expect.poll(statisticsHighlights).toEqual([]);
-    await markHeader.click();
+    await markHeader.hover();
+    await markRadio.press('Space');
+    await page.mouse.move(0, 0);
+    await expect(markRadio).toBeChecked();
     await expect.poll(statisticsHighlights).toEqual(highlightCoordinates.map((coordinates) => ({type: 'Point', coordinates, srs: 2056})));
 
     await featuresTab.click();

@@ -8,8 +8,10 @@
       <ng-template #tableHeader let-header>
         <th
           class="info-table__cell info-table__cell--header statistics-item__table-header"
-          [class.statistics-item__table-header--highlighted]="highlightedLayerName() === layerView.layer.layer"
+          [class.statistics-item__cell--highlighted]="highlightedLayerName() === layerView.layer.layer"
           scope="col"
+          (mouseenter)="onLayerHoverStart(layerView.layer)"
+          (mouseleave)="onLayerHoverEnd()"
           (click)="toggleLayerHighlight(layerView.layer)"
         >
           <div class="statistics-item__table-header-content">
@@ -20,6 +22,7 @@
                 [disabled]="!layerView.layer.featureGeometry"
                 [checked]="highlightedLayerName() === layerView.layer.layer"
                 (change)="highlightLayer(layerView.layer)"
+                (keydown.space)="$event.preventDefault(); toggleLayerHighlight(layerView.layer)"
                 labelPosition="before"
               >
                 Markieren:
@@ -27,6 +30,16 @@
             }
           </div>
         </th>
+      </ng-template>
+      <ng-template #tableCell let-cell>
+        <td
+          class="info-table__cell"
+          [class.statistics-item__cell--highlighted]="highlightedLayerName() === layerView.layer.layer"
+          (mouseenter)="onLayerHoverStart(layerView.layer)"
+          (mouseleave)="onLayerHoverEnd()"
+        >
+          <info-table-cell [cellValue]="cell" />
+        </td>
       </ng-template>
       <div class="statistics-item">
         <map-overlay-list-item
@@ -55,10 +68,24 @@
                   [showInteractiveElements]="showInteractiveElements()"
                 >
                   <mat-icon class="statistics-item__icon" header-icon>layers</mat-icon>
-                  <resizable-info-table [tableData]="section.data" [tableLabel]="section.tableLabel" [tableHeaderTemplate]="tableHeader" />
+                  <resizable-info-table
+                    [tableData]="section.data"
+                    [tableLabel]="section.tableLabel"
+                    [tableHeaderTemplate]="tableHeader"
+                    [tableCellTemplate]="tableCell"
+                    (resizeStart)="hoverEnabled.set(false)"
+                    (resizeEnd)="hoverEnabled.set(true)"
+                  />
                 </map-overlay-list-item>
               } @else {
-                <resizable-info-table [tableData]="section.data" [tableLabel]="section.tableLabel" [tableHeaderTemplate]="tableHeader" />
+                <resizable-info-table
+                  [tableData]="section.data"
+                  [tableLabel]="section.tableLabel"
+                  [tableHeaderTemplate]="tableHeader"
+                  [tableCellTemplate]="tableCell"
+                  (resizeStart)="hoverEnabled.set(false)"
+                  (resizeEnd)="hoverEnabled.set(true)"
+                />
               }
             }
           }
