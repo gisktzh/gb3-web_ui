@@ -14,7 +14,7 @@ export class AnimatedDialogService extends MatDialog {
     this.animationTargets.delete(dialog);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- `any` is necessary here to comply with parent interface.
   public override open<T, D = any, R = any>(
     componentOrTemplate: ComponentType<T> | TemplateRef<T>,
     config?: MatDialogConfig<D>,

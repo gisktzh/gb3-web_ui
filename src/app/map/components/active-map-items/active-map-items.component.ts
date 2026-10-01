@@ -86,7 +86,7 @@ export class ActiveMapItemsComponent {
   });
   public readonly isActiveMapItemDragAndDropDisabled = computed(() => !!this.activeTool());
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- So it looks like the actual class name in the template.
   public readonly MapNoticeDialogComponent = MapNoticeDialogComponent;
 
   public trackByMapItemId(_: number, item: ActiveMapItem) {

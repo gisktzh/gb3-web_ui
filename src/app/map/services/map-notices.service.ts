@@ -4,6 +4,8 @@ import {LocalStorageService} from 'src/app/shared/services/local-storage.service
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectGb2WmsActiveMapItemsWithMapNotices} from 'src/app/state/map/selectors/active-map-items.selector';
 
+const SKIP_AUTO_OPENING_LOCALE_STORAGE_KEY = 'skipAutoOpeningOfMapNotices';
+
 @Injectable({providedIn: 'root'})
 export class MapNoticesService {
   private readonly localStorageService = inject(LocalStorageService);
@@ -15,7 +17,7 @@ export class MapNoticesService {
     () => this.activeMapItemsWithNotices().filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length,
   );
 
-  public readonly skipAutoOpeningOfMapNotices = this.localStorageService.watch('skipAutoOpeningOfMapNotices');
+  public readonly skipAutoOpeningOfMapNotices = this.localStorageService.watch(SKIP_AUTO_OPENING_LOCALE_STORAGE_KEY);
 
   public readonly shouldAutoOpen = computed(() => {
     return this.skipAutoOpeningOfMapNotices() !== '1' && this.numberOfUnreadNotices() > 0;
@@ -34,10 +36,10 @@ export class MapNoticesService {
   }
 
   public disableAutoOpening() {
-    return this.localStorageService.set('skipAutoOpeningOfMapNotices', '1');
+    return this.localStorageService.set(SKIP_AUTO_OPENING_LOCALE_STORAGE_KEY, '1');
   }
 
   public enableAutoOpening() {
-    return this.localStorageService.set('skipAutoOpeningOfMapNotices', '0');
+    return this.localStorageService.set(SKIP_AUTO_OPENING_LOCALE_STORAGE_KEY, '0');
   }
 }

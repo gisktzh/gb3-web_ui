@@ -208,7 +208,8 @@ describe('AnimatedDialogService', () => {
 
     const dialogElement = document.getElementById(ref.id);
 
-    expect(dialogElement).not.toBeNull(); // Remove the dialog element before closing it.
+    expect(dialogElement).not.toBeNull();
+    // Remove the dialog element before closing it.
     dialogElement!.remove();
     expect(() => ref.close()).not.toThrow();
   });
