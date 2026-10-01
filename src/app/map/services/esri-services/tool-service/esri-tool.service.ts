@@ -37,6 +37,7 @@ import {DataDownloadOrderActions} from '../../../../state/map/actions/data-downl
 import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
 import {deriveCircleFromGeometry} from '../../../../shared/utils/statistics-geometry.utils';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
+import {GeometrySelection} from '../../../../shared/interfaces/geometry-selection.interface';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
 import {MatDialog} from '@angular/material/dialog';
@@ -301,7 +302,7 @@ export class EsriToolService implements ToolService {
     this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
   }
 
-  public completeStatisticsSelection(selection: DataDownloadSelection | undefined, isCircle: boolean) {
+  public completeStatisticsSelection(selection: GeometrySelection | undefined, isCircle: boolean) {
     if (selection) {
       const geometry = selection.drawingRepresentation.geometry;
       // Esri hands a drawn circle over as an approximating polygon, so centre and radius have to be recovered to keep the radius input
@@ -634,7 +635,7 @@ export class EsriToolService implements ToolService {
           layer,
           this.esriMapViewService.getMapView(),
           areaStyle,
-          (selection) => this.completeSelection(selection),
+          (selection) => this.completeDownloadGeometrySelection(selection),
           'circle',
           this.configService.mapConfig.defaultMapConfig.srsId,
         );
@@ -644,7 +645,7 @@ export class EsriToolService implements ToolService {
           layer,
           this.esriMapViewService.getMapView(),
           areaStyle,
-          (selection) => this.completeSelection(selection),
+          (selection) => this.completeDownloadGeometrySelection(selection),
           'polygon',
           this.configService.mapConfig.defaultMapConfig.srsId,
         );
@@ -654,7 +655,7 @@ export class EsriToolService implements ToolService {
           layer,
           this.esriMapViewService.getMapView(),
           areaStyle,
-          (selection) => this.completeSelection(selection),
+          (selection) => this.completeDownloadGeometrySelection(selection),
           'rectangle',
           this.configService.mapConfig.defaultMapConfig.srsId,
         );
@@ -702,5 +703,9 @@ export class EsriToolService implements ToolService {
 
   private isGraphicsLayer(drawingLayer: Layer | undefined): drawingLayer is GraphicsLayer {
     return !!drawingLayer && !!(drawingLayer as GraphicsLayer).graphics;
+  }
+
+  private completeDownloadGeometrySelection(selection: GeometrySelection | undefined) {
+    this.completeSelection(selection ? {type: 'polygon', drawingRepresentation: selection.drawingRepresentation} : undefined);
   }
 }
