@@ -4,10 +4,12 @@ import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
 import path from 'node:path';
 import {expect, type Page} from '@playwright/test';
+import {canonicalizeUrl} from './utils/canonicalize.utils';
 
 // URL pattern. If pattern matches,
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
 const IS_WRITING_HAR = !!process.env['WRITE_HAR'];
+const DEFAULT_DESKTOP_MAP_VIEW_PADDING = {top: 88, right: 180, bottom: 88, left: 474};
 
 export type ScreenCoords = [number, number];
 export type ScreenCoordsList = ScreenCoords[];
@@ -23,6 +25,7 @@ type Gb3Fixtures = {
   login: () => Promise<void>;
   search: (searchTerm: string) => Promise<void>;
   zoom: (zoomLevel: number) => Promise<void>;
+  clickDefaultMapViewCenter: () => Promise<void>;
 };
 
 function getRequestKey(url: string, method: string) {
@@ -143,7 +146,7 @@ export const test = base.extend<Gb3Fixtures>({
           },
           matchFunction: customMatcher({
             urlComparator(a, b) {
-              return a === b;
+              return canonicalizeUrl(a) === canonicalizeUrl(b);
             },
             postDataComparator: postDataEquals,
           }),
@@ -291,16 +294,18 @@ export const test = base.extend<Gb3Fixtures>({
 
   search: async ({page}, use) => {
     await use(async (searchTerm: string) => {
-      const searchInput = page.locator('input[placeholder="Suchen nach Adressen, Orten, Karten und mehr..."]');
+      const searchWindow = page.locator('search-window');
+      const searchInput = searchWindow.getByPlaceholder('Suchen nach Adressen, Orten, Karten und mehr...');
 
       await expect(searchInput).toBeVisible();
-      await searchInput.fill(searchTerm);
-      await searchInput.dispatchEvent('keyup', {key: searchTerm.at(-1)});
+      await searchInput.click();
+      await searchInput.clear();
+      await searchInput.pressSequentially(searchTerm);
 
-      const searchResult = page.locator('button', {
-        hasText: searchTerm,
-      });
+      const searchResults = searchWindow.locator('.result-window__content');
+      await expect(searchResults).toBeVisible({timeout: 30_000});
 
+      const searchResult = searchResults.getByRole('button').filter({hasText: searchTerm}).first();
       await expect(searchResult).toBeVisible({timeout: 30_000});
       await searchResult.click();
     });
@@ -311,8 +316,25 @@ export const test = base.extend<Gb3Fixtures>({
       const zoomInput = page.locator('[data-test-id="input-map-scale"]');
 
       await expect(zoomInput).toBeVisible();
-      await zoomInput.fill(zoomLevel.toString());
+      await zoomInput.clear();
+      await zoomInput.pressSequentially(zoomLevel.toString());
       await expect(zoomInput).toHaveValue(zoomLevel.toString());
+    });
+  },
+
+  clickDefaultMapViewCenter: async ({page}, use) => {
+    await use(async () => {
+      const map = page.locator('map-page map-container .esri-view-surface');
+      await expect(map).toBeVisible();
+
+      const boundingBox = await map.boundingBox();
+      expect(boundingBox).not.toBeNull();
+
+      const {top, right, bottom, left} = DEFAULT_DESKTOP_MAP_VIEW_PADDING;
+      const effectiveWidth = boundingBox!.width - left - right;
+      const effectiveHeight = boundingBox!.height - top - bottom;
+
+      await page.mouse.click(boundingBox!.x + left + effectiveWidth / 2, boundingBox!.y + top + effectiveHeight / 2);
     });
   },
 });
