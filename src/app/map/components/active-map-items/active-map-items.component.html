@@ -31,6 +31,7 @@
           [matTooltip]="tooltipText.mapNotices"
           [aria-label]="tooltipText.mapNotices"
           matTooltipPosition="below"
+          [animationTargetForDialog]="MapNoticeDialogComponent"
         >
           <mat-icon>info</mat-icon>
           @if (mapNoticesService.numberOfUnreadNotices() > 0) {

@@ -23,6 +23,8 @@ import {ActiveMapItemComponent} from './active-map-item/active-map-item.componen
 import {DragCursorDirective} from '../../../shared/directives/drag-cursor.directive';
 import {CdkScrollable} from '@angular/cdk/scrolling';
 import {MapNoticesService} from '../../services/map-notices.service';
+import {AnimationTargetForDialogDirective} from '../../directives/animation-target-for-dialog.directive';
+import {MapNoticeDialogComponent} from '../../components/map-notice-dialog/map-notice-dialog.component';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Um einen Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
@@ -59,6 +61,7 @@ const TOOLTIP_TEXT = {
     DragCursorDirective,
     CdkDragHandle,
     CdkDragPlaceholder,
+    AnimationTargetForDialogDirective,
   ],
 })
 export class ActiveMapItemsComponent {
@@ -83,6 +86,8 @@ export class ActiveMapItemsComponent {
   });
   public readonly isActiveMapItemDragAndDropDisabled = computed(() => !!this.activeTool());
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public readonly MapNoticeDialogComponent = MapNoticeDialogComponent;
 
   public trackByMapItemId(_: number, item: ActiveMapItem) {
     return item.id;
