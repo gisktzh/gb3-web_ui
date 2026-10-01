@@ -11,6 +11,7 @@ import {selectPrintLegendItems} from '../selectors/print-legend-items.selector';
 import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items.selector';
 import {FileDownloadService} from '../../../shared/services/file-download-service';
 import {PrintActions} from '../actions/print.actions';
+import {selectQueryMode} from '../reducers/query-mode.reducer';
 
 @Injectable()
 export class OverlayPrintEffects {
@@ -39,16 +40,24 @@ export class OverlayPrintEffects {
     return this.actions$.pipe(
       ofType(OverlayPrintActions.sendPrintRequest),
       filter((action) => action.overlay === 'featureInfo'),
-      concatLatestFrom(() => this.store.select(selectPrintFeatureInfoItems)),
-      filter(([_, {x, y}]) => x !== undefined && y !== undefined),
-      switchMap(([{overlay}, {x, y, items}]) =>
-        this.printService.printFeatureInfo(items, x!, y!).pipe(
+      concatLatestFrom(() => [this.store.select(selectPrintFeatureInfoItems), this.store.select(selectQueryMode)]),
+      switchMap(([{overlay}, {x, y, items}, queryMode]) => {
+        // The report endpoint supports feature information, not statistics.
+        if (queryMode !== 'feature' || x === undefined || y === undefined) {
+          return of(
+            OverlayPrintActions.setPrintRequestError({
+              overlay,
+              error: new Error('A feature report requires feature mode and a query location.'),
+            }),
+          );
+        }
+        return this.printService.printFeatureInfo(items, x, y).pipe(
           map((printCreationResponse) => {
             return OverlayPrintActions.setPrintRequestResponse({overlay, creationResponse: printCreationResponse});
           }),
           catchError((error: unknown) => of(OverlayPrintActions.setPrintRequestError({overlay, error}))),
-        ),
-      ),
+        );
+      }),
     );
   });
 
