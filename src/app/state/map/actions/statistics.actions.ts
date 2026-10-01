@@ -15,6 +15,7 @@ export const StatisticsActions = createActionGroup({
     }>(),
     'Set Mode': props<{mode: StatisticsMode}>(),
     'Set Radius': props<{radiusInMeters: number}>(),
+    'Set Area': props<{areaInSquareMeters: number}>(),
     'Send Request': emptyProps(),
     'Update Content': props<{results: StatisticsResult[]}>(),
     'Invalidate Content': emptyProps(),

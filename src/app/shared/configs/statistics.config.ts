@@ -12,7 +12,9 @@ export const defaultStatisticsRadiusInMeters = 500;
  * Guards against degenerate areas before querying the backend.
  */
 export const minimumStatisticsRadiusInMeters = 1;
-export const maximumStatisticsRadiusInMeters = 10000;
+/** Test-phase limit while statistic_info returns all matching feature geometries; also enforce this in the backend. */
+export const maximumStatisticsAreaInSquareMeters = 42_000_000;
+export const maximumStatisticsRadiusInMeters = Math.floor(Math.sqrt(maximumStatisticsAreaInSquareMeters / Math.PI));
 
 /**
  * Manual statistics-map list and queries until the topics API exposes this configuration.

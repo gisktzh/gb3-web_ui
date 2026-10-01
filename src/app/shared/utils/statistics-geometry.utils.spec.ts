@@ -120,6 +120,21 @@ describe('statistics geometry utils', () => {
   });
 
   describe('calculateAreaInSquareMeters', () => {
+    it('does not treat square degrees as square metres', () => {
+      const geometry: PolygonWithSrs = {
+        type: 'Polygon',
+        srs: 4326,
+        coordinates: [
+          [
+            [8, 47],
+            [9, 47],
+            [9, 48],
+            [8, 47],
+          ],
+        ],
+      };
+      expect(() => calculateAreaInSquareMeters(geometry)).toThrow('Planar area requires EPSG:2056');
+    });
     it('calculates the area of a square regardless of its winding order', () => {
       const square: PolygonWithSrs = {
         type: 'Polygon',

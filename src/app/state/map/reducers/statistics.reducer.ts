@@ -10,6 +10,7 @@ export const initialState: StatisticsState = {
   mode: 'umkreis',
   radiusInMeters: defaultStatisticsRadiusInMeters,
   geometry: undefined,
+  areaInSquareMeters: undefined,
   loadingState: undefined,
   data: [],
 };
@@ -24,6 +25,7 @@ export const statisticsFeature = createFeature({
       return {
         ...state,
         geometry,
+        areaInSquareMeters: undefined,
         radiusInMeters: radiusInMeters ?? state.radiusInMeters,
         loadingState: undefined,
         data: [],
@@ -34,6 +36,9 @@ export const statisticsFeature = createFeature({
     }),
     on(StatisticsActions.setRadius, (state, {radiusInMeters}): StatisticsState => {
       return {...state, radiusInMeters};
+    }),
+    on(StatisticsActions.setArea, (state, {areaInSquareMeters}): StatisticsState => {
+      return {...state, areaInSquareMeters};
     }),
     on(StatisticsActions.sendRequest, (state): StatisticsState => {
       return {...state, loadingState: 'loading', data: []};
@@ -54,7 +59,16 @@ export const statisticsFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectStatisticsState, selectMode, selectRadiusInMeters, selectGeometry, selectLoadingState, selectData} =
-  statisticsFeature;
+export const {
+  name,
+  reducer,
+  selectStatisticsState,
+  selectMode,
+  selectRadiusInMeters,
+  selectGeometry,
+  selectAreaInSquareMeters,
+  selectLoadingState,
+  selectData,
+} = statisticsFeature;
 
 export const selectCenter = selectQueryPoint;

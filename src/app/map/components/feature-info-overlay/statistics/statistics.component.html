@@ -40,6 +40,8 @@
           [value]="radiusInMeters()"
           [min]="minimumRadius"
           [max]="maximumRadius"
+          [attr.aria-invalid]="radiusError() ? 'true' : null"
+          [attr.aria-describedby]="radiusError() ? 'statistics-radius-error' : null"
           (change)="setRadius($any($event.target).value)"
         />
         <span class="statistics__controls__radius__unit">m</span>
@@ -48,9 +50,15 @@
   }
 </div>
 
+@if (radiusError(); as error) {
+  <p id="statistics-radius-error" role="alert">{{ error }}</p>
+}
+
 <loading-and-process-bar [loadingState]="loadingState()" />
 
-@if (loadingState() === 'loaded') {
+@if (areaTooLarge()) {
+  <p role="alert">Das gewählte Gebiet ist zu gross. Verkleinern Sie es auf höchstens {{ maximumAreaInSquareKilometers }} km².</p>
+} @else if (loadingState() === 'loaded') {
   @if (generalInfoData(); as generalInfoData) {
     <feature-info-general-information [generalInfoData]="generalInfoData" [areaInSquareMeters]="areaInSquareMeters()" />
     <mat-divider class="statistics__divider" />
@@ -62,5 +70,11 @@
     <i>Keine Statistik-Daten für das gewählte Gebiet!</i>
   }
 } @else if (loadingState() === undefined) {
-  <i>Wählen Sie ein Gebiet auf der Karte, um die Statistik zu berechnen.</i>
+  @if (geometry() && areaInSquareMeters() === undefined) {
+    <i>Das gewählte Gebiet wird geprüft.</i>
+  } @else {
+    <i>Wählen Sie ein Gebiet auf der Karte, um die Statistik zu berechnen.</i>
+  }
+} @else if (loadingState() === 'error') {
+  <p role="alert">Die Statistik konnte nicht berechnet werden. Prüfen Sie das gewählte Gebiet und versuchen Sie es erneut.</p>
 }

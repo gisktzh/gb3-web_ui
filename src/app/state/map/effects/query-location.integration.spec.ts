@@ -9,7 +9,7 @@ import {PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-t
 import {FeatureInfoResponse} from '../../../shared/interfaces/feature-info.interface';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {Gb3GeneralInfoService} from '../../../shared/services/apis/gb3/gb3-general-info.service';
-import {deriveBoundingBoxCenter} from '../../../shared/utils/statistics-geometry.utils';
+import {createCircle, deriveBoundingBoxCenter} from '../../../shared/utils/statistics-geometry.utils';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {QueryLocationActions} from '../actions/query-location.actions';
@@ -138,6 +138,18 @@ describe('shared feature/statistics query location', () => {
     expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
   });
 
+  it('preserves a drawn circle rather than rebuilding it from the rounded radius input on point movement', async () => {
+    const circle = createCircle(point, 750.25);
+    store.dispatch(StatisticsActions.setSelection({geometry: circle, radiusInMeters: 750}));
+    store.dispatch(QueryLocationActions.setPoint({point: {...point, coordinates: [2680100, 1254100]}, scale: 1000}));
+    const moved = await firstValueFrom(store.select(selectGeometry));
+    expect(moved).toEqual({
+      ...circle,
+      coordinates: circle.coordinates.map((ring) => ring.map(([x, y]) => [x + 100, y + 100])),
+    });
+    expect(topics.loadFeatureInfos).toHaveBeenCalledTimes(2);
+  });
+
   it('invalidates statistics while inactive and reloads when the tab opens', async () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
@@ -180,5 +192,39 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     store.dispatch(MapConfigActions.clearFeatureInfoContent());
     expect(cancelSecond).toHaveBeenCalledOnce();
+  });
+
+  it('retains an oversized selection and updates feature info without sending a statistics request', async () => {
+    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+    const large: PolygonWithSrs = {
+      ...polygon,
+      coordinates: [
+        [
+          [2680000, 1254000],
+          [2687000, 1254000],
+          [2687000, 1261000],
+          [2680000, 1261000],
+          [2680000, 1254000],
+        ],
+      ],
+    };
+    store.dispatch(StatisticsActions.setSelection({geometry: large, radiusInMeters: undefined}));
+    expect(await firstValueFrom(store.select(selectGeometry))).toEqual(large);
+    expect(await firstValueFrom(store.select(selectQueryPoint))).toEqual(deriveBoundingBoxCenter(large));
+    expect(statistics.loadStatistics).not.toHaveBeenCalled();
+    expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
+  });
+
+  it('clears results when eligible layers are hidden and reloads when they become visible again', () => {
+    store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+    expect(statistics.loadStatistics).toHaveBeenCalledOnce();
+    const item = createGb2WmsMapItemMock('StatBeschaeftigteZH');
+    store.dispatch(ActiveMapItemActions.setVisibility({activeMapItem: item, visible: false}));
+    expect(statistics.loadStatistics).toHaveBeenCalledOnce();
+    store.dispatch(ActiveMapItemActions.setVisibility({activeMapItem: item, visible: true}));
+    expect(statistics.loadStatistics).toHaveBeenCalledTimes(2);
+    store.dispatch(MapConfigActions.setScale({scale: 1_000_001}));
+    expect(statistics.loadStatistics).toHaveBeenCalledTimes(2);
   });
 });

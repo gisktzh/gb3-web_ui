@@ -8,5 +8,6 @@ export interface StatisticsState extends HasLoadingState {
   radiusInMeters: number;
   /** The effective area the statistics are queried for, either the derived circle or a drawn polygon. */
   geometry: GeometryWithSrs | undefined;
+  areaInSquareMeters: number | undefined;
   data: StatisticsResult[];
 }

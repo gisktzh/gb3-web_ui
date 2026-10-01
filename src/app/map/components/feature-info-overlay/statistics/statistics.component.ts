@@ -1,4 +1,4 @@
-import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import {Component, computed, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatDivider} from '@angular/material/divider';
 import {MatSelect, MatSelectTrigger} from '@angular/material/select';
@@ -12,10 +12,14 @@ import {
   selectLoadingState,
   selectMode,
   selectRadiusInMeters,
+  selectAreaInSquareMeters,
 } from '../../../../state/map/reducers/statistics.reducer';
 import {StatisticsMode} from '../../../../shared/types/statistics-mode.type';
-import {maximumStatisticsRadiusInMeters, minimumStatisticsRadiusInMeters} from '../../../../shared/configs/statistics.config';
-import {calculateAreaInSquareMeters} from '../../../../shared/utils/statistics-geometry.utils';
+import {
+  maximumStatisticsAreaInSquareMeters,
+  maximumStatisticsRadiusInMeters,
+  minimumStatisticsRadiusInMeters,
+} from '../../../../shared/configs/statistics.config';
 import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
 import {FeatureInfoGeneralInformationComponent} from '../feature-info-general-information/feature-info-general-information.component';
 import {StatisticsItemComponent} from '../statistics-item/statistics-item.component';
@@ -47,29 +51,30 @@ export class StatisticsComponent {
   public readonly radiusInMeters = this.store.selectSignal(selectRadiusInMeters);
   public readonly geometry = this.store.selectSignal(selectGeometry);
   public readonly generalInfoData = this.store.selectSignal(selectGeneralInfoData);
+  public readonly areaInSquareMeters = this.store.selectSignal(selectAreaInSquareMeters);
+  public readonly areaTooLarge = computed(() => (this.areaInSquareMeters() ?? 0) > maximumStatisticsAreaInSquareMeters);
+  public readonly maximumAreaInSquareKilometers = maximumStatisticsAreaInSquareMeters / 1_000_000;
+  public readonly radiusError = signal<string | undefined>(undefined);
 
   public readonly minimumRadius = minimumStatisticsRadiusInMeters;
   public readonly maximumRadius = maximumStatisticsRadiusInMeters;
-
-  public areaInSquareMeters() {
-    const geometry = this.geometry();
-    return geometry ? calculateAreaInSquareMeters(geometry) : undefined;
-  }
 
   public setMode(mode: StatisticsMode) {
     if (mode === this.mode()) {
       return;
     }
+    this.radiusError.set(undefined);
 
     this.store.dispatch(StatisticsActions.setMode({mode}));
   }
 
   public setRadius(value: string) {
     const radiusInMeters = Number(value);
-    if (Number.isNaN(radiusInMeters) || radiusInMeters < this.minimumRadius || radiusInMeters > this.maximumRadius) {
+    if (!Number.isFinite(radiusInMeters) || radiusInMeters < this.minimumRadius || radiusInMeters > this.maximumRadius) {
+      this.radiusError.set(`Geben Sie einen Radius zwischen ${this.minimumRadius} und ${this.maximumRadius} m ein.`);
       return;
     }
-
+    this.radiusError.set(undefined);
     this.store.dispatch(StatisticsActions.setRadius({radiusInMeters}));
   }
 }

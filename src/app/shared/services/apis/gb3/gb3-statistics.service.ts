@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {defer, forkJoin, map, Observable, of} from 'rxjs';
+import {inject, Injectable} from '@angular/core';
+import {defer, forkJoin, map, Observable, of, switchMap} from 'rxjs';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
@@ -12,6 +12,8 @@ import {
 } from '../../../models/gb3-api-generated.interfaces';
 import {StatisticsService} from '../../../interfaces/statistics-service.interface';
 import {Gb3ApiService} from './gb3-api.service';
+import {StatisticsAreaService} from '../../statistics-area.service';
+import {maximumStatisticsAreaInSquareMeters} from '../../../configs/statistics.config';
 
 const statisticTitles: Record<StatisticOperation, string> = {
   sum: 'Summe',
@@ -26,6 +28,7 @@ const statisticTitles: Record<StatisticOperation, string> = {
 })
 export class Gb3StatisticsService extends Gb3ApiService implements StatisticsService {
   protected readonly endpoint = 'topics';
+  private readonly areaService = inject(StatisticsAreaService);
 
   public loadStatistics(geometry: GeometryWithSrs, queries: readonly StatisticsQuery[]): Observable<StatisticsResult[]> {
     return defer(() => {
@@ -53,7 +56,14 @@ export class Gb3StatisticsService extends Gb3ApiService implements StatisticsSer
         ).pipe(map((results) => this.mapStatisticsResult(results))),
       );
 
-      return forkJoin(requests);
+      return this.areaService.calculateArea(geometry).pipe(
+        switchMap((area) => {
+          if (area > maximumStatisticsAreaInSquareMeters) {
+            throw new Error(`Statistics selection exceeds the maximum area of ${maximumStatisticsAreaInSquareMeters} m2.`);
+          }
+          return forkJoin(requests);
+        }),
+      );
     });
   }
 

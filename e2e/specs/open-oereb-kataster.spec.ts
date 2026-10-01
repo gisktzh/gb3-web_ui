@@ -1,5 +1,8 @@
 import {test, expect} from '../fixtures';
-import type {TopicsStatisticInfoListData} from '../../src/app/shared/models/gb3-api-generated.interfaces';
+import type {TopicsListData, TopicsStatisticInfoListData} from '../../src/app/shared/models/gb3-api-generated.interfaces';
+import {readFileSync} from 'node:fs';
+import {join} from 'node:path';
+import type {Har} from 'har-format';
 
 test.describe('OEREB-Kataster', () => {
   test('opens the OEREB-Kataster and searches for a specific address, returning its data in the info request', async ({
@@ -38,8 +41,55 @@ test.describe('OEREB-Kataster', () => {
   test('switches between feature and statistics results in the mobile info bottom sheet', async ({page, useHar, captureConsole}) => {
     await page.setViewportSize({width: 390, height: 844});
     await useHar();
+    const har: Har = JSON.parse(readFileSync(join('e2e', 'hars', 'open-oereb-kataster.har'), 'utf8'));
+    const topicsEntry = har.log.entries.find((entry) => entry.request.url.endsWith('/gb3/v4/topics'));
+    if (!topicsEntry?.response.content.text) {
+      throw new Error('The OEREB HAR must include the topics catalogue.');
+    }
+    const catalogue: TopicsListData = JSON.parse(topicsEntry.response.content.text);
+    const template = catalogue.categories.flatMap((category) => category.topics).find((topic) => topic.topic === 'OerebKatasterZH');
+    if (!template) {
+      throw new Error('The topics fixture must include OerebKatasterZH.');
+    }
+    catalogue.categories[0].topics.push({
+      ...template,
+      topic: 'StatBeschaeftigteZH',
+      title: 'Beschäftigtenstatistik',
+      geolion_karten_uuid: null,
+      filterConfigurations: null,
+      min_scale: null,
+      layers: [
+        {
+          ...template.layers[0],
+          id: 999999,
+          layer: 'stat-ent-p',
+          title: 'Beschäftigte',
+          min_scale: 0,
+          max_scale: 10000000,
+          initially_visible: true,
+          queryable: false,
+        },
+      ],
+    });
+    await page.route('**/gb3/v4/topics', (route) => route.fulfill({json: catalogue}));
+    await page.route('**/topics/StatBeschaeftigteZH/legend?**', (route) =>
+      route.fulfill({
+        json: {legend: {topic: 'StatBeschaeftigteZH', geolion_gdd: null, geolion_karten_uuid: null, layers: []}},
+      }),
+    );
+    let statisticsRequests = 0;
+    let featureRequests = 0;
+    page.on('request', (request) => {
+      if (request.url().includes('/feature_info?')) {
+        featureRequests++;
+      }
+    });
     await page.route('**/topics/StatBeschaeftigteZH/statistic_info?**', (route) => {
+      statisticsRequests++;
       const url = new URL(route.request().url());
+      expect(url.searchParams.get('field')).toBe(
+        'ganzwhg,efh,wohn_m_n,geb_m_w,mfh,geb_o_w,prov_geb,andere_geb,anz_einw,anz_vzae,anz_besch',
+      );
       return route.fulfill({
         json: {
           statistic_info: {
@@ -49,7 +99,7 @@ test.describe('OEREB-Kataster', () => {
             layer: 'stat-ent-p',
             layer_title: 'Beschäftigte',
             geolion_geodatensatz_uuid: null,
-            fields: ['anz_besch', 'anz_vzae', 'anz_ast'],
+            fields: ['anz_besch', 'anz_vzae', 'efh'],
             statistic: 'sum',
             geometry: url.searchParams.get('geometry')!,
             srid: Number(url.searchParams.get('srid')),
@@ -57,7 +107,7 @@ test.describe('OEREB-Kataster', () => {
             results: {
               anz_besch: {alias: 'Anzahl Beschäftigte', value: 42, count: 3},
               anz_vzae: {alias: 'Vollzeitäquivalente', value: 35.5, count: 3},
-              anz_ast: {alias: 'Arbeitsstätten', value: 3, count: 3},
+              efh: {alias: 'Einfamilienhäuser', value: 3, count: 3},
             },
           },
         } satisfies TopicsStatisticInfoListData,
@@ -65,7 +115,7 @@ test.describe('OEREB-Kataster', () => {
     });
     captureConsole();
 
-    await page.goto('/maps?initialMapIds=OerebKatasterZH');
+    await page.goto('/maps?initialMapIds=OerebKatasterZH,StatBeschaeftigteZH');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(200);
     await page.waitForLoadState('networkidle');
@@ -99,6 +149,7 @@ test.describe('OEREB-Kataster', () => {
     await expect(statisticsTab).toBeVisible();
     await expect(featuresTab).toHaveAttribute('aria-selected', 'true');
     await expect(bottomSheet.locator('feature-info')).toBeVisible();
+    expect(statisticsRequests).toBe(0);
 
     await statisticsTab.click();
 
@@ -108,6 +159,22 @@ test.describe('OEREB-Kataster', () => {
     await expect(bottomSheet.getByText('Beschäftigtenstatistik im ausgewählten Gebiet')).toBeVisible();
     await expect(bottomSheet.getByText('Anzahl Beschäftigte', {exact: true})).toBeVisible();
     await expect(bottomSheet.getByText('Summe', {exact: true})).toBeVisible();
+    expect(statisticsRequests).toBe(1);
+    const previousFeatureRequests = featureRequests;
+    const radius = bottomSheet.locator('#statistics-radius-input');
+    await radius.fill('1000');
+    await radius.blur();
+    await expect.poll(() => statisticsRequests).toBe(2);
+    expect(featureRequests).toBe(previousFeatureRequests);
+    await radius.fill('4000');
+    await radius.blur();
+    await expect(radius).toHaveAttribute('aria-invalid', 'true');
+    await expect(bottomSheet.locator('#statistics-radius-error')).toBeVisible();
+    expect(statisticsRequests).toBe(2);
+    await radius.fill('500');
+    await radius.blur();
+    await expect.poll(() => statisticsRequests).toBe(3);
+    await expect(bottomSheet.locator('#statistics-radius-error')).toHaveCount(0);
 
     await featuresTab.click();
 

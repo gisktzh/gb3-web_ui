@@ -20,10 +20,12 @@ export function isSameQueryPoint(first: PointWithSrs | undefined, second: PointW
 /**
  * Creates a circular polygon around a centre point.
  *
- * All supported SRS are projected coordinate systems in metres (LV95/LV03), so a circle with a radius in metres is a plain Euclidean
- * circle and needs no geodesic calculation.
+ * The statistics circle tool uses the projected LV95 map CRS, so its radius in metres is a plain Euclidean distance.
  */
 export function createCircle(center: PointWithSrs, radiusInMeters: number): PolygonWithSrs {
+  if (center.srs !== 2056) {
+    throw new Error('Statistics circles require the projected EPSG:2056 map CRS.');
+  }
   const [x, y] = center.coordinates;
   const ring: Position[] = [];
 
@@ -55,6 +57,9 @@ export function deriveBoundingBoxCenter(geometry: GeometryWithSrs): PointWithSrs
  * map click recenter an area that has already been defined.
  */
 export function moveGeometryTo<T extends GeometryWithSrs>(geometry: T, center: PointWithSrs): T {
+  if (geometry.srs !== center.srs) {
+    throw new Error('Geometry and query point must use the same spatial reference before recentering.');
+  }
   const currentCenter = deriveBoundingBoxCenter(geometry);
   if (!currentCenter) {
     return geometry;
@@ -129,6 +134,9 @@ function translateGeometry<T extends GeometryWithSrs>(geometry: T, deltaX: numbe
  * Calculates the area of a polygonal geometry in square metres using the shoelace formula, subtracting any interior rings.
  */
 export function calculateAreaInSquareMeters(geometry: GeometryWithSrs): number {
+  if (geometry.srs !== 2056) {
+    throw new Error('Planar area requires EPSG:2056. Use StatisticsAreaService for geographic coordinates.');
+  }
   switch (geometry.type) {
     case 'Polygon':
       return calculatePolygonArea(geometry.coordinates);
@@ -151,9 +159,13 @@ function calculatePolygonArea(rings: Position[][]): number {
 }
 
 function calculateRingArea(ring: Position[]): number {
+  if (ring.length === 0) {
+    return 0;
+  }
+  const [originX, originY] = ring[0];
   let doubledArea = 0;
   for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-    doubledArea += (ring[j][0] + ring[i][0]) * (ring[j][1] - ring[i][1]);
+    doubledArea += (ring[j][0] - originX) * (ring[i][1] - originY) - (ring[i][0] - originX) * (ring[j][1] - originY);
   }
   return Math.abs(doubledArea / 2);
 }

@@ -13,11 +13,20 @@ import {STATISTICS_SERVICE} from '../../../app.tokens';
 import {selectStatisticsQueries} from '../selectors/statistics-queries.selector';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
-import {selectCenter, selectGeometry, selectLoadingState, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
+import {
+  selectAreaInSquareMeters,
+  selectCenter,
+  selectGeometry,
+  selectLoadingState,
+  selectMode,
+  selectRadiusInMeters,
+} from '../reducers/statistics.reducer';
 import {createCircle, deriveBoundingBoxCenter, isSameQueryPoint, moveGeometryTo} from '../../../shared/utils/statistics-geometry.utils';
 import {findStatisticsModeForTool, statisticsSelectionToolByMode} from '../../../shared/types/statistics-selection-tool.type';
 import {QueryLocationActions} from '../actions/query-location.actions';
 import {selectScale} from '../reducers/map-config.reducer';
+import {StatisticsAreaService} from '../../../shared/services/statistics-area.service';
+import {maximumStatisticsAreaInSquareMeters} from '../../../shared/configs/statistics.config';
 
 @Injectable()
 export class StatisticsEffects {
@@ -25,6 +34,20 @@ export class StatisticsEffects {
   private readonly store = inject(Store);
   private readonly mapDrawingService = inject(MapDrawingService);
   private readonly statisticsService = inject(STATISTICS_SERVICE);
+  private readonly areaService = inject(StatisticsAreaService);
+
+  public validateSelection$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(StatisticsActions.setSelection),
+      switchMap(({geometry}) =>
+        this.areaService.calculateArea(geometry).pipe(
+          map((areaInSquareMeters) => StatisticsActions.setArea({areaInSquareMeters})),
+          catchError((error: unknown) => of(StatisticsActions.setError({error}))),
+          takeUntil(this.actions$.pipe(ofType(StatisticsActions.clearContent))),
+        ),
+      ),
+    );
+  });
 
   public invalidateOnLayerChanges$ = createEffect(() => {
     return this.store.select(selectStatisticsQueries).pipe(
@@ -121,13 +144,12 @@ export class StatisticsEffects {
           return undefined;
         }
 
-        if (mode === 'umkreis') {
-          return StatisticsActions.setSelection({geometry: createCircle(center, radiusInMeters), radiusInMeters: undefined});
-        }
-
-        return geometry
-          ? StatisticsActions.setSelection({geometry: moveGeometryTo(geometry, center), radiusInMeters: undefined})
-          : undefined;
+        const selection = geometry
+          ? moveGeometryTo(geometry, center)
+          : mode === 'umkreis'
+            ? createCircle(center, radiusInMeters)
+            : undefined;
+        return selection ? StatisticsActions.setSelection({geometry: selection, radiusInMeters: undefined}) : undefined;
       }),
       filter((action) => action !== undefined),
     );
@@ -154,9 +176,16 @@ export class StatisticsEffects {
    */
   public requestStatistics$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(StatisticsActions.setSelection, StatisticsActions.invalidateContent),
-      concatLatestFrom(() => this.store.select(selectQueryMode)),
-      filter(([, queryMode]) => queryMode === 'statistics'),
+      ofType(StatisticsActions.setArea, StatisticsActions.invalidateContent),
+      concatLatestFrom(() => [
+        this.store.select(selectQueryMode),
+        this.store.select(selectGeometry),
+        this.store.select(selectAreaInSquareMeters),
+      ]),
+      filter(
+        ([, queryMode, geometry, area]) =>
+          queryMode === 'statistics' && geometry !== undefined && area !== undefined && area <= maximumStatisticsAreaInSquareMeters,
+      ),
       map(() => StatisticsActions.sendRequest()),
     );
   });
@@ -166,8 +195,15 @@ export class StatisticsEffects {
     return this.actions$.pipe(
       ofType(QueryModeActions.setQueryMode),
       filter(({queryMode}) => queryMode === 'statistics'),
-      concatLatestFrom(() => [this.store.select(selectGeometry), this.store.select(selectLoadingState)]),
-      filter(([, geometry, loadingState]) => geometry !== undefined && loadingState === undefined),
+      concatLatestFrom(() => [
+        this.store.select(selectGeometry),
+        this.store.select(selectLoadingState),
+        this.store.select(selectAreaInSquareMeters),
+      ]),
+      filter(
+        ([, geometry, loadingState, area]) =>
+          geometry !== undefined && loadingState === undefined && area !== undefined && area <= maximumStatisticsAreaInSquareMeters,
+      ),
       map(() => StatisticsActions.sendRequest()),
     );
   });
@@ -178,7 +214,9 @@ export class StatisticsEffects {
    */
   public openOverlayOnRequest$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(StatisticsActions.sendRequest),
+      ofType(StatisticsActions.sendRequest, StatisticsActions.setSelection),
+      concatLatestFrom(() => this.store.select(selectQueryMode)),
+      filter(([action, queryMode]) => action.type === StatisticsActions.sendRequest.type || queryMode === 'statistics'),
       map(() => MapUiActions.setFeatureInfoVisibility({isVisible: true})),
     );
   });
@@ -220,10 +258,17 @@ export class StatisticsEffects {
   public loadStatistics$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(StatisticsActions.sendRequest),
-      concatLatestFrom(() => [this.store.select(selectGeometry), this.store.select(selectStatisticsQueries)]),
-      switchMap(([, geometry, queries]) => {
+      concatLatestFrom(() => [
+        this.store.select(selectGeometry),
+        this.store.select(selectStatisticsQueries),
+        this.store.select(selectAreaInSquareMeters),
+      ]),
+      switchMap(([, geometry, queries, area]) => {
         if (!geometry) {
           return of(StatisticsActions.clearContent());
+        }
+        if (area === undefined || area > maximumStatisticsAreaInSquareMeters) {
+          return of(StatisticsActions.invalidateContent());
         }
 
         if (queries.length === 0) {

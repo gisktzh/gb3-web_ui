@@ -11,7 +11,7 @@ import {QueryLocationActions} from '../actions/query-location.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
-import {selectGeometry, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
+import {selectAreaInSquareMeters, selectGeometry, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapService} from '../../../map/interfaces/map.service';
@@ -19,6 +19,7 @@ import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {MAP_SERVICE, STATISTICS_SERVICE} from '../../../app.tokens';
 import {selectStatisticsQueries} from '../selectors/statistics-queries.selector';
 import {StatisticsQuery} from '../../../shared/interfaces/statistics.interface';
+import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {deriveBoundingBoxCenter} from '../../../shared/utils/statistics-geometry.utils';
 
@@ -63,6 +64,8 @@ describe('StatisticsEffects', () => {
     effects = TestBed.inject(StatisticsEffects);
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectStatisticsQueries, queries);
+    store.overrideSelector(selectAreaInSquareMeters, 10_000);
+    store.overrideSelector(selectQueryMode, 'feature');
     TestBed.inject<MapService>(MAP_SERVICE);
   });
 
@@ -251,6 +254,13 @@ describe('StatisticsEffects', () => {
   });
 
   describe('openOverlayOnRequest$', () => {
+    it('opens the panel for statistics selections even when area validation prevents an API request', () => {
+      store.overrideSelector(selectQueryMode, 'statistics');
+      actions$ = of(StatisticsActions.setSelection({geometry: square, radiusInMeters: undefined}));
+      let actualAction;
+      effects.openOverlayOnRequest$.subscribe((action) => (actualAction = action));
+      expect(actualAction).toEqual(MapUiActions.setFeatureInfoVisibility({isVisible: true}));
+    });
     it('opens the info overlay for the results it is about to load', () => {
       actions$ = of(StatisticsActions.sendRequest());
 
@@ -261,6 +271,15 @@ describe('StatisticsEffects', () => {
     });
 
     describe('loadStatistics$', () => {
+      it('does not query an oversized area, even if a request is dispatched directly', () => {
+        store.overrideSelector(selectGeometry, square);
+        store.overrideSelector(selectAreaInSquareMeters, 42_000_001);
+        actions$ = of(StatisticsActions.sendRequest());
+        let actualAction;
+        effects.loadStatistics$.subscribe((action) => (actualAction = action));
+        expect(statisticsService.loadStatistics).not.toHaveBeenCalled();
+        expect(actualAction).toEqual(StatisticsActions.invalidateContent());
+      });
       it('does not call the API when no active layers support statistics', () => {
         store.overrideSelector(selectGeometry, square);
         store.overrideSelector(selectStatisticsQueries, []);

@@ -4,7 +4,7 @@ import {provideHttpClient} from '@angular/common/http';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {firstValueFrom} from 'rxjs';
+import {firstValueFrom, of} from 'rxjs';
 import {statisticsMapQueries} from '../../../configs/statistics.config';
 import {GeometryWithSrs, PolygonWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {TopicsStatisticInfoListData} from '../../../models/gb3-api-generated.interfaces';
@@ -12,6 +12,7 @@ import {createCircle} from '../../../utils/statistics-geometry.utils';
 import {ConfigService} from '../../config.service';
 import {Gb3StatisticsService} from './gb3-statistics.service';
 import {StatisticsQuery} from '../../../interfaces/statistics.interface';
+import {StatisticsAreaService} from '../../statistics-area.service';
 
 describe('Gb3StatisticsService', () => {
   let service: Gb3StatisticsService;
@@ -166,6 +167,7 @@ describe('Gb3StatisticsService', () => {
   });
 
   it('serializes polygon holes and uses the supplied WGS84 SRID', async () => {
+    vi.spyOn(TestBed.inject(StatisticsAreaService), 'calculateArea').mockReturnValue(of(1000));
     const geometry: PolygonWithSrs = {
       type: 'Polygon',
       srs: 4326,
@@ -234,6 +236,7 @@ describe('Gb3StatisticsService', () => {
   });
 
   it('preserves matching feature geometry with its output SRID rather than the input SRID', async () => {
+    vi.spyOn(TestBed.inject(StatisticsAreaService), 'calculateArea').mockReturnValue(of(1000));
     response.statistic_info.feature_geometry = {
       type: 'GeometryCollection',
       geometries: [{type: 'Point', coordinates: [2680000, 1254000]}],
@@ -253,5 +256,33 @@ describe('Gb3StatisticsService', () => {
       request.flush({statistic_info: {...response.statistic_info, topic: query.topic, layer: query.layer}});
     }
     expect((await result).map((entry) => entry.topic)).toEqual(['StatBevoelkerungZH', 'StatGebaeudeZH']);
+  });
+
+  it.each([41_999_999, 42_000_000, 42_000_001])('enforces the exact area boundary (%s m2) before sending HTTP requests', async (area) => {
+    const geometry: PolygonWithSrs = {
+      type: 'Polygon',
+      srs: 2056,
+      coordinates: [
+        [
+          [0, 0],
+          [7000, 0],
+          [7000, area / 7000],
+          [0, area / 7000],
+          [0, 0],
+        ],
+      ],
+    };
+    const result = firstValueFrom(service.loadStatistics(geometry, queries));
+    if (area > 42_000_000) {
+      await expect(result).rejects.toThrow('exceeds the maximum area');
+    } else {
+      http.expectOne((req) => req.url.startsWith(`${endpoint}?`)).flush(response);
+      expect(await result).toHaveLength(1);
+    }
+  });
+
+  it('rejects a large circle before sending HTTP requests', async () => {
+    const circle = createCircle({type: 'Point', coordinates: [2680000, 1254000], srs: 2056}, 4500);
+    await expect(firstValueFrom(service.loadStatistics(circle, queries))).rejects.toThrow('exceeds the maximum area');
   });
 });
