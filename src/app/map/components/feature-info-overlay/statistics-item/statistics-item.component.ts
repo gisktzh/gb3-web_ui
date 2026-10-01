@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, input, LOCALE_ID, OnDestroy, signal, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, input, LOCALE_ID, OnDestroy, ViewEncapsulation} from '@angular/core';
 import {DecimalPipe} from '@angular/common';
 import {MatIcon} from '@angular/material/icon';
 import {StatisticsResult, StatisticsResultLayer} from '../../../../shared/interfaces/statistics.interface';
@@ -11,6 +11,7 @@ import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-it
 import {ResizableInfoTableComponent} from '../info-table/resizable-info-table.component';
 import {mapStatisticsDataToView} from '../../../utils/map-statistics-data-to-view.utils';
 import {InfoTableCellComponent} from '../info-table/info-table-cell.component';
+import {ResultMarkingController} from '../info-table/result-marking.controller';
 
 @Component({
   selector: 'statistics-item',
@@ -28,7 +29,6 @@ export class StatisticsItemComponent implements OnDestroy {
   public readonly showInteractiveElements = input(true);
   public readonly highlightedLayer = this.store.selectSignal(selectHighlightedLayer);
   public readonly pinnedLayer = this.store.selectSignal(selectPinnedLayer);
-  public readonly hoverEnabled = signal(true);
   public readonly highlightedLayerName = computed(() => {
     const highlighted = this.highlightedLayer();
     return highlighted?.topic === this.result().topic ? highlighted.layer : undefined;
@@ -37,6 +37,17 @@ export class StatisticsItemComponent implements OnDestroy {
     const pinned = this.pinnedLayer();
     return pinned?.topic === this.result().topic ? pinned.layer : undefined;
   });
+  public readonly marking = new ResultMarkingController<StatisticsResultLayer>({
+    enabled: () => this.showInteractiveElements(),
+    canMark: (layer) => !!layer.featureGeometry,
+    hasPinned: () => this.pinnedLayer() !== undefined,
+    isPinned: (layer) => this.pinnedLayerName() === layer.layer,
+    preview: (layer) => this.store.dispatch(StatisticsActions.hoverLayer({topic: this.result().topic, layer: layer.layer})),
+    clearPreview: () => this.store.dispatch(StatisticsActions.clearHover()),
+    pin: (layer) => this.store.dispatch(StatisticsActions.highlightLayer({topic: this.result().topic, layer: layer.layer})),
+    unpin: () => this.store.dispatch(StatisticsActions.clearHighlight()),
+  });
+  public readonly hoverEnabled = this.marking.hoverEnabled;
 
   public readonly layerViews = computed(() =>
     this.result().layers.map((layer) => {
@@ -65,37 +76,22 @@ export class StatisticsItemComponent implements OnDestroy {
   );
 
   public highlightLayer(layer: StatisticsResultLayer) {
-    if (this.showInteractiveElements() && layer.featureGeometry && this.pinnedLayerName() !== layer.layer) {
-      this.store.dispatch(StatisticsActions.highlightLayer({topic: this.result().topic, layer: layer.layer}));
-    }
+    this.marking.pin(layer);
   }
 
   public toggleLayerHighlight(layer: StatisticsResultLayer) {
-    if (!this.showInteractiveElements() || !layer.featureGeometry) {
-      return;
-    }
-    if (this.pinnedLayerName() === layer.layer) {
-      this.store.dispatch(StatisticsActions.clearHighlight());
-    } else {
-      this.highlightLayer(layer);
-    }
+    this.marking.toggle(layer);
   }
 
   public onLayerHoverStart(layer: StatisticsResultLayer) {
-    if (this.showInteractiveElements() && this.hoverEnabled() && layer.featureGeometry && !this.pinnedLayer()) {
-      this.store.dispatch(StatisticsActions.hoverLayer({topic: this.result().topic, layer: layer.layer}));
-    }
+    this.marking.hoverStart(layer);
   }
 
   public onLayerHoverEnd() {
-    if (this.showInteractiveElements() && !this.pinnedLayer()) {
-      this.store.dispatch(StatisticsActions.clearHover());
-    }
+    this.marking.hoverEnd();
   }
 
   public ngOnDestroy() {
-    if (this.highlightedLayerName() !== undefined) {
-      this.onLayerHoverEnd();
-    }
+    this.marking.destroy();
   }
 }

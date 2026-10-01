@@ -13,7 +13,13 @@
   >
     <div class="feature-info-content__feature-header-content">
       {{ tableHeader.displayValue.split(' ')[1] }}
-      <mat-radio-button [disabled]="!tableHeader.hasGeometry" [checked]="highlightedFeatureId() === tableHeader.fid" labelPosition="before">
+      <mat-radio-button
+        [value]="tableHeader.fid"
+        [disabled]="!tableHeader.hasGeometry"
+        [checked]="highlightedFeatureId() === tableHeader.fid"
+        (keydown.space)="marking.toggleWithKeyboard($event, tableHeader.fid)"
+        labelPosition="before"
+      >
         Markieren:
       </mat-radio-button>
     </div>

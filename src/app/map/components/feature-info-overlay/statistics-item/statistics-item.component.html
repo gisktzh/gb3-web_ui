@@ -22,7 +22,7 @@
                 [disabled]="!layerView.layer.featureGeometry"
                 [checked]="highlightedLayerName() === layerView.layer.layer"
                 (change)="highlightLayer(layerView.layer)"
-                (keydown.space)="$event.preventDefault(); toggleLayerHighlight(layerView.layer)"
+                (keydown.space)="marking.toggleWithKeyboard($event, layerView.layer)"
                 labelPosition="before"
               >
                 Markieren:
@@ -73,8 +73,8 @@
                     [tableLabel]="section.tableLabel"
                     [tableHeaderTemplate]="tableHeader"
                     [tableCellTemplate]="tableCell"
-                    (resizeStart)="hoverEnabled.set(false)"
-                    (resizeEnd)="hoverEnabled.set(true)"
+                    (resizeStart)="marking.startResize()"
+                    (resizeEnd)="marking.endResize()"
                   />
                 </map-overlay-list-item>
               } @else {
@@ -83,8 +83,8 @@
                   [tableLabel]="section.tableLabel"
                   [tableHeaderTemplate]="tableHeader"
                   [tableCellTemplate]="tableCell"
-                  (resizeStart)="hoverEnabled.set(false)"
-                  (resizeEnd)="hoverEnabled.set(true)"
+                  (resizeStart)="marking.startResize()"
+                  (resizeEnd)="marking.endResize()"
                 />
               }
             }

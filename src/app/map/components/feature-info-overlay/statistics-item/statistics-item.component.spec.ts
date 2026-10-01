@@ -267,10 +267,10 @@ describe('StatisticsItemComponent', () => {
   });
 
   it('clears its temporary preview when the result component is destroyed', () => {
-    store.overrideSelector(selectHighlightedLayer, identifier);
-    store.refreshState();
     fixture.detectChanges();
     const dispatch = vi.spyOn(store, 'dispatch');
+    fixture.nativeElement.querySelector('th').dispatchEvent(new MouseEvent('mouseenter'));
+    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.hoverLayer(identifier));
     fixture.destroy();
     expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.clearHover());
   });

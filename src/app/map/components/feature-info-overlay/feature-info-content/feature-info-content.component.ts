@@ -1,4 +1,4 @@
-import {Component, computed, inject, input, signal, ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
+import {Component, computed, inject, input, OnDestroy, ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {selectPinnedFeatureId} from '../../../../state/map/reducers/feature-info.reducer';
@@ -11,6 +11,7 @@ import {ResizableInfoTableComponent} from '../info-table/resizable-info-table.co
 import {Store} from '@ngrx/store';
 import {TableCell, TableData, TableHeader} from '../info-table/info-table.types';
 import {formatDateValue} from '../../../../shared/utils/feature-info-field.utils';
+import {ResultMarkingController} from '../info-table/result-marking.controller';
 
 /**
  * Default value to be displayed when a field has no value (i.e. undefined)
@@ -41,7 +42,7 @@ type FeatureTableCell = TableCell & {fid: number};
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class FeatureInfoContentComponent {
+export class FeatureInfoContentComponent implements OnDestroy {
   private readonly store = inject(Store);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
 
@@ -78,8 +79,18 @@ export class FeatureInfoContentComponent {
     return this.pinnedFeatureId() ?? this.hoveredFeatureId();
   });
 
-  public readonly hoveredFeatureId = signal<number | null>(null);
-  public readonly hoverEnabled = signal(true);
+  public readonly marking = new ResultMarkingController<number>({
+    enabled: () => true,
+    canMark: (fid) => !!this.featureGeometries().get(fid),
+    hasPinned: () => this.pinnedFeatureUniqueIdentifier() !== undefined,
+    isPinned: (fid) => this.pinnedFeatureId() === fid,
+    preview: (fid) => this.highlightFeatureOnMapIfExists(fid),
+    clearPreview: () => this.store.dispatch(FeatureInfoActions.clearHighlight()),
+    pin: (fid) => this.highlightFeatureOnMapIfExists(fid, true, true),
+    unpin: () => this.store.dispatch(FeatureInfoActions.clearHighlight()),
+  });
+  public readonly hoveredFeatureId = this.marking.hoveredKey;
+  public readonly hoverEnabled = this.marking.hoverEnabled;
 
   public readonly tableData = computed<TableData<FeatureTableHeader, FeatureTableCell>>(() => {
     const features = this.layer().features;
@@ -115,36 +126,17 @@ export class FeatureInfoContentComponent {
   });
 
   public toggleHighlightForFeature(fid: number, hasGeometry: boolean) {
-    if (!hasGeometry) {
-      return;
-    }
-
-    this.hoveredFeatureId.set(fid);
-
-    if (this.pinnedFeatureId() === fid) {
-      this.store.dispatch(FeatureInfoActions.clearHighlight());
-    } else {
-      this.highlightFeatureOnMapIfExists(fid, true, true);
+    if (hasGeometry) {
+      this.marking.toggle(fid);
     }
   }
 
   public onFeatureHoverStart(fid: number) {
-    if (this.hoverEnabled()) {
-      this.hoveredFeatureId.set(fid);
-      // Would otherwise reset the pinned feature on hover, which we don't want.
-      if (this.pinnedFeatureUniqueIdentifier() === undefined) {
-        this.highlightFeatureOnMapIfExists(fid);
-      }
-    }
+    this.marking.hoverStart(fid);
   }
 
   public onFeatureHoverEnd() {
-    this.hoveredFeatureId.set(null);
-
-    if (this.pinnedFeatureUniqueIdentifier() === undefined) {
-      // Would otherwise reset the pinned feature on hover, which we don't want.
-      this.store.dispatch(FeatureInfoActions.clearHighlight());
-    }
+    this.marking.hoverEnd();
   }
 
   private createUniqueColumnIdentifierForFid(fid: number): string {
@@ -222,10 +214,14 @@ export class FeatureInfoContentComponent {
   }
 
   public onResizeHandlerResizeEnd() {
-    this.hoverEnabled.set(true);
+    this.marking.endResize();
   }
 
   public onResizeHandlerResizeStart() {
-    this.hoverEnabled.set(false);
+    this.marking.startResize();
+  }
+
+  public ngOnDestroy() {
+    this.marking.destroy();
   }
 }
