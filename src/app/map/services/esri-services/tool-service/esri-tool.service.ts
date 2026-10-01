@@ -35,7 +35,7 @@ import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-
 import {StatisticsSelectionTool} from '../../../../shared/types/statistics-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
-import {deriveBoundingBoxCenter, deriveCircleFromGeometry} from '../../../../shared/utils/statistics-geometry.utils';
+import {deriveCircleFromGeometry} from '../../../../shared/utils/statistics-geometry.utils';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
@@ -305,12 +305,11 @@ export class EsriToolService implements ToolService {
     if (selection) {
       const geometry = selection.drawingRepresentation.geometry;
       // Esri hands a drawn circle over as an approximating polygon, so centre and radius have to be recovered to keep the radius input
-      // in the panel in sync with what is shown on the map. A freely drawn polygon has neither.
+      // in the panel in sync with what is shown on the map.
       const circle = isCircle ? deriveCircleFromGeometry(geometry) : undefined;
       this.store.dispatch(
         StatisticsActions.setSelection({
           geometry,
-          center: circle?.center ?? deriveBoundingBoxCenter(geometry),
           radiusInMeters: circle?.radiusInMeters,
         }),
       );

@@ -2,13 +2,13 @@ import {createFeature, createReducer, on} from '@ngrx/store';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {StatisticsState} from '../states/statistics.state';
 import {defaultStatisticsRadiusInMeters} from '../../../shared/configs/statistics.config';
+import {selectQueryPoint} from './query-location.reducer';
 
 export const statisticsFeatureKey = 'statistics';
 
 export const initialState: StatisticsState = {
   mode: 'umkreis',
   radiusInMeters: defaultStatisticsRadiusInMeters,
-  center: undefined,
   geometry: undefined,
   loadingState: undefined,
   data: [],
@@ -18,13 +18,12 @@ export const statisticsFeature = createFeature({
   name: statisticsFeatureKey,
   reducer: createReducer(
     initialState,
-    on(StatisticsActions.setSelection, (state, {geometry, center, radiusInMeters}): StatisticsState => {
+    on(StatisticsActions.setSelection, (state, {geometry, radiusInMeters}): StatisticsState => {
       // A new area invalidates the results loaded for the previous one, which is what lets the statistics tab detect on opening that
       // it has to load them for an area that was derived while the feature tab was active.
       return {
         ...state,
         geometry,
-        center,
         radiusInMeters: radiusInMeters ?? state.radiusInMeters,
         loadingState: undefined,
         data: [],
@@ -55,14 +54,7 @@ export const statisticsFeature = createFeature({
   ),
 });
 
-export const {
-  name,
-  reducer,
-  selectStatisticsState,
-  selectMode,
-  selectRadiusInMeters,
-  selectCenter,
-  selectGeometry,
-  selectLoadingState,
-  selectData,
-} = statisticsFeature;
+export const {name, reducer, selectStatisticsState, selectMode, selectRadiusInMeters, selectGeometry, selectLoadingState, selectData} =
+  statisticsFeature;
+
+export const selectCenter = selectQueryPoint;

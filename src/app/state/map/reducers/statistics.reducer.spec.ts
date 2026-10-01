@@ -1,11 +1,10 @@
 import {initialState, reducer} from './statistics.reducer';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {StatisticsState} from '../states/statistics.state';
-import {PolygonWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {StatisticsResult} from '../../../shared/interfaces/statistics.interface';
 
 describe('statistics reducer', () => {
-  const center: PointWithSrs = {type: 'Point', coordinates: [2683000, 1247000], srs: 2056};
   const geometry: PolygonWithSrs = {
     type: 'Polygon',
     coordinates: [
@@ -24,10 +23,9 @@ describe('statistics reducer', () => {
     it('stores the area and invalidates results loaded for the previous one', () => {
       const state: StatisticsState = {...initialState, loadingState: 'loaded', data: results};
 
-      const result = reducer(state, StatisticsActions.setSelection({geometry, center, radiusInMeters: undefined}));
+      const result = reducer(state, StatisticsActions.setSelection({geometry, radiusInMeters: undefined}));
 
       expect(result.geometry).toEqual(geometry);
-      expect(result.center).toEqual(center);
       expect(result.loadingState).toBeUndefined();
       expect(result.data).toEqual([]);
     });
@@ -35,13 +33,13 @@ describe('statistics reducer', () => {
     it('keeps the current radius if the selection does not dictate one', () => {
       const state: StatisticsState = {...initialState, radiusInMeters: 750};
 
-      const result = reducer(state, StatisticsActions.setSelection({geometry, center, radiusInMeters: undefined}));
+      const result = reducer(state, StatisticsActions.setSelection({geometry, radiusInMeters: undefined}));
 
       expect(result.radiusInMeters).toBe(750);
     });
 
     it('takes over the radius of a drawn circle', () => {
-      const result = reducer(initialState, StatisticsActions.setSelection({geometry, center, radiusInMeters: 1200}));
+      const result = reducer(initialState, StatisticsActions.setSelection({geometry, radiusInMeters: 1200}));
 
       expect(result.radiusInMeters).toBe(1200);
     });
@@ -62,7 +60,6 @@ describe('statistics reducer', () => {
         mode: 'polygon',
         radiusInMeters: 900,
         geometry,
-        center,
         loadingState: 'loaded',
         data: results,
       };

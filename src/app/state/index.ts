@@ -18,6 +18,7 @@ import {reducer as generalInfoReducer} from './map/reducers/general-info.reducer
 import {reducer as toolReducer} from './map/reducers/tool.reducer';
 import {reducer as queryModeReducer} from './map/reducers/query-mode.reducer';
 import {reducer as statisticsReducer} from './map/reducers/statistics.reducer';
+import {reducer as queryLocationReducer, QueryLocationState} from './map/reducers/query-location.reducer';
 import {reducer as appLayoutReducer} from './app/reducers/app-layout.reducer';
 import {reducer as printReducer} from './map/reducers/print.reducer';
 import {reducer as exportReducer} from './map/reducers/export.reducer';
@@ -128,6 +129,7 @@ interface State {
   tool: ToolState;
   queryMode: QueryModeState;
   statistics: StatisticsState;
+  queryLocation: QueryLocationState;
   shareLink: ShareLinkState;
   dataCatalogue: DataCatalogueState;
   search: SearchState;
@@ -169,6 +171,7 @@ export const reducers: ActionReducerMap<State> = {
   tool: toolReducer,
   queryMode: queryModeReducer,
   statistics: statisticsReducer,
+  queryLocation: queryLocationReducer,
   shareLink: shareLinkReducer,
   dataCatalogue: dataCatalogueReducer,
   search: searchReducer,

@@ -5,27 +5,25 @@ import {Store} from '@ngrx/store';
 import {catchError, distinctUntilChanged, filter, map, of, skip, switchMap, takeUntil, tap} from 'rxjs';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {QueryModeActions} from '../actions/query-mode.actions';
-import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
-import {ConfigService} from '../../../shared/services/config.service';
-import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {STATISTICS_SERVICE} from '../../../app.tokens';
 import {selectStatisticsQueries} from '../selectors/statistics-queries.selector';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {selectCenter, selectGeometry, selectLoadingState, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
-import {createCircle, moveGeometryTo} from '../../../shared/utils/statistics-geometry.utils';
+import {createCircle, deriveBoundingBoxCenter, isSameQueryPoint, moveGeometryTo} from '../../../shared/utils/statistics-geometry.utils';
 import {findStatisticsModeForTool, statisticsSelectionToolByMode} from '../../../shared/types/statistics-selection-tool.type';
+import {QueryLocationActions} from '../actions/query-location.actions';
+import {selectScale} from '../reducers/map-config.reducer';
 
 @Injectable()
 export class StatisticsEffects {
   private readonly actions$ = inject(Actions);
   private readonly store = inject(Store);
   private readonly mapDrawingService = inject(MapDrawingService);
-  private readonly configService = inject(ConfigService);
   private readonly statisticsService = inject(STATISTICS_SERVICE);
 
   public invalidateOnLayerChanges$ = createEffect(() => {
@@ -102,7 +100,6 @@ export class StatisticsEffects {
       map(([{radiusInMeters}, center]) =>
         StatisticsActions.setSelection({
           geometry: createCircle(center!, radiusInMeters),
-          center,
           radiusInMeters: undefined,
         }),
       ),
@@ -114,24 +111,38 @@ export class StatisticsEffects {
    * statistics tab. In 'umkreis' mode the click defines the centre of a new circle, in 'polygon' mode it moves the drawn polygon along
    * without changing its shape. Without a polygon there is nothing to move yet, so the click is ignored until one has been drawn.
    */
-  public recenterSelectionOnMapClick$ = createEffect(() => {
+  public recenterSelectionOnPointChange$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(FeatureInfoActions.sendRequest),
+      ofType(QueryLocationActions.setPoint),
       concatLatestFrom(() => [this.store.select(selectMode), this.store.select(selectGeometry), this.store.select(selectRadiusInMeters)]),
-      map(([{x, y}, mode, geometry, radiusInMeters]) => {
-        const center: PointWithSrs = {
-          type: 'Point',
-          coordinates: [x, y],
-          srs: this.configService.mapConfig.defaultMapConfig.srsId,
-        };
+      map(([{point: center}, mode, geometry, radiusInMeters]) => {
+        const midpoint = geometry ? deriveBoundingBoxCenter(geometry) : undefined;
+        if (isSameQueryPoint(midpoint, center)) {
+          return undefined;
+        }
 
         if (mode === 'umkreis') {
-          return StatisticsActions.setSelection({geometry: createCircle(center, radiusInMeters), center, radiusInMeters: undefined});
+          return StatisticsActions.setSelection({geometry: createCircle(center, radiusInMeters), radiusInMeters: undefined});
         }
 
         return geometry
-          ? StatisticsActions.setSelection({geometry: moveGeometryTo(geometry, center), center, radiusInMeters: undefined})
+          ? StatisticsActions.setSelection({geometry: moveGeometryTo(geometry, center), radiusInMeters: undefined})
           : undefined;
+      }),
+      filter((action) => action !== undefined),
+    );
+  });
+
+  public synchronizeQueryPoint$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(StatisticsActions.setSelection),
+      concatLatestFrom(() => [this.store.select(selectCenter), this.store.select(selectScale)]),
+      map(([{geometry}, point, scale]) => {
+        const midpoint = deriveBoundingBoxCenter(geometry);
+        if (!midpoint || isSameQueryPoint(point, midpoint)) {
+          return undefined;
+        }
+        return QueryLocationActions.setPoint({point: midpoint, scale});
       }),
       filter((action) => action !== undefined),
     );

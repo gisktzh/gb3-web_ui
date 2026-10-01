@@ -7,6 +7,7 @@ import {MockedObject} from 'vitest';
 import {OerebExtractEffects} from './oereb-extract.effects';
 import {OerebExtractActions} from '../actions/oereb-extract.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
+import {QueryLocationActions} from '../actions/query-location.actions';
 import {selectHasOerebMapActive} from '../selectors/has-oereb-map-active.selector';
 import {Gb3OerebExtractService} from 'src/app/shared/services/apis/gb3/gb3-oereb-extract.service';
 import {OerebExtractCouldNotBeLoaded} from 'src/app/shared/errors/map.errors';
@@ -58,7 +59,7 @@ describe('OerebExtractEffects', () => {
     });
   });
 
-  describe('interceptMapClick$', () => {
+  describe('requestAtQueryPoint$', () => {
     it('dispatches OerebExtractActions.sendRequest() when the OEREB map is active', () => {
       store.overrideSelector(selectHasOerebMapActive, true);
 
@@ -68,14 +69,13 @@ describe('OerebExtractEffects', () => {
       });
 
       actions$ = of(
-        MapConfigActions.handleMapClick({
-          x: 123,
-          y: 456,
+        QueryLocationActions.setPoint({
+          point: {type: 'Point', coordinates: [123, 456], srs: 2056},
           scale: 0,
         }),
       );
 
-      effects.interceptMapClick$.subscribe((action) => {
+      effects.requestAtQueryPoint$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });
     });
@@ -88,14 +88,13 @@ describe('OerebExtractEffects', () => {
       });
 
       actions$ = of(
-        MapConfigActions.handleMapClick({
-          x: 123,
-          y: 456,
+        QueryLocationActions.setPoint({
+          point: {type: 'Point', coordinates: [123, 456], srs: 2056},
           scale: 0,
         }),
       );
 
-      effects.interceptMapClick$.subscribe((action) => {
+      effects.requestAtQueryPoint$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });
     });

@@ -7,7 +7,7 @@ import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {StatisticsEffects} from './statistics.effects';
 import {StatisticsActions} from '../actions/statistics.actions';
-import {FeatureInfoActions} from '../actions/feature-info.actions';
+import {QueryLocationActions} from '../actions/query-location.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
@@ -83,7 +83,7 @@ describe('StatisticsEffects', () => {
   });
 
   it.each([
-    StatisticsActions.setSelection({geometry: square, center: undefined, radiusInMeters: undefined}),
+    StatisticsActions.setSelection({geometry: square, radiusInMeters: undefined}),
     StatisticsActions.invalidateContent(),
     StatisticsActions.clearContent(),
   ])('cancels a pending request on $type', (action) => {
@@ -101,21 +101,20 @@ describe('StatisticsEffects', () => {
     subscription.unsubscribe();
   });
 
-  describe('recenterSelectionOnMapClick$', () => {
+  describe('recenterSelectionOnPointChange$', () => {
     it('creates a circle with the current radius around the clicked point in the umkreis mode', () => {
       store.overrideSelector(selectMode, 'umkreis');
       store.overrideSelector(selectGeometry, undefined);
       store.overrideSelector(selectRadiusInMeters, 500);
 
-      actions$ = of(FeatureInfoActions.sendRequest({x: 2683000, y: 1247000, scale: 1000}));
+      actions$ = of(QueryLocationActions.setPoint({point: {type: 'Point', coordinates: [2683000, 1247000], srs: 2056}, scale: 1000}));
 
       let actualAction;
-      effects.recenterSelectionOnMapClick$.subscribe((action) => (actualAction = action));
+      effects.recenterSelectionOnPointChange$.subscribe((action) => (actualAction = action));
 
       expect(actualAction).toEqual(
         StatisticsActions.setSelection({
           geometry: expect.objectContaining({type: 'Polygon'}),
-          center: expect.objectContaining({coordinates: [2683000, 1247000]}),
           radiusInMeters: undefined,
         }),
       );
@@ -127,10 +126,10 @@ describe('StatisticsEffects', () => {
       store.overrideSelector(selectGeometry, square);
       store.overrideSelector(selectRadiusInMeters, 250);
 
-      actions$ = of(FeatureInfoActions.sendRequest({x: 10, y: 20, scale: 1000}));
+      actions$ = of(QueryLocationActions.setPoint({point: {type: 'Point', coordinates: [10, 20], srs: 2056}, scale: 1000}));
 
       let actualAction;
-      effects.recenterSelectionOnMapClick$.subscribe((action) => (actualAction = action));
+      effects.recenterSelectionOnPointChange$.subscribe((action) => (actualAction = action));
 
       expect(actualAction).toBeDefined();
     });
@@ -140,10 +139,10 @@ describe('StatisticsEffects', () => {
       store.overrideSelector(selectGeometry, square);
       store.overrideSelector(selectRadiusInMeters, 500);
 
-      actions$ = of(FeatureInfoActions.sendRequest({x: 1000, y: 2000, scale: 1000}));
+      actions$ = of(QueryLocationActions.setPoint({point: {type: 'Point', coordinates: [1000, 2000], srs: 2056}, scale: 1000}));
 
       let actualAction: Action | undefined;
-      effects.recenterSelectionOnMapClick$.subscribe((action) => (actualAction = action));
+      effects.recenterSelectionOnPointChange$.subscribe((action) => (actualAction = action));
 
       const {geometry} = actualAction as ReturnType<typeof StatisticsActions.setSelection>;
       expect(deriveBoundingBoxCenter(geometry)?.coordinates).toEqual([1000, 2000]);
@@ -157,11 +156,11 @@ describe('StatisticsEffects', () => {
       store.overrideSelector(selectGeometry, undefined);
       store.overrideSelector(selectRadiusInMeters, 500);
 
-      actions$ = of(FeatureInfoActions.sendRequest({x: 1000, y: 2000, scale: 1000}));
+      actions$ = of(QueryLocationActions.setPoint({point: {type: 'Point', coordinates: [1000, 2000], srs: 2056}, scale: 1000}));
 
       vi.useFakeTimers();
       let actualAction;
-      effects.recenterSelectionOnMapClick$.subscribe((action) => (actualAction = action));
+      effects.recenterSelectionOnPointChange$.subscribe((action) => (actualAction = action));
       await vi.runAllTimersAsync();
       vi.useRealTimers();
 

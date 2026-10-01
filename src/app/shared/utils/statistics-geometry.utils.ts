@@ -6,6 +6,17 @@ import {Position} from 'geojson';
  */
 const CIRCLE_SEGMENTS = 64;
 
+export function isSameQueryPoint(first: PointWithSrs | undefined, second: PointWithSrs): boolean {
+  return (
+    first?.srs === second.srs &&
+    first.coordinates.every(
+      (coordinate, index) =>
+        // Translating a polygon can introduce tiny floating-point differences in its derived midpoint.
+        Math.abs(coordinate - second.coordinates[index]) < 1e-8,
+    )
+  );
+}
+
 /**
  * Creates a circular polygon around a centre point.
  *
