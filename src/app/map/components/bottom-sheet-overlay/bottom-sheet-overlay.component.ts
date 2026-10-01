@@ -41,6 +41,6 @@ export class BottomSheetOverlayComponent {
   public readonly queryMode = this.store.selectSignal(selectQueryMode);
 
   public setQueryMode(queryMode: QueryMode) {
-    this.store.dispatch(QueryModeActions.setQueryMode({queryMode}));
+    this.store.dispatch(QueryModeActions.selectQueryMode({queryMode}));
   }
 }

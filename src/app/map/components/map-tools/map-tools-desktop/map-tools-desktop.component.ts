@@ -17,6 +17,7 @@ import {DataDownloadSelectionToolsComponent} from '../data-download-selection-to
 import {StatisticsToolsComponent} from '../statistics-tools/statistics-tools.component';
 import {FeatureFlagDirective} from '../../../../shared/directives/feature-flag.directive';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
+import {QueryModeActions} from '../../../../state/map/actions/query-mode.actions';
 
 const TOOLTIP_TEXT = {
   selectFeature: 'Objekt-Abfrage',
@@ -65,7 +66,11 @@ export class MapToolsDesktopComponent {
    */
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
     const tool: ToolMenuVisibility = this.toolMenuVisibility() === toolToToggle ? 'feature' : toolToToggle;
-    this.store.dispatch(MapUiActions.toggleToolMenu({tool: tool}));
+    this.store.dispatch(
+      tool === 'feature' || tool === 'statistics'
+        ? QueryModeActions.selectQueryMode({queryMode: tool})
+        : MapUiActions.toggleToolMenu({tool}),
+    );
   }
 
   public showPrintDialog(event?: KeyboardEvent | null) {

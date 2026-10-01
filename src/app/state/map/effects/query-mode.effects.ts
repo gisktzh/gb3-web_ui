@@ -2,7 +2,7 @@ import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
-import {filter, map} from 'rxjs';
+import {concatMap, filter, map} from 'rxjs';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {ToolActions} from '../actions/tool.actions';
@@ -10,7 +10,7 @@ import {selectToolMenuVisibility} from '../reducers/map-ui.reducer';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {FeatureFlagsService} from '../../../shared/services/feature-flags.service';
-import {statisticsSelectionTools} from '../../../shared/types/statistics-selection-tool.type';
+import {findStatisticsModeForTool, statisticsSelectionTools} from '../../../shared/types/statistics-selection-tool.type';
 import {QueryMode} from '../../../shared/types/query-mode.type';
 
 @Injectable()
@@ -18,6 +18,23 @@ export class QueryModeEffects {
   private readonly actions$ = inject(Actions);
   private readonly store = inject(Store);
   private readonly featureFlagsService = inject(FeatureFlagsService);
+
+  // Explicit selection takes map ownership; menu-driven synchronization must not cancel the newly selected tool.
+  public selectQueryMode$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(QueryModeActions.selectQueryMode),
+      map(({queryMode}): QueryMode =>
+        queryMode === 'statistics' && !this.featureFlagsService.getFeatureFlag('statisticsTool') ? 'feature' : queryMode,
+      ),
+      concatLatestFrom(() => this.store.select(selectActiveTool)),
+      concatMap(([queryMode, activeTool]) => [
+        ...(activeTool && (queryMode === 'feature' || findStatisticsModeForTool(activeTool) === undefined)
+          ? [ToolActions.cancelTool()]
+          : []),
+        MapUiActions.toggleToolMenu({tool: queryMode}),
+      ]),
+    );
+  });
 
   /**
    * Nothing may put the application into the statistics mode while the tool is switched off. The buttons that select it are already
