@@ -39,6 +39,9 @@ export const statisticsFeature = createFeature({
     on(StatisticsActions.sendRequest, (state): StatisticsState => {
       return {...state, loadingState: 'loading', data: []};
     }),
+    on(StatisticsActions.invalidateContent, (state): StatisticsState => {
+      return {...state, loadingState: undefined, data: []};
+    }),
     on(StatisticsActions.updateContent, (state, {results}): StatisticsState => {
       return {...state, loadingState: 'loaded', data: results};
     }),

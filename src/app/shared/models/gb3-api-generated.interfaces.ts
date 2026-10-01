@@ -15,7 +15,7 @@ import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service
 import {ReportOrientation, ReportType} from '../interfaces/print.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
 import {DrawingSymbolDefinition} from '../interfaces/drawing-symbol/drawing-symbol-definition.interface';
-/** Manually added for statistic_info, which is not yet in Swagger. */
+/** Manually added for statistic_info, which is not yet in Swagger. Preserve when regenerating until Swagger includes these types. */
 import {Geometry as GeoJsonGeometry} from 'geojson';
 
 /** Manually added: statistic_info aggregate operation. */

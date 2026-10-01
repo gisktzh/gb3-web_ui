@@ -2,7 +2,7 @@ import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
-import {catchError, filter, map, of, switchMap, tap} from 'rxjs';
+import {catchError, distinctUntilChanged, filter, map, of, skip, switchMap, takeUntil, tap} from 'rxjs';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
@@ -12,7 +12,8 @@ import {MapUiActions} from '../actions/map-ui.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {StatisticsService} from '../../../shared/services/apis/gb3/abstract-statistics.service';
+import {STATISTICS_SERVICE} from '../../../app.tokens';
+import {selectStatisticsQueries} from '../selectors/statistics-queries.selector';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {selectCenter, selectGeometry, selectLoadingState, selectMode, selectRadiusInMeters} from '../reducers/statistics.reducer';
@@ -25,7 +26,15 @@ export class StatisticsEffects {
   private readonly store = inject(Store);
   private readonly mapDrawingService = inject(MapDrawingService);
   private readonly configService = inject(ConfigService);
-  private readonly statisticsService = inject(StatisticsService);
+  private readonly statisticsService = inject(STATISTICS_SERVICE);
+
+  public invalidateOnLayerChanges$ = createEffect(() => {
+    return this.store.select(selectStatisticsQueries).pipe(
+      distinctUntilChanged((previous, current) => JSON.stringify(previous) === JSON.stringify(current)),
+      skip(1),
+      map(() => StatisticsActions.invalidateContent()),
+    );
+  });
 
   public drawSelection$ = createEffect(
     () => {
@@ -134,7 +143,7 @@ export class StatisticsEffects {
    */
   public requestStatistics$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(StatisticsActions.setSelection),
+      ofType(StatisticsActions.setSelection, StatisticsActions.invalidateContent),
       concatLatestFrom(() => this.store.select(selectQueryMode)),
       filter(([, queryMode]) => queryMode === 'statistics'),
       map(() => StatisticsActions.sendRequest()),
@@ -200,15 +209,21 @@ export class StatisticsEffects {
   public loadStatistics$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(StatisticsActions.sendRequest),
-      concatLatestFrom(() => this.store.select(selectGeometry)),
-      switchMap(([, geometry]) => {
+      concatLatestFrom(() => [this.store.select(selectGeometry), this.store.select(selectStatisticsQueries)]),
+      switchMap(([, geometry, queries]) => {
         if (!geometry) {
           return of(StatisticsActions.clearContent());
         }
 
-        return this.statisticsService.loadStatistics(geometry).pipe(
+        if (queries.length === 0) {
+          return of(StatisticsActions.updateContent({results: []}));
+        }
+        return this.statisticsService.loadStatistics(geometry, queries).pipe(
           map((results) => StatisticsActions.updateContent({results})),
           catchError((error: unknown) => of(StatisticsActions.setError({error}))),
+          takeUntil(
+            this.actions$.pipe(ofType(StatisticsActions.setSelection, StatisticsActions.clearContent, StatisticsActions.invalidateContent)),
+          ),
         );
       }),
     );

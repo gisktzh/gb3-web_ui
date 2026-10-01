@@ -16,9 +16,24 @@ export const maximumStatisticsRadiusInMeters = 10000;
 
 /**
  * Manual statistics-map list and queries until the topics API exposes this configuration.
- * Population remains unqueried until its numeric fields are known.
+ * The test layers currently share fields but may acquire separate field configurations.
  */
+const statisticsFields = [
+  'ganzwhg',
+  'efh',
+  'wohn_m_n',
+  'geb_m_w',
+  'mfh',
+  'geb_o_w',
+  'prov_geb',
+  'andere_geb',
+  'anz_einw',
+  'anz_vzae',
+  'anz_besch',
+] as const;
+
 export const statisticsMapQueries: Record<string, readonly Omit<StatisticInfoQueryParameters, 'geometry' | 'srid'>[]> = {
-  StatBevoelkerungZH: [],
-  StatBeschaeftigteZH: [{layer: 'stat-ent-p', field: ['anz_besch', 'anz_vzae', 'anz_ast'], statistic: 'sum'}],
+  StatBevoelkerungZH: [{layer: 'stat-bev-p', field: statisticsFields, statistic: 'sum'}],
+  StatBeschaeftigteZH: [{layer: 'stat-ent-p', field: statisticsFields, statistic: 'sum'}],
+  StatGebaeudeZH: [{layer: 'stat-geb-p', field: statisticsFields, statistic: 'sum'}],
 };

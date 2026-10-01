@@ -18,6 +18,7 @@ export const StatisticsActions = createActionGroup({
     'Set Radius': props<{radiusInMeters: number}>(),
     'Send Request': emptyProps(),
     'Update Content': props<{results: StatisticsResult[]}>(),
+    'Invalidate Content': emptyProps(),
     'Clear Content': emptyProps(),
     'Set Error': errorProps(),
   },

@@ -1,17 +1,16 @@
 import {Injectable} from '@angular/core';
 import {defer, forkJoin, map, Observable, of} from 'rxjs';
-import {statisticsMapQueries} from '../../../configs/statistics.config';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
-import {StatisticsResult, StatisticsResultLayer} from '../../../interfaces/statistics.interface';
+import {StatisticsQuery, StatisticsResult, StatisticsResultLayer} from '../../../interfaces/statistics.interface';
 import {
   StatisticInfo,
   StatisticInfoQueryParameters,
   StatisticOperation,
   TopicsStatisticInfoListData,
 } from '../../../models/gb3-api-generated.interfaces';
-import {StatisticsService} from './abstract-statistics.service';
+import {StatisticsService} from '../../../interfaces/statistics-service.interface';
 import {Gb3ApiService} from './gb3-api.service';
 
 const statisticTitles: Record<StatisticOperation, string> = {
@@ -28,26 +27,33 @@ const statisticTitles: Record<StatisticOperation, string> = {
 export class Gb3StatisticsService extends Gb3ApiService implements StatisticsService {
   protected readonly endpoint = 'topics';
 
-  public loadStatistics(geometry: GeometryWithSrs): Observable<StatisticsResult[]> {
+  public loadStatistics(geometry: GeometryWithSrs, queries: readonly StatisticsQuery[]): Observable<StatisticsResult[]> {
     return defer(() => {
+      if (queries.length === 0) {
+        return of([]);
+      }
       if (geometry.type !== 'Polygon') {
         throw new Error(`Unsupported statistics geometry: ${geometry.type}. Expected a Polygon.`);
       }
 
       const polygon = `POLYGON(${geometry.coordinates.map((ring) => `(${ring.map(([x, y]) => `${x} ${y}`).join(',')})`).join(',')})`;
-      const requests = Object.entries(statisticsMapQueries)
-        .filter(([, queries]) => queries.length > 0)
-        .map(([topic, queries]) =>
-          forkJoin(
-            queries.map((query) =>
-              this.get<TopicsStatisticInfoListData>(
-                this.createStatisticsUrl(topic, {...query, geometry: polygon, srid: geometry.srs}),
-              ).pipe(map((response) => response.statistic_info)),
+      const queriesByTopic = new Map<string, StatisticsQuery[]>();
+      for (const query of queries) {
+        const topicQueries = queriesByTopic.get(query.topic) ?? [];
+        topicQueries.push(query);
+        queriesByTopic.set(query.topic, topicQueries);
+      }
+      const requests = [...queriesByTopic].map(([topic, topicQueries]) =>
+        forkJoin(
+          topicQueries.map((query) =>
+            this.get<TopicsStatisticInfoListData>(this.createStatisticsUrl(topic, {...query, geometry: polygon, srid: geometry.srs})).pipe(
+              map((response) => response.statistic_info),
             ),
-          ).pipe(map((results) => this.mapStatisticsResult(results))),
-        );
+          ),
+        ).pipe(map((results) => this.mapStatisticsResult(results))),
+      );
 
-      return requests.length > 0 ? forkJoin(requests) : of([]);
+      return forkJoin(requests);
     });
   }
 
@@ -70,6 +76,7 @@ export class Gb3StatisticsService extends Gb3ApiService implements StatisticsSer
       layers: results.map((result): StatisticsResultLayer => ({
         layer: result.layer,
         title: result.layer_title,
+        featureGeometry: result.feature_geometry ? {...result.feature_geometry, srs: 2056} : undefined,
         metaDataLink: result.geolion_geodatensatz_uuid
           ? `/${MainPage.Data}/${DataCataloguePage.Datasets}/${result.geolion_geodatensatz_uuid}`
           : undefined,

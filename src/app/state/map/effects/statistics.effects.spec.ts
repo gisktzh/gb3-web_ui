@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
-import {Observable, of, throwError} from 'rxjs';
+import {Observable, of, Subject, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
@@ -16,8 +16,9 @@ import {selectActiveTool} from '../reducers/tool.reducer';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapService} from '../../../map/interfaces/map.service';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
-import {MAP_SERVICE} from '../../../app.tokens';
-import {StatisticsService} from '../../../shared/services/apis/gb3/abstract-statistics.service';
+import {MAP_SERVICE, STATISTICS_SERVICE} from '../../../app.tokens';
+import {selectStatisticsQueries} from '../selectors/statistics-queries.selector';
+import {StatisticsQuery} from '../../../shared/interfaces/statistics.interface';
 import {PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {deriveBoundingBoxCenter} from '../../../shared/utils/statistics-geometry.utils';
 
@@ -26,6 +27,7 @@ describe('StatisticsEffects', () => {
   let effects: StatisticsEffects;
   let store: MockStore;
   const statisticsService = {loadStatistics: vi.fn()};
+  const queries: StatisticsQuery[] = [{topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p', field: ['anz_besch'], statistic: 'sum'}];
 
   const square: PolygonWithSrs = {
     type: 'Polygon',
@@ -52,7 +54,7 @@ describe('StatisticsEffects', () => {
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
-        {provide: StatisticsService, useValue: statisticsService},
+        {provide: STATISTICS_SERVICE, useValue: statisticsService},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -60,11 +62,43 @@ describe('StatisticsEffects', () => {
 
     effects = TestBed.inject(StatisticsEffects);
     store = TestBed.inject(MockStore);
+    store.overrideSelector(selectStatisticsQueries, queries);
     TestBed.inject<MapService>(MAP_SERVICE);
   });
 
   afterEach(() => {
     store.resetSelectors();
+  });
+
+  it('invalidates results only when the eligible query list changes', () => {
+    const actual: Action[] = [];
+    const subscription = effects.invalidateOnLayerChanges$.subscribe((action) => actual.push(action));
+    store.overrideSelector(selectStatisticsQueries, [...queries]);
+    store.refreshState();
+    expect(actual).toEqual([]);
+    store.overrideSelector(selectStatisticsQueries, []);
+    store.refreshState();
+    expect(actual).toEqual([StatisticsActions.invalidateContent()]);
+    subscription.unsubscribe();
+  });
+
+  it.each([
+    StatisticsActions.setSelection({geometry: square, center: undefined, radiusInMeters: undefined}),
+    StatisticsActions.invalidateContent(),
+    StatisticsActions.clearContent(),
+  ])('cancels a pending request on $type', (action) => {
+    const source = new Subject<Action>();
+    actions$ = source;
+    store.overrideSelector(selectGeometry, square);
+    const teardown = vi.fn();
+    statisticsService.loadStatistics.mockReturnValue(new Observable(() => teardown));
+    const actual: Action[] = [];
+    const subscription = effects.loadStatistics$.subscribe((result) => actual.push(result));
+    source.next(StatisticsActions.sendRequest());
+    source.next(action);
+    expect(teardown).toHaveBeenCalledOnce();
+    expect(actual).toEqual([]);
+    subscription.unsubscribe();
   });
 
   describe('recenterSelectionOnMapClick$', () => {
@@ -228,6 +262,15 @@ describe('StatisticsEffects', () => {
     });
 
     describe('loadStatistics$', () => {
+      it('does not call the API when no active layers support statistics', () => {
+        store.overrideSelector(selectGeometry, square);
+        store.overrideSelector(selectStatisticsQueries, []);
+        actions$ = of(StatisticsActions.sendRequest());
+        let actualAction;
+        effects.loadStatistics$.subscribe((action) => (actualAction = action));
+        expect(statisticsService.loadStatistics).not.toHaveBeenCalled();
+        expect(actualAction).toEqual(StatisticsActions.updateContent({results: []}));
+      });
       it('loads statistics for the selected geometry', () => {
         store.overrideSelector(selectGeometry, square);
         actions$ = of(StatisticsActions.sendRequest());
@@ -235,7 +278,7 @@ describe('StatisticsEffects', () => {
         let actualAction;
         effects.loadStatistics$.subscribe((action) => (actualAction = action));
 
-        expect(statisticsService.loadStatistics).toHaveBeenCalledExactlyOnceWith(square);
+        expect(statisticsService.loadStatistics).toHaveBeenCalledExactlyOnceWith(square, queries);
         expect(actualAction).toEqual(StatisticsActions.updateContent({results: []}));
       });
 

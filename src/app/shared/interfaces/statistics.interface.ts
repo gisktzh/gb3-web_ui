@@ -1,4 +1,10 @@
 import {QueryResultStatus} from '../types/query-result-status.type';
+import {StatisticInfoQueryParameters} from '../models/gb3-api-generated.interfaces';
+import {GeometryWithSrs} from './geojson-types-with-srs.interface';
+
+export interface StatisticsQuery extends Omit<StatisticInfoQueryParameters, 'geometry' | 'srid'> {
+  topic: string;
+}
 
 export interface StatisticsResultValue {
   value: number | null;
@@ -17,6 +23,7 @@ export interface StatisticsResultLayer {
   layer: string;
   title: string;
   metaDataLink?: string;
+  featureGeometry?: GeometryWithSrs;
   /** Display labels for the aggregate columns, e.g. ['Summe']. */
   columns: string[];
   rows: StatisticsResultRow[];
