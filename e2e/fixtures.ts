@@ -154,10 +154,14 @@ export const test = base.extend<Gb3Fixtures>({
         notFound: async (route) => {
           const request = route.request();
           const postData = request.postData();
-          console.error(
-            `[har] No response matched ${request.method()} ${request.url()}${postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : ''}`,
-          );
-          await route.abort();
+          const errorMessage = `[har] No response matched ${request.method()} ${request.url()}${postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : ''}`;
+          if (process.env['CI']) {
+            // Hard fail if a request isn't found on the CI.
+            throw new Error(errorMessage);
+          } else {
+            console.error(errorMessage);
+            await route.abort();
+          }
         },
       });
     });
