@@ -50,11 +50,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
       title: data.title,
       baseConfig: {
         basemap: data.basemap,
-        scale: data.scaledenom,
-        center: {
-          x: data.east,
-          y: data.north,
-        },
+        scale: data.scaledenom ?? undefined,
+        center: data.east !== null && data.north !== null ? {x: data.east, y: data.north} : undefined,
       },
       content: data.content.map((content) => {
         return {
@@ -81,9 +78,9 @@ export class Gb3FavouritesService extends Gb3ApiService {
   private mapCreateFavouriteToCreatePersonalFavoritePayload({baseConfig, ...payload}: CreateFavourite): PersonalFavoriteNew {
     return {
       ...payload,
-      east: baseConfig.center.x,
-      north: baseConfig.center.y,
-      scaledenom: baseConfig.scale,
+      east: baseConfig.center?.x ?? null,
+      north: baseConfig.center?.y ?? null,
+      scaledenom: baseConfig.scale ?? null,
       basemap: baseConfig.basemap,
       content: payload.content.map((content) => {
         return {

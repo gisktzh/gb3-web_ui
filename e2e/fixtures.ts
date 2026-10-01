@@ -4,10 +4,12 @@ import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
 import path from 'node:path';
 import {expect, type Page} from '@playwright/test';
+import {canonicalizeUrl} from './utils/canonicalize.utils';
 
 // URL pattern. If pattern matches,
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
 const IS_WRITING_HAR = !!process.env['WRITE_HAR'];
+const DEFAULT_DESKTOP_MAP_VIEW_PADDING = {top: 88, right: 180, bottom: 88, left: 474};
 
 export type ScreenCoords = [number, number];
 export type ScreenCoordsList = ScreenCoords[];
@@ -16,13 +18,14 @@ type Gb3Fixtures = {
   useHar: (postFix?: string) => Promise<void>;
   captureConsole: () => void;
   filterForLayer: (searchTerm: string) => Promise<void>;
-  clickMapInTheList: (nameOfTheMap: string) => Promise<void>;
+  clickMapInTheList: (nameOfTheMap: string, expectedActiveMapName?: string) => Promise<void>;
   clickByDataTestId: (testId: string) => Promise<void>;
   selectTopic: (nameOfTheTopic: string) => Promise<void>;
   openUrlWithCoordinates: (x: string, y: string, shouldSkipTour?: boolean) => Promise<void>;
   login: () => Promise<void>;
   search: (searchTerm: string) => Promise<void>;
   zoom: (zoomLevel: number) => Promise<void>;
+  clickDefaultMapViewCenter: () => Promise<void>;
 };
 
 function getRequestKey(url: string, method: string) {
@@ -102,6 +105,20 @@ export const test = base.extend<Gb3Fixtures>({
                 return candidates[0];
               }
 
+              // Returning to a recorded map extent can request the same image more often than during recording.
+              if (
+                candidates.length > 1 &&
+                redactedRequest.method() === 'GET' &&
+                candidates.every(
+                  ({response}) =>
+                    response.content.mimeType.startsWith('image/') &&
+                    response.status === candidates[0].response.status &&
+                    JSON.stringify(response.content) === JSON.stringify(candidates[0].response.content),
+                )
+              ) {
+                return candidates[0];
+              }
+
               // We're dealing with several instances of the same request, so we need to figure out which one we actually want.
               // We do that by keeping a counter in the browser's session storage. The storage gets reset once the browser is closed
               // (i.e. once the tests are done), so there's no cross-run pollution.
@@ -129,7 +146,7 @@ export const test = base.extend<Gb3Fixtures>({
           },
           matchFunction: customMatcher({
             urlComparator(a, b) {
-              return a === b;
+              return canonicalizeUrl(a) === canonicalizeUrl(b);
             },
             postDataComparator: postDataEquals,
           }),
@@ -182,14 +199,14 @@ export const test = base.extend<Gb3Fixtures>({
   },
 
   clickMapInTheList: async ({page}, use) => {
-    await use(async (nameOfTheMap: string) => {
+    await use(async (nameOfTheMap: string, expectedActiveMapName: string = nameOfTheMap) => {
       const catalogueItem = page.locator('map-data-item-map, map-data-item-favourite').filter({hasText: nameOfTheMap}).first();
       const addButton = catalogueItem.locator('button[data-test-id="add-active-map"]');
       await expect(addButton).toBeVisible({timeout: 30_000});
       await expect(addButton).toBeEnabled();
       await addButton.click();
 
-      const activeMapItem = page.locator('active-map-item').filter({hasText: nameOfTheMap}).first();
+      const activeMapItem = page.locator('active-map-item').filter({hasText: expectedActiveMapName}).first();
       await expect(activeMapItem).toBeVisible({timeout: 30_000});
       await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});
     });
@@ -277,16 +294,18 @@ export const test = base.extend<Gb3Fixtures>({
 
   search: async ({page}, use) => {
     await use(async (searchTerm: string) => {
-      const searchInput = page.locator('input[placeholder="Suchen nach Adressen, Orten, Karten und mehr..."]');
+      const searchWindow = page.locator('search-window');
+      const searchInput = searchWindow.getByPlaceholder('Suchen nach Adressen, Orten, Karten und mehr...');
 
       await expect(searchInput).toBeVisible();
-      await searchInput.fill(searchTerm);
-      await searchInput.dispatchEvent('keyup', {key: searchTerm.at(-1)});
+      await searchInput.click();
+      await searchInput.clear();
+      await searchInput.pressSequentially(searchTerm);
 
-      const searchResult = page.locator('button', {
-        hasText: searchTerm,
-      });
+      const searchResults = searchWindow.locator('.result-window__content');
+      await expect(searchResults).toBeVisible({timeout: 30_000});
 
+      const searchResult = searchResults.getByRole('button').filter({hasText: searchTerm}).first();
       await expect(searchResult).toBeVisible({timeout: 30_000});
       await searchResult.click();
     });
@@ -294,11 +313,28 @@ export const test = base.extend<Gb3Fixtures>({
 
   zoom: async ({page}, use) => {
     await use(async (zoomLevel: number) => {
-      const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
+      const zoomInput = page.locator('[data-test-id="input-map-scale"]');
 
       await expect(zoomInput).toBeVisible();
-      await zoomInput.fill(zoomLevel.toString());
+      await zoomInput.clear();
+      await zoomInput.pressSequentially(zoomLevel.toString());
       await expect(zoomInput).toHaveValue(zoomLevel.toString());
+    });
+  },
+
+  clickDefaultMapViewCenter: async ({page}, use) => {
+    await use(async () => {
+      const map = page.locator('map-page map-container .esri-view-surface');
+      await expect(map).toBeVisible();
+
+      const boundingBox = await map.boundingBox();
+      expect(boundingBox).not.toBeNull();
+
+      const {top, right, bottom, left} = DEFAULT_DESKTOP_MAP_VIEW_PADDING;
+      const effectiveWidth = boundingBox!.width - left - right;
+      const effectiveHeight = boundingBox!.height - top - bottom;
+
+      await page.mouse.click(boundingBox!.x + left + effectiveWidth / 2, boundingBox!.y + top + effectiveHeight / 2);
     });
   },
 });

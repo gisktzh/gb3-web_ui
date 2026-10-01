@@ -41,6 +41,7 @@
         <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true" />
         <button
           (click)="removeAllActiveMapItems()"
+          data-test-id="remove-all-active-maps"
           [disabled]="activeMapItems().length === 0"
           mat-icon-button
           class="active-map-items__header__buttons__action"

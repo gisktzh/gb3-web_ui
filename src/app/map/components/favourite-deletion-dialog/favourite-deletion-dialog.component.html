@@ -4,6 +4,6 @@
   </ng-container>
   <ng-container actions>
     <button (click)="close()" [disabled]="savingState() === 'loading'" mat-button>Abbrechen</button>
-    <button (click)="delete()" [disabled]="savingState() === 'loading'" mat-button>Löschen</button>
+    <button (click)="delete()" [disabled]="savingState() === 'loading'" mat-button data-test-id="submit-delete-favourite">Löschen</button>
   </ng-container>
 </api-dialog-wrapper>

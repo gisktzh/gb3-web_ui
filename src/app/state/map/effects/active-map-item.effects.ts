@@ -18,7 +18,7 @@ import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {selectItems, selectTemporaryMapItems} from '../selectors/active-map-items.selector';
-import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
+import {selectIsMapServiceInitialized, selectMapConfigState} from '../reducers/map-config.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {DrawingActions} from '../actions/drawing.actions';
@@ -318,15 +318,25 @@ export class ActiveMapItemEffects {
     () => {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.addFavourite),
+        concatLatestFrom(() => this.store.select(selectMapConfigState)),
         tap(
-          ({
-            baseConfig: {
-              scale,
-              center: {x, y},
+          ([
+            {
+              baseConfig: {scale, center},
             },
-          }) => {
-            const center: PointWithSrs = {type: 'Point', srs: this.configService.mapConfig.defaultMapConfig.srsId, coordinates: [x, y]};
-            this.mapService.zoomToPoint(center, scale);
+            mapState,
+          ]) => {
+            if (!scale && !center) {
+              return;
+            }
+            const targetScale = scale ?? mapState.scale;
+            const {x, y} = center ?? mapState.center;
+            const targetCenter: PointWithSrs = {
+              type: 'Point',
+              srs: this.configService.mapConfig.defaultMapConfig.srsId,
+              coordinates: [x, y],
+            };
+            this.mapService.zoomToPoint(targetCenter, targetScale);
           },
         ),
       );

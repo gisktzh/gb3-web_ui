@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
-import {Observable, of, toArray} from 'rxjs';
+import {firstValueFrom, Observable, of, toArray} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {routerNavigatedAction} from '@ngrx/router-store';
@@ -33,7 +33,7 @@ describe('UrlEffects', () => {
     effects = TestBed.inject(UrlEffects);
     store = TestBed.inject(MockStore);
     initialMapExtentServiceMock = TestBed.inject(InitialMapExtentService);
-    vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockImplementation(vi.fn());
+    vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtentForPaddedView').mockImplementation(vi.fn());
   });
 
   afterEach(() => {
@@ -75,7 +75,7 @@ describe('UrlEffects', () => {
   });
 
   describe('handleInitialMapPageParameters$', () => {
-    it('dispatches UrlActions.setMapPageParams() if current query params are not containing any map config parameters', () => {
+    it('dispatches UrlActions.setMapPageParams() if current query params are not containing any map config parameters', async () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', topics: null};
       store.overrideSelector(selectQueryParams, {});
       store.overrideSelector(selectMapPageParams, params);
@@ -83,12 +83,11 @@ describe('UrlEffects', () => {
       const expectedAction = UrlActions.setMapPageParams({params});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.subscribe((action) => {
-        expect(action).toEqual(expectedAction);
-      });
+      const actions = await firstValueFrom(effects.handleInitialMapPageParameters$.pipe(toArray()));
+      expect(actions).toEqual([expectedAction]);
     });
 
-    it('dispatches LayerCatalogActions.setInitialTopics() and MapConfigActions.setInitialMapConfig() if current query params are containing any map config parameters', () => {
+    it('dispatches LayerCatalogActions.setInitialTopics() and MapConfigActions.setInitialMapConfig() if current query params are containing any map config parameters', async () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
@@ -96,98 +95,95 @@ describe('UrlEffects', () => {
       store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: '4', topics: null});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
-        expect(actions).toEqual([
-          LayerCatalogActions.setInitialTopics({topicIds: params.initialMapIds.split(',')}),
-          MapConfigActions.setInitialMapConfig({
-            scale: params.scale,
-            x: params.x,
-            y: params.y,
-            basemapId: params.basemap,
-          }),
-        ]);
-      });
+      const actions = await firstValueFrom(effects.handleInitialMapPageParameters$.pipe(toArray()));
+      expect(actions).toEqual([
+        LayerCatalogActions.setInitialTopics({topicIds: params.initialMapIds.split(',')}),
+        MapConfigActions.setInitialMapConfig({
+          scale: params.scale,
+          x: params.x,
+          y: params.y,
+          basemapId: params.basemap,
+        }),
+      ]);
     });
 
-    it('dispatches LayerCatalogActions.setInitialTopics() and MapConfigActions.setInitialMapConfig() if current query params contain basemap or initialMapIds', () => {
+    it('dispatches LayerCatalogActions.setInitialTopics() and MapConfigActions.setInitialMapConfig() if current query params contain basemap or initialMapIds', async () => {
       const params = {basemap: 'Dust II', initialMapIds: 'one,two'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
       store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: '4', topics: null});
-      const extent = vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33})();
+      const extent = vi
+        .spyOn(initialMapExtentServiceMock, 'calculateInitialExtentForPaddedView')
+        .mockReturnValue({x: 11, y: 22, scale: 33})();
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
-        expect(actions).toEqual([
-          LayerCatalogActions.setInitialTopics({topicIds: params.initialMapIds.split(',')}),
-          MapConfigActions.setInitialMapConfig({
-            ...extent,
-            basemapId: params.basemap,
-          }),
-        ]);
-      });
+      const actions = await firstValueFrom(effects.handleInitialMapPageParameters$.pipe(toArray()));
+      expect(actions).toEqual([
+        LayerCatalogActions.setInitialTopics({topicIds: params.initialMapIds.split(',')}),
+        MapConfigActions.setInitialMapConfig({
+          ...extent,
+          basemapId: params.basemap,
+        }),
+      ]);
     });
 
-    it('merges normalized topics with legacy initialMapIds instead of dropping them', () => {
+    it('merges normalized topics with legacy initialMapIds instead of dropping them', async () => {
       const params = {topics: ' topic-a,topic-b,topic-a ', initialMapIds: 'legacy-topic'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue('base');
       store.overrideSelector(selectQueryParams, params);
       store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: 'base', topics: null});
-      vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33});
+      vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtentForPaddedView').mockReturnValue({x: 11, y: 22, scale: 33});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
-        expect(actions).toEqual([
-          LayerCatalogActions.setInitialTopics({topicIds: ['topic-a', 'topic-b', 'legacy-topic']}),
-          MapConfigActions.setInitialMapConfig({
-            x: 11,
-            y: 22,
-            scale: 33,
-            basemapId: 'base',
-          }),
-        ]);
-      });
+      const actions = await firstValueFrom(effects.handleInitialMapPageParameters$.pipe(toArray()));
+      expect(actions).toEqual([
+        LayerCatalogActions.setInitialTopics({topicIds: ['topic-a', 'topic-b', 'legacy-topic']}),
+        MapConfigActions.setInitialMapConfig({
+          x: 11,
+          y: 22,
+          scale: 33,
+          basemapId: 'base',
+        }),
+      ]);
     });
 
-    it('merges an explicitly empty topics parameter with legacy initialMapIds instead of treating it as authoritative', () => {
+    it('merges an explicitly empty topics parameter with legacy initialMapIds instead of treating it as authoritative', async () => {
       store.overrideSelector(selectQueryParams, {topics: '', initialMapIds: 'legacy-topic'});
       store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: 'base', topics: null});
-      vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 11, y: 22, scale: 33});
+      vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtentForPaddedView').mockReturnValue({x: 11, y: 22, scale: 33});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
-        expect(actions).toEqual([
-          LayerCatalogActions.setInitialTopics({topicIds: ['legacy-topic']}),
-          MapConfigActions.setInitialMapConfig({
-            x: 11,
-            y: 22,
-            scale: 33,
-            basemapId: expect.any(String),
-          }),
-        ]);
-      });
+      const actions = await firstValueFrom(effects.handleInitialMapPageParameters$.pipe(toArray()));
+      expect(actions).toEqual([
+        LayerCatalogActions.setInitialTopics({topicIds: ['legacy-topic']}),
+        MapConfigActions.setInitialMapConfig({
+          x: 11,
+          y: 22,
+          scale: 33,
+          basemapId: expect.any(String),
+        }),
+      ]);
     });
 
-    it('initializes topics independently from URL search parameters', () => {
+    it('initializes topics independently from URL search parameters', async () => {
       store.overrideSelector(selectQueryParams, {topics: 'topic-a,topic-b', searchTerm: 'search'});
       store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: 'base', topics: null});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
-        expect(actions).toEqual([
-          LayerCatalogActions.setInitialTopics({topicIds: ['topic-a', 'topic-b']}),
-          SearchActions.initializeSearchFromUrlParameters({
-            searchTerm: 'search',
-            searchIndex: undefined,
-            basemapId: expect.any(String),
-          }),
-        ]);
-      });
+      const actions = await firstValueFrom(effects.handleInitialMapPageParameters$.pipe(toArray()));
+      expect(actions).toEqual([
+        LayerCatalogActions.setInitialTopics({topicIds: ['topic-a', 'topic-b']}),
+        SearchActions.initializeSearchFromUrlParameters({
+          searchTerm: 'search',
+          searchIndex: undefined,
+          basemapId: expect.any(String),
+        }),
+      ]);
     });
 
-    it('dispatches LayerCatalogActions.setInitialTopics() and SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchTerm', () => {
+    it('dispatches LayerCatalogActions.setInitialTopics() and SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchTerm', async () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchTerm: 'search'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
@@ -195,19 +191,18 @@ describe('UrlEffects', () => {
       store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: '4', topics: null});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
-        expect(actions).toEqual([
-          LayerCatalogActions.setInitialTopics({topicIds: params.initialMapIds.split(',')}),
-          SearchActions.initializeSearchFromUrlParameters({
-            searchTerm: params.searchTerm,
-            searchIndex: undefined,
-            basemapId: params.basemap,
-          }),
-        ]);
-      });
+      const actions = await firstValueFrom(effects.handleInitialMapPageParameters$.pipe(toArray()));
+      expect(actions).toEqual([
+        LayerCatalogActions.setInitialTopics({topicIds: params.initialMapIds.split(',')}),
+        SearchActions.initializeSearchFromUrlParameters({
+          searchTerm: params.searchTerm,
+          searchIndex: undefined,
+          basemapId: params.basemap,
+        }),
+      ]);
     });
 
-    it('dispatches LayerCatalogActions.setInitialTopics() and SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchIndex', () => {
+    it('dispatches LayerCatalogActions.setInitialTopics() and SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchIndex', async () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchIndex: 'index'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       vi.spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').mockReturnValue(params.basemap);
@@ -215,16 +210,15 @@ describe('UrlEffects', () => {
       store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: '4', topics: null});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
-      effects.handleInitialMapPageParameters$.pipe(toArray()).subscribe((actions) => {
-        expect(actions).toEqual([
-          LayerCatalogActions.setInitialTopics({topicIds: params.initialMapIds.split(',')}),
-          SearchActions.initializeSearchFromUrlParameters({
-            searchTerm: undefined,
-            searchIndex: params.searchIndex,
-            basemapId: params.basemap,
-          }),
-        ]);
-      });
+      const actions = await firstValueFrom(effects.handleInitialMapPageParameters$.pipe(toArray()));
+      expect(actions).toEqual([
+        LayerCatalogActions.setInitialTopics({topicIds: params.initialMapIds.split(',')}),
+        SearchActions.initializeSearchFromUrlParameters({
+          searchTerm: undefined,
+          searchIndex: params.searchIndex,
+          basemapId: params.basemap,
+        }),
+      ]);
     });
   });
 

@@ -68,10 +68,15 @@ export class Gb3ShareLinkService extends Gb3ApiService {
   }
 
   private mapSharedFavoriteToShareLink(sharedFavorite: SharedFavorite): ShareLinkItem {
+    const defaultMapConfig = this.configService.mapConfig.defaultMapConfig;
+
     return {
       basemapId: sharedFavorite.basemap,
-      center: {x: sharedFavorite.east, y: sharedFavorite.north},
-      scale: sharedFavorite.scaledenom,
+      center: {
+        x: sharedFavorite.east ?? defaultMapConfig.center.x,
+        y: sharedFavorite.north ?? defaultMapConfig.center.y,
+      },
+      scale: sharedFavorite.scaledenom ?? defaultMapConfig.scale,
       content: sharedFavorite.content.map((content) => {
         return {
           id: content.id,
