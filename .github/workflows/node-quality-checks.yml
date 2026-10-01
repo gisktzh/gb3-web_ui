@@ -92,7 +92,7 @@ jobs:
     name: Run end-to-end tests (${{ matrix.browser }})
     runs-on: ${{ inputs.runner_version }}
     container:
-      image: mcr.microsoft.com/playwright:v1.61.1-noble
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
     permissions:
       contents: read
     strategy:
@@ -116,6 +116,7 @@ jobs:
         run: |
           xvfb-run --auto-servernum npm run e2e -- --configuration ci --test-project ${{ matrix.browser }}
         env:
+          CI: 1
           LIBGL_ALWAYS_SOFTWARE: 1
           NODE_OPTIONS: '--max-old-space-size=8192'
 
