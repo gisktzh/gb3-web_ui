@@ -9,8 +9,6 @@ test.describe('Filter layers', () => {
 
     await page.waitForLoadState('networkidle');
 
-    await page.waitForTimeout(200);
-
     // --- Filter Strassennetz layer ---
     await filterForLayer('Strassennetz');
 
