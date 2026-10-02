@@ -1,0 +1,38 @@
+@if (statisticsEnabled) {
+  <nav
+    mat-tab-nav-bar
+    class="query-results__tabs"
+    [class.query-results__tabs--statistics]="queryMode() === 'statistics'"
+    [tabPanel]="panel"
+    [disablePagination]="true"
+    aria-label="Abfragemodus"
+  >
+    <button
+      mat-tab-link
+      [active]="queryMode() === 'feature'"
+      [disabled]="!showInteractiveElements()"
+      (click)="selectMode('feature')"
+      type="button"
+    >
+      Features
+    </button>
+    <button
+      mat-tab-link
+      [active]="queryMode() === 'statistics'"
+      [disabled]="!showInteractiveElements()"
+      (click)="selectMode('statistics')"
+      type="button"
+    >
+      Statistik
+    </button>
+  </nav>
+  <mat-tab-nav-panel #panel>
+    @if (queryMode() === 'statistics') {
+      <statistics [showInteractiveElements]="showInteractiveElements()" />
+    } @else {
+      <feature-info [showInteractiveElements]="showInteractiveElements()" />
+    }
+  </mat-tab-nav-panel>
+} @else {
+  <feature-info [showInteractiveElements]="showInteractiveElements()" />
+}

@@ -496,10 +496,11 @@ describe('MapOerebExtractDataToView', () => {
       const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData(themes);
 
       expect(result).toEqual({
-        tableRows: new Map([
-          [
-            'Theme A',
-            [
+        headers: [],
+        rows: [
+          {
+            label: 'Theme A',
+            cells: [
               {
                 displayValue: '',
                 cellType: 'list',
@@ -516,8 +517,8 @@ describe('MapOerebExtractDataToView', () => {
                 ],
               },
             ],
-          ],
-        ]),
+          },
+        ],
       });
     });
 
@@ -532,20 +533,18 @@ describe('MapOerebExtractDataToView', () => {
 
       const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData(themes);
 
-      expect(result.tableRows).toEqual(
-        new Map([
-          [
-            'Theme A',
-            [
-              {
-                displayValue: '',
-                cellType: 'list',
-                items: [],
-              },
-            ],
+      expect(result.rows).toEqual([
+        {
+          label: 'Theme A',
+          cells: [
+            {
+              displayValue: '',
+              cellType: 'list',
+              items: [],
+            },
           ],
-        ]),
-      );
+        },
+      ]);
     });
 
     it('should map multiple themes independently', () => {
@@ -573,43 +572,50 @@ describe('MapOerebExtractDataToView', () => {
 
       const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData(themes);
 
-      expect(result.tableRows.size).toBe(2);
-      expect(result.tableRows.get('Theme A')).toEqual([
-        {
-          displayValue: '',
-          cellType: 'list',
-          items: [
-            {
-              cellType: 'text',
-              displayValue: 'Hint A',
-            },
-          ],
-        },
-      ]);
-      expect(result.tableRows.get('Theme B')).toEqual([
-        {
-          displayValue: '',
-          cellType: 'list',
-          items: [
-            {
-              cellType: 'url',
-              displayValue: 'Hint B',
-              url: 'https://example.com/b',
-            },
-          ],
-        },
-      ]);
+      expect(result.rows).toHaveLength(2);
+      expect(result.rows[0]).toEqual({
+        label: 'Theme A',
+        cells: [
+          {
+            displayValue: '',
+            cellType: 'list',
+            items: [
+              {
+                cellType: 'text',
+                displayValue: 'Hint A',
+              },
+            ],
+          },
+        ],
+      });
+      expect(result.rows[1]).toEqual({
+        label: 'Theme B',
+        cells: [
+          {
+            displayValue: '',
+            cellType: 'list',
+            items: [
+              {
+                cellType: 'url',
+                displayValue: 'Hint B',
+                url: 'https://example.com/b',
+              },
+            ],
+          },
+        ],
+      });
     });
 
     it('should return an empty table when there are no themes', () => {
       const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData([]);
 
       expect(result).toEqual({
-        tableRows: new Map(),
+        headers: [],
+        rows: [],
       });
     });
 
-    it('should overwrite a previous row when themes have the same name', () => {
+    it('should preserve themes with the same name as separate ordered rows', () => {
       const themes: NotConcernedTheme[] = [
         {
           id: 1,
@@ -633,15 +639,34 @@ describe('MapOerebExtractDataToView', () => {
 
       const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData(themes);
 
-      expect(result.tableRows.size).toBe(1);
-      expect(result.tableRows.get('Duplicate')).toEqual([
+      expect(result.rows).toEqual([
         {
-          displayValue: '',
-          cellType: 'list',
-          items: [
+          label: 'Duplicate',
+          cells: [
             {
-              cellType: 'text',
-              displayValue: 'Second hint',
+              displayValue: '',
+              cellType: 'list',
+              items: [
+                {
+                  cellType: 'text',
+                  displayValue: 'First hint',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Duplicate',
+          cells: [
+            {
+              displayValue: '',
+              cellType: 'list',
+              items: [
+                {
+                  cellType: 'text',
+                  displayValue: 'Second hint',
+                },
+              ],
             },
           ],
         },

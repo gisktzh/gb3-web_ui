@@ -1,9 +1,8 @@
 import {NotConcernedTheme} from 'src/app/shared/models/gb3-api-generated.interfaces';
-import {TableCell, TextTableCell, UrlTableCell} from '../components/feature-info-overlay/feature-info-content/info-table-cell.component';
+import {TableData, TextTableCell, UrlTableCell} from '../components/feature-info-overlay/info-table/info-table.types';
 import {OerebConcernedTheme, OerebExtractValue} from 'src/app/shared/interfaces/oereb-extract.interface';
 import {OerebExtractListItem} from '../types/oereb-extract-list-item.type';
 import {OerebExtractTheme} from '../interfaces/oereb-extract-theme.interface';
-import {TableData} from '../components/feature-info-overlay/feature-info-content/resizable-info-table.component';
 
 export class MapOerebExtractDataToView {
   public static mapOerebExtractApiThemeToDisplayableTheme(theme: OerebConcernedTheme): OerebExtractTheme {
@@ -102,33 +101,31 @@ export class MapOerebExtractDataToView {
   }
 
   public static mapNotConcernedThemesToTableData(themes: NotConcernedTheme[]): TableData {
-    const tableRows = new Map<string, TableCell[]>();
-
-    themes.forEach((t) => {
-      tableRows.set(t.name, [
-        {
-          displayValue: '',
-          cellType: 'list',
-          items: t.hints.map<UrlTableCell | TextTableCell>((h) => {
-            if ('href' in h) {
-              return {
-                cellType: 'url',
-                displayValue: h.title,
-                url: h.href,
-              };
-            }
-
-            return {
-              cellType: 'text',
-              displayValue: h.title,
-            };
-          }),
-        },
-      ]);
-    });
-
     return {
-      tableRows,
+      headers: [],
+      rows: themes.map((theme) => ({
+        label: theme.name,
+        cells: [
+          {
+            displayValue: '',
+            cellType: 'list',
+            items: theme.hints.map<UrlTableCell | TextTableCell>((hint) => {
+              if ('href' in hint) {
+                return {
+                  cellType: 'url',
+                  displayValue: hint.title,
+                  url: hint.href,
+                };
+              }
+
+              return {
+                cellType: 'text',
+                displayValue: hint.title,
+              };
+            }),
+          },
+        ],
+      })),
     };
   }
 }

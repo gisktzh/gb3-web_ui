@@ -1,0 +1,67 @@
+<div class="info-table">
+  <div class="info-table__scroll-container" #scrollContainer>
+    <table class="info-table__table" [class.info-table__table--has-headers]="headers().length > 0" [aria-label]="tableLabel()">
+      @if (headers().length > 0) {
+        <thead>
+          <tr class="info-table__row">
+            <th
+              class="info-table__cell info-table__cell--header"
+              scope="col"
+              [style.width]="rowHeaderWidth()"
+              [style.min-width]="rowHeaderWidth()"
+              [style.max-width]="rowHeaderWidth()"
+            ></th>
+            @for (tableHeader of headers(); track tableHeader) {
+              @if (tableHeaderTemplate(); as tableHeaderTemplate) {
+                <ng-container *ngTemplateOutlet="tableHeaderTemplate; context: getTableHeaderContext(tableHeader)" />
+              } @else {
+                <th class="info-table__cell info-table__cell--header" scope="col">
+                  <div class="info-table__cell-content">
+                    {{ tableHeader.displayValue }}
+                  </div>
+                </th>
+              }
+            }
+          </tr>
+        </thead>
+      }
+      <tbody>
+        @for (tableRow of rows(); track tableRow) {
+          <tr class="info-table__row">
+            <th
+              class="info-table__cell info-table__cell--header"
+              scope="row"
+              [style.width]="headers().length > 0 ? null : rowHeaderWidth()"
+              [style.min-width]="rowHeaderWidth()"
+              [style.max-width]="rowHeaderWidth()"
+            >
+              <span class="info-table__row-label">
+                {{ tableRow.label | hyphenate }}
+              </span>
+            </th>
+            @for (cellValue of tableRow.cells; track cellValue) {
+              @if (tableCellTemplate(); as tableCellTemplate) {
+                <ng-container *ngTemplateOutlet="tableCellTemplate; context: getTableCellContext(cellValue)" />
+              } @else {
+                <td class="info-table__cell">
+                  <info-table-cell [cellValue]="cellValue" />
+                </td>
+              }
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <resize-handler
+    [style]="`--calculated-scrollbar-height: ${calculatedScrollbarHeight()}px;`"
+    [minWidth]="minRowHeaderWidth"
+    [maxWidth]="maxRowHeaderWidth()"
+    location="left"
+    (resizeEvent)="resize($event)"
+    class="info-table__resize"
+    [style.width]="rowHeaderWidth()"
+    (resizeStart)="resizeStart.emit()"
+    (resizeEnd)="onResizeEnd()"
+  />
+</div>

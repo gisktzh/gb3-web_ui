@@ -11,7 +11,7 @@
   }
   @if (bottomSheetContent() === 'feature-info') {
     <bottom-sheet-item overlayTitle="Info" bottomSheetHeight="large">
-      <feature-info body />
+      <query-results body [showInteractiveElements]="showInteractiveElements()" />
     </bottom-sheet-item>
   }
   @if (bottomSheetContent() === 'map-attributes') {

@@ -7,7 +7,15 @@ import {provideRouter, Router, withInMemoryScrolling} from '@angular/router';
 import {ErrorHandlerService} from './app/error-handling/error-handler.service';
 import {EmbeddedErrorHandlerService} from './app/embedded-page/services/embedded-error-handler.service';
 import {errorHandlerServiceFactory} from './app/shared/factories/error-handler-service.factory';
-import {GRAV_CMS_SERVICE, MAP_LOADER_SERVICE, MAP_SERVICE, NEWS_SERVICE, TIME_SERVICE, DRAWING_SYMBOLS_SERVICE} from './app/app.tokens';
+import {
+  GRAV_CMS_SERVICE,
+  MAP_LOADER_SERVICE,
+  MAP_SERVICE,
+  NEWS_SERVICE,
+  TIME_SERVICE,
+  DRAWING_SYMBOLS_SERVICE,
+  STATISTICS_SERVICE,
+} from './app/app.tokens';
 import {EsriMapService} from './app/map/services/esri-services/esri-map.service';
 import {EsriMapLoaderService} from './app/map/services/esri-services/esri-map-loader.service';
 import {timeServiceFactory} from './app/shared/factories/time-service.factory';
@@ -22,6 +30,7 @@ import {EFFECTS_ERROR_HANDLER, provideEffects} from '@ngrx/effects';
 import {effectErrorHandler} from './app/state/app/effects/effects-error-handler.effects';
 import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {APP_ROUTES} from './app/app.routes';
+import {Gb3StatisticsService} from './app/shared/services/apis/gb3/gb3-statistics.service';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {bootstrapApplication} from '@angular/platform-browser';
 import {provideStore} from '@ngrx/store';
@@ -47,6 +56,7 @@ bootstrapApplication(AppComponent, {
     {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsServiceMock, ConfigService], useFactory: newsFactory},
     {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsServiceMock, ConfigService], useFactory: gravCmsFactory},
     {provide: DRAWING_SYMBOLS_SERVICE, useClass: EsriDrawingSymbolsService},
+    {provide: STATISTICS_SERVICE, useClass: Gb3StatisticsService},
     {provide: LOCALE_ID, useValue: 'de-CH'},
     {
       provide: EFFECTS_ERROR_HANDLER,

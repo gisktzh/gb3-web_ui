@@ -7,6 +7,7 @@ import {MockedObject} from 'vitest';
 import {OerebExtractEffects} from './oereb-extract.effects';
 import {OerebExtractActions} from '../actions/oereb-extract.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
+import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {selectHasOerebMapActive} from '../selectors/has-oereb-map-active.selector';
 import {Gb3OerebExtractService} from 'src/app/shared/services/apis/gb3/gb3-oereb-extract.service';
 import {OerebExtractCouldNotBeLoaded} from 'src/app/shared/errors/map.errors';
@@ -58,7 +59,7 @@ describe('OerebExtractEffects', () => {
     });
   });
 
-  describe('interceptMapClick$', () => {
+  describe('requestOnFeatureQuery$', () => {
     it('dispatches OerebExtractActions.sendRequest() when the OEREB map is active', () => {
       store.overrideSelector(selectHasOerebMapActive, true);
 
@@ -67,15 +68,9 @@ describe('OerebExtractEffects', () => {
         y: 456,
       });
 
-      actions$ = of(
-        MapConfigActions.handleMapClick({
-          x: 123,
-          y: 456,
-          scale: 0,
-        }),
-      );
+      actions$ = of(FeatureInfoActions.sendRequest({x: 123, y: 456, scale: 1000}));
 
-      effects.interceptMapClick$.subscribe((action) => {
+      effects.requestOnFeatureQuery$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });
     });
@@ -87,15 +82,9 @@ describe('OerebExtractEffects', () => {
         oerebExtract: null,
       });
 
-      actions$ = of(
-        MapConfigActions.handleMapClick({
-          x: 123,
-          y: 456,
-          scale: 0,
-        }),
-      );
+      actions$ = of(FeatureInfoActions.sendRequest({x: 123, y: 456, scale: 1000}));
 
-      effects.interceptMapClick$.subscribe((action) => {
+      effects.requestOnFeatureQuery$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });
     });
