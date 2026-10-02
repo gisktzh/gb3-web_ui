@@ -71,25 +71,4 @@ export const usefulInformationLinks: AbstractLinksGroup[] = [
       },
     ],
   },
-  {
-    label: 'Das könnte Sie auch interessieren',
-    links: [
-      {
-        href: 'https://www.zh.ch/de/planen-bauen/geoinformation.html',
-        title: 'Themenseite der Geoinformation',
-      },
-      {
-        href: 'https://map.geo.admin.ch/?lang=de',
-        title: 'Kartenviewer des Bundes',
-      },
-      {
-        href: 'https://www.cadastre.ch/de/home.html',
-        title: 'Das schweizerische Katasterwesen',
-      },
-      {
-        href: 'https://www.swisstopo.admin.ch/de/wissen-fakten/geodaesie-vermessung/bezugsysteme.html',
-        title: 'Schweizerische Bezugssysteme',
-      },
-    ],
-  },
 ];

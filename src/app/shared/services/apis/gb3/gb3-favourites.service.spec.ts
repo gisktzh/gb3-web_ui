@@ -162,6 +162,64 @@ describe('Gb3FavouritesService', () => {
     measurements: mockedVectorLayer,
   };
 
+  const loadFavouriteExtentCases = [
+    {
+      description: 'center and scale are missing',
+      east: null,
+      north: null,
+      scaledenom: null,
+      expectedCenter: undefined,
+      expectedScale: undefined,
+    },
+    {
+      description: 'only center is missing',
+      east: null,
+      north: null,
+      scaledenom: 1_003,
+      expectedCenter: undefined,
+      expectedScale: 1_003,
+    },
+    {
+      description: 'only scale is missing',
+      east: 2_600_003,
+      north: 1_100_003,
+      scaledenom: null,
+      expectedCenter: {x: 2_600_003, y: 1_100_003},
+      expectedScale: undefined,
+    },
+    {
+      description: 'one center coordinate is missing',
+      east: null,
+      north: 1_100_003,
+      scaledenom: 1_003,
+      expectedCenter: undefined,
+      expectedScale: 1_003,
+    },
+  ];
+  const createFavouriteExtentCases = [
+    {
+      description: 'center and scale',
+      baseConfig: {basemap: 'basemap3'},
+      expectedEast: null,
+      expectedNorth: null,
+      expectedScale: null,
+    },
+    {
+      description: 'center',
+      baseConfig: {basemap: 'basemap3', scale: 1_003},
+      expectedEast: null,
+      expectedNorth: null,
+      expectedScale: 1_003,
+    },
+    {
+      description: 'scale',
+      baseConfig: {basemap: 'basemap3', center: {x: 2_600_003, y: 1_100_003}},
+      expectedEast: 2_600_003,
+      expectedNorth: 1_100_003,
+      expectedScale: null,
+    },
+  ];
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
@@ -199,6 +257,31 @@ describe('Gb3FavouritesService', () => {
         expect(favouritesResponse).toEqual(favouriteItemsMock);
       });
     });
+
+    it.each(loadFavouriteExtentCases)(
+      'should preserve an omitted map extent when $description',
+      ({east, north, scaledenom, expectedCenter, expectedScale}) => {
+        const httpClient = TestBed.inject(HttpClient);
+        vi.spyOn(httpClient, 'get').mockReturnValue(
+          of([
+            {
+              ...serverDataMock[0],
+              east,
+              north,
+              scaledenom,
+            },
+          ] satisfies UserFavoritesListData),
+        );
+
+        service.loadFavourites().subscribe(([favourite]) => {
+          expect(favourite.baseConfig).toEqual({
+            basemap: serverDataMock[0].basemap,
+            center: expectedCenter,
+            scale: expectedScale,
+          });
+        });
+      },
+    );
   });
 
   describe('createFavourite', () => {
@@ -212,5 +295,26 @@ describe('Gb3FavouritesService', () => {
         expect(sharedFavourite).toBe(newSharedFavouriteMock);
       });
     });
+
+    it.each(createFavouriteExtentCases)(
+      'should send null for an omitted $description',
+      ({baseConfig, expectedEast, expectedNorth, expectedScale}) => {
+        const httpClient = TestBed.inject(HttpClient);
+        const postCallSpy = vi.spyOn(httpClient, 'post').mockReturnValue(of(newSharedFavouriteMock));
+
+        service.createFavourite({...newFavouriteItemMock, baseConfig}).subscribe(() => {
+          expect(postCallSpy).toHaveBeenCalledWith(
+            '',
+            {
+              ...newPersonalFavourite,
+              east: expectedEast,
+              north: expectedNorth,
+              scaledenom: expectedScale,
+            },
+            {headers: undefined},
+          );
+        });
+      },
+    );
   });
 });

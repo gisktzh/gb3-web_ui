@@ -8,6 +8,7 @@ import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 import {ToolService} from './tool.service';
 import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
 import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
+import {MapViewPadding} from '../../shared/interfaces/map-view-padding.interface';
 
 export interface MapService extends AddToMapVisitor {
   /** De-initializes the entire map */
@@ -15,6 +16,9 @@ export interface MapService extends AddToMapVisitor {
 
   /** Assigns the map to an element on the HTML */
   assignMapElement(container: HTMLDivElement): void;
+
+  /** Sets the screen-space padding used by the map view when calculating its center and extent. */
+  setViewPadding(padding: MapViewPadding | undefined): void;
 
   /** Sets the scale of the whole map */
   setScale(scale: number): void;

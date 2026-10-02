@@ -6,6 +6,7 @@ test.describe('Test filter search for maps and places', () => {
     openUrlWithCoordinates,
     search,
     zoom,
+    clickDefaultMapViewCenter,
     useHar,
     captureConsole,
   }) => {
@@ -17,20 +18,21 @@ test.describe('Test filter search for maps and places', () => {
     await search('Gemeinde Dübendorf');
     const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
     await expect(zoomInput).toBeVisible();
-    await expect(zoomInput).toHaveValue('19369');
+    await expect.poll(async () => Number(await zoomInput.inputValue())).toBeGreaterThanOrEqual(23_000);
+    await expect.poll(async () => Number(await zoomInput.inputValue())).toBeLessThanOrEqual(24_000);
 
     await search('Amtliche Vermessung in Farbe');
+    const activeMapItem = page.locator('active-map-item').filter({hasText: 'Amtliche Vermessung in Farbe'}).first();
+    await expect(activeMapItem).toBeVisible({timeout: 30_000});
 
     await zoom(3000);
+    await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});
 
-    const map = page.locator('map-page');
-    await expect(map).toBeVisible();
+    await clickDefaultMapViewCenter();
 
-    await map.click({force: true});
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(500);
-
-    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
-    await expect(page.locator('th', {hasText: 'EGRIS_EGRID'}).locator('xpath=following-sibling::td')).toContainText('CH107703719475');
+    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible({timeout: 30_000});
+    await expect(page.locator('th', {hasText: 'EGRIS_EGRID'}).locator('xpath=following-sibling::td')).toContainText('CH257994770397', {
+      timeout: 30_000,
+    });
   });
 });

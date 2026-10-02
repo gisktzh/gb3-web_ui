@@ -134,4 +134,45 @@ describe('InitialMapExtentService', () => {
       });
     });
   });
+
+  describe('calculateInitialExtentForPaddedView', () => {
+    it('uses the geographic bounding-box center while keeping the desktop scale calculation', () => {
+      Object.defineProperty(window, 'innerWidth', {get: () => 1300});
+      Object.defineProperty(window, 'innerHeight', {get: () => 1000});
+      store.overrideSelector(selectScreenMode, 'regular');
+      store.refreshState();
+
+      const initialExtent = service.calculateInitialExtentForPaddedView();
+
+      expect(Math.round(initialExtent.x)).toEqual(2693065);
+      expect(Math.round(initialExtent.y)).toEqual(1253620);
+      expect(Math.round(initialExtent.scale)).toEqual(298744);
+    });
+
+    it('uses the supplied dynamic padding for the scale calculation', () => {
+      Object.defineProperty(window, 'innerWidth', {get: () => 1300});
+      Object.defineProperty(window, 'innerHeight', {get: () => 1000});
+      store.overrideSelector(selectScreenMode, 'regular');
+      store.refreshState();
+
+      const baseExtent = service.calculateInitialExtentForPaddedView();
+      const sideBarExtent = service.calculateInitialExtentForPaddedView({top: 88, right: 600, bottom: 88, left: 474});
+
+      expect(sideBarExtent.x).toEqual(baseExtent.x);
+      expect(sideBarExtent.y).toEqual(baseExtent.y);
+      expect(sideBarExtent.scale).toBeGreaterThan(baseExtent.scale);
+    });
+
+    it('keeps the legacy mobile center calculation', () => {
+      Object.defineProperty(window, 'innerWidth', {get: () => 400});
+      Object.defineProperty(window, 'innerHeight', {get: () => 700});
+      store.overrideSelector(selectScreenMode, 'mobile');
+      store.refreshState();
+
+      const paddedExtent = service.calculateInitialExtentForPaddedView();
+      const legacyExtent = service.calculateInitialExtent();
+
+      expect(paddedExtent).toEqual(legacyExtent);
+    });
+  });
 });

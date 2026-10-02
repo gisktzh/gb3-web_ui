@@ -18,7 +18,7 @@ import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {selectItems, selectTemporaryMapItems} from '../selectors/active-map-items.selector';
-import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
+import {selectIsMapServiceInitialized, selectMapConfigState} from '../reducers/map-config.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {DrawingActions} from '../actions/drawing.actions';
@@ -27,6 +27,8 @@ import {SearchActions} from '../../app/actions/search.actions';
 import {TimeSliderService} from '../../../map/services/time-slider.service';
 import {produce} from 'immer';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {UrlActions} from '../../app/actions/url.actions';
+import {selectMapPageParams} from '../selectors/map-config-params.selector';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -36,6 +38,23 @@ export class ActiveMapItemEffects {
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
   private readonly timeSliderService = inject(TimeSliderService);
+
+  public updateMapPageQueryParams$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(
+        ActiveMapItemActions.addActiveMapItem,
+        ActiveMapItemActions.removeActiveMapItem,
+        ActiveMapItemActions.removeAllActiveMapItems,
+        ActiveMapItemActions.addFavourite,
+        ActiveMapItemActions.addInitialMapItems,
+        ActiveMapItemActions.reorderActiveMapItem,
+        ActiveMapItemActions.moveToTop,
+        LayerCatalogActions.clearInitialTopics,
+      ),
+      concatLatestFrom(() => this.store.select(selectMapPageParams)),
+      map(([_, params]) => UrlActions.setMapPageParams({params})),
+    );
+  });
 
   public addMapItem$ = createEffect(
     () => {
@@ -301,15 +320,25 @@ export class ActiveMapItemEffects {
     () => {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.addFavourite),
+        concatLatestFrom(() => this.store.select(selectMapConfigState)),
         tap(
-          ({
-            baseConfig: {
-              scale,
-              center: {x, y},
+          ([
+            {
+              baseConfig: {scale, center},
             },
-          }) => {
-            const center: PointWithSrs = {type: 'Point', srs: this.configService.mapConfig.defaultMapConfig.srsId, coordinates: [x, y]};
-            this.mapService.zoomToPoint(center, scale);
+            mapState,
+          ]) => {
+            if (!scale && !center) {
+              return;
+            }
+            const targetScale = scale ?? mapState.scale;
+            const {x, y} = center ?? mapState.center;
+            const targetCenter: PointWithSrs = {
+              type: 'Point',
+              srs: this.configService.mapConfig.defaultMapConfig.srsId,
+              coordinates: [x, y],
+            };
+            this.mapService.zoomToPoint(targetCenter, targetScale);
           },
         ),
       );

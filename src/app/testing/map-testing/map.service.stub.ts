@@ -19,6 +19,7 @@ import {
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
+import {MapViewPadding} from '../../shared/interfaces/map-view-padding.interface';
 
 export class MapServiceStub implements MapService {
   private toolService: ToolService = {
@@ -50,6 +51,8 @@ export class MapServiceStub implements MapService {
   public addDrawingLayer(mapItem: DrawingActiveMapItem, position: number) {}
 
   public assignMapElement(container: HTMLDivElement): void {}
+
+  public setViewPadding(padding: MapViewPadding | undefined): void {}
 
   public unassignMapElement(): void {}
 
