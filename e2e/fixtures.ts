@@ -76,12 +76,13 @@ export const test = base.extend<Gb3Fixtures>({
 
     await use(async (postFix?: string) => {
       const usedFileName = `${fileName}${postFix ? `-${postFix}` : ''}`;
+      const usedFilePath = `./e2e/hars/${usedFileName}.har`;
 
       if (!process.env['CI']) {
-        console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ./e2e/hars/${usedFileName}.har`);
+        console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ${usedFilePath}`);
       }
 
-      await advancedRouteFromHAR(`./e2e/hars/${usedFileName}.har`, {
+      await advancedRouteFromHAR(usedFilePath, {
         url: HAR_TARGET_PATTERN,
         update: shouldUpdate,
         updateMode: 'minimal',
@@ -154,7 +155,7 @@ export const test = base.extend<Gb3Fixtures>({
         notFound: async (route) => {
           const request = route.request();
           const postData = request.postData();
-          const errorMessage = `[har] No response matched ${request.method()} ${request.url()}${postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : ''}`;
+          const errorMessage = `[har] No response matched ${request.method()} ${request.url()} in file ${usedFilePath}${postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : ''}`;
           if (process.env['CI']) {
             // Hard fail if a request isn't found on the CI.
             throw new Error(errorMessage);
