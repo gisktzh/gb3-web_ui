@@ -21,6 +21,12 @@ export function canonicalizeUrl(url: string): string {
     }
   }
 
+  // It's possible that two different test runs can produce slightly different bboxes in the @arcgis/core map implementation.
+  // We normalize it to something generic, so the bbox isn't what's necessary to match a WMS request.
+  if (parsedUrl.searchParams.get('bbox')) {
+    parsedUrl.searchParams.set('bbox', '1,1,2,2');
+  }
+
   return parsedUrl.toString();
 }
 
