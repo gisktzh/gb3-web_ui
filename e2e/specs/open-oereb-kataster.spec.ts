@@ -11,9 +11,7 @@ test.describe('OEREB-Kataster', () => {
     await useHar();
     captureConsole();
 
-    await page.goto('/maps?initialMapIds=OerebKatasterZH');
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(200);
+    await page.goto('/maps?topics=OerebKatasterZH');
     await page.waitForLoadState('networkidle');
 
     await search('Weststrasse 49, 8003');

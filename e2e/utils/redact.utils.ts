@@ -22,6 +22,10 @@ const REDACTABLE_KEYS = new Set([
   'User-Agent',
   'set-cookie',
   'auth_state',
+  'nonce',
+  'sub',
+  'preferred_username',
+  'email',
 ]);
 
 /**
