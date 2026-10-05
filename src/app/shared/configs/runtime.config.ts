@@ -45,9 +45,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'https://maps.zh.ch/',
     },
-    featureFlags: {
-      statisticsTool: true,
-    },
+    featureFlags: {},
     overrides: {},
     accessMode: 'internet',
   },

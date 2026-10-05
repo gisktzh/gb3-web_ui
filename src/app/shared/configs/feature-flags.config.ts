@@ -4,5 +4,4 @@ export const defaultFeatureFlags: FeatureFlags = {
   ownershipInformation: false,
   iframeShareLink: true,
   koPlaNavItem: false,
-  statisticsTool: false,
 };
