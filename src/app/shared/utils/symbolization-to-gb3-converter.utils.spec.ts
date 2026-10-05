@@ -60,7 +60,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         },
       ];
 
-      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1);
+      const actual = utils.convertInternalToExternalRepresentation(drawingsMock);
 
       expect(actual.geojson.features.length).toEqual(2);
       expect(actual.geojson.features[0].properties.text).toEqual(drawingsMock[0].labelText);
@@ -99,7 +99,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(
+      const actual = utils.convertInternalToPrintableRepresentation(
         drawingsMock,
         1,
         1,
@@ -148,7 +148,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(
+      const actual = utils.convertInternalToPrintableRepresentation(
         drawingsMock,
         1,
         1,
@@ -197,7 +197,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(
+      const actual = utils.convertInternalToPrintableRepresentation(
         drawingsMock,
         1,
         1,
@@ -246,7 +246,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(
+      const actual = utils.convertInternalToPrintableRepresentation(
         drawingsMock,
         1,
         1,
