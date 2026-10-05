@@ -5,12 +5,9 @@ import {authConfigFactory} from '../shared/factories/auth-config.factory';
 import {oAuthConfigFactory} from '../shared/factories/o-auth-config.factory';
 import {storageFactory} from '../shared/factories/storage.factory';
 import {ConfigService} from '../shared/services/config.service';
-import {SharedModule} from '../shared/shared.module';
-import {LoginRedirectComponent} from './components/login-redirect/login-redirect.component';
-import {AuthNotificationDialogComponent} from './notifications/auth-notification-dialog/auth-notification-dialog.component';
 
 @NgModule({
-  imports: [OAuthModule.forRoot(), SharedModule, AuthNotificationDialogComponent, LoginRedirectComponent],
+  imports: [OAuthModule.forRoot()],
   providers: [
     {provide: AuthConfig, useFactory: authConfigFactory, deps: [ConfigService]},
     {provide: OAuthModuleConfig, useFactory: oAuthConfigFactory, deps: [ConfigService]},
