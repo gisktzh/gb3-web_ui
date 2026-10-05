@@ -13,19 +13,26 @@
     >
       <mat-icon svgIcon="ktzh_select_feature" />
     </button>
-    <button
-      (click)="toggleToolMenu('statistics')"
-      [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'statistics'"
-      class="map-tools-desktop__list__button"
-      color="accent"
-      data-test-id="map-select-statistic"
-      mat-icon-button
-      [matTooltip]="tooltipText.selectStatistic"
-      [disabled]="!isMapReady() || !isStatisticsAvailable()"
-      [aria-label]="tooltipText.selectStatistic"
+    <span
+      class="map-tools-desktop__list__statistics-tooltip"
+      [matTooltip]="isMapReady() && !isStatisticsAvailable() ? tooltipText.statisticsUnavailable : tooltipText.selectStatistic"
+      [matTooltipDisabled]="isMapReady() && isStatisticsAvailable()"
     >
-      <mat-icon svgIcon="ktzh_select_statistic" />
-    </button>
+      <button
+        (click)="toggleToolMenu('statistics')"
+        [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'statistics'"
+        class="map-tools-desktop__list__button"
+        color="accent"
+        data-test-id="map-select-statistic"
+        mat-icon-button
+        [matTooltip]="tooltipText.selectStatistic"
+        [matTooltipDisabled]="!isMapReady() || !isStatisticsAvailable()"
+        [disabled]="!isMapReady() || !isStatisticsAvailable()"
+        [aria-label]="tooltipText.selectStatistic"
+      >
+        <mat-icon svgIcon="ktzh_select_statistic" />
+      </button>
+    </span>
     <mat-divider class="map-tools-desktop__list__divider" />
     <button
       (click)="toggleToolMenu('measurement')"

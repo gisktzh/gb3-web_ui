@@ -22,6 +22,7 @@ import {QueryModeActions} from '../../../../state/map/actions/query-mode.actions
 const TOOLTIP_TEXT = {
   selectFeature: 'Objekt-Abfrage',
   selectStatistic: 'Statistik-Abfrage',
+  statisticsUnavailable: 'Für die aktiven Kartenebenen sind keine Statistiken verfügbar.',
   measurement: 'Messen',
   drawing: 'Zeichnen',
   dataDownload: 'Daten beziehen',
