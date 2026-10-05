@@ -1,4 +1,4 @@
-import {Injectable, inject, Injector} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {ToolService} from '../../../interfaces/tool.service';
 import {EsriMapViewService} from '../esri-map-view.service';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
@@ -80,7 +80,6 @@ export class EsriToolService implements ToolService {
   private readonly esriSymbolizationService = inject(EsriSymbolizationService);
   private readonly configService = inject(ConfigService);
   private readonly dialogService = inject(MatDialog);
-  private readonly injector = inject(Injector);
   private readonly geoshopMunicipalitiesService = inject(Gb3GeoshopMunicipalitiesService);
 
   private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
@@ -577,7 +576,6 @@ export class EsriToolService implements ToolService {
               ? this.completeMapSymbolDrawing(geometry, mode, mapDrawingSymbol, symbolSize, symbolRotation)
               : this.endDrawing(),
           this.dialogService,
-          this.injector,
         );
         break;
     }

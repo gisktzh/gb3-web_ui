@@ -88,19 +88,21 @@ describe('MapUiEffects', () => {
     store.resetSelectors();
   });
 
-  it('opens favourite dialogs with the map route injector', () => {
-    const routeInjector = createEnvironmentInjector([MapUiEffects], TestBed.inject(EnvironmentInjector));
+  it('opens favourite dialogs through the map route dialog service', () => {
+    const routeDialog = {open: vi.fn()};
+    const routeInjector = createEnvironmentInjector(
+      [MapUiEffects, {provide: MatDialog, useValue: routeDialog}],
+      TestBed.inject(EnvironmentInjector),
+    );
     const routeEffects = routeInjector.get(MapUiEffects);
     actions$ = of(MapUiActions.showCreateFavouriteDialog());
     routeEffects.openCreateFavouriteDialog$.subscribe();
-    expect(dialogService.open).toHaveBeenCalledWith(FavouriteCreationDialogComponent, expect.objectContaining({injector: routeInjector}));
+    expect(routeDialog.open).toHaveBeenCalledWith(FavouriteCreationDialogComponent, expect.any(Object));
     const favourite = {id: 'test'} as Favourite;
     actions$ = of(MapUiActions.showDeleteFavouriteDialog({favouriteToDelete: favourite}));
     routeEffects.openDeleteFavouriteDialog$.subscribe();
-    expect(dialogService.open).toHaveBeenCalledWith(
-      FavouriteDeletionDialogComponent,
-      expect.objectContaining({injector: routeInjector, data: {favourite}}),
-    );
+    expect(routeDialog.open).toHaveBeenCalledWith(FavouriteDeletionDialogComponent, expect.objectContaining({data: {favourite}}));
+    expect(dialogService.open).not.toHaveBeenCalled();
     routeInjector.destroy();
   });
 

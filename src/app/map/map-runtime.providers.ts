@@ -1,3 +1,5 @@
+import {Dialog} from '@angular/cdk/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {makeEnvironmentProviders} from '@angular/core';
 import {provideEffects} from '@ngrx/effects';
 import {DRAWING_SYMBOLS_SERVICE, MAP_LOADER_SERVICE, MAP_SERVICE} from '../app.tokens';
@@ -15,6 +17,9 @@ export function provideMapRuntime() {
     {provide: MAP_SERVICE, useClass: EsriMapService},
     {provide: MAP_LOADER_SERVICE, useClass: EsriMapLoaderService},
     {provide: DRAWING_SYMBOLS_SERVICE, useClass: EsriDrawingSymbolsService},
+    // Dialog content inherits the map route providers through the CDK dialog injector.
+    Dialog,
+    MatDialog,
     MapDrawingService,
     FavouritesService,
     Gb3ShareLinkService,

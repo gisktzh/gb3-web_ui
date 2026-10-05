@@ -5,7 +5,6 @@ import {
   DrawingInternalUpdateArgs,
 } from '../../interfaces/drawing-callback-handler.interface';
 import {MatDialog} from '@angular/material/dialog';
-import {Injector} from '@angular/core';
 import {SupportedEsriTool} from '../supported-esri-tool.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
 import {SymbolDrawingToolInputComponent} from 'src/app/map/components/symbols-drawing-tool-input/symbol-drawing-tool-input.component';
@@ -42,7 +41,6 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
     mapView: MapView,
     completeDrawingCallbackHandler: DrawingCallbackHandler<DrawingCallbackHandlerArgsSymbolDrawing, EsriMapDrawingSymbol>,
     dialogService: MatDialog,
-    private readonly injector: Injector,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
     this.dialogService = dialogService;
@@ -55,7 +53,6 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
         panelClass: [PanelClass.ApiWrapperDialog, PanelClass.ApiWrapperDialogFlex],
         restoreFocus: false,
         disableClose: true,
-        injector: this.injector,
       },
     );
 

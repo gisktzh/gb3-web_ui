@@ -1,4 +1,4 @@
-import {Injectable, Injector, inject} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
@@ -42,7 +42,6 @@ const MAP_NOTICES_DIALOG_MAX_WIDTH = 968;
 export class MapUiEffects {
   private readonly actions$ = inject(Actions);
   private readonly store = inject(Store);
-  private readonly injector = inject(Injector);
   private readonly dialogService = inject(MatDialog);
   private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
@@ -269,7 +268,6 @@ export class MapUiEffects {
         ofType(MapUiActions.showCreateFavouriteDialog),
         tap(() =>
           this.dialogService.open(FavouriteCreationDialogComponent, {
-            injector: this.injector,
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
             maxWidth: CREATE_FAVOURITE_DIALOG_MAX_WIDTH,
@@ -287,7 +285,6 @@ export class MapUiEffects {
         ofType(MapUiActions.showDeleteFavouriteDialog),
         tap(({favouriteToDelete}) =>
           this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(FavouriteDeletionDialogComponent, {
-            injector: this.injector,
             data: {favourite: favouriteToDelete},
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
