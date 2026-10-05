@@ -98,7 +98,21 @@ export class MapPageComponent implements OnInit {
   private readonly initializationState = this.store.selectSignal(selectApplicationInitializationLoadingState);
   private readonly shareLinkLoadingState = this.store.selectSignal(selectShareLinkLoadingState);
 
+  public readonly numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
+  public readonly isMapDataCatalogueMinimized = signal(false);
+  public readonly mapUiState = this.store.selectSignal(selectMapUiState);
+  public readonly mapSideDrawerContent = computed(() => this.mapUiState().mapSideDrawerContent || 'none');
+  public readonly screenMode = this.store.selectSignal(selectScreenMode);
+  public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
+  public readonly rotation = this.store.selectSignal(selectRotation);
+  public readonly sideBarWidth = computed(() => this.mapUiState().sideBarWidth);
+  public readonly isSideBarOverlayVisible = computed(() => {
+    const mapUiState = this.mapUiState();
+    return mapUiState.isFeatureInfoOverlayVisible || mapUiState.isElevationProfileOverlayVisible || mapUiState.isDrawingEditOverlayVisible;
+  });
+
   constructor() {
+    // Wait for share-link restoration before creating the map; use the default extent on failure.
     effect(() => {
       if (!this.isRestoringShareLink()) {
         return;
@@ -112,25 +126,13 @@ export class MapPageComponent implements OnInit {
         this.isRestoringShareLink.set(false);
       }
     });
+    // Start desktop onboarding only after the restored or default map UI has rendered.
     afterRenderEffect(() => {
       if (!this.isRestoringShareLink() && this.screenMode() !== 'mobile') {
         untracked(() => this.onboardingGuideService.autoStart());
       }
     });
   }
-
-  public readonly numberOfQueryLegends = this.store.selectSignal(selectNumberOfQueryLegends);
-  public readonly isMapDataCatalogueMinimized = signal(false);
-  public readonly mapUiState = this.store.selectSignal(selectMapUiState);
-  public readonly mapSideDrawerContent = computed(() => this.mapUiState().mapSideDrawerContent || 'none');
-  public readonly screenMode = this.store.selectSignal(selectScreenMode);
-  public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
-  public readonly rotation = this.store.selectSignal(selectRotation);
-  public readonly sideBarWidth = computed(() => this.mapUiState().sideBarWidth);
-  public readonly isSideBarOverlayVisible = computed(() => {
-    const mapUiState = this.mapUiState();
-    return mapUiState.isFeatureInfoOverlayVisible || mapUiState.isElevationProfileOverlayVisible || mapUiState.isDrawingEditOverlayVisible;
-  });
 
   public ngOnInit() {
     const pendingShareLinkId = this.sessionStorageService.get(RouteParamConstants.SHARE_LINK_ID_SESSION_STORAGE_KEY);
