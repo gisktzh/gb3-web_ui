@@ -1,8 +1,10 @@
 import {DOCUMENT, inject, Injectable} from '@angular/core';
 
 /**
- * Loads the ArcGIS theme for the ArcGIS map implementation. Angular copies the
- * theme and its relative assets via the esri-theme asset entries in angular.json.
+ * Loads the roughly 340 KB ArcGIS theme only when a map is initialized, keeping
+ * unused CSS off non-map pages and avoiding delays to their first and largest
+ * contentful paint (FCP/LCP). Angular copies the theme and its relative assets
+ * via the esri-theme asset entries in angular.json.
  * The stylesheet remains cached in the document across map visits.
  */
 @Injectable({providedIn: 'root'})
