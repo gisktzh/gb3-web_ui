@@ -103,8 +103,7 @@ export class EsriMapService implements MapService {
   private readonly authService = inject(AuthService);
   private readonly esriSymbolizationService = inject(EsriSymbolizationService);
   private readonly esriMapViewService = inject(EsriMapViewService);
-  // Construct within the map service injection context so dialogs inherit its route injector.
-  private readonly esriToolService = new EsriToolService();
+  private readonly esriToolService = inject(EsriToolService);
   private readonly gb3TopicsService = inject(Gb3TopicsService);
   private readonly initialMapExtentService = inject(InitialMapExtentService);
   private readonly timeSliderService = inject(TimeSliderService);

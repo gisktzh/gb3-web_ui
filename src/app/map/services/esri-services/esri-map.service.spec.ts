@@ -86,6 +86,7 @@ describe('EsriMapService', () => {
     TestBed.configureTestingModule({
       imports: [AuthModule],
       providers: [
+        EsriToolService,
         provideMockStore({
           initialState: {
             activeMapItem: {
@@ -122,6 +123,7 @@ describe('EsriMapService', () => {
   it('should be created', () => {
     service = TestBed.inject(EsriMapService);
     expect(service).toBeTruthy();
+    expect(service.getToolService()).toBe(TestBed.inject(EsriToolService));
   });
 
   it('does not create a view until CSS loads, and cancels when the container is removed', async () => {

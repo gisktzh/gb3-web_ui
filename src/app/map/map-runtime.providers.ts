@@ -9,6 +9,7 @@ import {MAP_EFFECTS} from '../state/map/map.effects';
 import {EsriDrawingSymbolsService} from './services/esri-services/esri-drawing-symbols.service';
 import {EsriMapLoaderService} from './services/esri-services/esri-map-loader.service';
 import {EsriMapService} from './services/esri-services/esri-map.service';
+import {EsriToolService} from './services/esri-services/tool-service/esri-tool.service';
 import {FavouritesService} from './services/favourites.service';
 import {MapDrawingService} from './services/map-drawing.service';
 
@@ -20,6 +21,7 @@ export function provideMapRuntime() {
     // Dialog content inherits the map route providers through the CDK dialog injector.
     Dialog,
     MatDialog,
+    EsriToolService,
     MapDrawingService,
     FavouritesService,
     Gb3ShareLinkService,
