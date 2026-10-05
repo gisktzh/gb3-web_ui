@@ -5,8 +5,8 @@ import {Store} from '@ngrx/store';
 import {catchError, iif, map, of, switchMap} from 'rxjs';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
-import {LayerCatalogActions} from '../actions/layer-catalog.actions';
-import {selectItems} from '../reducers/layer-catalog.reducer';
+import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
+import {selectItems} from '../../map/reducers/layer-catalog.reducer';
 
 // Catalogue data is also needed by homepage search, without a map runtime.
 @Injectable()

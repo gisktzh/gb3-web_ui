@@ -7,8 +7,8 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {LayerCatalogApiEffects} from './layer-catalog-api.effects';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
-import {LayerCatalogActions} from '../actions/layer-catalog.actions';
-import {selectItems} from '../reducers/layer-catalog.reducer';
+import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
+import {selectItems} from '../../map/reducers/layer-catalog.reducer';
 import {reducers, rootEffects} from '../../index';
 
 describe('LayerCatalogApiEffects', () => {

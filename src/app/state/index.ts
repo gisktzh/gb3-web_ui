@@ -1,4 +1,4 @@
-import {LayerCatalogApiEffects} from './map/effects/layer-catalog-api.effects';
+import {LayerCatalogApiEffects} from './app/effects/layer-catalog-api.effects';
 import {ActionReducerMap, MetaReducer} from '@ngrx/store';
 import {reducer as mapConfigReducer} from './map/reducers/map-config.reducer';
 import {reducer as legendReducer} from './map/reducers/legend.reducer';
