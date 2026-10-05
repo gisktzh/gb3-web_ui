@@ -68,6 +68,7 @@ describe('ShareLinkEffects', () => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [
+        Gb3ShareLinkService,
         ShareLinkEffects,
         provideMockActions(() => actions$),
         provideMockStore(),

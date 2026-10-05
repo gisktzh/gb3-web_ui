@@ -1,3 +1,4 @@
+import {FavouritesService} from '../../../../map/services/favourites.service';
 /* eslint-disable @typescript-eslint/naming-convention */
 import {TestBed} from '@angular/core/testing';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -107,6 +108,8 @@ describe('Gb3ShareLinkService', () => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [
+        Gb3ShareLinkService,
+        FavouritesService,
         provideMockStore({}),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),

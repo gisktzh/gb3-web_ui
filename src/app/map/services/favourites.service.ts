@@ -30,9 +30,7 @@ import {TimeSliderService} from './time-slider.service';
 import {TIME_SERVICE, DRAWING_SYMBOLS_SERVICE} from '../../app.tokens';
 import {DrawingSymbolsService} from '../../shared/interfaces/drawing-symbols-service.interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FavouritesService {
   private readonly store = inject(Store);
   private readonly gb3FavouritesService = inject(Gb3FavouritesService);

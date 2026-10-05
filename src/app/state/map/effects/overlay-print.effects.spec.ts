@@ -34,6 +34,7 @@ describe('OverlayPrintEffects', () => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [
+        Gb3PrintService,
         OverlayPrintEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
