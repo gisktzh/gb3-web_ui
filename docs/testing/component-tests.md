@@ -80,6 +80,8 @@ npm run component-tests:check
 
 `component-tests:sync` discovers new components, adds them to `pending`, preserves existing classifications, sorts the YAML deterministically, and reports stale entries without deleting them. `component-tests:check` is read-only and fails for missing, duplicate, stale, invalid, or unresolved evidence entries. CI runs the read-only check.
 
+The inventory script itself is covered by `scripts/component-test-inventory.test.mjs` (`npm run component-tests:test`), which uses Node's built-in test runner against temporary fixture repositories.
+
 Use `npm run component-tests:check-complete` only when closing the rollout; it additionally fails while any component remains `pending`.
 
 ## Rollout work packages

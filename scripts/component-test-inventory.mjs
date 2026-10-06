@@ -3,36 +3,9 @@ import {dirname, relative, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {parse, stringify} from 'yaml';
 
-const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const inventoryPath = resolve(repositoryRoot, 'docs/testing/component-test-inventory.yaml');
-const componentRoot = resolve(repositoryRoot, 'src/app');
+const scriptPath = fileURLToPath(import.meta.url);
+const defaultRepositoryRoot = resolve(dirname(scriptPath), '..');
 const statuses = ['pending', 'dedicated', 'host', 'e2e', 'abstract'];
-
-const toRepositoryPath = (path) => relative(repositoryRoot, path).replaceAll('\\', '/');
-
-function findComponentFiles(directory = componentRoot) {
-  return readdirSync(directory, {withFileTypes: true})
-    .flatMap((entry) => {
-      const entryPath = resolve(directory, entry.name);
-      return entry.isDirectory() ? findComponentFiles(entryPath) : [entryPath];
-    })
-    .filter((path) => path.endsWith('.component.ts') && !path.endsWith('.component.spec.ts'))
-    .map(toRepositoryPath)
-    .sort((left, right) => left.localeCompare(right));
-}
-
-function readInventory() {
-  if (!existsSync(inventoryPath)) {
-    return {version: 1, ...Object.fromEntries(statuses.map((status) => [status, {}]))};
-  }
-
-  const source = readFileSync(inventoryPath, 'utf8');
-  const inventory = parse(source);
-  if (!inventory || typeof inventory !== 'object' || Array.isArray(inventory)) {
-    throw new TypeError('The component test inventory must be a YAML mapping.');
-  }
-  return inventory;
-}
 
 function entriesFor(inventory, status) {
   const entries = inventory[status];
@@ -70,89 +43,6 @@ function collectClassifications(inventory) {
   return classifications;
 }
 
-function validateEvidencePaths(componentPath, field, evidence, errors) {
-  if (evidence === undefined) {
-    return;
-  }
-  if (!Array.isArray(evidence) || evidence.length === 0 || evidence.some((value) => typeof value !== 'string')) {
-    errors.push(`${componentPath}: '${field}' must be a non-empty list of repository paths.`);
-    return;
-  }
-  for (const evidencePath of evidence) {
-    if (!existsSync(resolve(repositoryRoot, evidencePath))) {
-      errors.push(`${componentPath}: referenced evidence does not exist: ${evidencePath}`);
-    }
-  }
-}
-
-function validateEvidence(status, componentPath, metadata, errors) {
-  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
-    errors.push(`${componentPath}: inventory metadata must be a mapping.`);
-    return;
-  }
-
-  for (const field of ['coveredBy', 'hostedBy', 'implementedBy']) {
-    validateEvidencePaths(componentPath, field, metadata[field], errors);
-  }
-
-  if (status === 'dedicated' && !metadata.coveredBy?.length) {
-    errors.push(`${componentPath}: dedicated components require 'coveredBy' evidence.`);
-  }
-  if (status === 'host' && !metadata.hostedBy?.length && !metadata.coveredBy?.length) {
-    errors.push(`${componentPath}: host-covered components require 'hostedBy' or 'coveredBy' evidence.`);
-  }
-  if (status === 'e2e' && !metadata.coveredBy?.length) {
-    errors.push(`${componentPath}: e2e-covered components require 'coveredBy' evidence.`);
-  }
-  if (status === 'abstract' && !metadata.implementedBy?.length && !metadata.coveredBy?.length) {
-    errors.push(`${componentPath}: abstract components require 'implementedBy' or 'coveredBy' evidence.`);
-  }
-}
-
-function printCounts(inventory) {
-  const counts = Object.fromEntries(statuses.map((status) => [status, Object.keys(entriesFor(inventory, status)).length]));
-  const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
-  const width = Math.max(...statuses.map((status) => status.length));
-  for (const status of statuses) {
-    console.log(`${status.padEnd(width)}: ${String(counts[status]).padStart(3)}`);
-  }
-  console.log(`${'total'.padEnd(width)}: ${String(total).padStart(3)}`);
-}
-
-function sync() {
-  const inventory = readInventory();
-  for (const status of statuses) {
-    inventory[status] = entriesFor(inventory, status);
-  }
-
-  const components = findComponentFiles();
-  const discovered = new Set(components);
-  const classifications = collectClassifications(inventory);
-  const added = components.filter((componentPath) => !classifications.has(componentPath));
-  const stale = [...classifications.keys()]
-    .filter((componentPath) => !discovered.has(componentPath))
-    .sort((left, right) => left.localeCompare(right));
-
-  for (const componentPath of added) {
-    inventory.pending[componentPath] = {};
-  }
-  writeFileSync(inventoryPath, serializeInventory(inventory), 'utf8');
-
-  console.log(`Synchronized ${toRepositoryPath(inventoryPath)}.`);
-  console.log(`Added to pending: ${added.length}`);
-  for (const componentPath of added) {
-    console.log(`  + ${componentPath}`);
-  }
-  if (stale.length > 0) {
-    console.error(`Stale entries (resolve manually): ${stale.length}`);
-    for (const componentPath of stale) {
-      console.error(`  - ${componentPath}`);
-    }
-    process.exitCode = 1;
-  }
-  printCounts(inventory);
-}
-
 function validateDiscoveredComponents(components, classifications, errors) {
   for (const componentPath of components) {
     const matches = classifications.get(componentPath) ?? [];
@@ -164,60 +54,191 @@ function validateDiscoveredComponents(components, classifications, errors) {
   }
 }
 
-function check({failOnPending = false} = {}) {
-  const inventory = readInventory();
-  const errors = [];
-  const expectedTopLevelKeys = new Set(['version', ...statuses]);
-  const unexpectedKeys = Object.keys(inventory).filter((key) => !expectedTopLevelKeys.has(key));
+/**
+ * Creates the inventory tool for the given repository root. All output goes through the injected logger and both
+ * commands return the process exit code, so the tool can be used in-process (e.g. in tests) without side effects on `process`.
+ */
+export function createInventoryTool({repositoryRoot = defaultRepositoryRoot, logger = console} = {}) {
+  const inventoryPath = resolve(repositoryRoot, 'docs/testing/component-test-inventory.yaml');
+  const componentRoot = resolve(repositoryRoot, 'src/app');
 
-  if (inventory.version !== 1) {
-    errors.push(`Unsupported inventory version '${inventory.version ?? 'missing'}'; expected 1.`);
+  const toRepositoryPath = (path) => relative(repositoryRoot, path).replaceAll('\\', '/');
+
+  function listFiles(directory) {
+    return readdirSync(directory, {withFileTypes: true}).flatMap((entry) => {
+      const entryPath = resolve(directory, entry.name);
+      return entry.isDirectory() ? listFiles(entryPath) : [entryPath];
+    });
   }
-  for (const key of unexpectedKeys) {
-    errors.push(`Unexpected top-level inventory key: ${key}`);
+
+  function findComponentFiles() {
+    return listFiles(componentRoot)
+      .filter((path) => path.endsWith('.component.ts') && !path.endsWith('.component.spec.ts'))
+      .map(toRepositoryPath)
+      .sort((left, right) => left.localeCompare(right));
   }
 
-  const components = findComponentFiles();
-  const discovered = new Set(components);
-  const classifications = collectClassifications(inventory);
-  validateDiscoveredComponents(components, classifications, errors);
-
-  for (const [componentPath, matches] of classifications) {
-    if (!discovered.has(componentPath)) {
-      errors.push(`Stale component entry: ${componentPath}.`);
+  function readInventory() {
+    if (!existsSync(inventoryPath)) {
+      return {version: 1, ...Object.fromEntries(statuses.map((status) => [status, {}]))};
     }
-    for (const {status, metadata} of matches) {
-      validateEvidence(status, componentPath, metadata, errors);
+
+    const source = readFileSync(inventoryPath, 'utf8');
+    const inventory = parse(source);
+    if (!inventory || typeof inventory !== 'object' || Array.isArray(inventory)) {
+      throw new TypeError('The component test inventory must be a YAML mapping.');
+    }
+    return inventory;
+  }
+
+  function validateEvidencePaths(componentPath, field, evidence, errors) {
+    if (evidence === undefined) {
+      return;
+    }
+    if (!Array.isArray(evidence) || evidence.length === 0 || evidence.some((value) => typeof value !== 'string')) {
+      errors.push(`${componentPath}: '${field}' must be a non-empty list of repository paths.`);
+      return;
+    }
+    for (const evidencePath of evidence) {
+      if (!existsSync(resolve(repositoryRoot, evidencePath))) {
+        errors.push(`${componentPath}: referenced evidence does not exist: ${evidencePath}`);
+      }
     }
   }
 
-  if (failOnPending && Object.keys(entriesFor(inventory, 'pending')).length > 0) {
-    errors.push("The 'pending' group must be empty for full component-test coverage.");
-  }
-
-  const source = readFileSync(inventoryPath, 'utf8');
-  if (source !== serializeInventory(inventory)) {
-    errors.push('Inventory ordering or formatting is not deterministic; run component-tests:sync.');
-  }
-
-  printCounts(inventory);
-  if (errors.length > 0) {
-    console.error(`\nComponent test inventory check failed with ${errors.length} error(s):`);
-    for (const error of errors) {
-      console.error(`  - ${error}`);
+  function validateEvidence(status, componentPath, metadata, errors) {
+    if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
+      errors.push(`${componentPath}: inventory metadata must be a mapping.`);
+      return;
     }
-    process.exitCode = 1;
-    return;
+
+    for (const field of ['coveredBy', 'hostedBy', 'implementedBy']) {
+      validateEvidencePaths(componentPath, field, metadata[field], errors);
+    }
+
+    if (status === 'dedicated' && !metadata.coveredBy?.length) {
+      errors.push(`${componentPath}: dedicated components require 'coveredBy' evidence.`);
+    }
+    if (status === 'host' && !metadata.hostedBy?.length && !metadata.coveredBy?.length) {
+      errors.push(`${componentPath}: host-covered components require 'hostedBy' or 'coveredBy' evidence.`);
+    }
+    if (status === 'e2e' && !metadata.coveredBy?.length) {
+      errors.push(`${componentPath}: e2e-covered components require 'coveredBy' evidence.`);
+    }
+    if (status === 'abstract' && !metadata.implementedBy?.length && !metadata.coveredBy?.length) {
+      errors.push(`${componentPath}: abstract components require 'implementedBy' or 'coveredBy' evidence.`);
+    }
   }
-  console.log('\nComponent test inventory is valid.');
+
+  function printCounts(inventory) {
+    const counts = Object.fromEntries(statuses.map((status) => [status, Object.keys(entriesFor(inventory, status)).length]));
+    const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
+    const width = Math.max(...statuses.map((status) => status.length));
+    for (const status of statuses) {
+      logger.log(`${status.padEnd(width)}: ${String(counts[status]).padStart(3)}`);
+    }
+    logger.log(`${'total'.padEnd(width)}: ${String(total).padStart(3)}`);
+  }
+
+  function sync() {
+    const inventory = readInventory();
+    for (const status of statuses) {
+      inventory[status] = entriesFor(inventory, status);
+    }
+
+    const components = findComponentFiles();
+    const discovered = new Set(components);
+    const classifications = collectClassifications(inventory);
+    const added = components.filter((componentPath) => !classifications.has(componentPath));
+    const stale = [...classifications.keys()]
+      .filter((componentPath) => !discovered.has(componentPath))
+      .sort((left, right) => left.localeCompare(right));
+
+    for (const componentPath of added) {
+      inventory.pending[componentPath] = {};
+    }
+    writeFileSync(inventoryPath, serializeInventory(inventory), 'utf8');
+
+    logger.log(`Synchronized ${toRepositoryPath(inventoryPath)}.`);
+    logger.log(`Added to pending: ${added.length}`);
+    for (const componentPath of added) {
+      logger.log(`  + ${componentPath}`);
+    }
+    if (stale.length > 0) {
+      logger.error(`Stale entries (resolve manually): ${stale.length}`);
+      for (const componentPath of stale) {
+        logger.error(`  - ${componentPath}`);
+      }
+    }
+    printCounts(inventory);
+    return stale.length > 0 ? 1 : 0;
+  }
+
+  function check({failOnPending = false} = {}) {
+    const inventory = readInventory();
+    const errors = [];
+    const expectedTopLevelKeys = new Set(['version', ...statuses]);
+    const unexpectedKeys = Object.keys(inventory).filter((key) => !expectedTopLevelKeys.has(key));
+
+    if (inventory.version !== 1) {
+      errors.push(`Unsupported inventory version '${inventory.version ?? 'missing'}'; expected 1.`);
+    }
+    for (const key of unexpectedKeys) {
+      errors.push(`Unexpected top-level inventory key: ${key}`);
+    }
+
+    const components = findComponentFiles();
+    const discovered = new Set(components);
+    const classifications = collectClassifications(inventory);
+    validateDiscoveredComponents(components, classifications, errors);
+
+    for (const [componentPath, matches] of classifications) {
+      if (!discovered.has(componentPath)) {
+        errors.push(`Stale component entry: ${componentPath}.`);
+      }
+      for (const {status, metadata} of matches) {
+        validateEvidence(status, componentPath, metadata, errors);
+      }
+    }
+
+    if (failOnPending && Object.keys(entriesFor(inventory, 'pending')).length > 0) {
+      errors.push("The 'pending' group must be empty for full component-test coverage.");
+    }
+
+    const source = readFileSync(inventoryPath, 'utf8');
+    if (source !== serializeInventory(inventory)) {
+      errors.push('Inventory ordering or formatting is not deterministic; run component-tests:sync.');
+    }
+
+    printCounts(inventory);
+    if (errors.length > 0) {
+      logger.error(`\nComponent test inventory check failed with ${errors.length} error(s):`);
+      for (const error of errors) {
+        logger.error(`  - ${error}`);
+      }
+      return 1;
+    }
+    logger.log('\nComponent test inventory is valid.');
+    return 0;
+  }
+
+  return {sync, check};
 }
 
-const mode = process.argv[2];
-if (mode === 'sync') {
-  sync();
-} else if (mode === 'check') {
-  check({failOnPending: process.argv.includes('--fail-on-pending')});
-} else {
-  console.error('Usage: node scripts/component-test-inventory.mjs <sync|check> [--fail-on-pending]');
-  process.exitCode = 1;
+/** Runs the CLI with the given arguments (without node and script path) and returns the exit code. */
+export function run(args, options = {}) {
+  const [mode] = args;
+  const tool = createInventoryTool(options);
+  if (mode === 'sync') {
+    return tool.sync();
+  }
+  if (mode === 'check') {
+    return tool.check({failOnPending: args.includes('--fail-on-pending')});
+  }
+  (options.logger ?? console).error('Usage: node scripts/component-test-inventory.mjs <sync|check> [--fail-on-pending]');
+  return 1;
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === scriptPath) {
+  process.exitCode = run(process.argv.slice(2));
 }

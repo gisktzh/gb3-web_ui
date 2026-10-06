@@ -18,6 +18,7 @@
     "component-tests:sync": "node ./scripts/component-test-inventory.mjs sync",
     "component-tests:check": "node ./scripts/component-test-inventory.mjs check",
     "component-tests:check-complete": "node ./scripts/component-test-inventory.mjs check --fail-on-pending",
+    "component-tests:test": "node --test \"scripts/*.test.mjs\"",
     "prepare": "node ./prepare.mjs",
     "update-version": "node ./update-version.js",
     "format-all": "prettier --write ./src",
