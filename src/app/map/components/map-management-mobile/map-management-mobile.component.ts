@@ -17,6 +17,8 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {ActiveMapItemsComponent} from '../active-map-items/active-map-items.component';
 import {MapDataCatalogueComponent} from '../map-data-catalogue/map-data-catalogue.component';
 import {MapNoticesService} from '../../services/map-notices.service';
+import {ONBOARDING_STEPS, OnboardingGuideService} from 'src/app/onboarding-guide/services/onboarding-guide.service';
+import {mapOnboardingGuideConfig} from 'src/app/onboarding-guide/data/map-onboarding-guide.config';
 
 type TabType = 'activeMaps' | 'mapsCatalogue';
 
@@ -31,6 +33,7 @@ const FAVOURITE_HELPER_MESSAGES = {
   templateUrl: './map-management-mobile.component.html',
   styleUrls: ['./map-management-mobile.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [OnboardingGuideService, MapNoticesService, {provide: ONBOARDING_STEPS, useValue: mapOnboardingGuideConfig}],
   imports: [
     MatButton,
     MatBadge,

@@ -7,7 +7,7 @@ import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.a
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {selectActiveTool} from '../../../state/map/reducers/tool.reducer';
-import {OnboardingGuideService} from '../../../onboarding-guide/services/onboarding-guide.service';
+import {ONBOARDING_STEPS, OnboardingGuideService} from '../../../onboarding-guide/services/onboarding-guide.service';
 import {selectItems} from '../../../state/map/selectors/active-map-items.selector';
 import {MatCard, MatCardHeader} from '@angular/material/card';
 import {TypedTourAnchorDirective} from '../../../shared/directives/typed-tour-anchor.directive';
@@ -25,6 +25,7 @@ import {CdkScrollable} from '@angular/cdk/scrolling';
 import {MapNoticesService} from '../../services/map-notices.service';
 import {AnimationTargetForDialogDirective} from '../../directives/animation-target-for-dialog.directive';
 import {MapNoticeDialogComponent} from '../../components/map-notice-dialog/map-notice-dialog.component';
+import {mapOnboardingGuideConfig} from 'src/app/onboarding-guide/data/map-onboarding-guide.config';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Um einen Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
@@ -43,6 +44,7 @@ const TOOLTIP_TEXT = {
   templateUrl: './active-map-items.component.html',
   styleUrls: ['./active-map-items.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [OnboardingGuideService, MapNoticesService, {provide: ONBOARDING_STEPS, useValue: mapOnboardingGuideConfig}],
   imports: [
     MatCard,
     TypedTourAnchorDirective,
