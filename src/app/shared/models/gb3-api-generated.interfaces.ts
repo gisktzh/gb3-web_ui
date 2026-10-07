@@ -103,9 +103,11 @@ export interface Feature {
       topic: string;
       /** Geolion ID of topic */
       geolion_gdd: number | null;
-      /** Jasper Report info, if any */
-      report: {
+      /** Jasper report info, if any */
+      report?: {
+        /** URL for a downloadable Jasper report */
         url: string | null;
+        /** Description of the downloadable Jasper report */
         description: string | null;
       };
       /** UUID from geometadatabase */
@@ -311,6 +313,7 @@ export interface Municipality {
   };
 }
 
+/** Manually added **/
 export interface OerebFeature {
   oereb_info: {
     /** name of the affected municipality */
@@ -394,11 +397,11 @@ export interface PersonalFavorite {
   /** Title of the favorite */
   title: string;
   /** LV95 East coordinate of the favorite */
-  east: number;
+  east: number | null;
   /** LV95 North coordinate of the favorite */
-  north: number;
+  north: number | null;
   /** Scale denominator of the favorite */
-  scaledenom: number;
+  scaledenom: number | null;
   /** Basemap of the favorite */
   basemap: string;
   /**
@@ -423,17 +426,17 @@ export interface PersonalFavoriteNew {
    * LV95 East coordinate of the favorite
    * @example 2600100
    */
-  east: number;
+  east: number | null;
   /**
    * LV95 North coordinate of the favorite
    * @example 1100100
    */
-  north: number;
+  north: number | null;
   /**
    * Scale denominator of the favorite
    * @example 1100
    */
-  scaledenom: number;
+  scaledenom: number | null;
   /** Basemap of the favorite */
   basemap: string;
   content: FavoriteContent;
@@ -673,11 +676,11 @@ export interface SharedFavorite {
   /** Name of the owner of the favorite */
   owner: string | null;
   /** LV95 East coordinate of the favorite */
-  east: number;
+  east: number | null;
   /** LV95 North coordinate of the favorite */
-  north: number;
+  north: number | null;
   /** Scale denominator of the favorite */
-  scaledenom: number;
+  scaledenom: number | null;
   /** Basemap of the favorite */
   basemap: string;
   /**
@@ -700,17 +703,17 @@ export interface SharedFavoriteNew {
    * LV95 East coordinate of the favorite
    * @example 2600100
    */
-  east: number;
+  east: number | null;
   /**
    * LV95 North coordinate of the favorite
    * @example 1100100
    */
-  north: number;
+  north: number | null;
   /**
    * Scale denominator of the favorite
    * @example 1100
    */
-  scaledenom: number;
+  scaledenom: number | null;
   /**
    * Basemap of the favorite
    * @example "basemap1"
@@ -1069,7 +1072,18 @@ export interface GenericGeojsonFeature {
   /** GeoJSON Feature */
   type: 'Feature';
   /** Feature properties */
-  properties: object | null;
+  properties: {
+    /** UUID of the given feature */
+    id: string;
+    /** UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement. */
+    belongsTo?: string;
+    /** Reference to style ID in 'styles' */
+    style?: string;
+    /** Text to display if using text marker style */
+    text?: string;
+    /** The tool used to draw the feature */
+    tool?: 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle';
+  } | null;
   /** GeoJSON geometry object */
   geometry: Geometry;
 }
@@ -1091,10 +1105,12 @@ export interface GeojsonFeature {
     /**
      * UUID of the given feature
      */
+    /** Manually added **/
     id: string;
     /**
      * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
      */
+    /** Manually added **/
     belongsTo?: string;
     /**
      * Reference to style ID in 'styles'
@@ -1110,6 +1126,7 @@ export interface GeojsonFeature {
      * The tool used to draw the feature
      * @example "polygon"
      */
+    /** Manually added **/
     tool: SupportedDrawingTool;
   };
   /** GeoJSON geometry object */
@@ -1192,6 +1209,7 @@ export type InfoFeatureField =
       /** type for the image object (here 'image') */
       type: 'image';
     }
+  /** Manually added **/
   | {
       /** Field label */
       label: string;
@@ -1274,6 +1292,7 @@ export interface MunicipalityItem {
   name: string;
 }
 
+/** Manually added **/
 /** list of themes which their restrictions are not affected by this parcel */
 export type NotConcernedTheme = {
   /** name of the not concerned theme */
@@ -1499,10 +1518,12 @@ export type VectorLayerStyles = {
     /** Geometry type of the drawing (point, line, polygon, text or symbol) */
     type?: 'point' | 'line' | 'polygon' | 'text' | 'symbol';
     /** Size of the symbol used in map units, if any */
+    /** Manually added **/
     symbolSize?: number;
     /** Rotation of the symbol in degrees, if any */
     symbolRotation?: number;
     /** JSON representation of the used symbol, if any */
+    /** Manually added **/
     drawingSymbolDefinition: ReturnType<DrawingSymbolDefinition['toJSON']>;
   };
 } | null;

@@ -6,6 +6,7 @@ test.describe('Revitalisierungsplanung', () => {
     openUrlWithCoordinates,
     filterForLayer,
     clickMapInTheList,
+    clickDefaultMapViewCenter,
     useHar,
     captureConsole,
   }) => {
@@ -20,10 +21,7 @@ test.describe('Revitalisierungsplanung', () => {
     const activeMapItem = page.locator('active-map-item').filter({hasText: 'Gewässerökologie: Revitalisierungsplanung'}).first();
     await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});
 
-    const map = page.locator('map-page canvas').first();
-    await expect(map).toBeVisible();
-
-    await map.click();
+    await clickDefaultMapViewCenter();
 
     await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible({timeout: 30_000});
     await expect(page.locator('th', {hasText: 'Länge [m]'}).locator('xpath=following-sibling::td')).toContainText('1654');

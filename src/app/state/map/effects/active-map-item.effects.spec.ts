@@ -31,7 +31,7 @@ import {MapConfigActions} from '../actions/map-config.actions';
 import {FavouriteBaseConfig} from '../../../shared/interfaces/favourite.interface';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapConstants} from '../../../shared/constants/map.constants';
-import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
+import {initialState as initialMapConfigState, selectIsMapServiceInitialized, selectMapConfigState} from '../reducers/map-config.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {SearchActions} from '../../app/actions/search.actions';
@@ -39,6 +39,8 @@ import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {MAP_SERVICE} from '../../../app.tokens';
 import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
+import {selectMapPageParams} from '../selectors/map-config-params.selector';
+import {UrlActions} from '../../app/actions/url.actions';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -69,6 +71,59 @@ describe('ActiveMapItemEffects', () => {
 
   afterEach(() => {
     store.resetSelectors();
+  });
+
+  describe('updateMapPageQueryParams$', () => {
+    it.each([
+      {
+        name: 'adding an item',
+        action: ActiveMapItemActions.addActiveMapItem({activeMapItem: createGb2WmsMapItemMock('added'), position: 0}),
+      },
+      {
+        name: 'removing an item',
+        action: ActiveMapItemActions.removeActiveMapItem({activeMapItem: createGb2WmsMapItemMock('removed')}),
+      },
+      {name: 'removing all items', action: ActiveMapItemActions.removeAllActiveMapItems()},
+      {
+        name: 'reordering items',
+        action: ActiveMapItemActions.reorderActiveMapItem({previousPosition: 1, currentPosition: 0}),
+      },
+      {
+        name: 'moving an item to the top',
+        action: ActiveMapItemActions.moveToTop({activeMapItem: createGb2WmsMapItemMock('moved')}),
+      },
+      {name: 'finishing initial topic loading', action: LayerCatalogActions.clearInitialTopics()},
+      {
+        name: 'adding a favourite',
+        action: ActiveMapItemActions.addFavourite({
+          activeMapItems: [],
+          baseConfig: {center: {x: 1, y: 2}, scale: 3, basemap: 'base'},
+          drawingsToAdd: [],
+        }),
+      },
+      {name: 'adding initial items', action: ActiveMapItemActions.addInitialMapItems({initialMapItems: []})},
+    ])('updates the complete map page params after $name', ({action}) => {
+      const params = {x: 1, y: 2, scale: 3, basemap: 'base', topics: 'one,two'};
+      store.overrideSelector(selectMapPageParams, params);
+      actions$ = of(action);
+
+      effects.updateMapPageQueryParams$.subscribe((result) => {
+        expect(result).toEqual(UrlActions.setMapPageParams({params}));
+      });
+    });
+
+    it('does not react to changes of non-standard topic state', () => {
+      const activeMapItem = createGb2WmsMapItemMock('topic');
+      store.overrideSelector(selectMapPageParams, {x: 1, y: 2, scale: 3, basemap: 'base', topics: 'topic'});
+      actions$ = of(ActiveMapItemActions.setOpacity({activeMapItem, opacity: 0.5}));
+      let wasCalled = false;
+
+      effects.updateMapPageQueryParams$.subscribe(() => {
+        wasCalled = true;
+      });
+
+      expect(wasCalled).toBe(false);
+    });
   });
 
   describe('addMapItem$', () => {
@@ -452,6 +507,82 @@ describe('ActiveMapItemEffects', () => {
         expect(mapServiceSpy).toHaveBeenCalledWith(expectedAttributeFilterParameters, expectedActiveMapItem);
         expect(action).toEqual(expectedAction);
       });
+    });
+  });
+
+  describe('zoomToAddedFavourite$', () => {
+    const currentCenter = {x: 2_682_260, y: 1_253_708};
+    const currentScale = 320_000;
+    const storedCenter = {x: 2_600_003, y: 1_100_003};
+    const storedScale = 1_003;
+    const zoomToFavouriteExtentCases = [
+      {
+        description: 'both are stored',
+        baseConfig: {basemap: 'basemap3', center: storedCenter, scale: storedScale},
+        expectedCenter: storedCenter,
+        expectedScale: storedScale,
+      },
+      {
+        description: 'only center is stored',
+        baseConfig: {basemap: 'basemap3', center: storedCenter},
+        expectedCenter: storedCenter,
+        expectedScale: currentScale,
+      },
+      {
+        description: 'only scale is stored',
+        baseConfig: {basemap: 'basemap3', scale: storedScale},
+        expectedCenter: currentCenter,
+        expectedScale: storedScale,
+      },
+    ] satisfies Array<{
+      description: string;
+      baseConfig: FavouriteBaseConfig;
+      expectedCenter: {x: number; y: number};
+      expectedScale: number;
+    }>;
+
+    beforeEach(() => {
+      store.overrideSelector(selectMapConfigState, {
+        ...initialMapConfigState,
+        center: currentCenter,
+        scale: currentScale,
+      });
+      store.refreshState();
+    });
+
+    it.each(zoomToFavouriteExtentCases)(
+      'zooms using the stored and current values when $description',
+      ({baseConfig, expectedCenter, expectedScale}) => {
+        const zoomToPointSpy = vi.spyOn(mapService, 'zoomToPoint');
+        actions$ = of(ActiveMapItemActions.addFavourite({activeMapItems: [], baseConfig, drawingsToAdd: []}));
+
+        effects.zoomToAddedFavourite$.subscribe();
+
+        expect(zoomToPointSpy).toHaveBeenCalledTimes(1);
+        expect(zoomToPointSpy).toHaveBeenCalledWith(
+          {
+            type: 'Point',
+            srs: MapConstants.DEFAULT_SRS,
+            coordinates: [expectedCenter.x, expectedCenter.y],
+          },
+          expectedScale,
+        );
+      },
+    );
+
+    it('does not zoom when neither center nor scale is stored', () => {
+      const zoomToPointSpy = vi.spyOn(mapService, 'zoomToPoint');
+      actions$ = of(
+        ActiveMapItemActions.addFavourite({
+          activeMapItems: [],
+          baseConfig: {basemap: 'basemap3'},
+          drawingsToAdd: [],
+        }),
+      );
+
+      effects.zoomToAddedFavourite$.subscribe();
+
+      expect(zoomToPointSpy).not.toHaveBeenCalled();
     });
   });
 

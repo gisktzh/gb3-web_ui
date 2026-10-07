@@ -43,6 +43,7 @@ import {
 } from '../state/map/reducers/share-link.reducer';
 import {WaitingPageComponent} from '../shared/components/waiting-page/waiting-page.component';
 import {MainPage} from '../shared/enums/main-page.enum';
+import {calculateMapViewPadding} from './utils/map-view-padding.utils';
 
 @Component({
   selector: 'map-page',
@@ -105,10 +106,29 @@ export class MapPageComponent implements OnInit {
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
   public readonly mapConfigState = this.store.selectSignal(selectMapConfigState);
   public readonly rotation = this.store.selectSignal(selectRotation);
-  public readonly sideBarWidth = computed(() => this.mapUiState().sideBarWidth);
+  public readonly legendOverlayWidth = computed(() => this.mapUiState().legendOverlayWidth);
+  public readonly rightSideBarWidth = computed(() => this.mapUiState().rightSideBarWidth);
   public readonly isSideBarOverlayVisible = computed(() => {
     const mapUiState = this.mapUiState();
     return mapUiState.isFeatureInfoOverlayVisible || mapUiState.isElevationProfileOverlayVisible || mapUiState.isDrawingEditOverlayVisible;
+  });
+  public readonly viewPadding = computed(() => {
+    if (this.screenMode() === 'mobile') {
+      return undefined;
+    }
+
+    const mapUiState = this.mapUiState();
+
+    return calculateMapViewPadding({
+      basePadding: untracked(() => this.mapConfigState().initialMapPadding),
+      isEnabled: true,
+      isUiHidden: mapUiState.hideUiElements,
+      isLegendVisible: mapUiState.isLegendOverlayVisible,
+      legendWidth: this.legendOverlayWidth(),
+      isRightSideBarVisible: this.isSideBarOverlayVisible(),
+      rightSideBarWidth: this.rightSideBarWidth(),
+      viewportWidth: window.innerWidth,
+    });
   });
 
   constructor() {
@@ -148,14 +168,16 @@ export class MapPageComponent implements OnInit {
 
   private initializeDefaultExtent() {
     if (!this.mapConfigState().predefinedInitialExtent) {
-      const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
+      const padding = this.viewPadding();
+      const {x, y, scale} = padding
+        ? this.initialMapExtentService.calculateInitialExtentForPaddedView(padding)
+        : this.initialMapExtentService.calculateInitialExtent();
       this.store.dispatch(
         MapConfigActions.setInitialMapConfig({
           x,
           y,
           scale,
           basemapId: this.mapConfigState().activeBasemapId,
-          initialMaps: [],
         }),
       );
     }
@@ -173,8 +195,12 @@ export class MapPageComponent implements OnInit {
     this.isMapDataCatalogueMinimized.set(isMinimized);
   }
 
-  public setSideBarWidth(width: number) {
-    this.store.dispatch(MapUiActions.setSideBarWidth({width}));
+  public setRightSideBarWidth(width: number) {
+    this.store.dispatch(MapUiActions.setRightSideBarWidth({width}));
+  }
+
+  public setLegendOverlayWidth(width: number) {
+    this.store.dispatch(MapUiActions.setLegendOverlayWidth({width}));
   }
 
   public closeSideDrawer() {

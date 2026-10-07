@@ -64,11 +64,7 @@
           <ng-template #linkedMap let-map>
             <descriptive-highlighted-link [title]="map.name" [multiLine]="screenMode() === 'mobile'">
               @if (screenMode() === 'mobile') {
-                <a
-                  [queryParams]="{initialMapIds: map.topic}"
-                  [routerLink]="['/', mainPageEnum.Maps]"
-                  class="dataset-detail__linked-data-link"
-                >
+                <a [queryParams]="{topics: map.topic}" [routerLink]="['/', mainPageEnum.Maps]" class="dataset-detail__linked-data-link">
                   Im GIS-Browser öffnen
                 </a>
                 <span>|</span>
@@ -77,7 +73,7 @@
                 </a>
               } @else {
                 <a
-                  [queryParams]="{initialMapIds: map.topic}"
+                  [queryParams]="{topics: map.topic}"
                   [routerLink]="['/', mainPageEnum.Maps]"
                   class="dataset-detail__linked-data-button"
                   mat-button

@@ -1,5 +1,35 @@
 import {Har, Header} from 'har-format';
 
+const COORDINATE_KEYS = ['x', 'y'];
+const COORDINATE_DECIMAL_PLACES = 8;
+
+/**
+ * Removes insignificant floating-point noise from map coordinates before comparing request URLs.
+ */
+export function canonicalizeUrl(url: string): string {
+  const parsedUrl = new URL(url);
+
+  for (const coordinateKey of COORDINATE_KEYS) {
+    const value = parsedUrl.searchParams.get(coordinateKey);
+    if (value === null) {
+      continue;
+    }
+
+    const coordinate = Number(value);
+    if (Number.isFinite(coordinate)) {
+      parsedUrl.searchParams.set(coordinateKey, Number(coordinate.toFixed(COORDINATE_DECIMAL_PLACES)).toString());
+    }
+  }
+
+  // It's possible that two different test runs can produce slightly different bboxes in the @arcgis/core map implementation.
+  // We normalize it to something generic, so the bbox isn't what's necessary to match a WMS request.
+  if (parsedUrl.searchParams.get('bbox')) {
+    parsedUrl.searchParams.set('bbox', '1,1,2,2');
+  }
+
+  return parsedUrl.toString();
+}
+
 /**
  * Transforms a POJO into a `Header[]` structure.
  */

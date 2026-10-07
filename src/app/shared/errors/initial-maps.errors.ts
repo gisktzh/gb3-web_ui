@@ -1,27 +1,10 @@
-import {Gb3RuntimeError, RecoverableError} from './abstract.errors';
+import {RecoverableError} from './abstract.errors';
 
-export class InitialMapIdsParameterInvalid extends RecoverableError {
-  public override name = 'InitialMapIdsParameterInvalid';
+export class SomeTopicsCouldNotBeLoaded extends RecoverableError {
+  public override name = 'SomeTopicsCouldNotBeLoaded';
 
-  constructor(initialMapParameter: string) {
+  constructor(topicIds: string[]) {
     super();
-    this.message = `Die Karte "${initialMapParameter}" konnte nicht geladen werden.`;
-  }
-}
-export class InitialMapsCouldNotBeLoaded extends RecoverableError {
-  public override name = 'InitialMapsCouldNotBeLoaded';
-
-  constructor(isAuthenticated: boolean, originalError?: unknown) {
-    super(originalError);
-    let reason = 'Unbekannter Fehler';
-    if (originalError && originalError instanceof Gb3RuntimeError && originalError.message) {
-      reason = originalError.message;
-    }
-
-    let message = `Ungültige URL Paramter: ${reason}`;
-    if (!isAuthenticated) {
-      message += '\nMöglicherweise hilft es, wenn Sie sich einloggen.';
-    }
-    this.message = message;
+    this.message = `Folgende Karten konnten nicht geladen werden: ${topicIds.map((topicId) => `"${topicId}"`).join(', ')}.`;
   }
 }

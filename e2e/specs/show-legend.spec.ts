@@ -15,7 +15,6 @@ test.describe('Legend', () => {
 
     await legendButton.click();
 
-    await page.waitForTimeout(200);
     await page.waitForLoadState('networkidle');
 
     await expect(page.locator('h3', {hasText: 'Legende'})).toBeVisible();
@@ -25,8 +24,6 @@ test.describe('Legend', () => {
     await avLegend.click();
 
     // Aniamtions etc.
-    await page.waitForTimeout(200);
-
     await expect(page.locator('div.legend-item', {hasText: 'Nummern - Liegenschaften'})).toBeVisible();
     await expect(page.locator('div.legend-item', {hasText: 'Nummern - Projektierte Liegenschaften'})).toBeVisible();
     await expect(page.locator('div.legend-item', {hasText: 'Bodenbedeckung farbig'})).toBeVisible();

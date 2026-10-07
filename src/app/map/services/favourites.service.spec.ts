@@ -7,7 +7,7 @@ import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
 import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-drawings-vector-layers.selector';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
-import {CreateFavourite, Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
+import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {of} from 'rxjs';
 import {SharedFavorite} from '../../shared/models/gb3-api-generated.interfaces';
 import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-item-configuration.interface';
@@ -33,6 +33,33 @@ describe('FavouritesService', () => {
   let timeService: TimeService;
   let timeSliderService: TimeSliderService;
   let symbolizationToGb3ConverterUtils: SymbolizationToGb3ConverterUtils;
+
+  const createFavouriteOptions = [
+    {
+      storeCenter: false,
+      storeScale: false,
+      expectedCenter: undefined,
+      expectedScale: undefined,
+    },
+    {
+      storeCenter: true,
+      storeScale: false,
+      expectedCenter: {x: 2_600_003, y: 1_100_003},
+      expectedScale: undefined,
+    },
+    {
+      storeCenter: false,
+      storeScale: true,
+      expectedCenter: undefined,
+      expectedScale: 1_003,
+    },
+    {
+      storeCenter: true,
+      storeScale: true,
+      expectedCenter: {x: 2_600_003, y: 1_100_003},
+      expectedScale: 1_003,
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -66,19 +93,37 @@ describe('FavouritesService', () => {
   });
 
   describe('createFavourite', () => {
-    it('calls the Gb3FavouritesService.createFavourite using the given title and returns the result', () => {
-      const title = 'test title';
-      const createFavouriteResult = {id: 'a'} as SharedFavorite;
-      const gb3FavouritesServiceSpy = vi.spyOn(gb3FavouritesService, 'createFavourite').mockReturnValue(of(createFavouriteResult));
+    it.each(createFavouriteOptions)(
+      'forwards center=$storeCenter and scale=$storeScale according to the creation options',
+      ({storeCenter, storeScale, expectedCenter, expectedScale}) => {
+        const title = 'test title';
+        const createFavouriteResult = {id: 'a'} as SharedFavorite;
+        const gb3FavouritesServiceSpy = vi.spyOn(gb3FavouritesService, 'createFavourite').mockReturnValue(of(createFavouriteResult));
 
-      const expectedServiceCallObject = expect.objectContaining<CreateFavourite>({title} as CreateFavourite);
-      service = TestBed.inject(FavouritesService);
-      service.createFavourite(title).subscribe((actual) => {
-        expect(gb3FavouritesServiceSpy).toHaveBeenCalledTimes(1);
-        expect(gb3FavouritesServiceSpy).toHaveBeenCalledWith(expectedServiceCallObject);
-        expect(actual).toEqual(createFavouriteResult);
-      });
-    });
+        store.overrideSelector(selectFavouriteBaseConfig, {
+          center: {x: 2_600_003, y: 1_100_003},
+          scale: 1_003,
+          basemap: 'basemap3',
+        });
+        store.refreshState();
+        service = TestBed.inject(FavouritesService);
+
+        service.createFavourite({title, storeCenter, storeScale}).subscribe((actual) => {
+          expect(gb3FavouritesServiceSpy).toHaveBeenCalledTimes(1);
+          expect(gb3FavouritesServiceSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              title,
+              baseConfig: {
+                basemap: 'basemap3',
+                center: expectedCenter,
+                scale: expectedScale,
+              },
+            }),
+          );
+          expect(actual).toEqual(createFavouriteResult);
+        });
+      },
+    );
   });
 
   describe('loadFavourites', () => {

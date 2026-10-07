@@ -23,12 +23,13 @@ class MapContainerStub implements OnInit {
 
 describe('MapPageComponent share-link initialization', () => {
   const session = {get: vi.fn(), remove: vi.fn()};
-  const extent = {calculateInitialExtent: vi.fn()};
+  const extent = {calculateInitialExtent: vi.fn(), calculateInitialExtentForPaddedView: vi.fn()};
   const onboarding = {autoStart: vi.fn()};
 
   beforeEach(() => {
     session.get.mockReturnValue('shared-map');
     extent.calculateInitialExtent.mockReturnValue({x: 10, y: 20, scale: 100});
+    extent.calculateInitialExtentForPaddedView.mockReturnValue({x: 10, y: 20, scale: 100});
     TestBed.configureTestingModule({
       imports: [MapPageComponent],
       providers: [
@@ -51,7 +52,7 @@ describe('MapPageComponent share-link initialization', () => {
     expect(mapCreated).not.toHaveBeenCalled();
     expect(fixture.nativeElement.querySelector('waiting-page')).not.toBeNull();
     const store = TestBed.inject(Store);
-    store.dispatch(MapConfigActions.setInitialMapConfig({x: 123, y: 456, scale: 789, basemapId: 'test', initialMaps: []}));
+    store.dispatch(MapConfigActions.setInitialMapConfig({x: 123, y: 456, scale: 789, basemapId: 'test'}));
     fixture.detectChanges();
     expect(mapCreated).not.toHaveBeenCalled();
     store.dispatch(ShareLinkActions.completeApplicationInitialization());

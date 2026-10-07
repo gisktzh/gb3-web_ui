@@ -173,10 +173,9 @@ describe('SearchEffects', () => {
       const searchIndexString = 'index';
       const searchTerm = undefined;
       const basemapId = 'base';
-      const initialMaps = ['one', 'two'];
 
       const expectedAction = SearchActions.handleInvalidParameters();
-      actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, initialMaps, basemapId}));
+      actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, basemapId}));
       effects.validateSearchUrlParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });
@@ -185,10 +184,9 @@ describe('SearchEffects', () => {
       const searchIndexString = undefined;
       const searchTerm = 'term';
       const basemapId = 'base';
-      const initialMaps = ['one', 'two'];
 
       const expectedAction = SearchActions.handleInvalidParameters();
-      actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, initialMaps, basemapId}));
+      actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, basemapId}));
       effects.validateSearchUrlParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });
@@ -197,7 +195,6 @@ describe('SearchEffects', () => {
       const searchIndexString = 'index';
       const searchTerm = 'term';
       const basemapId = 'base';
-      const initialMaps = ['one', 'two'];
       const searchIndex: SearchIndex = {
         indexName: searchIndexString,
         label: searchIndexString,
@@ -206,7 +203,7 @@ describe('SearchEffects', () => {
       };
 
       const expectedAction = SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex});
-      actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, initialMaps, basemapId}));
+      actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, basemapId}));
       effects.validateSearchUrlParameters$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });

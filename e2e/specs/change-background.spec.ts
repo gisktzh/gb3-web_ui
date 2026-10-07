@@ -22,16 +22,10 @@ test.describe('Map operation', () => {
 
     await baseMapSelector.click();
 
-    // Aniamtions etc.
-    await page.waitForTimeout(200);
-
     const historicMap = page.locator('button', {hasText: 'Historische Karte J. Wild (~1850)'});
     await expect(historicMap).toBeVisible();
 
     await historicMap.click();
-
-    // Aniamtions etc.
-    await page.waitForTimeout(200);
 
     await assertBackgroundImage(baseMapSelector, 'url("http://localhost:4200/assets/images/basemaps/arewildbackgroundzh.webp")');
   });
