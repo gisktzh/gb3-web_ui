@@ -3,6 +3,7 @@
     class="active-map-item-header__button"
     (click)="activeMapItemExpansionPanel().toggle()"
     [attr.data-test-id]="activeMapItemExpansionPanel().expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
+    [attr.aria-label]="activeMapItemExpansionPanel().expanded ? 'Ebenen ausblenden' : 'Ebenen anzeigen'"
     mat-icon-button
   >
     <mat-icon [fontIcon]="activeMapItemExpansionPanel().expanded ? 'arrow_drop_down' : 'arrow_right'" />
@@ -21,6 +22,7 @@
       class="active-map-item-header__image-container__checkbox"
       [checked]="activeMapItem().visible"
       (change)="toggleMapItemVisibility(activeMapItem())"
+      [aria-label]="activeMapItem().title + ' ein-/ausblenden'"
     />
     <loading-and-process-bar
       [loadingState]="activeMapItem().loadingState"
