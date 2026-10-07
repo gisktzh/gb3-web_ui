@@ -83,7 +83,7 @@ export async function waitForMap(page: Page) {
   }
   await expect(page.getByTestId('active-map-items').getByTestId('loading-progress')).toHaveCount(0, {timeout: 30_000});
   if ((page.viewportSize()?.width ?? 1920) >= 768) {
-    await expect(page.getByTestId('map-select-statistic')).toBeEnabled();
+    await expect(page.getByTestId('map-select-feature')).toBeEnabled();
   }
   await page.waitForLoadState('networkidle');
 }
