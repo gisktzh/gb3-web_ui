@@ -4,27 +4,23 @@ test.describe('OEREB-Kataster', () => {
   test('opens the OEREB-Kataster and searches for a specific address, returning its data in the info request', async ({
     page,
     search,
+    clickDefaultMapViewCenter,
     useHar,
     captureConsole,
   }) => {
     await useHar();
     captureConsole();
 
-    await page.goto('/maps?initialMapIds=OerebKatasterZH');
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(200);
+    await page.goto('/maps?topics=OerebKatasterZH');
     await page.waitForLoadState('networkidle');
 
     await search('Weststrasse 49, 8003');
-    await page.waitForTimeout(5000); // Until the zoom is done
+    const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
+    await expect(zoomInput).toHaveValue('750', {timeout: 30_000});
 
-    const map = page.locator('map-page');
-    await expect(map).toBeVisible();
+    await clickDefaultMapViewCenter();
 
-    await map.click();
-    await page.waitForLoadState('networkidle');
-
-    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
+    await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible({timeout: 30_000});
     await expect(page.locator('feature-info-content', {hasText: 'Markieren'})).toBeVisible();
     await expect(page.locator('th', {hasText: 'BFSNr'}).locator('xpath=following-sibling::td')).toContainText('261');
     await expect(page.locator('th', {hasText: 'Nummer'}).locator('xpath=following-sibling::td')).toContainText('WD4055');

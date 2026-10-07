@@ -5,6 +5,7 @@ import {MapConstants} from '../../shared/constants/map.constants';
 import {defaultMapConfig} from '../../shared/configs/map.config';
 import {Coordinate} from '../../shared/interfaces/coordinate.interface';
 import {BoundingBox, InitialMapPadding} from '../../state/map/states/map-config.state';
+import {MapViewPadding} from '../../shared/interfaces/map-view-padding.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -15,20 +16,39 @@ export class InitialMapExtentService {
   public readonly screenMode = this.store.selectSignal(selectScreenMode);
 
   public calculateInitialExtent(): {x: number; y: number; scale: number} {
+    const viewExtentPadding =
+      this.screenMode() === 'mobile' ? defaultMapConfig.initialMapPaddingMobile : defaultMapConfig.initialMapPadding;
+    return this.calculateExtent(viewExtentPadding, false);
+  }
+
+  /**
+   * Calculates the initial extent for a MapView that applies its own padding. Mobile keeps using the legacy calculation because the
+   * mobile map does not opt into MapView padding.
+   */
+  public calculateInitialExtentForPaddedView(viewPadding: MapViewPadding = defaultMapConfig.initialMapPadding): {
+    x: number;
+    y: number;
+    scale: number;
+  } {
+    if (this.screenMode() === 'mobile') {
+      return this.calculateInitialExtent();
+    }
+
+    return this.calculateExtent(viewPadding, true);
+  }
+
+  private calculateExtent(viewExtentPadding: InitialMapPadding, isPaddingAppliedByMapView: boolean) {
     const min = defaultMapConfig.initialBoundingBox.min;
     const max = defaultMapConfig.initialBoundingBox.max;
 
     const boundingBoxWidth = max.x - min.x;
     const boundingBoxHeight = max.y - min.y;
 
-    const viewExtentPadding =
-      this.screenMode() === 'mobile' ? defaultMapConfig.initialMapPaddingMobile : defaultMapConfig.initialMapPadding;
-
     const mapWidth = window.innerWidth;
     const mapHeight = this.screenMode() === 'mobile' ? window.innerHeight : window.innerHeight - MapConstants.NAV_BAR_HEIGHT;
 
-    const viewportWidth = mapWidth - viewExtentPadding.left - viewExtentPadding.right;
-    const viewportHeight = mapHeight - viewExtentPadding.top - viewExtentPadding.bottom;
+    const viewportWidth = Math.max(1, mapWidth - viewExtentPadding.left - viewExtentPadding.right);
+    const viewportHeight = Math.max(1, mapHeight - viewExtentPadding.top - viewExtentPadding.bottom);
 
     const screenAspectRatio = viewportWidth / viewportHeight;
     const boundingBoxAspectRatio = boundingBoxWidth / boundingBoxHeight;
@@ -40,7 +60,9 @@ export class InitialMapExtentService {
       resolution = boundingBoxHeight / viewportHeight;
     }
 
-    const {x, y} = this.getCenter(resolution, viewExtentPadding, {min, max});
+    const {x, y} = isPaddingAppliedByMapView
+      ? {x: (min.x + max.x) / 2, y: (min.y + max.y) / 2}
+      : this.getCenter(resolution, viewExtentPadding, {min, max});
     const scale = resolution * MapConstants.DPI * MapConstants.INCHES_PER_UNIT.m;
     return {x, y, scale};
   }

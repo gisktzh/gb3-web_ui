@@ -13,6 +13,7 @@
 .oereb-detail-list__link {
   @include mixins.external-link-decoration;
   display: block;
+  max-width: 100%;
 }
 
 .oereb-detail-list__item {
