@@ -52,16 +52,17 @@
           <mat-icon svgIcon="ktzh_delete" />
         </button>
         <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true" />
-        <span [matTooltip]="toolTipsFavourite()" [aria-label]="toolTipsFavourite()" matTooltipPosition="below">
-          <button
-            (click)="showFavouriteDialog()"
-            [disabled]="activeMapItems().length === 0 || !isAuthenticated()"
-            mat-icon-button
-            class="active-map-items__header__buttons__action"
-          >
-            <mat-icon svgIcon="ktzh_star" />
-          </button>
-        </span>
+        <button
+          (click)="showFavouriteDialog()"
+          [disabled]="activeMapItems().length === 0 || !isAuthenticated()"
+          mat-icon-button
+          class="active-map-items__header__buttons__action"
+          [matTooltip]="toolTipsFavourite()"
+          [aria-label]="toolTipsFavourite()"
+          matTooltipPosition="below"
+        >
+          <mat-icon svgIcon="ktzh_star" />
+        </button>
         <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true" />
         <button (click)="isMinimized.set(!isMinimized())" mat-icon-button [aria-label]="isMinimized() ? 'Aufklappen' : 'Zuklappen'">
           <mat-icon [fontIcon]="isMinimized() ? 'arrow_drop_down' : 'arrow_drop_up'" />
