@@ -8,6 +8,7 @@
     [checked]="layer().visible"
     (change)="toggleSublayerVisibility(layer())"
     [disabled]="!activeMapItem().visible"
+    [aria-label]="layer().title + ' ein-/ausblenden'"
   />
   <p
     class="active-map-item-layer__title"
