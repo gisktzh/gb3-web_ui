@@ -16,7 +16,6 @@ test.describe('Printing', () => {
 
     await openUrlWithCoordinates('2702555', '1241686');
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(200);
 
     await filterForLayer('Amtliche Vermessung in Farbe');
     await clickMapInTheList('Amtliche Vermessung in Farbe');
@@ -26,7 +25,6 @@ test.describe('Printing', () => {
 
     await printDialogButton.click();
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(500);
 
     await expect(page.locator('.print-dialog')).toBeVisible();
 
