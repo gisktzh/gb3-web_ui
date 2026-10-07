@@ -19,6 +19,8 @@ import {ExternalWmsActiveMapItem} from '../../map/models/implementations/externa
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 import {MapViewPadding} from '../../shared/interfaces/map-view-padding.interface';
+import {FeatureHighlightSource, FeatureInfoScaleRange} from '../../shared/interfaces/feature-highlight.interface';
+import {Observable, of} from 'rxjs';
 
 export class MapServiceStub implements MapService {
   private toolService: ToolService = {
@@ -84,7 +86,15 @@ export class MapServiceStub implements MapService {
 
   public zoomToPoint(point: PointWithSrs, number: number): void {}
 
-  public zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, duration?: number): void {}
+  public zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, duration?: number, scaleRange?: FeatureInfoScaleRange): void {}
+
+  public getFeatureInfoScaleRange(source: FeatureHighlightSource): FeatureInfoScaleRange | undefined {
+    return {minScale: 0, maxScale: Infinity};
+  }
+
+  public observeFeatureInfoLayerVisibility(source: FeatureHighlightSource): Observable<boolean> {
+    return of(true);
+  }
 
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void {}
 

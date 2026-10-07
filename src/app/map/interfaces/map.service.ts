@@ -9,6 +9,8 @@ import {ToolService} from './tool.service';
 import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
 import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 import {MapViewPadding} from '../../shared/interfaces/map-view-padding.interface';
+import {FeatureHighlightSource, FeatureInfoScaleRange} from '../../shared/interfaces/feature-highlight.interface';
+import {Observable} from 'rxjs';
 
 export interface MapService extends AddToMapVisitor {
   /** De-initializes the entire map */
@@ -70,8 +72,15 @@ export interface MapService extends AddToMapVisitor {
    * @param geometry The geometry to which extents shall be zoomed
    * @param expandFactor An optional factor that expands the geometry's extent by this number.
    * @param animationDuration An optional duration in milliseconds for the animation to pan/zoom to the given extent.
+   * @param scaleRange Optional visible scale denominators limiting the destination of this zoom only.
    */
-  zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, animationDuration?: number): void;
+  zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, animationDuration?: number, scaleRange?: FeatureInfoScaleRange): void;
+
+  /** Returns the source layer's effective scale range, or undefined if it cannot be displayed. */
+  getFeatureInfoScaleRange(source: FeatureHighlightSource): FeatureInfoScaleRange | undefined;
+
+  /** Observes visibility using the live map scale, including during navigation. */
+  observeFeatureInfoLayerVisibility(source: FeatureHighlightSource): Observable<boolean>;
 
   /**
    * Adds a geometry to an internal DrawingLayer
