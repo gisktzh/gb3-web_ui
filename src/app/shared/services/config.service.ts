@@ -95,7 +95,7 @@ export class ConfigService {
     this.authConfig = runtimeConfig.authSettings;
     this.featureFlags = {...defaultFeatureFlags, ...runtimeConfig.featureFlags};
 
-    const basemapWmsUrl = this.apiConfig.gb2WmsCapabilities.baseUrl.trim();
+    const basemapWmsUrl = this.apiConfig.gb2Wms.baseUrl.trim();
     this.basemapConfig = {
       availableBasemaps: defaultBasemaps.map((basemap) => {
         if (basemap.type === 'wms') {
