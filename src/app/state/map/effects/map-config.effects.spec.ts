@@ -42,7 +42,7 @@ describe('MapConfigEffects', () => {
     });
     effects = TestBed.inject(MapConfigEffects);
     initialMapExtentServiceMock = TestBed.inject(InitialMapExtentService);
-    vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockImplementation(vi.fn());
+    vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtentForPaddedView').mockImplementation(vi.fn());
     mapService = TestBed.inject(MAP_SERVICE);
     store = TestBed.inject(MockStore);
     mapDrawingService = TestBed.inject(MapDrawingService);
@@ -147,7 +147,7 @@ describe('MapConfigEffects', () => {
           searchIndex: 'index',
         }),
       );
-      vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtent').mockReturnValue({x: 1, y: 2, scale: 3});
+      vi.spyOn(initialMapExtentServiceMock, 'calculateInitialExtentForPaddedView').mockReturnValue({x: 1, y: 2, scale: 3});
       effects.setInitialMapConfigFromSearchParameters$.subscribe((action) => {
         expect(action).toEqual(MapConfigActions.setInitialMapConfig({basemapId: 'base', x: 1, y: 2, scale: 3}));
       });

@@ -81,7 +81,7 @@ export class UrlEffects {
           ];
         } else if (x || y || scale || basemap || hasTopicParameter) {
           if (!x && !y && !scale) {
-            const initialExtent = this.initalMapExtentService.calculateInitialExtent();
+            const initialExtent = this.initalMapExtentService.calculateInitialExtentForPaddedView();
             return [...initialTopicActions, MapConfigActions.setInitialMapConfig({...initialExtent, basemapId})];
           }
           return [...initialTopicActions, MapConfigActions.setInitialMapConfig({x, y, scale, basemapId})];

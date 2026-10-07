@@ -9,7 +9,6 @@ test.describe('Data download', () => {
 
     await openUrlWithCoordinates('2702555', '1241686');
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(200);
 
     await filterForLayer('Amtliche Vermessung in Farbe');
     await clickMapInTheList('Amtliche Vermessung in Farbe');
@@ -19,7 +18,6 @@ test.describe('Data download', () => {
 
     await dataDownloadDialogButton.click();
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(500);
 
     const dataDownloadSelectionTools = page.locator('data-download-selection-tools');
     await expect(dataDownloadSelectionTools).toBeVisible();
@@ -43,8 +41,6 @@ test.describe('Data download', () => {
     const continueButton = municipalityDownloadDialog.locator('[data-test-id="data-download-municipality-submit"]');
     await expect(continueButton).toBeVisible();
     await continueButton.click();
-
-    await page.waitForTimeout(200);
 
     await expect(municipalityDownloadDialog).not.toBeVisible();
     await page.waitForLoadState('networkidle');
@@ -86,20 +82,14 @@ test.describe('Data download', () => {
     await expect(availableDataFormat).toContainText('INTERLIS1');
     await availableDataFormat.click();
 
-    await page.waitForTimeout(200);
-
     // Clickaway.
     await page.mouse.move(100, 100);
     await page.mouse.click(100, 100);
-
-    await page.waitForTimeout(200);
 
     const downloadStartButton = dataDownloadDialog.locator('[data-test-id="data-download-download-button"]');
     await expect(downloadStartButton).toBeVisible();
 
     await downloadStartButton.click();
-
-    await page.waitForTimeout(200);
 
     const downloadConfirmDialog = page.locator('api-dialog-wrapper[title="Hinweis"]');
     await expect(downloadConfirmDialog).toBeVisible();
@@ -107,8 +97,6 @@ test.describe('Data download', () => {
     const downloadConfirmButton = downloadConfirmDialog.getByText('Download');
     await expect(downloadConfirmButton).toBeVisible();
     await downloadConfirmButton.click();
-
-    await page.waitForTimeout(500);
 
     const downloadQueueTitle = page.locator('h2.data-download-status-queue__header__title');
     await expect(downloadQueueTitle).toBeVisible();

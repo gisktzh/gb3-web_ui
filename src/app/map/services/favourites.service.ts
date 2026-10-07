@@ -29,6 +29,12 @@ import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeSliderService} from './time-slider.service';
 import {TIME_SERVICE} from '../../app.tokens';
 
+export interface CreateFavouritePayload {
+  title: string;
+  storeCenter: boolean;
+  storeScale: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -44,13 +50,18 @@ export class FavouritesService {
   private readonly userDrawingsVectorLayers = this.store.selectSignal(selectUserDrawingsVectorLayers);
   private readonly symbolizationToGb3ConverterUtils = inject(SymbolizationToGb3ConverterUtils);
 
-  public createFavourite(title: string): Observable<FavoritesDetailData> {
+  public createFavourite(createFavouritePayload: CreateFavouritePayload): Observable<FavoritesDetailData> {
     const userDrawingLayers = this.userDrawingsVectorLayers();
+    const baseConfig = {
+      basemap: this.favouriteBaseConfig().basemap,
+      center: createFavouritePayload.storeCenter ? this.favouriteBaseConfig().center : undefined,
+      scale: createFavouritePayload.storeScale ? this.favouriteBaseConfig().scale : undefined,
+    };
 
     return this.gb3FavouritesService.createFavourite({
-      title,
+      title: createFavouritePayload.title,
       content: this.activeMapItemConfigurations(),
-      baseConfig: this.favouriteBaseConfig()!,
+      baseConfig,
       measurements: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(userDrawingLayers?.measurements || []),
       drawings: this.symbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(userDrawingLayers?.drawings || []),
     });

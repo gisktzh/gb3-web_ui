@@ -18,6 +18,10 @@ export class MapConstants {
   public static readonly TOOL_IDENTIFIER = '__tool';
   public static readonly TEXT_DRAWING_MAX_LENGTH = 50;
   public static readonly MAX_SCALE_BAR_WIDTH_PX = 150;
+  /** Default rendered width of a map overlay (450px content width plus the 12px width adjustment). */
+  public static readonly DEFAULT_MAP_OVERLAY_WIDTH = 462;
+  /** Clear space kept between an overlay and the effective map viewport. */
+  public static readonly MAP_OVERLAY_VIEW_PADDING = 12;
 
   /**
    * Query params that are removed upon loading the initial map configuration.

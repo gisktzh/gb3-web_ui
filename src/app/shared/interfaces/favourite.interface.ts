@@ -1,8 +1,12 @@
 import {ActiveMapItemConfiguration} from './active-map-item-configuration.interface';
-import {MapConfigState} from '../../state/map/states/map-config.state';
 import {UserDrawingVectorLayers} from './user-drawing-vector-layers.interface';
+import {Coordinate} from './coordinate.interface';
 
-export type FavouriteBaseConfig = Pick<MapConfigState, 'center' | 'scale'> & {basemap: string};
+export type FavouriteBaseConfig = {
+  basemap: string;
+  center?: Coordinate;
+  scale?: number;
+};
 
 export interface Favourite extends UserDrawingVectorLayers {
   id: string;
