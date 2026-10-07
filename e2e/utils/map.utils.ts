@@ -67,7 +67,20 @@ export async function mapScreenshot(page: Page) {
 }
 
 export async function waitForMap(page: Page) {
-  await expect(page.getByTestId('map-container').locator('canvas').first()).toBeVisible({timeout: 30_000});
+  const map = page.getByTestId('map-container');
+  await expect(map.locator('canvas').first()).toBeVisible({timeout: 30_000});
+  const viewport = page.viewportSize();
+  if (viewport && viewport.width < 768) {
+    // Resizing the browser can finish before Angular replaces the desktop layout.
+    // Its map is 72px shorter, so measuring it now would offset the first mobile tap.
+    await expect(page.getByTestId('map-overlays')).toHaveCount(0, {timeout: 30_000});
+    await expect
+      .poll(() => map.locator('.esri-view-surface').boundingBox(), {
+        message: 'The mobile map must fill the viewport before selecting a location.',
+        timeout: 30_000,
+      })
+      .toEqual({x: 0, y: 0, width: viewport.width, height: viewport.height});
+  }
   await expect(page.getByTestId('active-map-items').getByTestId('loading-progress')).toHaveCount(0, {timeout: 30_000});
   if ((page.viewportSize()?.width ?? 1920) >= 768) {
     await expect(page.getByTestId('map-select-statistic')).toBeEnabled();

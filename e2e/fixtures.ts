@@ -3,7 +3,7 @@ import {findEntry as defaultFindEntry} from 'playwright-advanced-har/lib/utils/s
 import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
 import path from 'node:path';
-import {expect, type Page} from '@playwright/test';
+import {expect, type Page, type Request} from '@playwright/test';
 import {canonicalizeUrl} from './utils/canonicalize.utils';
 
 // URL pattern. If pattern matches,
@@ -82,6 +82,7 @@ export const test = base.extend<Gb3Fixtures>({
         console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ${usedFilePath}`);
       }
 
+      const cancelledRequests = new WeakSet<Request>();
       await advancedRouteFromHAR(usedFilePath, {
         url: HAR_TARGET_PATTERN,
         update: shouldUpdate,
@@ -89,11 +90,18 @@ export const test = base.extend<Gb3Fixtures>({
         updateContent: 'embed',
         matcher: {
           async findEntry(har, request, matcher) {
+            // Prefer completed responses; status -1 entries cannot be fulfilled as HTTP responses.
+            const replayableHar = {
+              ...har,
+              log: {
+                ...har.log,
+                entries: har.log.entries.filter(({response}) => response.status > 0),
+              },
+            };
+            const redactedRequest = new CanonicalizedRedactedRequest(request);
             if (matcher) {
-              const redactedRequest = new CanonicalizedRedactedRequest(request);
-
               const scoredEntries = await Promise.all(
-                har.log.entries.map(async (entry) => {
+                replayableHar.log.entries.map(async (entry) => {
                   return {
                     entry,
                     score: await matcher(redactedRequest, entry),
@@ -143,7 +151,13 @@ export const test = base.extend<Gb3Fixtures>({
               }
             }
 
-            return defaultFindEntry(har, request, matcher);
+            const completedEntry = await defaultFindEntry(replayableHar, redactedRequest, matcher);
+            if (completedEntry) return completedEntry;
+
+            // Some catalogue icons were only recorded as cancelled. Replay that cancellation instead of reporting a missing entry.
+            const recordedEntry = await defaultFindEntry(har, redactedRequest, matcher);
+            if (recordedEntry && recordedEntry.response.status <= 0) cancelledRequests.add(request);
+            return null;
           },
           matchFunction: customMatcher({
             urlComparator(a, b) {
@@ -154,6 +168,10 @@ export const test = base.extend<Gb3Fixtures>({
         },
         notFound: async (route) => {
           const request = route.request();
+          if (cancelledRequests.has(request)) {
+            await route.abort('aborted');
+            return;
+          }
           const postData = request.postData();
           const errorMessage = `[har] No response matched ${request.method()} ${request.url()} in file ${usedFilePath}${postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : ''}`;
           if (process.env['CI']) {
