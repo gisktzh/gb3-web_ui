@@ -1,5 +1,6 @@
 <div class="statistics__controls">
   <mat-select
+    data-test-id="statistics-mode"
     class="statistics__controls__mode"
     panelClass="statistics__controls__mode__panel"
     aria-label="Modus"
@@ -21,11 +22,11 @@
         }
       </span>
     </mat-select-trigger>
-    <mat-option value="umkreis">
+    <mat-option value="umkreis" data-test-id="statistics-mode-circle">
       <mat-icon svgIcon="ktzh_drawing_symbol_circle" />
       Umkreis
     </mat-option>
-    <mat-option value="polygon">
+    <mat-option value="polygon" data-test-id="statistics-mode-polygon">
       <mat-icon svgIcon="ktzh_drawing_symbol_polygon" />
       Polygon
     </mat-option>
@@ -36,6 +37,7 @@
       <span class="statistics__controls__radius__field">
         <input
           id="statistics-radius-input"
+          data-test-id="statistics-radius"
           type="number"
           [value]="radiusInMeters()"
           [min]="minimumRadius"
@@ -51,7 +53,7 @@
 </div>
 
 @if (radiusError(); as error) {
-  <p id="statistics-radius-error" role="alert">{{ error }}</p>
+  <p id="statistics-radius-error" data-test-id="statistics-radius-error" role="alert">{{ error }}</p>
 }
 
 <loading-and-process-bar [loadingState]="loadingState()" />
@@ -64,16 +66,20 @@
     <mat-divider class="statistics__divider" />
   }
   @for (result of data(); track result.topic) {
-    <statistics-item [result]="result" [showInteractiveElements]="showInteractiveElements()" />
+    <statistics-item
+      [attr.data-test-id]="'statistics-result-' + result.topic"
+      [result]="result"
+      [showInteractiveElements]="showInteractiveElements()"
+    />
   }
   @if (data().length === 0) {
-    <i>Keine Statistik-Daten für das gewählte Gebiet!</i>
+    <i data-test-id="statistics-empty">Keine Statistik-Daten für das gewählte Gebiet!</i>
   }
 } @else if (loadingState() === undefined) {
   @if (geometry() && areaInSquareMeters() === undefined) {
     <i>Das gewählte Gebiet wird geprüft.</i>
   } @else {
-    <i>Wählen Sie ein Gebiet auf der Karte, um die Statistik zu berechnen.</i>
+    <i data-test-id="statistics-selection-prompt">Wählen Sie ein Gebiet auf der Karte, um die Statistik zu berechnen.</i>
   }
 } @else if (loadingState() === 'error') {
   <p role="alert">Die Statistik konnte nicht berechnet werden. Prüfen Sie das gewählte Gebiet und versuchen Sie es erneut.</p>

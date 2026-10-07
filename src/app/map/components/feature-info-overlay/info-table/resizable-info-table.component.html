@@ -1,6 +1,11 @@
 <div class="info-table">
   <div class="info-table__scroll-container" #scrollContainer>
-    <table class="info-table__table" [class.info-table__table--has-headers]="headers().length > 0" [aria-label]="tableLabel()">
+    <table
+      data-test-id="info-table"
+      class="info-table__table"
+      [class.info-table__table--has-headers]="headers().length > 0"
+      [aria-label]="tableLabel()"
+    >
       @if (headers().length > 0) {
         <thead>
           <tr class="info-table__row">
@@ -27,10 +32,11 @@
       }
       <tbody>
         @for (tableRow of rows(); track tableRow) {
-          <tr class="info-table__row">
+          <tr data-test-id="info-table-row" class="info-table__row">
             <th
               class="info-table__cell info-table__cell--header"
               scope="row"
+              data-test-id="info-table-row-label"
               [style.width]="headers().length > 0 ? null : rowHeaderWidth()"
               [style.min-width]="rowHeaderWidth()"
               [style.max-width]="rowHeaderWidth()"
@@ -43,7 +49,7 @@
               @if (tableCellTemplate(); as tableCellTemplate) {
                 <ng-container *ngTemplateOutlet="tableCellTemplate; context: getTableCellContext(cellValue)" />
               } @else {
-                <td class="info-table__cell">
+                <td data-test-id="info-table-value" class="info-table__cell">
                   <info-table-cell [cellValue]="cellValue" />
                 </td>
               }

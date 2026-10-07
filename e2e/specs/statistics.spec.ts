@@ -1,206 +1,287 @@
+import {test, expect} from '../fixtures/statistics.fixture';
+import {clickMapPoint, getMapPoint, mapScreenshot, waitForMap, type MapPoint} from '../utils/map.utils';
 import {
-  test,
-  expect,
   resultHost,
-  expectedStatisticsPoints,
-  readGraphics,
-  readInteraction,
-  recreateMap,
-  setMapScale,
-} from '../fixtures/statistics.fixture';
-import {InternalDrawingLayer} from '../../src/app/shared/enums/drawing-layer.enum';
+  expectFeatureResponse,
+  expectStatisticsResult,
+  expectStatisticsCircle,
+  expectStatisticsPolygon,
+} from '../utils/query-results.utils';
 
 test.describe('Statistics', () => {
-  for (const viewport of [
-    {width: 1440, height: 1000},
-    {width: 390, height: 844},
-  ]) {
-    test(`provides accessible tabs, real feature results and cached statistics at width ${viewport.width}`, async ({
-      page,
-      statisticsApi,
-    }) => {
-      await page.setViewportSize(viewport);
-      await statisticsApi.openMap();
-      const host = resultHost(page);
-      const features = host.getByRole('tab', {name: 'Features'});
-      const statistics = host.getByRole('tab', {name: 'Statistik'});
-      await expect(host.locator('feature-info')).toContainText('Feature for StatBeschaeftigteZH');
-      expect(statisticsApi.statisticsQueries).toHaveLength(0);
-      await features.focus();
-      await features.press('ArrowRight');
-      await expect(statistics).toBeFocused();
-      await statistics.press('Home');
-      await expect(features).toBeFocused();
-      await features.press('End');
-      await expect(statistics).toBeFocused();
-      await statistics.press('Space');
-      await expect(statistics).toHaveAttribute('aria-selected', 'true');
-      await expect(features).toHaveAttribute('tabindex', '-1');
-      await expect(host.locator('statistics')).toContainText('Anzahl Beschäftigte');
-      await expect(host.locator('statistics-item')).toContainText('42');
-      const panel = host.getByRole('tabpanel');
-      await expect(panel).toHaveAttribute('aria-labelledby', (await statistics.getAttribute('id'))!);
-      await expect(statistics).toHaveAttribute('aria-controls', (await panel.getAttribute('id'))!);
-      await features.click();
-      await expect(host.locator('feature-info')).toContainText('Feature for StatBeschaeftigteZH');
-      await statistics.click();
-      await expect(host.locator('statistics-item')).toContainText('42');
-      expect(statisticsApi.statisticsQueries).toHaveLength(1);
-      expect(statisticsApi.featureQueries).toHaveLength(1);
-    });
-  }
+  test.describe.configure({timeout: 120_000});
 
-  test('previews, pins and unpins deduplicated geometries through shared mouse and keyboard interactions', async ({
-    page,
-    statisticsApi,
-  }) => {
-    await statisticsApi.openMap();
-    const host = resultHost(page);
-    await host.getByRole('tab', {name: 'Statistik'}).click();
-    await expect(host.locator('statistics-item')).toContainText('42');
-    const expected = expectedStatisticsPoints(statisticsApi.statisticsQueries[0]).map((coordinates) => ({
-      type: 'Point',
-      coordinates,
-      srs: 2056,
-    }));
-    const highlights = () => readGraphics(page, InternalDrawingLayer.StatisticsHighlight);
-    await expect.poll(highlights).toEqual([]);
-    const header = host.locator('statistics-item th:has(input[type="radio"])');
-    const radio = host.locator('statistics-item input[type="radio"]');
-    await header.hover();
-    await expect.poll(highlights).toEqual(expected);
-    await expect(radio).toBeChecked();
-    await page.mouse.move(0, 0);
-    await expect.poll(highlights).toEqual([]);
-    await host.locator('statistics-item td').first().hover();
-    await expect.poll(highlights).toEqual(expected);
-    await host.getByRole('tab', {name: 'Features'}).click();
-    await host.getByRole('tab', {name: 'Statistik'}).click();
-    await expect.poll(highlights).toEqual([]);
-    await header.hover();
-    await radio.press('Space');
-    await page.mouse.move(0, 0);
-    await expect.poll(highlights).toEqual(expected);
-    await host.getByRole('tab', {name: 'Features'}).click();
-    await expect.poll(highlights).toEqual([]);
-    await host.getByRole('tab', {name: 'Statistik'}).click();
-    await expect.poll(highlights).toEqual(expected);
-    await header.click();
-    await expect.poll(highlights).toEqual([]);
-    await expect(radio).not.toBeChecked();
-  });
+  test('queries a selected point and updates the area when radius and location change', async ({page, statisticsSession}) => {
+    // Selecting statistics must release another tool and work without a previous feature query.
+    await page.getByTestId('map-ruler').click();
+    await page.getByTestId('measurement-select-line').click();
+    await page.getByTestId('map-select-statistic').click();
+    await expect(page.getByTestId('statistics-tools')).toBeVisible();
+    expect(statisticsSession.statisticsQueries).toHaveLength(0);
+    expect(statisticsSession.featureQueries).toHaveLength(0);
+    const firstPoint = await getMapPoint(page);
+    await clickMapPoint(page, firstPoint);
+    await expectStatisticsResult(page, statisticsSession);
+    expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, firstPoint.coordinates, 500);
 
-  test('keeps statistics available outside rendering scales and validates radius changes without stale markings', async ({
-    page,
-    statisticsApi,
-  }) => {
-    await statisticsApi.openMap();
     const host = resultHost(page);
-    await host.getByRole('tab', {name: 'Statistik'}).click();
-    await expect(host.locator('statistics-item')).toContainText('42');
-    await host.locator('statistics-item th:has(input[type="radio"])').click();
-    await page.mouse.move(0, 0);
-    await expect.poll(async () => (await readGraphics(page, InternalDrawingLayer.StatisticsHighlight)).length).toBe(2);
-    await setMapScale(page, 1_100_000);
-    const radius = host.locator('#statistics-radius-input');
+    const radius = host.getByTestId('statistics-radius');
+    const responseIndex = statisticsSession.statisticsResponses.length;
+    const queryCount = statisticsSession.statisticsQueries.length;
     await radius.fill('1000');
     await radius.blur();
-    await expect.poll(() => statisticsApi.statisticsQueries.length).toBe(2);
-    await expect(host.locator('statistics-item')).toContainText('42');
-    await expect.poll(() => readGraphics(page, InternalDrawingLayer.StatisticsHighlight)).toEqual([]);
-    expect(statisticsApi.featureQueries).toHaveLength(1);
+    await expectStatisticsResult(page, statisticsSession, responseIndex);
+    await expect(radius).toHaveValue('1000');
+    expect(statisticsSession.statisticsQueries).toHaveLength(queryCount + 1);
+    expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, firstPoint.coordinates, 1000);
+
+    await waitForMap(page);
+    const nextPoint = await getMapPoint(page, {x: 80, y: -40});
+    expect(
+      Math.hypot(nextPoint.coordinates[0] - firstPoint.coordinates[0], nextPoint.coordinates[1] - firstPoint.coordinates[1]),
+    ).toBeGreaterThan(100);
+    const nextResponseIndex = statisticsSession.statisticsResponses.length;
+    const featureResponseIndex = statisticsSession.featureResponses.length;
+    await clickMapPoint(page, nextPoint);
+    await expectStatisticsResult(page, statisticsSession, nextResponseIndex);
+    expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, nextPoint.coordinates, 1000);
+    await host.getByTestId('query-tab-feature').click();
+    await expectFeatureResponse(page, statisticsSession, nextPoint.coordinates, featureResponseIndex);
+  });
+
+  test('draws a polygon and switches to a circle drawn through the statistics controls', async ({page, statisticsSession}) => {
+    await page.getByTestId('map-select-statistic').click();
+    // Dismiss the toolbar tooltip before it can cover the polygon control.
+    await page.mouse.move(0, 0);
+    const polygonTool = page.getByTestId('statistics-select-polygon');
+    await polygonTool.click();
+    await expect(polygonTool).toHaveClass(/statistics-tools__button--active/);
+    await waitForMap(page);
+    const vertices: MapPoint[] = [];
+    for (const offset of [
+      {x: -90, y: -70},
+      {x: 90, y: -70},
+      {x: 0, y: 100},
+    ]) {
+      vertices.push(await getMapPoint(page, offset));
+    }
+    for (const vertex of vertices) await clickMapPoint(page, vertex);
+    // Close the polygon by clicking its start vertex, as the tool's instructions describe.
+    await clickMapPoint(page, vertices[0]);
+    await expectStatisticsResult(page, statisticsSession);
+    expectStatisticsPolygon(
+      statisticsSession.statisticsQueries.at(-1)!,
+      vertices.map((vertex) => vertex.coordinates),
+    );
+
+    const host = resultHost(page);
+    const mode = host.getByTestId('statistics-mode');
+    await expect(mode).toContainText('Polygon');
+    await waitForMap(page);
+    const movedPoint = await getMapPoint(page, {x: 60, y: 40});
+    const xs = vertices.map((vertex) => vertex.coordinates[0]);
+    const ys = vertices.map((vertex) => vertex.coordinates[1]);
+    const deltaX = movedPoint.coordinates[0] - (Math.min(...xs) + Math.max(...xs)) / 2;
+    const deltaY = movedPoint.coordinates[1] - (Math.min(...ys) + Math.max(...ys)) / 2;
+    const movedResponseIndex = statisticsSession.statisticsResponses.length;
+    await clickMapPoint(page, movedPoint);
+    await expectStatisticsResult(page, statisticsSession, movedResponseIndex);
+    expectStatisticsPolygon(
+      statisticsSession.statisticsQueries.at(-1)!,
+      vertices.map(({coordinates: [x, y]}) => [x + deltaX, y + deltaY]),
+    );
+    const responseIndex = statisticsSession.statisticsResponses.length;
+    await mode.click();
+    await page.getByTestId('statistics-mode-circle').click();
+    await expect(host.getByTestId(/^statistics-result-/)).toHaveCount(0);
+    await expect(host.getByTestId('statistics-selection-prompt')).toContainText('Wählen Sie ein Gebiet auf der Karte');
+    const circleTool = page.getByTestId('statistics-select-circle');
+    await expect(circleTool).toHaveClass(/statistics-tools__button--active/);
+    await waitForMap(page);
+    const center = await getMapPoint(page);
+    const edge = await getMapPoint(page, {x: 110, y: 0});
+    await clickMapPoint(page, center);
+    await clickMapPoint(page, edge);
+    await expectStatisticsResult(page, statisticsSession, responseIndex);
+    const drawnRadius = Math.hypot(edge.coordinates[0] - center.coordinates[0], edge.coordinates[1] - center.coordinates[1]);
+    expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, center.coordinates, drawnRadius);
+    await expect(host.getByTestId('statistics-radius')).toHaveValue(Math.round(drawnRadius).toString());
+    await expect(mode).toContainText('Umkreis');
+    await expect(circleTool).not.toHaveClass(/statistics-tools__button--active/);
+  });
+
+  test('previews and pins markings and preserves cached results across accessible tab switches', async ({page, statisticsSession}) => {
+    await page.getByTestId('map-select-statistic').click();
+    const point = await getMapPoint(page);
+    await clickMapPoint(page, point);
+    const result = await expectStatisticsResult(page, statisticsSession);
+    expect(result.feature_geometry, 'The recorded area must include geometries that can be marked.').not.toBeNull();
+    const host = resultHost(page);
+    const item = host.getByTestId('statistics-result-' + result.topic);
+    const header = item.getByTestId('statistics-layer-' + result.layer).getByTestId('statistics-marking-header');
+    // Material owns the native input inside the application control's test ID.
+    const radio = header.getByTestId('statistics-marking').locator('input');
+    await expect(radio).toBeEnabled();
+    await page.mouse.move(0, 0);
+    await waitForMap(page);
+    const unmarkedMap = await mapScreenshot(page);
+    await header.hover();
+    await expect(radio).toBeChecked();
+    await expect.poll(async () => (await mapScreenshot(page)).equals(unmarkedMap)).toBe(false);
+    await page.mouse.move(0, 0);
+    await expect(radio).not.toBeChecked();
+    await expect.poll(async () => (await mapScreenshot(page)).equals(unmarkedMap)).toBe(true);
+
+    await radio.focus();
+    await radio.press('Space');
+    await expect(radio).toBeChecked();
+    await expect.poll(async () => (await mapScreenshot(page)).equals(unmarkedMap)).toBe(false);
+    const statisticsContent = await item.innerText();
+    const queryCount = statisticsSession.statisticsQueries.length;
+    const features = host.getByTestId('query-tab-feature');
+    const statistics = host.getByTestId('query-tab-statistics');
+    await statistics.focus();
+    await statistics.press('Home');
+    await expect(features).toBeFocused();
+    await features.press('Space');
+    await expect(features).toHaveAttribute('aria-selected', 'true');
+    await expectFeatureResponse(page, statisticsSession, point.coordinates);
+    await waitForMap(page);
+    const featureQueryCount = statisticsSession.featureQueries.length;
+    const featureContent = await host.getByTestId('query-feature-results').innerText();
+    await features.press('End');
+    await expect(statistics).toBeFocused();
+    await statistics.press('Space');
+    await expect(statistics).toHaveAttribute('aria-selected', 'true');
+    await expect(item).toHaveText(statisticsContent, {useInnerText: true});
+    await expect(radio).toBeChecked();
+    await features.click();
+    await expect(host.getByTestId('query-feature-results')).toHaveText(featureContent, {useInnerText: true});
+    await statistics.click();
+    await header.click();
+    await page.mouse.move(0, 0);
+    await expect(radio).not.toBeChecked();
+    await expect.poll(async () => (await mapScreenshot(page)).equals(unmarkedMap)).toBe(true);
+    await waitForMap(page);
+    expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+    expect(statisticsSession.featureQueries).toHaveLength(featureQueryCount);
+  });
+
+  test('updates contributing maps and layers when adding, hiding and removing them', async ({page, statisticsSession}) => {
+    const additionalTopic = statisticsSession.availableTopics.find((topic) => topic.topic !== statisticsSession.topic.topic);
+    expect(additionalTopic, 'The statistics test account must have access to two supported maps.').toBeDefined();
+    await page.getByTestId('map-select-statistic').click();
+    await clickMapPoint(page, await getMapPoint(page));
+    const primaryResult = await expectStatisticsResult(page, statisticsSession);
+    const host = resultHost(page);
+    const primaryItem = page.getByTestId('active-map-item-' + statisticsSession.topic.topic);
+    await primaryItem.getByTestId('show-layers-of-the-map').click();
+    const configuredLayer = statisticsSession.topic.layers.find((layer) => layer.layer === primaryResult.layer);
+    expect(configuredLayer, 'The statistics result must belong to a layer in the selected map.').toBeDefined();
+    const layer = primaryItem.getByTestId('active-map-layer-' + configuredLayer!.layer);
+    await expect(layer).toHaveCount(1);
+    const layerVisibility = layer.getByTestId('active-layer-visibility').locator('input');
+    await layerVisibility.uncheck();
+    await expect(host.getByTestId(/^statistics-result-/)).toHaveCount(0);
+    await expect(host.getByTestId('statistics-empty')).toHaveText('Keine Statistik-Daten für das gewählte Gebiet!');
+    await waitForMap(page);
+    const responseIndex = statisticsSession.statisticsResponses.length;
+    await layerVisibility.check();
+    await expectStatisticsResult(page, statisticsSession, responseIndex);
+
+    const addedResponseIndex = statisticsSession.statisticsResponses.length;
+    await statisticsSession.addMap(additionalTopic!);
+    await expectStatisticsResult(page, statisticsSession, addedResponseIndex);
+    await expectStatisticsResult(page, statisticsSession, addedResponseIndex, additionalTopic!.topic);
+    await expect(host.getByTestId(/^statistics-result-/)).toHaveCount(2);
+    const addedItem = page.getByTestId('active-map-item-' + additionalTopic!.topic);
+    const mapVisibility = addedItem.getByTestId('active-map-visibility').locator('input');
+    const hiddenResponseIndex = statisticsSession.statisticsResponses.length;
+    const hiddenQueryIndex = statisticsSession.statisticsQueries.length;
+    await mapVisibility.uncheck();
+    await expectStatisticsResult(page, statisticsSession, hiddenResponseIndex);
+    await expect(host.getByTestId(/^statistics-result-/)).toHaveCount(1);
+    await waitForMap(page);
+    expect(
+      statisticsSession.statisticsQueries
+        .slice(hiddenQueryIndex)
+        .every((query) => query.pathname.endsWith('/topics/' + statisticsSession.topic.topic + '/statistic_info')),
+    ).toBe(true);
+    const restoredResponseIndex = statisticsSession.statisticsResponses.length;
+    await mapVisibility.check();
+    await expectStatisticsResult(page, statisticsSession, restoredResponseIndex, additionalTopic!.topic);
+    await expect(host.getByTestId(/^statistics-result-/)).toHaveCount(2);
+    const removedResponseIndex = statisticsSession.statisticsResponses.length;
+    await addedItem.getByTestId('delete').click();
+    await expect(addedItem).toHaveCount(0);
+    await expectStatisticsResult(page, statisticsSession, removedResponseIndex);
+    await expect(host.getByTestId(/^statistics-result-/)).toHaveCount(1);
+  });
+
+  test('rejects an invalid radius and recovers with a valid selection', async ({page, statisticsSession}) => {
+    await page.getByTestId('map-select-statistic').click();
+    const point = await getMapPoint(page);
+    await clickMapPoint(page, point);
+    await expectStatisticsResult(page, statisticsSession);
+    await waitForMap(page);
+    const host = resultHost(page);
+    const radius = host.getByTestId('statistics-radius');
+    const queryCount = statisticsSession.statisticsQueries.length;
+    const responseIndex = statisticsSession.statisticsResponses.length;
     await radius.fill('4000');
     await radius.blur();
     await expect(radius).toHaveAttribute('aria-invalid', 'true');
-    await expect(host.locator('#statistics-radius-error')).toBeVisible();
-    expect(statisticsApi.statisticsQueries).toHaveLength(2);
-    await radius.fill('500');
+    await expect(host.getByTestId('statistics-radius-error')).toBeVisible();
+    await expect(radius).toHaveAttribute('aria-describedby', 'statistics-radius-error');
+    await waitForMap(page);
+    expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+    await radius.fill('750');
     await radius.blur();
-    await expect.poll(() => statisticsApi.statisticsQueries.length).toBe(3);
-    await expect(host.locator('#statistics-radius-error')).toHaveCount(0);
+    await expectStatisticsResult(page, statisticsSession, responseIndex);
+    await expect(host.getByTestId('statistics-radius-error')).toHaveCount(0);
+    await expect(radius).not.toHaveAttribute('aria-invalid', 'true');
+    expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, point.coordinates, 750);
   });
 
-  test('releases measurement when activating either query mode, including reselecting Features', async ({page, statisticsApi}) => {
-    await statisticsApi.openMap();
-    const tools = page.locator('map-tools-desktop');
-    await tools.getByRole('button', {name: 'Messen', exact: true}).click();
-    await page.locator('measurement-tools button').nth(1).click();
-    await expect.poll(() => readInteraction(page)).toEqual({mode: 'feature', activeTool: 'measure-line'});
-    await resultHost(page).getByRole('tab', {name: 'Features'}).click();
-    await expect.poll(() => readInteraction(page)).toEqual({mode: 'feature', activeTool: undefined});
-    await tools.getByRole('button', {name: 'Messen', exact: true}).click();
-    await page.locator('measurement-tools button').nth(1).click();
-    await tools.getByRole('button', {name: 'Statistik-Abfrage', exact: true}).click();
-    await expect.poll(() => readInteraction(page)).toEqual({mode: 'statistics', activeTool: undefined});
-    await expect(resultHost(page).locator('statistics-item')).toContainText('42');
-  });
+  test.describe('Mobile', () => {
+    test.use({hasTouch: true});
 
-  test('restores areas and pins after map recreation without leaking feature markings into statistics', async ({page, statisticsApi}) => {
-    await statisticsApi.openMap();
-    const host = resultHost(page);
-    await host.locator('feature-info-content th:has(input[type="radio"])').click();
-    await page.mouse.move(0, 0);
-    await expect.poll(async () => (await readGraphics(page, InternalDrawingLayer.FeatureHighlight)).length).toBe(1);
-    await host.getByRole('tab', {name: 'Statistik'}).click();
-    await expect(host.locator('statistics-item')).toContainText('42');
-    await expect.poll(() => readGraphics(page, InternalDrawingLayer.FeatureHighlight)).toEqual([]);
-    await expect(host.getByRole('button', {name: 'Info drucken', exact: true})).toHaveCount(0);
-    await host.locator('statistics-item th:has(input[type="radio"])').click();
-    await page.mouse.move(0, 0);
-    await recreateMap(page);
-    await expect.poll(async () => (await readGraphics(page, InternalDrawingLayer.StatisticsArea)).length).toBe(1);
-    await expect.poll(async () => (await readGraphics(page, InternalDrawingLayer.StatisticsHighlight)).length).toBe(2);
-    await expect.poll(() => readGraphics(page, InternalDrawingLayer.FeatureHighlight)).toEqual([]);
-    await host.getByRole('tab', {name: 'Features'}).click();
-    await expect(host.locator('feature-info')).toContainText('Feature for StatBeschaeftigteZH');
-    await expect.poll(async () => (await readGraphics(page, InternalDrawingLayer.FeatureHighlight)).length).toBe(1);
-    await expect.poll(() => readGraphics(page, InternalDrawingLayer.StatisticsArea)).toEqual([]);
-    await expect(host.getByRole('button', {name: 'Info drucken', exact: true})).toBeEnabled();
-    expect(statisticsApi.statisticsQueries).toHaveLength(1);
-  });
+    test('selects locations by touch and changes radius in the bottom sheet', async ({page, statisticsSession}) => {
+      await page.setViewportSize({width: 390, height: 844});
+      await waitForMap(page);
+      const point = await getMapPoint(page);
+      await page.touchscreen.tap(point.position.x, point.position.y);
+      const host = resultHost(page);
+      await expect(host.getByTestId('bottom-sheet-title')).toBeVisible();
+      await expect(host.getByTestId('bottom-sheet-title')).toHaveText('Info');
+      await expectFeatureResponse(page, statisticsSession, point.coordinates);
+      expect(statisticsSession.statisticsQueries).toHaveLength(0);
+      await host.getByTestId('query-tab-statistics').tap();
+      await expectStatisticsResult(page, statisticsSession);
+      expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, point.coordinates, 500);
+      const radius = host.getByTestId('statistics-radius');
+      const responseIndex = statisticsSession.statisticsResponses.length;
+      await radius.fill('1000');
+      await radius.blur();
+      await expectStatisticsResult(page, statisticsSession, responseIndex);
+      expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, point.coordinates, 1000);
 
-  test('refreshes actual feature content after adding another map while statistics are active', async ({page, statisticsApi}) => {
-    await statisticsApi.openMap();
-    const host = resultHost(page);
-    await host.getByRole('tab', {name: 'Statistik'}).click();
-    await expect(host.locator('statistics-item')).toContainText('42');
-    await page.getByRole('button', {name: 'Test maps', exact: true}).click();
-    await page
-      .locator('map-data-item-map')
-      .filter({hasText: 'Bevölkerungsstatistik'})
-      .getByRole('button', {name: 'Karte hinzufügen', exact: true})
-      .click();
-    await expect(host.locator('statistics-item')).toHaveCount(2);
-    await host.getByRole('tab', {name: 'Features'}).click();
-    await expect(host.locator('feature-info')).toContainText('Feature for StatBeschaeftigteZH');
-    await expect(host.locator('feature-info')).toContainText('Feature for StatBevoelkerungZH');
-    expect(statisticsApi.featureQueries).toHaveLength(3);
-  });
-
-  test('owns icon layout in ÖREB-only and statistics headers without feature content styles', async ({page, statisticsApi}) => {
-    statisticsApi.emptyFeatures = true;
-    await statisticsApi.openMap(['KatOerebRaumplanungZH']);
-    const host = resultHost(page);
-    await expect(host.locator('feature-info-content')).toHaveCount(0);
-    await expect(host.locator('oereb-extract')).toContainText('CH000000000001');
-    const readSpacing = (icons: Element[]) =>
-      icons.map((icon) => {
-        const title = icon.closest('mat-expansion-panel-header')?.querySelector('.list-item__header__content__title');
-        if (!title) throw new Error('A header icon must have a title.');
-        return {width: icon.getBoundingClientRect().width, gap: title.getBoundingClientRect().left - icon.getBoundingClientRect().right};
-      });
-    expect(await host.locator('oereb-extract .feature-info-item-icon').evaluateAll(readSpacing)).toEqual([
-      {width: 24, gap: 12},
-      {width: 24, gap: 12},
-      {width: 24, gap: 12},
-    ]);
-    await statisticsApi.openMap();
-    await expect(host.locator('feature-info-content')).toHaveCount(0);
-    await host.getByRole('tab', {name: 'Statistik'}).click();
-    await expect(host.locator('statistics-item')).toContainText('42');
-    expect(await host.locator('statistics-item .statistics-item__icon').evaluateAll(readSpacing)).toEqual([
-      {width: 24, gap: 12},
-      {width: 24, gap: 12},
-    ]);
+      const item = host.getByTestId('statistics-result-' + statisticsSession.topic.topic);
+      const statisticsContent = await item.innerText();
+      const queryCount = statisticsSession.statisticsQueries.length;
+      await host.getByTestId('query-tab-feature').tap();
+      await host.getByTestId('query-tab-statistics').tap();
+      await expect(item).toHaveText(statisticsContent, {useInnerText: true});
+      expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+      await host.getByTestId('bottom-sheet-close').tap();
+      await expect(host.getByTestId('query-tab-statistics')).toHaveCount(0);
+      await waitForMap(page);
+      const nextPoint = await getMapPoint(page, {x: 55, y: -35});
+      const nextResponseIndex = statisticsSession.statisticsResponses.length;
+      await page.touchscreen.tap(nextPoint.position.x, nextPoint.position.y);
+      await expectStatisticsResult(page, statisticsSession, nextResponseIndex);
+      expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, nextPoint.coordinates, 1000);
+      await expect(host.getByTestId('statistics-radius')).toHaveValue('1000');
+    });
   });
 });

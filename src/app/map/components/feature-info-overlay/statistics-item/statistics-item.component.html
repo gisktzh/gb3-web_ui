@@ -7,6 +7,7 @@
     @for (layerView of layerViews(); track layerView.layer.layer) {
       <ng-template #tableHeader let-header>
         <th
+          [attr.data-test-id]="header.showMarking ? 'statistics-marking-header' : null"
           class="info-table__cell info-table__cell--header statistics-item__table-header"
           [class.statistics-item__cell--highlighted]="highlightedLayerName() === layerView.layer.layer"
           scope="col"
@@ -18,6 +19,7 @@
             <span>{{ header.displayValue }}</span>
             @if (showInteractiveElements() && header.showMarking) {
               <mat-radio-button
+                data-test-id="statistics-marking"
                 [value]="layerView.layer.layer"
                 [disabled]="!layerView.layer.featureGeometry"
                 [checked]="highlightedLayerName() === layerView.layer.layer"
@@ -33,6 +35,7 @@
       </ng-template>
       <ng-template #tableCell let-cell>
         <td
+          data-test-id="info-table-value"
           class="info-table__cell"
           [class.statistics-item__cell--highlighted]="highlightedLayerName() === layerView.layer.layer"
           (mouseenter)="onLayerHoverStart(layerView.layer)"
@@ -41,7 +44,7 @@
           <info-table-cell [cellValue]="cell" />
         </td>
       </ng-template>
-      <div class="statistics-item">
+      <div class="statistics-item" [attr.data-test-id]="'statistics-layer-' + layerView.layer.layer">
         <map-overlay-list-item
           [forceExpanded]="true"
           [overlayTitle]="layerView.layer.title"

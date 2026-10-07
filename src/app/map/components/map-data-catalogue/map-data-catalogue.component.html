@@ -15,6 +15,7 @@
   <div [class.map-data-catalogue__content--hidden]="isMinimized()" class="map-data-catalogue__content">
     @if (screenMode() !== 'mobile') {
       <search-input
+        data-test-id="catalogue-filter"
         class="map-data-catalogue__content__filter"
         (changeSearchTermEvent)="filterCatalog($event)"
         (clearSearchTermEvent)="clearInput()"
@@ -50,6 +51,7 @@
                 }
                 @for (favourite of filteredFavourites(); track favourite) {
                   <map-data-item-favourite
+                    data-test-id="catalogue-favourite"
                     (addEvent)="addFavouriteToMap(favourite)"
                     (deleteEvent)="deleteFavourite(favourite)"
                     [filterString]="filterString()"
@@ -76,6 +78,7 @@
               <div class="map-data-catalogue__content__items__item__content">
                 @for (map of topic.maps; track trackByMapId($index, map); let isLastMap = $last) {
                   <map-data-item-map
+                    [attr.data-test-id]="'catalogue-map-' + map.id"
                     (addEvent)="addActiveMap(map)"
                     (addLayerEvent)="addActiveLayer(map, $event)"
                     (hoverStartEvent)="addTemporaryMapItem(map, $event)"

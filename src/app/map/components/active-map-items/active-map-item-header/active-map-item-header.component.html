@@ -17,6 +17,7 @@
       />
     }
     <mat-checkbox
+      data-test-id="active-map-visibility"
       class="active-map-item-header__image-container__checkbox"
       [checked]="activeMapItem().visible"
       (change)="toggleMapItemVisibility(activeMapItem())"

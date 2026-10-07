@@ -77,6 +77,10 @@ or
 npm run e2e
 ```
 
+Prefer `getByTestId()` for e2e locators. Playwright uses the `data-test-id` attribute; add a stable ID to application controls and results
+instead of selecting by translated labels or component structure. Keep assertions about visible text and accessibility separate.
+For third-party controls without test IDs, scope their native elements under an application test ID.
+
 #### Running tests with HAR mocks
 
 HAR stands for Http ARchive. Playwright is able to use HAR files to play back API responses and make tests more deterministic while allowing for adaptions to test data without having to deploy any environment first.

@@ -12,6 +12,7 @@
       [active]="queryMode() === 'feature'"
       [disabled]="!showInteractiveElements()"
       (click)="selectMode('feature')"
+      data-test-id="query-tab-feature"
       type="button"
     >
       Features
@@ -21,6 +22,7 @@
       [active]="queryMode() === 'statistics'"
       [disabled]="!showInteractiveElements()"
       (click)="selectMode('statistics')"
+      data-test-id="query-tab-statistics"
       type="button"
     >
       Statistik
@@ -30,9 +32,9 @@
     @if (queryMode() === 'statistics') {
       <statistics [showInteractiveElements]="showInteractiveElements()" />
     } @else {
-      <feature-info [showInteractiveElements]="showInteractiveElements()" />
+      <feature-info data-test-id="query-feature-results" [showInteractiveElements]="showInteractiveElements()" />
     }
   </mat-tab-nav-panel>
 } @else {
-  <feature-info [showInteractiveElements]="showInteractiveElements()" />
+  <feature-info data-test-id="query-feature-results" [showInteractiveElements]="showInteractiveElements()" />
 }

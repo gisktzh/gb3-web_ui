@@ -64,6 +64,7 @@
 <div class="feature-info-content">
   <mat-radio-group [value]="highlightedFeatureId()">
     <resizable-info-table
+      [attr.data-test-id]="'feature-result-' + topicId() + '-' + layer().layer"
       [tableLabel]="`Informationen zu ${this.layer().title}`"
       [tableData]="tableData()"
       [tableHeaderTemplate]="tableHeader"

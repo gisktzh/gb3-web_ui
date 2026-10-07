@@ -63,10 +63,10 @@ function postDataEquals(left: string, right: string): boolean {
 }
 
 async function waitForMapReady(page: Page): Promise<void> {
-  await expect(page.locator('map-page')).toBeVisible({timeout: 30_000});
-  await expect(page.locator('map-page canvas').first()).toBeVisible({timeout: 30_000});
-  await expect(page.locator('input[aria-label="Massstab anpassen"]')).not.toHaveValue('', {timeout: 30_000});
-  await expect(page.locator('input[aria-label="Koordinaten eingeben"]')).not.toHaveValue('', {timeout: 30_000});
+  await expect(page.getByTestId('map-container')).toBeVisible({timeout: 30_000});
+  await expect(page.getByTestId('map-container').locator('canvas').first()).toBeVisible({timeout: 30_000});
+  await expect(page.getByTestId('input-map-scale')).not.toHaveValue('', {timeout: 30_000});
+  await expect(page.getByTestId('input-map-coordinates')).not.toHaveValue('', {timeout: 30_000});
 }
 
 export const test = base.extend<Gb3Fixtures>({
@@ -191,13 +191,14 @@ export const test = base.extend<Gb3Fixtures>({
 
   filterForLayer: async ({page}, use) => {
     await use(async (searchTerm) => {
-      const filterInput = page.locator('input[placeholder="Karten und Layer filtern"]');
+      const filterInput = page.getByTestId('catalogue-filter').getByTestId('search-input');
       await expect(filterInput).toBeVisible();
       // Since the search input listenes to KeyUp events, we need to actually type the search term.
       await filterInput.fill(searchTerm);
       await filterInput.dispatchEvent('keyup', {key: searchTerm.at(-1)});
 
-      await expect(page.locator('map-data-item-map, map-data-item-favourite').filter({hasText: searchTerm}).first()).toBeVisible({
+      const catalogueItems = page.getByTestId(/^catalogue-map-/).or(page.getByTestId('catalogue-favourite'));
+      await expect(catalogueItems.filter({hasText: searchTerm}).first()).toBeVisible({
         timeout: 30_000,
       });
     });
@@ -241,7 +242,7 @@ export const test = base.extend<Gb3Fixtures>({
       await waitForMapReady(page);
 
       if (shouldSkipTour) {
-        const skipButton = page.getByRole('button', {name: 'Überspringen'});
+        const skipButton = page.getByTestId('onboarding-skip');
         await skipButton.waitFor({state: 'visible', timeout: 5_000}).catch(() => undefined);
         if (await skipButton.isVisible()) {
           await skipButton.click();
@@ -285,7 +286,7 @@ export const test = base.extend<Gb3Fixtures>({
         });
       }
 
-      await page.getByText('Login').click();
+      await page.getByTestId('navbar-login').click();
 
       await page.waitForLoadState('networkidle');
 

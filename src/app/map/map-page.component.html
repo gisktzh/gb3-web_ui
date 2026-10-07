@@ -15,7 +15,12 @@
   </mat-drawer>
 
   @if (screenMode() !== 'mobile') {
-    <div class="overlays" [class.overlays--sidebar-open]="isSideBarOverlayVisible()" [style.--side-bar-width.px]="rightSideBarWidth()">
+    <div
+      data-test-id="map-overlays"
+      class="overlays"
+      [class.overlays--sidebar-open]="isSideBarOverlayVisible()"
+      [style.--side-bar-width.px]="rightSideBarWidth()"
+    >
       <div class="main-overlays">
         <legend-overlay
           class="map-container__overlay"
@@ -58,8 +63,9 @@
         <map-controls class="map-container__map-controls" />
       </div>
 
-      <div class="sidebar-right-overlays">
+      <div data-test-id="map-sidebar" class="sidebar-right-overlays">
         <feature-info-overlay
+          data-test-id="query-results-desktop"
           class="sidebar-right-overlays__item"
           [width]="rightSideBarWidth()"
           (resizeEvent)="setRightSideBarWidth($event)"
@@ -114,7 +120,7 @@
     <bottom-sheet-overlay />
     <ng-container [ngTemplateOutlet]="mapToolsTemplate" />
   }
-  <map-container class="map-container__map" [viewPadding]="viewPadding()" />
+  <map-container data-test-id="map-container" class="map-container__map" [viewPadding]="viewPadding()" />
 </mat-drawer-container>
 
 <ng-template #mapToolsTemplate>
