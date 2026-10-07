@@ -1,9 +1,7 @@
 import {NotConcernedTheme} from 'src/app/shared/models/gb3-api-generated.interfaces';
-import {TableCell, TextTableCell, UrlTableCell} from '../components/feature-info-overlay/feature-info-content/info-table-cell.component';
 import {OerebConcernedTheme, OerebExtractValue} from 'src/app/shared/interfaces/oereb-extract.interface';
 import {OerebExtractListItem} from '../types/oereb-extract-list-item.type';
 import {OerebExtractTheme} from '../interfaces/oereb-extract-theme.interface';
-import {TableData} from '../components/feature-info-overlay/feature-info-content/resizable-info-table.component';
 
 export class MapOerebExtractDataToView {
   public static mapOerebExtractApiThemeToDisplayableTheme(theme: OerebConcernedTheme): OerebExtractTheme {

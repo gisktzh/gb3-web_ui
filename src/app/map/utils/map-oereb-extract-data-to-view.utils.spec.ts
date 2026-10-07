@@ -658,7 +658,7 @@ describe('MapOerebExtractDataToView', () => {
 
       const result = MapOerebExtractDataToView.mapNotConcernedThemesToListData(themes);
 
-      expect(result.length).toBe(2);
+      expect(result).toHaveLength(2);
       expect(result[0]).toEqual({
         itemLabel: 'Theme A',
         itemType: 'list',
