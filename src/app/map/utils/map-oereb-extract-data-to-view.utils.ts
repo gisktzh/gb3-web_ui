@@ -7,6 +7,8 @@ import {TableData} from '../components/feature-info-overlay/feature-info-content
 
 export class MapOerebExtractDataToView {
   public static mapOerebExtractApiThemeToDisplayableTheme(theme: OerebConcernedTheme): OerebExtractTheme {
+    const themeHints = theme.hints.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i));
+
     return {
       name: theme.name,
       generalInfo: {
@@ -16,27 +18,42 @@ export class MapOerebExtractDataToView {
           {
             itemLabel: 'Gesetzliche Grundlagen',
             itemType: 'list' as const,
-            items: theme.legalProvisions.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
+            items: theme.laws.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
           },
           {
             itemLabel: 'Rechtsvorschriften',
             itemType: 'list' as const,
-            items: theme.laws.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
+            items: theme.legalProvisions.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
           },
           {
             itemLabel: 'Weitere Hinweise',
             itemType: 'list' as const,
-            items: theme.hints.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
+            items:
+              themeHints.length > 0
+                ? themeHints
+                : [
+                    {
+                      itemLabel: 'Keine weiteren Hinweise',
+                      text: 'Keine weiteren Hinweise',
+                      itemType: 'text' as const,
+                    },
+                  ],
           },
           {
             itemLabel: 'Zuständige Stellen',
             itemType: 'list' as const,
             items: theme.responsibleOffices.map<OerebExtractListItem>((i) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(i)),
           },
-        ].filter((i) => i.items.length > 0),
+        ],
       },
       restrictions: theme.restrictions.map((r) => {
         const items: OerebExtractListItem[] = [];
+
+        items.push({
+          itemLabel: 'Rechtsstatus',
+          itemType: 'text' as const,
+          text: r.legalStatus,
+        });
 
         if (r.illustration) {
           items.push({
@@ -101,34 +118,21 @@ export class MapOerebExtractDataToView {
     };
   }
 
-  public static mapNotConcernedThemesToTableData(themes: NotConcernedTheme[]): TableData {
-    const tableRows = new Map<string, TableCell[]>();
+  public static mapNotConcernedThemesToListData(themes: NotConcernedTheme[]): OerebExtractListItem[] {
+    return themes.map((theme) => {
+      if (theme.hints.length === 0) {
+        return {
+          itemLabel: theme.name,
+          text: theme.name,
+          itemType: 'text',
+        };
+      }
 
-    themes.forEach((t) => {
-      tableRows.set(t.name, [
-        {
-          displayValue: '',
-          cellType: 'list',
-          items: t.hints.map<UrlTableCell | TextTableCell>((h) => {
-            if ('href' in h) {
-              return {
-                cellType: 'url',
-                displayValue: h.title,
-                url: h.href,
-              };
-            }
-
-            return {
-              cellType: 'text',
-              displayValue: h.title,
-            };
-          }),
-        },
-      ]);
+      return {
+        itemLabel: theme.name,
+        itemType: 'list',
+        items: theme.hints.map((hint) => MapOerebExtractDataToView.mapOerebExtractValueToListItem(hint)),
+      };
     });
-
-    return {
-      tableRows,
-    };
   }
 }

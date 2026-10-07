@@ -8,12 +8,21 @@ import {MatButton} from '@angular/material/button';
 import {OerebExtractTheme} from 'src/app/map/interfaces/oereb-extract-theme.interface';
 import {MapOerebExtractDataToView} from 'src/app/map/utils/map-oereb-extract-data-to-view.utils';
 import {OerebInfoListMapOverlayComponent} from './oereb-info-list/oereb-info-list-map-overlay.component';
+import {formatDateValue} from 'src/app/shared/utils/feature-info-field.utils';
+import {OerebNotConcernedThemesList} from './oereb-not-concerned-themes-list/oereb-not-concerned-themes-list.component';
 
 @Component({
   selector: 'oereb-extract',
   templateUrl: './oereb-extract.component.html',
   styleUrls: ['./oereb-extract.component.scss'],
-  imports: [MapOverlayListItemComponent, MatIcon, MatButton, ResizableInfoTableComponent, OerebInfoListMapOverlayComponent],
+  imports: [
+    MapOverlayListItemComponent,
+    MatIcon,
+    MatButton,
+    ResizableInfoTableComponent,
+    OerebInfoListMapOverlayComponent,
+    OerebNotConcernedThemesList,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class OerebExtractComponent {
@@ -27,6 +36,9 @@ export class OerebExtractComponent {
           ['BFS-Nr.', this.data().municipalityCode.toString()],
           ['Grundstück-Nr.', this.data().parcelNumber],
           ['EGRIS_EGRID', this.data().egrid],
+          ['Vollständigkeit', this.data().completeness],
+          ['Fläche [m²]', this.data().area.toString()],
+          ['Stand der Amtlichen Vermessung', formatDateValue(this.data().statusOfficialSurvey)],
         ].map(([l, v]) => [
           l,
           [
@@ -47,7 +59,7 @@ export class OerebExtractComponent {
     return {
       tableRows: new Map<string, TableCell[]>([
         [
-          'ÖREB-Kataster',
+          'Zuständige Nachführungsstelle ÖREB-Kataster',
           [
             kbo.href
               ? {
@@ -62,7 +74,7 @@ export class OerebExtractComponent {
           ],
         ],
         [
-          'Email ÖREB',
+          'Zuständige Stelle Amtliche Vermessung',
           [
             surveyor.href
               ? {
@@ -87,10 +99,10 @@ export class OerebExtractComponent {
   });
 
   public readonly notConcernedThemes = computed(() => {
-    return MapOerebExtractDataToView.mapNotConcernedThemesToTableData(this.data().notConcernedThemes);
+    return MapOerebExtractDataToView.mapNotConcernedThemesToListData(this.data().notConcernedThemes);
   });
 
   public readonly notAvailableThemes = computed(() => {
-    return MapOerebExtractDataToView.mapNotConcernedThemesToTableData(this.data().notAvailableThemes);
+    return MapOerebExtractDataToView.mapNotConcernedThemesToListData(this.data().notAvailableThemes);
   });
 }

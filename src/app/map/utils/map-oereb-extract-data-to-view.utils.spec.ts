@@ -1,4 +1,3 @@
-import {describe, expect, it} from 'vitest';
 import {NotConcernedTheme} from 'src/app/shared/models/gb3-api-generated.interfaces';
 import {OerebConcernedTheme, OerebExtractValue} from 'src/app/shared/interfaces/oereb-extract.interface';
 import {MapOerebExtractDataToView} from './map-oereb-extract-data-to-view.utils';
@@ -45,14 +44,9 @@ describe('MapOerebExtractDataToView', () => {
             itemType: 'list',
             items: [
               {
-                itemLabel: 'Legal provision',
+                itemLabel: 'Law',
                 itemType: 'text',
-                text: 'Legal provision',
-              },
-              {
-                itemLabel: 'Legal provision link',
-                itemType: 'url',
-                url: 'https://example.com/legal',
+                text: 'Law',
               },
             ],
           },
@@ -61,9 +55,14 @@ describe('MapOerebExtractDataToView', () => {
             itemType: 'list',
             items: [
               {
-                itemLabel: 'Law',
+                itemLabel: 'Legal provision',
                 itemType: 'text',
-                text: 'Law',
+                text: 'Legal provision',
+              },
+              {
+                itemLabel: 'Legal provision link',
+                itemType: 'url',
+                url: 'https://example.com/legal',
               },
             ],
           },
@@ -93,10 +92,10 @@ describe('MapOerebExtractDataToView', () => {
       });
     });
 
-    it('should omit empty general information categories', () => {
+    it('should not omit empty general information categories', () => {
       const theme = createConcernedTheme({
         legalProvisions: [],
-        laws: [{title: 'A law'}],
+        laws: [{title: 'Law'}],
         hints: [],
         responsibleOffices: [],
       });
@@ -108,15 +107,36 @@ describe('MapOerebExtractDataToView', () => {
         itemType: 'list',
         items: [
           {
-            itemLabel: 'Rechtsvorschriften',
+            itemLabel: 'Gesetzliche Grundlagen',
             itemType: 'list',
             items: [
               {
-                itemLabel: 'A law',
+                itemLabel: 'Law',
                 itemType: 'text',
-                text: 'A law',
+                text: 'Law',
               },
             ],
+          },
+          {
+            itemLabel: 'Rechtsvorschriften',
+            itemType: 'list',
+            items: [],
+          },
+          {
+            itemLabel: 'Weitere Hinweise',
+            itemType: 'list',
+            items: [
+              {
+                itemLabel: 'Keine weiteren Hinweise',
+                itemType: 'text',
+                text: 'Keine weiteren Hinweise',
+              },
+            ],
+          },
+          {
+            itemLabel: 'Zuständige Stellen',
+            itemType: 'list',
+            items: [],
           },
         ],
       });
@@ -135,7 +155,34 @@ describe('MapOerebExtractDataToView', () => {
       expect(result.generalInfo).toEqual({
         itemLabel: 'Allgemeine Informationen',
         itemType: 'list',
-        items: [],
+        items: [
+          {
+            itemLabel: 'Gesetzliche Grundlagen',
+            itemType: 'list',
+            items: [],
+          },
+          {
+            itemLabel: 'Rechtsvorschriften',
+            itemType: 'list',
+            items: [],
+          },
+          {
+            itemLabel: 'Weitere Hinweise',
+            itemType: 'list',
+            items: [
+              {
+                itemLabel: 'Keine weiteren Hinweise',
+                itemType: 'text',
+                text: 'Keine weiteren Hinweise',
+              },
+            ],
+          },
+          {
+            itemLabel: 'Zuständige Stellen',
+            itemType: 'list',
+            items: [],
+          },
+        ],
       });
     });
 
@@ -158,6 +205,7 @@ describe('MapOerebExtractDataToView', () => {
               areaM2: 123.45,
               percentage: 0.5678,
             },
+            legalStatus: 'rechtskräftig',
           },
         ],
       });
@@ -169,6 +217,11 @@ describe('MapOerebExtractDataToView', () => {
           itemLabel: 'Area restriction',
           itemType: 'list',
           items: [
+            {
+              itemLabel: 'Rechtsstatus',
+              itemType: 'text',
+              text: 'rechtskräftig',
+            },
             {
               itemLabel: 'Darstellung',
               itemType: 'image',
@@ -202,6 +255,7 @@ describe('MapOerebExtractDataToView', () => {
             measurement: {
               lineLength: 42.5,
             },
+            legalStatus: 'rechtskräftig',
           },
         ],
       });
@@ -213,6 +267,11 @@ describe('MapOerebExtractDataToView', () => {
           itemLabel: 'Line restriction',
           itemType: 'list',
           items: [
+            {
+              itemLabel: 'Rechtsstatus',
+              itemType: 'text',
+              text: 'rechtskräftig',
+            },
             {
               itemLabel: 'Länge',
               itemType: 'text',
@@ -232,6 +291,7 @@ describe('MapOerebExtractDataToView', () => {
             measurement: {
               pointsCount: 7,
             },
+            legalStatus: 'rechtskräftig',
           },
         ],
       });
@@ -243,6 +303,11 @@ describe('MapOerebExtractDataToView', () => {
           itemLabel: 'Point restriction',
           itemType: 'list',
           items: [
+            {
+              itemLabel: 'Rechtsstatus',
+              itemType: 'text',
+              text: 'rechtskräftig',
+            },
             {
               itemLabel: 'Anzahl Punkte',
               itemType: 'text',
@@ -263,6 +328,7 @@ describe('MapOerebExtractDataToView', () => {
               areaM2: 0,
               percentage: 0,
             },
+            legalStatus: 'rechtskräftig',
           },
           {
             id: 2,
@@ -270,6 +336,7 @@ describe('MapOerebExtractDataToView', () => {
             measurement: {
               lineLength: 0,
             },
+            legalStatus: 'rechtskräftig',
           },
           {
             id: 3,
@@ -277,6 +344,7 @@ describe('MapOerebExtractDataToView', () => {
             measurement: {
               pointsCount: 0,
             },
+            legalStatus: 'rechtskräftig',
           },
         ],
       });
@@ -288,6 +356,11 @@ describe('MapOerebExtractDataToView', () => {
           itemLabel: 'Zero area restriction',
           itemType: 'list',
           items: [
+            {
+              itemLabel: 'Rechtsstatus',
+              itemType: 'text',
+              text: 'rechtskräftig',
+            },
             {
               itemLabel: 'Fläche',
               itemType: 'text',
@@ -305,6 +378,11 @@ describe('MapOerebExtractDataToView', () => {
           itemType: 'list',
           items: [
             {
+              itemLabel: 'Rechtsstatus',
+              itemType: 'text',
+              text: 'rechtskräftig',
+            },
+            {
               itemLabel: 'Länge',
               itemType: 'text',
               text: '0m',
@@ -315,6 +393,11 @@ describe('MapOerebExtractDataToView', () => {
           itemLabel: 'Zero point restriction',
           itemType: 'list',
           items: [
+            {
+              itemLabel: 'Rechtsstatus',
+              itemType: 'text',
+              text: 'rechtskräftig',
+            },
             {
               itemLabel: 'Anzahl Punkte',
               itemType: 'text',
@@ -335,6 +418,7 @@ describe('MapOerebExtractDataToView', () => {
               areaM2: 10,
               percentage: 0.1254,
             },
+            legalStatus: 'rechtskräftig',
           },
           {
             id: 2,
@@ -343,6 +427,7 @@ describe('MapOerebExtractDataToView', () => {
               areaM2: 20,
               percentage: 0.1256,
             },
+            legalStatus: 'rechtskräftig',
           },
         ],
       });
@@ -354,6 +439,11 @@ describe('MapOerebExtractDataToView', () => {
           itemLabel: 'Rounding restriction',
           itemType: 'list',
           items: [
+            {
+              itemLabel: 'Rechtsstatus',
+              itemType: 'text',
+              text: 'rechtskräftig',
+            },
             {
               itemLabel: 'Fläche',
               itemType: 'text',
@@ -370,6 +460,11 @@ describe('MapOerebExtractDataToView', () => {
           itemLabel: 'Rounding restriction 2',
           itemType: 'list',
           items: [
+            {
+              itemLabel: 'Rechtsstatus',
+              itemType: 'text',
+              text: 'rechtskräftig',
+            },
             {
               itemLabel: 'Fläche',
               itemType: 'text',
@@ -394,6 +489,7 @@ describe('MapOerebExtractDataToView', () => {
             measurement: {
               pointsCount: 1,
             },
+            legalStatus: 'rechtskräftig',
           },
           {
             id: 2,
@@ -401,6 +497,7 @@ describe('MapOerebExtractDataToView', () => {
             measurement: {
               lineLength: 2,
             },
+            legalStatus: 'rechtskräftig',
           },
           {
             id: 3,
@@ -409,6 +506,7 @@ describe('MapOerebExtractDataToView', () => {
               areaM2: 3,
               percentage: 0.03,
             },
+            legalStatus: 'rechtskräftig',
           },
         ],
       });
@@ -493,32 +591,26 @@ describe('MapOerebExtractDataToView', () => {
         },
       ];
 
-      const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData(themes);
+      const result = MapOerebExtractDataToView.mapNotConcernedThemesToListData(themes);
 
-      expect(result).toEqual({
-        tableRows: new Map([
-          [
-            'Theme A',
-            [
-              {
-                displayValue: '',
-                cellType: 'list',
-                items: [
-                  {
-                    cellType: 'text',
-                    displayValue: 'Text hint',
-                  },
-                  {
-                    cellType: 'url',
-                    displayValue: 'URL hint',
-                    url: 'https://example.com/hint',
-                  },
-                ],
-              },
-            ],
+      expect(result).toEqual([
+        {
+          itemLabel: 'Theme A',
+          itemType: 'list',
+          items: [
+            {
+              itemLabel: 'Text hint',
+              itemType: 'text',
+              text: 'Text hint',
+            },
+            {
+              itemLabel: 'URL hint',
+              itemType: 'url',
+              url: 'https://example.com/hint',
+            },
           ],
-        ]),
-      });
+        },
+      ]);
     });
 
     it('should map a theme with no hints to an empty list cell', () => {
@@ -530,22 +622,15 @@ describe('MapOerebExtractDataToView', () => {
         },
       ];
 
-      const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData(themes);
+      const result = MapOerebExtractDataToView.mapNotConcernedThemesToListData(themes);
 
-      expect(result.tableRows).toEqual(
-        new Map([
-          [
-            'Theme A',
-            [
-              {
-                displayValue: '',
-                cellType: 'list',
-                items: [],
-              },
-            ],
-          ],
-        ]),
-      );
+      expect(result).toEqual([
+        {
+          itemLabel: 'Theme A',
+          itemType: 'text',
+          text: 'Theme A',
+        },
+      ]);
     });
 
     it('should map multiple themes independently', () => {
@@ -571,81 +656,37 @@ describe('MapOerebExtractDataToView', () => {
         },
       ];
 
-      const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData(themes);
+      const result = MapOerebExtractDataToView.mapNotConcernedThemesToListData(themes);
 
-      expect(result.tableRows.size).toBe(2);
-      expect(result.tableRows.get('Theme A')).toEqual([
-        {
-          displayValue: '',
-          cellType: 'list',
-          items: [
-            {
-              cellType: 'text',
-              displayValue: 'Hint A',
-            },
-          ],
-        },
-      ]);
-      expect(result.tableRows.get('Theme B')).toEqual([
-        {
-          displayValue: '',
-          cellType: 'list',
-          items: [
-            {
-              cellType: 'url',
-              displayValue: 'Hint B',
-              url: 'https://example.com/b',
-            },
-          ],
-        },
-      ]);
-    });
-
-    it('should return an empty table when there are no themes', () => {
-      const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData([]);
-
-      expect(result).toEqual({
-        tableRows: new Map(),
+      expect(result.length).toBe(2);
+      expect(result[0]).toEqual({
+        itemLabel: 'Theme A',
+        itemType: 'list',
+        items: [
+          {
+            itemLabel: 'Hint A',
+            itemType: 'text',
+            text: 'Hint A',
+          },
+        ],
+      });
+      expect(result[1]).toEqual({
+        itemLabel: 'Theme B',
+        itemType: 'list',
+        items: [
+          {
+            itemLabel: 'Hint B',
+            itemType: 'url',
+            url: 'https://example.com/b',
+          },
+        ],
       });
     });
 
-    it('should overwrite a previous row when themes have the same name', () => {
-      const themes: NotConcernedTheme[] = [
-        {
-          id: 1,
-          name: 'Duplicate',
-          hints: [
-            {
-              title: 'First hint',
-            },
-          ],
-        },
-        {
-          id: 2,
-          name: 'Duplicate',
-          hints: [
-            {
-              title: 'Second hint',
-            },
-          ],
-        },
-      ];
+    it('should return an empty table when there are no themes', () => {
+      const result = MapOerebExtractDataToView.mapNotConcernedThemesToListData([]);
 
-      const result = MapOerebExtractDataToView.mapNotConcernedThemesToTableData(themes);
-
-      expect(result.tableRows.size).toBe(1);
-      expect(result.tableRows.get('Duplicate')).toEqual([
-        {
-          displayValue: '',
-          cellType: 'list',
-          items: [
-            {
-              cellType: 'text',
-              displayValue: 'Second hint',
-            },
-          ],
-        },
-      ]);
+      expect(result).toEqual([]);
     });
   });
 });

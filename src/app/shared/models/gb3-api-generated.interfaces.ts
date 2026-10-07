@@ -330,6 +330,12 @@ export interface OerebFeature {
      * @maxLength 14
      */
     egrid: string;
+    /** state the current grade of completeness */
+    completeness: string;
+    /** area of the parcel for the current restriction */
+    area_m2: number;
+    /** date of the current state of official survey */
+    status_official_survey: string;
     /** link to the cadastral processing organization */
     kbo: LinkObject;
     /** link to the E-Mail address of the surveyor organization */
@@ -350,6 +356,8 @@ export interface OerebFeature {
         id: number;
         /** symbol image for the current restriction */
         illustration_url?: Image;
+        /** legal status text of the current restriction */
+        legal_status: string;
         /** concrete measurment for this restriction */
         measurement:
           | {

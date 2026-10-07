@@ -118,6 +118,9 @@ describe('OerebExtractEffects', () => {
         concernedThemes: [],
         notConcernedThemes: [],
         notAvailableThemes: [],
+        completeness: 'vollständig',
+        area: 12,
+        statusOfficialSurvey: '1970-01-01 00:00:00',
       };
 
       oerebExtractService.loadOerebExtract.mockReturnValue(of(oerebExtract));

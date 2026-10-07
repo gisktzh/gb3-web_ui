@@ -18,6 +18,9 @@
   </a>
 } @else if (localItem.itemType === 'list') {
   <ul class="oereb-detail-list">
+    @if (showListLabel()) {
+      {{ localItem.itemLabel }}
+    }
     @for (item of localItem.items; track $index) {
       <li>
         <oereb-info-value [item]="item" />
