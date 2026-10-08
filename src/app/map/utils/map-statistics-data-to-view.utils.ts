@@ -19,13 +19,13 @@ function mapRow(row: StatisticsResultRow, columnCount: number, formatNumber: Sta
     label: row.label,
     cells: Array.from({length: columnCount}, (_, columnIndex): TextTableCell => {
       const resultValue = row.values[columnIndex];
+      const value = resultValue?.value ?? null;
+      const unit = resultValue?.unit;
+      const unitSuffix = unit ? ` ${unit}` : '';
 
       return {
         cellType: 'text',
-        displayValue:
-          !resultValue || resultValue.value === null
-            ? NULL_VALUE_PLACEHOLDER
-            : `${formatNumber(resultValue.value)}${resultValue.unit ? ` ${resultValue.unit}` : ''}`,
+        displayValue: value === null ? NULL_VALUE_PLACEHOLDER : `${formatNumber(value)}${unitSuffix}`,
       };
     }),
   };

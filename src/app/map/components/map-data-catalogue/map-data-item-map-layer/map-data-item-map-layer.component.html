@@ -4,7 +4,7 @@
     @if (isMapHovered()) {
       <mat-checkbox class="map-data-item-map-layer__visibility-checkbox" [checked]="layer().visible" />
     } @else {
-      <button class="map-data-item-map-layer__add-button" (click)="addItemLayer()" mat-icon-button>
+      <button data-test-id="add-active-layer" class="map-data-item-map-layer__add-button" (click)="addItemLayer()" mat-icon-button>
         <mat-icon>add</mat-icon>
       </button>
     }

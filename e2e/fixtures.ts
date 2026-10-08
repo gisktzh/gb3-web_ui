@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
 import path from 'node:path';
 import {expect, type Page, type Request} from '@playwright/test';
+import type {Entry} from 'har-format';
 import {canonicalizeUrl} from './utils/canonicalize.utils';
 
 // URL pattern. If pattern matches,
@@ -62,6 +63,33 @@ function postDataEquals(left: string, right: string): boolean {
   }
 }
 
+async function selectHarEntry(request: Request, candidates: Entry[]): Promise<Entry | undefined> {
+  const first = candidates[0];
+  if (!first || candidates.length === 1) return first;
+
+  // Returning to a recorded map extent can request the same image more often than during recording.
+  if (
+    request.method() === 'GET' &&
+    candidates.every(
+      ({response}) =>
+        response.content.mimeType.startsWith('image/') &&
+        response.status === first.response.status &&
+        JSON.stringify(response.content) === JSON.stringify(first.response.content),
+    )
+  ) {
+    return first;
+  }
+
+  // Track duplicate responses in the browser session so their order stays isolated to each test.
+  const requestKey = getRequestKey(request.url(), request.method());
+  const requestIndex = await request
+    .frame()
+    .evaluate(([key]) => Promise.resolve(Number.parseInt(sessionStorage.getItem(key) || '0')), [requestKey]);
+  const entry = candidates[request.method() === 'GET' ? requestIndex % candidates.length : requestIndex];
+  await request.frame().evaluate(([key, index]) => sessionStorage.setItem(key, index), [requestKey, (requestIndex + 1).toString()]);
+  return entry;
+}
+
 async function waitForMapReady(page: Page): Promise<void> {
   await expect(page.getByTestId('map-container')).toBeVisible({timeout: 30_000});
   await expect(page.getByTestId('map-container').locator('canvas').first()).toBeVisible({timeout: 30_000});
@@ -75,7 +103,8 @@ export const test = base.extend<Gb3Fixtures>({
     const fileName = path.basename(testInfo.file).split('.').at(0);
 
     await use(async (postFix?: string) => {
-      const usedFileName = `${fileName}${postFix ? `-${postFix}` : ''}`;
+      const suffix = postFix ? '-' + postFix : '';
+      const usedFileName = `${fileName}${suffix}`;
       const usedFilePath = `./e2e/hars/${usedFileName}.har`;
 
       if (!process.env['CI']) {
@@ -110,45 +139,8 @@ export const test = base.extend<Gb3Fixtures>({
               );
 
               const candidates = scoredEntries.filter((se) => se.score >= 0).map((se) => se.entry);
-              if (candidates.length === 1) {
-                return candidates[0];
-              }
-
-              // Returning to a recorded map extent can request the same image more often than during recording.
-              if (
-                candidates.length > 1 &&
-                redactedRequest.method() === 'GET' &&
-                candidates.every(
-                  ({response}) =>
-                    response.content.mimeType.startsWith('image/') &&
-                    response.status === candidates[0].response.status &&
-                    JSON.stringify(response.content) === JSON.stringify(candidates[0].response.content),
-                )
-              ) {
-                return candidates[0];
-              }
-
-              // We're dealing with several instances of the same request, so we need to figure out which one we actually want.
-              // We do that by keeping a counter in the browser's session storage. The storage gets reset once the browser is closed
-              // (i.e. once the tests are done), so there's no cross-run pollution.
-              if (candidates.length > 1) {
-                const requestKey = getRequestKey(redactedRequest.url(), redactedRequest.method());
-
-                const requestIndex = await redactedRequest
-                  .frame()
-                  .evaluate(([key]) => Promise.resolve(Number.parseInt(sessionStorage.getItem(key) || '0')), [requestKey]);
-
-                const entry = candidates[redactedRequest.method() === 'GET' ? requestIndex % candidates.length : requestIndex];
-                const newRequestIndex = requestIndex + 1;
-
-                await redactedRequest
-                  .frame()
-                  .evaluate(([key, index]) => sessionStorage.setItem(key, index), [requestKey, newRequestIndex.toString()]);
-
-                if (entry) {
-                  return entry;
-                }
-              }
+              const entry = await selectHarEntry(redactedRequest, candidates);
+              if (entry) return entry;
             }
 
             const completedEntry = await defaultFindEntry(replayableHar, redactedRequest, matcher);
@@ -173,7 +165,8 @@ export const test = base.extend<Gb3Fixtures>({
             return;
           }
           const postData = request.postData();
-          const errorMessage = `[har] No response matched ${request.method()} ${request.url()} in file ${usedFilePath}${postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : ''}`;
+          const requestBody = postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : '';
+          const errorMessage = `[har] No response matched ${request.method()} ${request.url()} in file ${usedFilePath}${requestBody}`;
           if (process.env['CI']) {
             // Hard fail if a request isn't found on the CI.
             throw new Error(errorMessage);
