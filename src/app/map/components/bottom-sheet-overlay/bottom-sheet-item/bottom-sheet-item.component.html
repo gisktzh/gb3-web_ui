@@ -7,11 +7,18 @@
 >
   <mat-card-header class="bottom-sheet-item__header" [class.bottom-sheet-item__header--primary-color]="usePrimaryColor()">
     <div class="bottom-sheet-item__header__container">
-      <button (click)="close()" mat-icon-button [class.bottom-sheet-item__header__container__button--primary--color]="usePrimaryColor()">
+      <button
+        data-test-id="bottom-sheet-close"
+        (click)="close()"
+        mat-icon-button
+        [class.bottom-sheet-item__header__container__button--primary--color]="usePrimaryColor()"
+      >
         <mat-icon>close</mat-icon>
       </button>
       @if (showHeader()) {
-        <h1 class="bottom-sheet-item__header__container__title">{{ overlayTitle() }} {{ mapAttributeFiltersItemTitle() }}</h1>
+        <h1 data-test-id="bottom-sheet-title" class="bottom-sheet-item__header__container__title">
+          {{ overlayTitle() }} {{ mapAttributeFiltersItemTitle() }}
+        </h1>
         <hr class="bottom-sheet-item__header__container__hr" />
       }
     </div>

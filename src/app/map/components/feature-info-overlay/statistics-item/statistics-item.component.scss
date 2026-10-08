@@ -1,0 +1,64 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.statistics-item__highlight-group {
+  display: block;
+}
+
+.statistics-item__table-header {
+  cursor: pointer;
+}
+
+.statistics-item__cell--highlighted {
+  box-shadow:
+    inset 2px 0 0 0 ktzh-variables.$zh-active-blue,
+    inset -2px 0 0 0 ktzh-variables.$zh-active-blue;
+}
+
+.info-table__table thead .statistics-item__cell--highlighted {
+  background-color: ktzh-variables.$zh-active-blue !important;
+}
+
+.statistics-item__table-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+
+  .mat-mdc-radio-button {
+    pointer-events: none;
+
+    .mdc-form-field {
+      font-size: 12px;
+    }
+
+    .mdc-radio {
+      padding: 0;
+    }
+  }
+}
+
+.statistics-item {
+  width: 100%;
+
+  .statistics-item__status {
+    margin: 0;
+    color: ktzh-variables.$zh-black60;
+    font-size: 14px;
+  }
+
+  .statistics-item__status-link {
+    @include mixins.external-link-decoration;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 14px;
+
+    .statistics-item__status-link__icon {
+      height: 14px;
+      width: 14px;
+      font-size: 14px;
+    }
+  }
+}

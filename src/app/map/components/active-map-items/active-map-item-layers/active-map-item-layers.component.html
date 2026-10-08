@@ -3,7 +3,7 @@
   @for (layer of shownLayers(); track trackByLayerId($index, layer)) {
     <!-- Sublayer (only shown if it is not marked as 'hidden') -->
     <div cdkDrag class="active-map-item-layers__item" dragCursor>
-      <active-map-item-layer [activeMapItem]="activeMapItem()" [layer]="layer">
+      <active-map-item-layer [attr.data-test-id]="'active-map-layer-' + layer.layer" [activeMapItem]="activeMapItem()" [layer]="layer">
         <ng-container activeMapItemLayerDragHandle>
           <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
               More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component

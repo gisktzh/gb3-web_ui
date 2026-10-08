@@ -4,6 +4,7 @@
     <mat-icon class="active-map-item-layer__drag-handle__icon" cdkDragHandle>drag_indicator</mat-icon>
   </div>
   <mat-checkbox
+    data-test-id="active-layer-visibility"
     class="active-map-item-layer__checkbox"
     [checked]="layer().visible"
     (change)="toggleSublayerVisibility(layer())"

@@ -688,5 +688,55 @@ describe('MapOerebExtractDataToView', () => {
 
       expect(result).toEqual([]);
     });
+
+    it('should preserve themes with the same name as separate ordered rows', () => {
+      const themes: NotConcernedTheme[] = [
+        {
+          id: 1,
+          name: 'Duplicate',
+          hints: [
+            {
+              title: 'First hint',
+            },
+          ],
+        },
+        {
+          id: 2,
+          name: 'Duplicate',
+          hints: [
+            {
+              title: 'Second hint',
+            },
+          ],
+        },
+      ];
+
+      const result = MapOerebExtractDataToView.mapNotConcernedThemesToListData(themes);
+
+      expect(result).toEqual([
+        {
+          itemLabel: 'Duplicate',
+          itemType: 'list',
+          items: [
+            {
+              itemLabel: 'First hint',
+              itemType: 'text',
+              text: 'First hint',
+            },
+          ],
+        },
+        {
+          itemLabel: 'Duplicate',
+          itemType: 'list',
+          items: [
+            {
+              itemLabel: 'Second hint',
+              itemType: 'text',
+              text: 'Second hint',
+            },
+          ],
+        },
+      ]);
+    });
   });
 });

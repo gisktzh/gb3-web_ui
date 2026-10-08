@@ -13,7 +13,7 @@
         [class.list-item__header__content__toggle--position-end]="toggleButtonPosition() === 'end'"
         class="list-item__header__content__toggle"
       />
-      <ng-content select="[header-icon]" />
+      <span class="list-item__header__content__icon"><ng-content select="[header-icon]" /></span>
       <p class="list-item__header__content__title" [matTooltip]="overlayTitle()" showTooltipIfTruncated>
         {{ overlayTitle() }}
       </p>
