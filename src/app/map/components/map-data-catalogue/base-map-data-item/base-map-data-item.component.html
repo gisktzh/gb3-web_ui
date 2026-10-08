@@ -82,6 +82,7 @@
     <ng-template matExpansionPanelContent>
       @for (layer of layers(); track layer) {
         <map-data-item-map-layer
+          [attr.data-test-id]="'catalogue-layer-' + layer.layer"
           [filterString]="filterString()"
           [layer]="layer"
           [isMapHovered]="isMapHovered()"

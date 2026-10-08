@@ -29,6 +29,8 @@ import {StatisticsAreaService} from '../../../shared/services/statistics-area.se
 import {maximumStatisticsAreaInSquareMeters} from '../../../shared/configs/statistics.config';
 import {selectStatisticsHighlights} from '../selectors/statistics-highlights.selector';
 import {selectStatisticsAreaToDraw} from '../selectors/query-graphics.selector';
+import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
+import type {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 
 @Injectable()
 export class StatisticsEffects {
@@ -135,11 +137,12 @@ export class StatisticsEffects {
           return undefined;
         }
 
-        const selection = geometry
-          ? moveGeometryTo(geometry, center)
-          : mode === 'umkreis'
-            ? createCircle(center, radiusInMeters)
-            : undefined;
+        let selection: GeometryWithSrs | undefined;
+        if (geometry) {
+          selection = moveGeometryTo(geometry, center);
+        } else if (mode === 'umkreis') {
+          selection = createCircle(center, radiusInMeters);
+        }
         return selection ? StatisticsActions.setSelection({geometry: selection, radiusInMeters: undefined}) : undefined;
       }),
       filter((action) => action !== undefined),
@@ -172,10 +175,15 @@ export class StatisticsEffects {
         this.store.select(selectQueryMode),
         this.store.select(selectGeometry),
         this.store.select(selectAreaInSquareMeters),
+        this.store.select(selectIsStatisticsAvailable),
       ]),
       filter(
-        ([, queryMode, geometry, area]) =>
-          queryMode === 'statistics' && geometry !== undefined && area !== undefined && area <= maximumStatisticsAreaInSquareMeters,
+        ([, queryMode, geometry, area, available]) =>
+          available &&
+          queryMode === 'statistics' &&
+          geometry !== undefined &&
+          area !== undefined &&
+          area <= maximumStatisticsAreaInSquareMeters,
       ),
       map(() => StatisticsActions.sendRequest()),
     );
@@ -190,10 +198,15 @@ export class StatisticsEffects {
         this.store.select(selectGeometry),
         this.store.select(selectLoadingState),
         this.store.select(selectAreaInSquareMeters),
+        this.store.select(selectIsStatisticsAvailable),
       ]),
       filter(
-        ([, geometry, loadingState, area]) =>
-          geometry !== undefined && loadingState === undefined && area !== undefined && area <= maximumStatisticsAreaInSquareMeters,
+        ([, geometry, loadingState, area, available]) =>
+          available &&
+          geometry !== undefined &&
+          loadingState === undefined &&
+          area !== undefined &&
+          area <= maximumStatisticsAreaInSquareMeters,
       ),
       map(() => StatisticsActions.sendRequest()),
     );

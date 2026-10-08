@@ -39,7 +39,13 @@ export class Gb3StatisticsService extends Gb3ApiService implements StatisticsSer
         throw new Error(`Unsupported statistics geometry: ${geometry.type}. Expected a Polygon.`);
       }
 
-      const polygon = `POLYGON(${geometry.coordinates.map((ring) => `(${ring.map(([x, y]) => `${x} ${y}`).join(',')})`).join(',')})`;
+      const rings = geometry.coordinates
+        .map((ring) => {
+          const points = ring.map(([x, y]) => `${x} ${y}`).join(',');
+          return `(${points})`;
+        })
+        .join(',');
+      const polygon = `POLYGON(${rings})`;
       const queriesByTopic = new Map<string, StatisticsQuery[]>();
       for (const query of queries) {
         const topicQueries = queriesByTopic.get(query.topic) ?? [];

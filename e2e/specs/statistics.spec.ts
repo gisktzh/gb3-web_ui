@@ -11,6 +11,63 @@ import {
 test.describe('Statistics', () => {
   test.describe.configure({timeout: 120_000});
 
+  test.describe('Availability', () => {
+    test.use({addStatisticsMapOnStart: false});
+
+    test('reveals statistics for supported maps and hides them after the last one is removed', async ({page, statisticsSession}) => {
+      const host = resultHost(page);
+      const statisticsButton = page.getByTestId('map-select-statistic');
+      const statisticsTab = host.getByTestId('query-tab-statistics');
+      const featuresTab = host.getByTestId('query-tab-feature');
+      await expect(statisticsButton).toBeVisible();
+      await expect(statisticsButton).toBeDisabled();
+
+      const point = await getMapPoint(page);
+      await clickMapPoint(page, point);
+      await expect(host.getByTestId('query-feature-results')).toBeVisible();
+      await expect(featuresTab).toHaveCount(0);
+      await expect(statisticsTab).toHaveCount(0);
+      await waitForMap(page);
+      expect(statisticsSession.statisticsQueries).toHaveLength(0);
+
+      await statisticsSession.addMap(statisticsSession.topic);
+      await expect(statisticsButton).toBeEnabled();
+      await expect(featuresTab).toHaveAttribute('aria-selected', 'true');
+      await expect(statisticsTab).toBeVisible();
+      await expect(host.getByTestId('statistics-radius')).toHaveCount(0);
+      await expectFeatureResponse(page, statisticsSession, point.coordinates);
+      await waitForMap(page);
+      expect(statisticsSession.statisticsQueries).toHaveLength(0);
+
+      await statisticsTab.click();
+      await expectStatisticsResult(page, statisticsSession);
+      await expect(statisticsTab).toHaveAttribute('aria-selected', 'true');
+      await expect(page.getByTestId('statistics-tools')).toBeVisible();
+
+      const queryCount = statisticsSession.statisticsQueries.length;
+      const lastMap = page.getByTestId('active-map-item-' + statisticsSession.topic.topic);
+      await lastMap.getByTestId('active-map-item-header').hover();
+      await lastMap.getByTestId('delete').click();
+      await expect(lastMap).toHaveCount(0);
+      await expect(statisticsButton).toBeDisabled();
+      await expect(featuresTab).toHaveCount(0);
+      await expect(statisticsTab).toHaveCount(0);
+      await expect(page.getByTestId('statistics-tools')).toHaveCount(0);
+      await expect(page.getByTestId('map-select-feature')).toHaveClass(/map-tools-desktop__list__button--active/);
+      await expect(host.getByTestId('query-feature-results')).toBeVisible();
+      await waitForMap(page);
+      expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+
+      await statisticsSession.addMap(statisticsSession.topic);
+      await expect(statisticsButton).toBeEnabled();
+      await expect(statisticsTab).toBeVisible();
+      await expect(featuresTab).toHaveAttribute('aria-selected', 'true');
+      await expect(page.getByTestId('statistics-tools')).toHaveCount(0);
+      await waitForMap(page);
+      expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+    });
+  });
+
   test('queries a selected point and updates the area when radius and location change', async ({page, statisticsSession}) => {
     // Selecting statistics must release another tool and work without a previous feature query.
     await page.getByTestId('map-ruler').click();
@@ -212,6 +269,7 @@ test.describe('Statistics', () => {
     await expectStatisticsResult(page, statisticsSession, restoredResponseIndex, additionalTopic!.topic);
     await expect(host.getByTestId(/^statistics-result-/)).toHaveCount(2);
     const removedResponseIndex = statisticsSession.statisticsResponses.length;
+    await addedItem.getByTestId('active-map-item-header').hover();
     await addedItem.getByTestId('delete').click();
     await expect(addedItem).toHaveCount(0);
     await expectStatisticsResult(page, statisticsSession, removedResponseIndex);
@@ -282,6 +340,24 @@ test.describe('Statistics', () => {
       await expectStatisticsResult(page, statisticsSession, nextResponseIndex);
       expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, nextPoint.coordinates, 1000);
       await expect(host.getByTestId('statistics-radius')).toHaveValue('1000');
+
+      // Removing the last supported map must return the mobile query to features.
+      const finalQueryCount = statisticsSession.statisticsQueries.length;
+      await host.getByTestId('bottom-sheet-close').tap();
+      await page.getByTestId('map-management-open').tap();
+      const management = page.getByTestId('map-management-mobile');
+      await expect(management).toBeVisible();
+      await management.getByTestId('map-management-tab-active').tap();
+      const lastMap = management.getByTestId('active-map-item-' + statisticsSession.topic.topic);
+      await lastMap.getByTestId('delete').tap();
+      await expect(lastMap).toHaveCount(0);
+      await expect(host.getByTestId('query-feature-results')).toBeVisible();
+      await expect(host.getByTestId('query-tab-feature')).toHaveCount(0);
+      await expect(host.getByTestId('query-tab-statistics')).toHaveCount(0);
+      await expect(host.getByTestId('statistics-radius')).toHaveCount(0);
+      await expect(page.getByTestId('statistics-tools')).toHaveCount(0);
+      await waitForMap(page);
+      expect(statisticsSession.statisticsQueries).toHaveLength(finalQueryCount);
     });
   });
 });

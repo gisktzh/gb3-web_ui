@@ -1,7 +1,7 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {Store} from '@ngrx/store';
+import {createSelector, Store} from '@ngrx/store';
 import {concatMap, filter, map} from 'rxjs';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
@@ -9,23 +9,28 @@ import {ToolActions} from '../actions/tool.actions';
 import {selectToolMenuVisibility} from '../reducers/map-ui.reducer';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
-import {FeatureFlagsService} from '../../../shared/services/feature-flags.service';
+import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
 import {findStatisticsModeForTool, statisticsSelectionTools} from '../../../shared/types/statistics-selection-tool.type';
 import {QueryMode} from '../../../shared/types/query-mode.type';
+
+const selectNeedsFeatureMode = createSelector(
+  selectIsStatisticsAvailable,
+  selectQueryMode,
+  selectToolMenuVisibility,
+  (available, queryMode, toolMenu) => !available && (queryMode === 'statistics' || toolMenu === 'statistics'),
+);
 
 @Injectable()
 export class QueryModeEffects {
   private readonly actions$ = inject(Actions);
   private readonly store = inject(Store);
-  private readonly featureFlagsService = inject(FeatureFlagsService);
 
   // Explicit selection takes map ownership; menu-driven synchronization must not cancel the newly selected tool.
   public selectQueryMode$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(QueryModeActions.selectQueryMode),
-      map(({queryMode}): QueryMode =>
-        queryMode === 'statistics' && !this.featureFlagsService.getFeatureFlag('statisticsTool') ? 'feature' : queryMode,
-      ),
+      concatLatestFrom(() => this.store.select(selectIsStatisticsAvailable)),
+      map(([{queryMode}, available]): QueryMode => (queryMode === 'statistics' && !available ? 'feature' : queryMode)),
       concatLatestFrom(() => this.store.select(selectActiveTool)),
       concatMap(([queryMode, activeTool]) => [
         ...(activeTool && (queryMode === 'feature' || findStatisticsModeForTool(activeTool) === undefined)
@@ -36,15 +41,9 @@ export class QueryModeEffects {
     );
   });
 
-  /**
-   * Nothing may put the application into the statistics mode while the tool is switched off. The buttons that select it are already
-   * hidden behind the feature flag, but the mode could also arrive from restored state such as a share link, which must never be able
-   * to reveal the tool on an environment that does not have it enabled.
-   */
-  public enforceFeatureFlag$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(QueryModeActions.setQueryMode),
-      filter(({queryMode}) => queryMode === 'statistics' && !this.featureFlagsService.getFeatureFlag('statisticsTool')),
+  public enforceStatisticsAvailability$ = createEffect(() => {
+    return this.store.select(selectNeedsFeatureMode).pipe(
+      filter((needsFeatureMode) => needsFeatureMode),
       map(() => QueryModeActions.setQueryMode({queryMode: 'feature'})),
     );
   });
@@ -54,8 +53,8 @@ export class QueryModeEffects {
     return this.actions$.pipe(
       ofType(QueryModeActions.setQueryMode),
       filter(({queryMode}) => queryMode === 'statistics'),
-      concatLatestFrom(() => this.store.select(selectToolMenuVisibility)),
-      filter(([, toolMenuVisibility]) => toolMenuVisibility !== 'statistics'),
+      concatLatestFrom(() => [this.store.select(selectToolMenuVisibility), this.store.select(selectIsStatisticsAvailable)]),
+      filter(([, toolMenuVisibility, available]) => available && toolMenuVisibility !== 'statistics'),
       map(() => MapUiActions.toggleToolMenu({tool: 'statistics'})),
     );
   });
@@ -82,7 +81,8 @@ export class QueryModeEffects {
   public syncQueryModeWithToolMenu$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.toggleToolMenu),
-      map(({tool}): QueryMode => (tool === 'statistics' ? 'statistics' : 'feature')),
+      concatLatestFrom(() => this.store.select(selectIsStatisticsAvailable)),
+      map(([{tool}, available]): QueryMode => (tool === 'statistics' && available ? 'statistics' : 'feature')),
       concatLatestFrom(() => this.store.select(selectQueryMode)),
       filter(([queryMode, currentQueryMode]) => queryMode !== currentQueryMode),
       map(([queryMode]) => QueryModeActions.setQueryMode({queryMode})),

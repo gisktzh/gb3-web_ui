@@ -6,7 +6,7 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {Gb3OerebExtractService} from './gb3-oereb-extract.service';
 import {ConfigService} from '../../config.service';
-import {OerebConcernedTheme, OerebExtractResponse, OerebNotConcernedTheme} from '../../../interfaces/oereb-extract.interface';
+import {OerebExtractResponse} from '../../../interfaces/oereb-extract.interface';
 import {
   NotConcernedTheme as OerebAPINotConcernedTheme,
   OerebFeature as OerebAPIFeature,
@@ -66,6 +66,9 @@ describe('Gb3OerebExtractService', () => {
           municipality_name: 'Zürich',
           municipality_code: 261,
           parcel_number: '1234',
+          completeness: 'vollständig',
+          area_m2: 12,
+          status_official_survey: '1970-01-01 00:00:00',
           egrid: 'CH123456789012',
           kbo: {
             title: 'Kantonale Bodenübersicht',
@@ -97,6 +100,7 @@ describe('Gb3OerebExtractService', () => {
                     area_m2: 1234.56,
                     percentage: 42.5,
                   },
+                  legal_status: 'rechtskräftig',
                 },
                 {
                   id: 102,
@@ -104,6 +108,7 @@ describe('Gb3OerebExtractService', () => {
                   measurement: {
                     line_length: 987.65,
                   },
+                  legal_status: 'rechtskräftig',
                 },
                 {
                   id: 103,
@@ -120,6 +125,7 @@ describe('Gb3OerebExtractService', () => {
                   measurement: {
                     points_count: 17,
                   },
+                  legal_status: 'rechtskräftig',
                 },
               ],
               legal_provisions: [
@@ -163,6 +169,9 @@ describe('Gb3OerebExtractService', () => {
         municipalityCode: 261,
         parcelNumber: '1234',
         egrid: 'CH123456789012',
+        completeness: 'vollständig',
+        area: 12,
+        statusOfficialSurvey: '1970-01-01 00:00:00',
         kbo: {
           title: 'Kantonale Bodenübersicht',
           href: 'https://example.com/kbo',
@@ -189,6 +198,7 @@ describe('Gb3OerebExtractService', () => {
                     href: 'https://example.com/area.png',
                   },
                 },
+                legalStatus: 'rechtskräftig',
                 measurement: {
                   areaM2: 1234.56,
                   percentage: 42.5,
@@ -197,7 +207,7 @@ describe('Gb3OerebExtractService', () => {
               {
                 id: 102,
                 name: 'Linienbeschränkung',
-                illustration: undefined,
+                legalStatus: 'rechtskräftig',
                 measurement: {
                   lineLength: 987.65,
                 },
@@ -214,6 +224,7 @@ describe('Gb3OerebExtractService', () => {
                     href: 'https://example.com/points.png',
                   },
                 },
+                legalStatus: 'rechtskräftig',
                 measurement: {
                   pointsCount: 17,
                 },
@@ -243,17 +254,17 @@ describe('Gb3OerebExtractService', () => {
                 href: 'https://example.com/office',
               },
             ],
-          } satisfies OerebConcernedTheme,
+          },
         ],
         notConcernedThemes: [
           {
             ...notConcernedTheme,
-          } satisfies OerebNotConcernedTheme,
+          },
         ],
         notAvailableThemes: [
           {
             ...notAvailableTheme,
-          } satisfies OerebNotConcernedTheme,
+          },
         ],
       };
 
@@ -273,6 +284,9 @@ describe('Gb3OerebExtractService', () => {
           municipality_code: 261,
           parcel_number: '1234',
           egrid: 'CH123456789012',
+          completeness: 'vollständig',
+          area_m2: 12,
+          status_official_survey: '1970-01-01 00:00:00',
           kbo: {
             title: '',
             href: 'https://example.com/kbo',
@@ -286,7 +300,7 @@ describe('Gb3OerebExtractService', () => {
           not_concerned_themes: [],
           not_available_themes: [],
         },
-      } as OerebAPIFeature;
+      };
 
       vi.spyOn(httpClient, 'get').mockReturnValue(of(data));
 
@@ -310,6 +324,9 @@ describe('Gb3OerebExtractService', () => {
           municipality_code: 261,
           parcel_number: '1234',
           egrid: 'CH123456789012',
+          completeness: 'vollständig',
+          area_m2: 12,
+          status_official_survey: '1970-01-01 00:00:00',
           kbo: {
             href: 'https://example.com/kbo',
           },

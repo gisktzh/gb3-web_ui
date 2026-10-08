@@ -35,14 +35,13 @@ import {reducer as statisticsReducer, selectGeometry, selectLoadingState} from '
 import {reducer as queryLocationReducer, selectQueryPoint} from '../reducers/query-location.reducer';
 import {reducer as mapConfigReducer} from '../reducers/map-config.reducer';
 import {reducer as activeMapItemReducer} from '../reducers/active-map-item.reducer';
-import {reducer as queryModeReducer} from '../reducers/query-mode.reducer';
+import {reducer as queryModeReducer, selectQueryMode} from '../reducers/query-mode.reducer';
 import {reducer as toolReducer} from '../reducers/tool.reducer';
-import {reducer as mapUiReducer, selectIsFeatureInfoOverlayVisible} from '../reducers/map-ui.reducer';
+import {reducer as mapUiReducer, selectIsFeatureInfoOverlayVisible, selectToolMenuVisibility} from '../reducers/map-ui.reducer';
 import {reducer as appLayoutReducer} from '../../app/reducers/app-layout.reducer';
 import {QueryModeEffects} from './query-mode.effects';
 import {ToolEffects} from './tool.effects';
 import {MapUiEffects} from './map-ui.effects';
-import {FeatureFlagsService} from '../../../shared/services/feature-flags.service';
 import {MatDialog} from '@angular/material/dialog';
 import {DrawingSymbolServiceStub} from '../../../testing/map-testing/drawing-symbol-service.stub';
 import {GeneralInfoResponse} from '../../../shared/interfaces/general-info.interface';
@@ -52,6 +51,9 @@ import {ToolActions} from '../actions/tool.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
+import {selectItems} from '../selectors/active-map-items.selector';
+import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
+import {ToolType} from '../../../shared/types/tool.type';
 
 describe('shared feature/statistics query location', () => {
   let store: Store;
@@ -135,7 +137,6 @@ describe('shared feature/statistics query location', () => {
         {provide: STATISTICS_SERVICE, useValue: statistics},
         {provide: MapDrawingService, useValue: drawing},
         {provide: MAP_SERVICE, useValue: {getToolService: () => tools}},
-        {provide: FeatureFlagsService, useValue: {getFeatureFlag: () => true}},
         {provide: MatDialog, useValue: {open: vi.fn()}},
         {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
         FeatureHighlightingService,
@@ -156,6 +157,76 @@ describe('shared feature/statistics query location', () => {
     const item = createGb2WmsMapItemMock('StatBeschaeftigteZH', 1);
     Object.assign(item.settings.layers[0], {layer: 'stat-ent-p', queryable: true, minScale: 1, maxScale: 1000000});
     store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: item, position: 0}));
+  });
+
+  it.each<ToolType | undefined>([undefined, 'select-statistics-circle', 'select-statistics-polygon'])(
+    'returns to feature mode and releases %s after removing the last supported layer',
+    async (tool) => {
+      store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+      store.dispatch(MapConfigActions.setReady({calculatedMinScale: 1_000_000, calculatedMaxScale: 1}));
+      store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: additionalItem(), position: 1}));
+      store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+      statistics.loadStatistics.mockReturnValue(of(statisticsResults));
+      store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
+      expect(await firstValueFrom(store.select(selectLoadingState))).toBe('loaded');
+      store.dispatch(StatisticsActions.highlightLayer({topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}));
+      if (tool) store.dispatch(ToolActions.activateTool({tool}));
+      const item = (await firstValueFrom(store.select(selectItems)))[0];
+      tools.cancelTool.mockClear();
+      drawing.clearStatisticsArea.mockClear();
+      drawing.clearStatisticsHighlights.mockClear();
+      store.dispatch(ActiveMapItemActions.removeActiveMapItem({activeMapItem: item}));
+      expect(await firstValueFrom(store.select(selectIsStatisticsAvailable))).toBe(false);
+      expect(await firstValueFrom(store.select(selectQueryMode))).toBe('feature');
+      expect(await firstValueFrom(store.select(selectToolMenuVisibility))).toBe('feature');
+      expect(await firstValueFrom(store.select(selectActiveTool))).toBeUndefined();
+      expect(tools.cancelTool).toHaveBeenCalledTimes(tool ? 1 : 0);
+      expect(drawing.clearStatisticsArea).toHaveBeenCalled();
+      expect(drawing.clearStatisticsHighlights).toHaveBeenCalled();
+      expect(await firstValueFrom(store.select(selectQueryPoint))).toEqual(point);
+      expect(await firstValueFrom(store.select(selectIsFeatureInfoOverlayVisible))).toBe(true);
+      expect(statistics.loadStatistics).toHaveBeenCalledOnce();
+      store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: item, position: 0}));
+      expect(await firstValueFrom(store.select(selectIsStatisticsAvailable))).toBe(true);
+      expect(await firstValueFrom(store.select(selectQueryMode))).toBe('feature');
+    },
+  );
+
+  it('keeps statistics active for hidden layers and when another supported layer remains', async () => {
+    const item = (await firstValueFrom(store.select(selectItems)))[0];
+    const second = createGb2WmsMapItemMock('StatBevoelkerungZH', 1);
+    second.settings.layers[0].layer = 'stat-bev-p';
+    store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: second, position: 1}));
+    store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
+    store.dispatch(ActiveMapItemActions.setVisibility({activeMapItem: second, visible: false}));
+    store.dispatch(ActiveMapItemActions.removeActiveMapItem({activeMapItem: item}));
+    expect(await firstValueFrom(store.select(selectIsStatisticsAvailable))).toBe(true);
+    expect(await firstValueFrom(store.select(selectQueryMode))).toBe('statistics');
+    expect(await firstValueFrom(store.select(selectToolMenuVisibility))).toBe('statistics');
+    store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
+    expect(await firstValueFrom(store.select(selectQueryMode))).toBe('feature');
+    expect(await firstValueFrom(store.select(selectToolMenuVisibility))).toBe('feature');
+  });
+
+  it('rejects unavailable mode and menu activation without opening or querying statistics', async () => {
+    store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
+    store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+    store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
+    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+    store.dispatch(MapUiActions.toggleToolMenu({tool: 'statistics'}));
+    expect(await firstValueFrom(store.select(selectQueryMode))).toBe('feature');
+    expect(await firstValueFrom(store.select(selectToolMenuVisibility))).toBe('feature');
+    expect(statistics.loadStatistics).not.toHaveBeenCalled();
+  });
+
+  it('preserves other tools when statistics layers disappear in feature mode', async () => {
+    store.dispatch(MapUiActions.toggleToolMenu({tool: 'measurement'}));
+    store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
+    expect(await firstValueFrom(store.select(selectQueryMode))).toBe('feature');
+    expect(await firstValueFrom(store.select(selectToolMenuVisibility))).toBe('measurement');
+    expect(await firstValueFrom(store.select(selectActiveTool))).toBe('measure-line');
+    expect(tools.cancelTool).not.toHaveBeenCalled();
   });
 
   it('loads complete feature results, hands off measurement, and restores the retained selection after map recreation', async () => {

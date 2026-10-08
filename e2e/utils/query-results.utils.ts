@@ -11,13 +11,15 @@ export async function expectFeatureResult(page: Page, result: Feature) {
   if (layers.length === 0) {
     await expect(resultHost(page).getByTestId('query-feature-results')).toContainText('Keine kartenspezifischen Treffer!');
   } else {
-    for (const layer of layers) {
-      const table = resultHost(page)
-        .getByTestId('feature-result-' + result.feature_info.results.topic + '-' + layer.layer)
-        .getByTestId('info-table');
-      await expect(table).toBeVisible();
-      await expect(table).toHaveAccessibleName(`Informationen zu ${layer.title}`);
-    }
+    await Promise.all(
+      layers.map(async (layer) => {
+        const table = resultHost(page)
+          .getByTestId('feature-result-' + result.feature_info.results.topic + '-' + layer.layer)
+          .getByTestId('info-table');
+        await expect(table).toBeVisible();
+        await expect(table).toHaveAccessibleName(`Informationen zu ${layer.title}`);
+      }),
+    );
   }
 }
 
@@ -48,16 +50,18 @@ export async function expectStatisticsResult(
   const rows = table.getByTestId('info-table-row');
   await expect(rows).toHaveCount(result.fields.length);
   const formatter = new Intl.NumberFormat('de-CH', {maximumFractionDigits: 2});
-  for (const [index, field] of result.fields.entries()) {
-    await expect
-      .poll(async () => (await rows.nth(index).getByTestId('info-table-row-label').innerText()).replace(/\u00ad/g, '').trim())
-      .toBe(result.results[field].alias);
-    const value = result.results[field].value;
-    const expected = value === null ? '–' : formatter.format(Number(value)).replace(/['’\s]/g, '');
-    await expect
-      .poll(async () => (await rows.nth(index).getByTestId('info-table-value').innerText()).replace(/['’\s]/g, ''))
-      .toBe(expected);
-  }
+  await Promise.all(
+    result.fields.map(async (field, index) => {
+      await expect
+        .poll(async () => (await rows.nth(index).getByTestId('info-table-row-label').innerText()).replaceAll('\u00ad', '').trim())
+        .toBe(result.results[field].alias);
+      const value = result.results[field].value;
+      const expected = value === null ? '–' : formatter.format(Number(value)).replaceAll(/['’\s]/g, '');
+      await expect
+        .poll(async () => (await rows.nth(index).getByTestId('info-table-value').innerText()).replaceAll(/['’\s]/g, ''))
+        .toBe(expected);
+    }),
+  );
   return result;
 }
 

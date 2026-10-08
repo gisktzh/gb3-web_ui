@@ -14,6 +14,7 @@
           (mouseenter)="onLayerHoverStart(layerView.layer)"
           (mouseleave)="onLayerHoverEnd()"
           (click)="toggleLayerHighlight(layerView.layer)"
+          (keydown.space)="marking.toggleWithKeyboard($event, layerView.layer)"
         >
           <div class="statistics-item__table-header-content">
             <span>{{ header.displayValue }}</span>
@@ -24,7 +25,6 @@
                 [disabled]="!layerView.layer.featureGeometry"
                 [checked]="highlightedLayerName() === layerView.layer.layer"
                 (change)="highlightLayer(layerView.layer)"
-                (keydown.space)="marking.toggleWithKeyboard($event, layerView.layer)"
                 labelPosition="before"
               >
                 Markieren:

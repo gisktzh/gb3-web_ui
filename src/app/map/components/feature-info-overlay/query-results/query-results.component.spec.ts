@@ -1,7 +1,7 @@
 import {Component, input} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {FeatureFlagsService} from '../../../../shared/services/feature-flags.service';
+import {selectIsStatisticsAvailable} from '../../../../state/map/selectors/statistics-availability.selector';
 import {QueryModeActions} from '../../../../state/map/actions/query-mode.actions';
 import {selectQueryMode} from '../../../../state/map/reducers/query-mode.reducer';
 import {FeatureInfoComponent} from '../feature-info/feature-info.component';
@@ -21,13 +21,11 @@ class StatisticsResultsStub {
 describe('QueryResultsComponent', () => {
   let fixture: ComponentFixture<QueryResultsComponent>;
   let store: MockStore;
-  let statisticsEnabled: boolean;
 
   beforeEach(async () => {
-    statisticsEnabled = true;
     await TestBed.configureTestingModule({
       imports: [QueryResultsComponent],
-      providers: [provideMockStore(), {provide: FeatureFlagsService, useValue: {getFeatureFlag: () => statisticsEnabled}}],
+      providers: [provideMockStore()],
     })
       .overrideComponent(QueryResultsComponent, {
         remove: {imports: [FeatureInfoComponent, StatisticsComponent]},
@@ -36,6 +34,7 @@ describe('QueryResultsComponent', () => {
       .compileComponents();
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectQueryMode, 'feature');
+    store.overrideSelector(selectIsStatisticsAvailable, true);
   });
 
   async function render() {
@@ -70,10 +69,30 @@ describe('QueryResultsComponent', () => {
     expect(fixture.nativeElement.querySelector('feature-info')).toBeNull();
   });
 
-  it('keeps feature-only content when statistics is disabled', async () => {
-    statisticsEnabled = false;
+  it('keeps feature-only content when statistics is unavailable', async () => {
+    store.overrideSelector(selectIsStatisticsAvailable, false);
     await render();
     expect(fixture.nativeElement.querySelector('[role="tablist"]')).toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('Feature results');
+  });
+
+  it('updates tabs and content when supported layers are added or removed', async () => {
+    store.overrideSelector(selectIsStatisticsAvailable, false);
+    await render();
+    expect(fixture.nativeElement.querySelector('[role="tablist"]')).toBeNull();
+    store.overrideSelector(selectIsStatisticsAvailable, true);
+    store.refreshState();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('[role="tab"]')).toHaveLength(2);
+    store.overrideSelector(selectQueryMode, 'statistics');
+    store.refreshState();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Statistics results');
+    store.overrideSelector(selectIsStatisticsAvailable, false);
+    store.refreshState();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="tablist"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('statistics')).toBeNull();
     expect(fixture.nativeElement.textContent).toContain('Feature results');
   });
 

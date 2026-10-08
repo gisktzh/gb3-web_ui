@@ -30,6 +30,9 @@ import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {deriveBoundingBoxCenter} from '../../../shared/utils/statistics-geometry.utils';
 import {selectIsMapServiceInitialized, selectReady} from '../reducers/map-config.reducer';
+import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
+import {QueryModeActions} from '../actions/query-mode.actions';
+import {selectLoadingState} from '../reducers/statistics.reducer';
 
 describe('StatisticsEffects', () => {
   let actions$: Observable<Action>;
@@ -72,6 +75,7 @@ describe('StatisticsEffects', () => {
     effects = TestBed.inject(StatisticsEffects);
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectStatisticsQueries, queries);
+    store.overrideSelector(selectIsStatisticsAvailable, true);
     store.overrideSelector(selectAreaInSquareMeters, 10_000);
     store.overrideSelector(selectQueryMode, 'feature');
     store.overrideSelector(selectData, []);
@@ -95,6 +99,26 @@ describe('StatisticsEffects', () => {
     store.refreshState();
     expect(actual).toEqual([StatisticsActions.invalidateContent()]);
     subscription.unsubscribe();
+  });
+
+  it.each([true, false])('requests statistics on invalidation only when availability is %s', (available) => {
+    store.overrideSelector(selectIsStatisticsAvailable, available);
+    store.overrideSelector(selectQueryMode, 'statistics');
+    store.overrideSelector(selectGeometry, square);
+    actions$ = of(StatisticsActions.invalidateContent());
+    const actual: Action[] = [];
+    effects.requestStatistics$.subscribe((action) => actual.push(action));
+    expect(actual).toEqual(available ? [StatisticsActions.sendRequest()] : []);
+  });
+
+  it.each([true, false])('requests statistics on mode change only when availability is %s', (available) => {
+    store.overrideSelector(selectIsStatisticsAvailable, available);
+    store.overrideSelector(selectGeometry, square);
+    store.overrideSelector(selectLoadingState, undefined);
+    actions$ = of(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+    const actual: Action[] = [];
+    effects.requestStatisticsOnModeChange$.subscribe((action) => actual.push(action));
+    expect(actual).toEqual(available ? [StatisticsActions.sendRequest()] : []);
   });
 
   describe('highlightResults$', () => {
