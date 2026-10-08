@@ -3,7 +3,7 @@ import {BaseMapDataItemComponent} from './base-map-data-item.component';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
 import {selectActiveTool} from '../../../../state/map/reducers/tool.reducer';
-import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelContent} from '@angular/material/expansion';
+import {MatExpansionPanel, MatExpansionPanelContent} from '@angular/material/expansion';
 import {MatTooltip} from '@angular/material/tooltip';
 import {DelayedMouseEnterDirective} from '../../../../shared/directives/delayed-mouse-enter.directive';
 import {MatIconButton} from '@angular/material/button';
@@ -28,7 +28,6 @@ const FAVOURITE_ERROR_TOOLTIP =
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatExpansionPanel,
-    MatExpansionPanelHeader,
     MatTooltip,
     DelayedMouseEnterDirective,
     MatIconButton,

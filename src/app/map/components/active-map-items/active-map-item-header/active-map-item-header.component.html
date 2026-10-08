@@ -4,6 +4,8 @@
     (click)="activeMapItemExpansionPanel().toggle()"
     [attr.data-test-id]="activeMapItemExpansionPanel().expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
     [attr.aria-label]="activeMapItemExpansionPanel().expanded ? 'Ebenen ausblenden' : 'Ebenen anzeigen'"
+    [attr.aria-expanded]="activeMapItemExpansionPanel().expanded"
+    [attr.aria-controls]="activeMapItemExpansionPanel().id"
     mat-icon-button
   >
     <mat-icon [fontIcon]="activeMapItemExpansionPanel().expanded ? 'arrow_drop_down' : 'arrow_right'" />
