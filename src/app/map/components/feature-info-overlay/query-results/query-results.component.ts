@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
 import {Store} from '@ngrx/store';
-import {FeatureFlagsService} from '../../../../shared/services/feature-flags.service';
+import {selectIsStatisticsAvailable} from '../../../../state/map/selectors/statistics-availability.selector';
 import {QueryMode} from '../../../../shared/types/query-mode.type';
 import {QueryModeActions} from '../../../../state/map/actions/query-mode.actions';
 import {selectQueryMode} from '../../../../state/map/reducers/query-mode.reducer';
@@ -19,7 +19,7 @@ export class QueryResultsComponent {
   private readonly store = inject(Store);
 
   public readonly showInteractiveElements = input(true);
-  public readonly statisticsEnabled = inject(FeatureFlagsService).getFeatureFlag('statisticsTool');
+  public readonly isStatisticsAvailable = this.store.selectSignal(selectIsStatisticsAvailable);
   public readonly queryMode = this.store.selectSignal(selectQueryMode);
 
   public selectMode(queryMode: QueryMode) {

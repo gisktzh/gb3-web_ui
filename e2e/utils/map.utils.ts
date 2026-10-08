@@ -34,10 +34,10 @@ async function mapViewport(page: Page) {
 }
 
 /** Read the visible map's URL/scale and layout without Angular debug hooks or map-service calls. */
-export async function getMapPoint(page: Page, offset = {x: 0, y: 0}): Promise<MapPoint> {
+export async function getMapPoint(page: Page, offset?: {x: number; y: number}): Promise<MapPoint> {
   const viewport = await mapViewport(page);
   const center = {x: viewport.x + viewport.width / 2, y: viewport.y + viewport.height / 2};
-  const position = {x: Math.round(center.x + offset.x), y: Math.round(center.y + offset.y)};
+  const position = {x: Math.round(center.x + (offset?.x ?? 0)), y: Math.round(center.y + (offset?.y ?? 0))};
   expect(position.x).toBeGreaterThan(viewport.x);
   expect(position.x).toBeLessThan(viewport.x + viewport.width);
   expect(position.y).toBeGreaterThan(viewport.y);
@@ -83,7 +83,7 @@ export async function waitForMap(page: Page) {
   }
   await expect(page.getByTestId('active-map-items').getByTestId('loading-progress')).toHaveCount(0, {timeout: 30_000});
   if ((page.viewportSize()?.width ?? 1920) >= 768) {
-    await expect(page.getByTestId('map-select-statistic')).toBeEnabled();
+    await expect(page.getByTestId('map-select-feature')).toBeEnabled();
   }
   await page.waitForLoadState('networkidle');
 }

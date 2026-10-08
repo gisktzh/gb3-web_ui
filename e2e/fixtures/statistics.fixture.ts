@@ -15,14 +15,15 @@ export interface StatisticsSession {
   addMap: (topic: Topic) => Promise<void>;
 }
 
-export const test = base.extend<{statisticsSession: StatisticsSession}>({
-  statisticsSession: async ({page, useHar, openUrlWithCoordinates, login, filterForLayer}, use, testInfo) => {
+export const test = base.extend<{statisticsSession: StatisticsSession; addStatisticsMapOnStart: boolean}>({
+  addStatisticsMapOnStart: [true, {option: true}],
+  statisticsSession: async ({page, useHar, openUrlWithCoordinates, login, filterForLayer, addStatisticsMapOnStart}, use, testInfo) => {
     if (process.env['WRITE_HAR'] && (!process.env['TEST_EIAM_USERNAME'] || !process.env['TEST_EIAM_PASSWORD'])) {
       throw new Error('Set TEST_EIAM_USERNAME and TEST_EIAM_PASSWORD to record the authenticated statistics tests.');
     }
 
     // Each scenario records different queries; separate files prevent later tests from overwriting them.
-    await useHar(testInfo.title.replace(/\W+/g, '-').toLowerCase());
+    await useHar(testInfo.title.replaceAll(/\W+/g, '-').toLowerCase());
     const statisticsQueries: URL[] = [];
     const featureQueries: URL[] = [];
     const statisticsResponses: Response[] = [];
@@ -37,7 +38,7 @@ export const test = base.extend<{statisticsSession: StatisticsSession}>({
       const pathname = new URL(response.url()).pathname;
       if (/\/topics\/[^/]+\/statistic_info$/.test(pathname)) statisticsResponses.push(response);
       if (/\/topics\/[^/]+\/feature_info$/.test(pathname)) featureResponses.push(response);
-      if (/\/gb3\/v4\/topics$/.test(pathname) && response.ok()) catalogueResponses.push(response);
+      if (pathname.endsWith('/gb3/v4/topics') && response.ok()) catalogueResponses.push(response);
     };
     page.on('request', onRequest);
     page.on('response', onResponse);
@@ -69,17 +70,20 @@ export const test = base.extend<{statisticsSession: StatisticsSession}>({
       const topic = queryableTopics.find((entry) => entry.topic === 'StatBeschaeftigteZH') ?? queryableTopics[0];
       if (!topic) throw new Error('The test account must have access to a statistics map with feature queries at scale 1:15000.');
 
+      const waitForActiveMap = async (id: string) => {
+        const activeMapItem = page.getByTestId('active-map-item-' + id);
+        await expect(activeMapItem).toBeVisible({timeout: 30_000});
+        await expect(activeMapItem.getByTestId('loading-progress')).toHaveCount(0, {timeout: 30_000});
+      };
       const addMap = async (selectedTopic: Topic) => {
         await filterForLayer(selectedTopic.title);
         const addButton = page.getByTestId('catalogue-map-' + selectedTopic.topic).getByTestId('add-active-map');
         await expect(addButton).toBeVisible({timeout: 30_000});
         await expect(addButton).toBeEnabled();
         await addButton.click();
-        const activeMapItem = page.getByTestId('active-map-item-' + selectedTopic.topic);
-        await expect(activeMapItem).toBeVisible({timeout: 30_000});
-        await expect(activeMapItem.getByTestId('loading-progress')).toHaveCount(0, {timeout: 30_000});
+        await waitForActiveMap(selectedTopic.topic);
       };
-      await addMap(topic);
+      if (addStatisticsMapOnStart) await addMap(topic);
       await setMapScale(page, 15_000);
 
       await use({

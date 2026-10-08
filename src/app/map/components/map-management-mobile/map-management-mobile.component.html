@@ -2,6 +2,7 @@
   @if (filterString() === undefined) {
     <div class="map-management-mobile-header__buttons">
       <button
+        data-test-id="map-management-tab-active"
         [class.map-management-mobile-header__buttons__button--selected]="activeTab() === 'activeMaps'"
         class="map-management-mobile-header__buttons__button"
         mat-flat-button

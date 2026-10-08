@@ -3,13 +3,15 @@ import {provideEffects} from '@ngrx/effects';
 import {provideStore, Store} from '@ngrx/store';
 import {firstValueFrom} from 'rxjs';
 import {MAP_SERVICE} from '../../../app.tokens';
-import {FeatureFlagsService} from '../../../shared/services/feature-flags.service';
+import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {QueryMode} from '../../../shared/types/query-mode.type';
 import {ToolType} from '../../../shared/types/tool.type';
 import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
+import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {ToolActions} from '../actions/tool.actions';
+import {reducer as activeMapItemReducer} from '../reducers/active-map-item.reducer';
 import {reducer as mapUiReducer, selectToolMenuVisibility} from '../reducers/map-ui.reducer';
 import {reducer as queryModeReducer, selectQueryMode} from '../reducers/query-mode.reducer';
 import {reducer as toolReducer, selectActiveTool} from '../reducers/tool.reducer';
@@ -18,7 +20,6 @@ import {ToolEffects} from './tool.effects';
 
 describe('query interaction ownership', () => {
   let store: Store;
-  let statisticsEnabled: boolean;
   const tools = {
     initializeMeasurement: vi.fn(),
     initializeDrawing: vi.fn(),
@@ -28,16 +29,17 @@ describe('query interaction ownership', () => {
   };
 
   beforeEach(() => {
-    statisticsEnabled = true;
     TestBed.configureTestingModule({
       providers: [
-        provideStore({mapUi: mapUiReducer, queryMode: queryModeReducer, tool: toolReducer}),
+        provideStore({activeMapItem: activeMapItemReducer, mapUi: mapUiReducer, queryMode: queryModeReducer, tool: toolReducer}),
         provideEffects(QueryModeEffects, ToolEffects),
         {provide: MAP_SERVICE, useValue: {getToolService: () => tools}},
-        {provide: FeatureFlagsService, useValue: {getFeatureFlag: () => statisticsEnabled}},
       ],
     });
     store = TestBed.inject(Store);
+    const item = createGb2WmsMapItemMock('StatBeschaeftigteZH', 1);
+    item.settings.layers[0].layer = 'stat-ent-p';
+    store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: item, position: 0}));
   });
 
   async function expectOwnership(queryMode: QueryMode, menu: ToolMenuVisibility, tool?: ToolType) {
@@ -105,8 +107,8 @@ describe('query interaction ownership', () => {
     expect(tools.cancelTool).toHaveBeenCalledOnce();
   });
 
-  it('normalizes disabled statistics before changing tool ownership', async () => {
-    statisticsEnabled = false;
+  it('normalizes unavailable statistics before changing tool ownership', async () => {
+    store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
     store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
 
