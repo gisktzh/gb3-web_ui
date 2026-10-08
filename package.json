@@ -22,7 +22,7 @@
     "lint": "eslint",
     "knip": "knip",
     "e2e": "ng e2e --grep-invert accessibility",
-    "a11y": "ng e2e --grep accessibility"
+    "a11y": "ng e2e --grep accessibility --test-project=chromium"
   },
   "private": true,
   "engines": {
