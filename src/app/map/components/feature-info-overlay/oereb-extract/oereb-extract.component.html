@@ -38,34 +38,37 @@
         @for (theme of concernedThemes(); track $index) {
           <map-overlay-list-item [forceExpanded]="true" [overlayTitle]="theme.name" [hasBackgroundColor]="false">
             <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
-            <oereb-info-list-map-overlay [listItem]="theme.generalInfo" />
-
             @for (restriction of theme.restrictions; track $index) {
               <oereb-info-list-map-overlay [listItem]="restriction" />
             }
+            <oereb-info-list-map-overlay [listItem]="theme.generalInfo" />
           </map-overlay-list-item>
         }
       </map-overlay-list-item>
     }
 
-    @if (notConcernedThemes().rows.length > 0) {
-      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht betroffene Themen" [hasBackgroundColor]="false">
-        <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
+    <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht betroffene Themen" [hasBackgroundColor]="false">
+      <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
-        <div class="oereb-extract__table">
-          <resizable-info-table [tableData]="notConcernedThemes()" tableLabel="Nicht betroffene Themen" />
-        </div>
-      </map-overlay-list-item>
-    }
+      <div class="feature-info-content" #containerNotConcernedThemes>
+        @if (notConcernedThemes().length > 0) {
+          <oereb-not-concerned-themes-list [listItems]="notConcernedThemes()" />
+        } @else {
+          Keine nicht betroffenen Themen.
+        }
+      </div>
+    </map-overlay-list-item>
 
-    @if (notAvailableThemes().rows.length > 0) {
-      <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht verfügbare Themen" [hasBackgroundColor]="false">
-        <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
+    <map-overlay-list-item [forceExpanded]="true" overlayTitle="Nicht verfügbare Themen" [hasBackgroundColor]="false">
+      <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
-        <div class="oereb-extract__table">
-          <resizable-info-table [tableData]="notAvailableThemes()" tableLabel="Nicht verfügbare Themen" />
-        </div>
-      </map-overlay-list-item>
-    }
+      <div class="feature-info-content" #containerNotConcernedThemes>
+        @if (notAvailableThemes().length > 0) {
+          <oereb-not-concerned-themes-list [listItems]="notAvailableThemes()" />
+        } @else {
+          Keine nicht verfügbaren Themen.
+        }
+      </div>
+    </map-overlay-list-item>
   </map-overlay-list-item>
 </div>
