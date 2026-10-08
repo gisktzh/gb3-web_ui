@@ -10,7 +10,7 @@ import {ToolActions} from '../actions/tool.actions';
 import {selectToolMenuVisibility} from '../reducers/map-ui.reducer';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
-import {FeatureFlagsService} from '../../../shared/services/feature-flags.service';
+import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
 import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
 import {ToolType} from '../../../shared/types/tool.type';
 
@@ -19,20 +19,19 @@ describe('QueryModeEffects', () => {
   let effects: QueryModeEffects;
   let store: MockStore;
 
-  function configureTestBed(isStatisticsToolEnabled = true) {
+  function configureTestBed(isStatisticsAvailable = true) {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      providers: [
-        QueryModeEffects,
-        provideMockActions(() => actions$),
-        provideMockStore(),
-        {provide: FeatureFlagsService, useValue: {getFeatureFlag: () => isStatisticsToolEnabled}},
-      ],
+      providers: [QueryModeEffects, provideMockActions(() => actions$), provideMockStore()],
     });
 
     effects = TestBed.inject(QueryModeEffects);
     store = TestBed.inject(MockStore);
+    store.overrideSelector(selectIsStatisticsAvailable, isStatisticsAvailable);
+    store.overrideSelector(selectQueryMode, 'feature');
+    store.overrideSelector(selectToolMenuVisibility, 'feature');
+    store.overrideSelector(selectActiveTool, undefined);
   }
 
   afterEach(() => {
@@ -49,36 +48,76 @@ describe('QueryModeEffects', () => {
     expect(actualAction).toBeUndefined();
   }
 
-  describe('enforceFeatureFlag$', () => {
-    it('falls back to the feature mode if the statistics tool is disabled', () => {
+  describe('enforceStatisticsAvailability$', () => {
+    it('falls back to the feature mode if statistics are unavailable', () => {
       configureTestBed(false);
-
-      actions$ = of(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+      store.overrideSelector(selectQueryMode, 'statistics');
 
       let actualAction;
-      effects.enforceFeatureFlag$.subscribe((action) => (actualAction = action));
+      effects.enforceStatisticsAvailability$.subscribe((action) => (actualAction = action));
 
       expect(actualAction).toEqual(QueryModeActions.setQueryMode({queryMode: 'feature'}));
     });
 
-    it('leaves the statistics mode alone if the statistics tool is enabled', async () => {
+    it('leaves the statistics mode alone if a supported layer is present', async () => {
       configureTestBed(true);
-
-      actions$ = of(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
-
-      await expectNoAction(effects.enforceFeatureFlag$);
+      store.overrideSelector(selectQueryMode, 'statistics');
+      await expectNoAction(effects.enforceStatisticsAvailability$);
     });
 
     it('does not react to the feature mode and therefore cannot loop', async () => {
       configureTestBed(false);
 
-      actions$ = of(QueryModeActions.setQueryMode({queryMode: 'feature'}));
+      await expectNoAction(effects.enforceStatisticsAvailability$);
+    });
 
-      await expectNoAction(effects.enforceFeatureFlag$);
+    it('reacts when the last supported layer disappears', () => {
+      configureTestBed();
+      store.overrideSelector(selectQueryMode, 'statistics');
+      const actual: Action[] = [];
+      const subscription = effects.enforceStatisticsAvailability$.subscribe((action) => actual.push(action));
+      expect(actual).toEqual([]);
+      store.overrideSelector(selectIsStatisticsAvailable, false);
+      store.refreshState();
+      expect(actual).toEqual([QueryModeActions.setQueryMode({queryMode: 'feature'})]);
+      subscription.unsubscribe();
+    });
+
+    it('closes an unavailable statistics menu even if feature mode is already active', () => {
+      configureTestBed(false);
+      store.overrideSelector(selectToolMenuVisibility, 'statistics');
+      const actual: Action[] = [];
+      const subscription = effects.enforceStatisticsAvailability$.subscribe((action) => actual.push(action));
+      expect(actual).toEqual([QueryModeActions.setQueryMode({queryMode: 'feature'})]);
+      subscription.unsubscribe();
+    });
+  });
+
+  describe('selectQueryMode$', () => {
+    it('selects statistics when a supported layer is present', () => {
+      configureTestBed();
+      actions$ = of(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
+      const actual: Action[] = [];
+      effects.selectQueryMode$.subscribe((action) => actual.push(action));
+      expect(actual).toEqual([MapUiActions.toggleToolMenu({tool: 'statistics'})]);
+    });
+
+    it('falls back to feature mode for unavailable explicit statistics selection', () => {
+      configureTestBed(false);
+      store.overrideSelector(selectActiveTool, 'measure-line');
+      actions$ = of(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
+      const actual: Action[] = [];
+      effects.selectQueryMode$.subscribe((action) => actual.push(action));
+      expect(actual).toEqual([ToolActions.cancelTool(), MapUiActions.toggleToolMenu({tool: 'feature'})]);
     });
   });
 
   describe('openStatisticsToolMenu$', () => {
+    it('does not open an unavailable statistics submenu', async () => {
+      configureTestBed(false);
+      actions$ = of(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+      await expectNoAction(effects.openStatisticsToolMenu$);
+    });
     it('opens the statistics submenu when the statistics mode is selected', () => {
       configureTestBed();
       store.overrideSelector(selectToolMenuVisibility, 'feature');
@@ -143,6 +182,11 @@ describe('QueryModeEffects', () => {
   });
 
   describe('syncQueryModeWithToolMenu$', () => {
+    it('does not enter statistics through an unavailable tool menu', async () => {
+      configureTestBed(false);
+      actions$ = of(MapUiActions.toggleToolMenu({tool: 'statistics'}));
+      await expectNoAction(effects.syncQueryModeWithToolMenu$);
+    });
     it('enters the statistics mode when the statistics tool is picked', () => {
       configureTestBed();
       store.overrideSelector(selectQueryMode, 'feature');

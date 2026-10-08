@@ -100,6 +100,7 @@
     @if (screenMode() === 'mobile') {
       <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--right">
         <button
+          data-test-id="map-management-open"
           mat-icon-button
           (click)="showMapManagement()"
           color="accent"

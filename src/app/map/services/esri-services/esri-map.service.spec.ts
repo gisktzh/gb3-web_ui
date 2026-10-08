@@ -447,7 +447,7 @@ describe('EsriMapService', () => {
     service.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.StatisticsHighlight);
     const highlight = internalLayers.find((layer) => layer.id === `${internalLayerPrefix}${InternalDrawingLayer.StatisticsHighlight}`)!;
     const area = internalLayers.find((layer) => layer.id === `${internalLayerPrefix}${InternalDrawingLayer.StatisticsArea}`)!;
-    expect(highlight.graphics.length).toBe(1);
+    expect(highlight.graphics).toHaveLength(1);
     expect(highlight.graphics.getItemAt(0)?.geometry).toMatchObject({
       type: 'point',
       x: 2680600,
@@ -460,8 +460,8 @@ describe('EsriMapService', () => {
       color: {r: 255, g: 255, b: 0, a: 0.8},
     });
     service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsHighlight);
-    expect(highlight.graphics.length).toBe(0);
-    expect(area.graphics.length).toBe(1);
+    expect(highlight.graphics).toHaveLength(0);
+    expect(area.graphics).toHaveLength(1);
     service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsArea);
   });
 

@@ -22,6 +22,10 @@
     flex-direction: column;
     background-color: ktzh-variables.$zh-background-color;
 
+    .map-tools-desktop__list__statistics-tooltip {
+      display: flex;
+    }
+
     .map-tools-desktop__list__divider {
       width: 30px;
     }

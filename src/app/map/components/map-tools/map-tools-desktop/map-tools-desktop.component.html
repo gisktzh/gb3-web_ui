@@ -1,19 +1,23 @@
 <div class="map-tools-desktop">
   <div class="map-tools-desktop__list" typedTourAnchor="map.tools">
-    <ng-container *featureFlag="'statisticsTool'">
-      <button
-        (click)="toggleToolMenu('feature')"
-        [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'feature'"
-        class="map-tools-desktop__list__button"
-        color="accent"
-        data-test-id="map-select-feature"
-        mat-icon-button
-        [matTooltip]="tooltipText.selectFeature"
-        [disabled]="!isMapReady()"
-        [aria-label]="tooltipText.selectFeature"
-      >
-        <mat-icon svgIcon="ktzh_select_feature" />
-      </button>
+    <button
+      (click)="toggleToolMenu('feature')"
+      [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'feature'"
+      class="map-tools-desktop__list__button"
+      color="accent"
+      data-test-id="map-select-feature"
+      mat-icon-button
+      [matTooltip]="tooltipText.selectFeature"
+      [disabled]="!isMapReady()"
+      [aria-label]="tooltipText.selectFeature"
+    >
+      <mat-icon svgIcon="ktzh_select_feature" />
+    </button>
+    <span
+      class="map-tools-desktop__list__statistics-tooltip"
+      [matTooltip]="isMapReady() && !isStatisticsAvailable() ? tooltipText.statisticsUnavailable : tooltipText.selectStatistic"
+      [matTooltipDisabled]="isMapReady() && isStatisticsAvailable()"
+    >
       <button
         (click)="toggleToolMenu('statistics')"
         [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'statistics'"
@@ -22,13 +26,14 @@
         data-test-id="map-select-statistic"
         mat-icon-button
         [matTooltip]="tooltipText.selectStatistic"
-        [disabled]="!isMapReady()"
+        [matTooltipDisabled]="!isMapReady() || !isStatisticsAvailable()"
+        [disabled]="!isMapReady() || !isStatisticsAvailable()"
         [aria-label]="tooltipText.selectStatistic"
       >
         <mat-icon svgIcon="ktzh_select_statistic" />
       </button>
-      <mat-divider class="map-tools-desktop__list__divider" />
-    </ng-container>
+    </span>
+    <mat-divider class="map-tools-desktop__list__divider" />
     <button
       (click)="toggleToolMenu('measurement')"
       [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'measurement'"

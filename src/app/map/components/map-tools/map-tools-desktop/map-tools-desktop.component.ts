@@ -15,13 +15,14 @@ import {MeasurementToolsComponent} from '../measurement-tools/measurement-tools.
 import {DrawingToolsComponent} from '../drawing-tools/drawing-tools.component';
 import {DataDownloadSelectionToolsComponent} from '../data-download-selection-tools/data-download-selection-tools.component';
 import {StatisticsToolsComponent} from '../statistics-tools/statistics-tools.component';
-import {FeatureFlagDirective} from '../../../../shared/directives/feature-flag.directive';
+import {selectIsStatisticsAvailable} from '../../../../state/map/selectors/statistics-availability.selector';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
 import {QueryModeActions} from '../../../../state/map/actions/query-mode.actions';
 
 const TOOLTIP_TEXT = {
   selectFeature: 'Objekt-Abfrage',
   selectStatistic: 'Statistik-Abfrage',
+  statisticsUnavailable: 'Für die aktiven Kartenebenen sind keine Statistiken verfügbar.',
   measurement: 'Messen',
   drawing: 'Zeichnen',
   dataDownload: 'Daten beziehen',
@@ -44,7 +45,6 @@ const TOOLTIP_TEXT = {
     DrawingToolsComponent,
     DataDownloadSelectionToolsComponent,
     StatisticsToolsComponent,
-    FeatureFlagDirective,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   host: {
@@ -56,6 +56,7 @@ export class MapToolsDesktopComponent {
 
   public readonly toolMenuVisibility = this.store.selectSignal(selectToolMenuVisibility);
   public readonly isMapReady = this.store.selectSignal(selectReady);
+  public readonly isStatisticsAvailable = this.store.selectSignal(selectIsStatisticsAvailable);
   public readonly activeTool = this.store.selectSignal(selectActiveTool);
 
   public tooltipText = TOOLTIP_TEXT;
