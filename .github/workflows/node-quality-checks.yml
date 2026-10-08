@@ -101,16 +101,10 @@ jobs:
         include:
           - name: chromium
             browser: chromium
-            grep: --grep-invert accessibility
           - name: firefox
             browser: firefox
-            grep: --grep-invert accessibility
           - name: webkit
             browser: webkit
-            grep: --grep-invert accessibility
-          - name: accessibility
-            browser: chromium
-            grep: --grep accessibility
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -126,7 +120,7 @@ jobs:
 
       - name: Run tests
         run: |
-          xvfb-run --auto-servernum npm run e2e -- --configuration ci --test-project ${{ matrix.browser }} ${{ matrix.grep }}
+          xvfb-run --auto-servernum npm run e2e -- --configuration ci --test-project ${{ matrix.browser }}
         env:
           CI: 1
           LIBGL_ALWAYS_SOFTWARE: 1
@@ -137,5 +131,41 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.name }}
+          path: playwright-report/
+          retention-days: 30
+
+  a11y:
+    name: Run accessibility tests
+    runs-on: ${{ inputs.runner_version }}
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests
+        run: |
+          xvfb-run --auto-servernum npm run a11y -- --configuration ci --test-project chromium
+        env:
+          CI: 1
+          LIBGL_ALWAYS_SOFTWARE: 1
+          NODE_OPTIONS: '--max-old-space-size=8192'
+          HOME: /root
+
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-accessibility
           path: playwright-report/
           retention-days: 30
