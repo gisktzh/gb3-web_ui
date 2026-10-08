@@ -10,6 +10,11 @@
   &.mat-expansion-panel {
     @include mixins.no-box-shadow;
     width: 100%;
+    // Material sets an opaque white panel background by default. As the panel is now a separate
+    // sibling element from the header (split up to fix an a11y `nested-interactive` violation),
+    // that opaque white would otherwise cover the `.active-map-item--expanded` blue background
+    // coming from the shared parent, creating a visible white seam between header and content.
+    background-color: transparent;
   }
 }
 
