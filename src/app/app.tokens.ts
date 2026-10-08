@@ -6,6 +6,7 @@ import {TimeService} from './shared/interfaces/time-service.interface';
 import {NewsService} from './shared/interfaces/news-service.interface';
 import {DrawingSymbolsService} from './shared/interfaces/drawing-symbols-service.interface';
 import {timeServiceFactory} from './shared/factories/time-service.factory';
+import {StatisticsService} from './shared/interfaces/statistics-service.interface';
 
 export const MAP_LOADER_SERVICE = new InjectionToken<MapLoaderService>('MapLoaderService');
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
@@ -16,3 +17,4 @@ export const TIME_SERVICE = new InjectionToken<TimeService>('TimeService', {
   factory: timeServiceFactory,
 });
 export const DRAWING_SYMBOLS_SERVICE = new InjectionToken<DrawingSymbolsService>('DrawingSymbolsService');
+export const STATISTICS_SERVICE = new InjectionToken<StatisticsService>('StatisticsService');

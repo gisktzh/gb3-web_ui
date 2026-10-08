@@ -77,9 +77,17 @@
     </a>
     <mat-divider class="navbar__divider" vertical />
     @if (!isAuthenticated()) {
-      <button (click)="startLogin()" class="navbar__item navbar__item--button" mat-button><mat-icon svgIcon="ktzh_user" />Login</button>
+      <button data-test-id="navbar-login" (click)="startLogin()" class="navbar__item navbar__item--button" mat-button>
+        <mat-icon svgIcon="ktzh_user" />Login
+      </button>
     } @else {
-      <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__item--button" mat-button #trigger="matMenuTrigger">
+      <button
+        data-test-id="navbar-user-menu"
+        [matMenuTriggerFor]="userMenu"
+        class="navbar__item navbar__item--button"
+        mat-button
+        #trigger="matMenuTrigger"
+      >
         <mat-icon svgIcon="ktzh_user" />
         {{ userName() }}
         <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="navbar__item__arrow-icon" />

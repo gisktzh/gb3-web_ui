@@ -16,7 +16,7 @@
 
       <mat-card-actions align="end">
         @if (!hasPreviousStep()) {
-          <button (click)="tourService.end()" class="prev" mat-button>Überspringen</button>
+          <button data-test-id="onboarding-skip" (click)="tourService.end()" class="prev" mat-button>Überspringen</button>
         } @else {
           <button (click)="tourService.prev()" class="prev" mat-button>
             <mat-icon>chevron_left</mat-icon>

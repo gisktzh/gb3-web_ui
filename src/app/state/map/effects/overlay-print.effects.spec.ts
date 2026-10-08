@@ -19,6 +19,7 @@ import {FileDownloadService} from '../../../shared/services/file-download-servic
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {DRAWING_SYMBOLS_SERVICE, MAP_SERVICE} from '../../../app.tokens';
 import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
+import {selectQueryMode} from '../reducers/query-mode.reducer';
 
 describe('OverlayPrintEffects', () => {
   const creationResponseMock: PrintCreationResponse = {reportUrl: 'response url'};
@@ -48,6 +49,7 @@ describe('OverlayPrintEffects', () => {
     gb3PrintService = TestBed.inject(Gb3PrintService);
     fileDownloadService = TestBed.inject(FileDownloadService);
     store = TestBed.inject(MockStore);
+    store.overrideSelector(selectQueryMode, 'feature');
   });
 
   afterEach(() => {
@@ -105,6 +107,15 @@ describe('OverlayPrintEffects', () => {
       gb3PrintServiceSpy = vi.spyOn(gb3PrintService, 'printFeatureInfo').mockReturnValue(of(creationResponseMock));
       mockPrintConfiguration = {items: [{topic: 'test', layers: ['a', 'b']}], x: 25, y: 65};
       store.overrideSelector(selectPrintFeatureInfoItems, mockPrintConfiguration);
+    });
+
+    it('rejects statistics-mode requests without calling the feature endpoint', () => {
+      store.overrideSelector(selectQueryMode, 'statistics');
+      actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
+      const actual: Action[] = [];
+      effects.requestFeatureInfoPrint$.subscribe((action) => actual.push(action));
+      expect(gb3PrintServiceSpy).not.toHaveBeenCalled();
+      expect(actual).toEqual([OverlayPrintActions.setPrintRequestError({overlay: 'featureInfo', error: expect.any(Error)})]);
     });
 
     it('dispatches OverlayPrintActions.setPrintRequestResponse() with the service response on success', () => {

@@ -57,6 +57,7 @@ import MapView from '@arcgis/core/views/MapView';
 import EsriMap from '@arcgis/core/Map';
 import {GoToOptions2D, GoToTarget2D} from '@arcgis/core/views/types';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
+import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -292,6 +293,40 @@ describe('EsriToolService', () => {
         service.initializeDataDownloadSelection('select-rectangle');
         expect(polygonSpy).toHaveBeenCalled();
       });
+      it.each(['select-circle', 'select-polygon', 'select-rectangle'] as const)(
+        'adapts the neutral result of %s to the existing polygon download payload',
+        (tool) => {
+          const complete = vi.spyOn(service, 'completeSelection');
+          const graphic = new Graphic({
+            symbol: new SimpleFillSymbol(),
+            geometry: new Polygon({
+              spatialReference: {wkid: 2056},
+              rings: [
+                [
+                  [0, 0],
+                  [100, 0],
+                  [100, 100],
+                  [0, 0],
+                ],
+              ],
+            }),
+          });
+          vi.spyOn(reactiveUtils, 'on').mockImplementation((_getTarget, eventName, callback) => {
+            if (eventName === 'create') {
+              callback({state: 'complete', graphic});
+            }
+            return {remove: vi.fn()};
+          });
+          service.initializeDataDownloadSelection(tool);
+          expect(complete).toHaveBeenCalledExactlyOnceWith({
+            type: 'polygon',
+            drawingRepresentation: expect.objectContaining({
+              source: InternalDrawingLayer.Selection,
+              geometry: expect.objectContaining({type: 'Polygon', srs: 2056}),
+            }),
+          });
+        },
+      );
       it(`sets the correct strategy for section selection`, () => {
         const screenExtentSpy = vi.spyOn(EsriScreenExtentSelectionStrategy.prototype, 'start').mockImplementation(vi.fn());
         service.initializeDataDownloadSelection('select-section');
@@ -628,6 +663,35 @@ describe('EsriToolService', () => {
       expect(storeSpy).toHaveBeenCalledWith(expectedAction);
       expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
       expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith('EsriToolService');
+    });
+
+    it('completes statistics with a neutral geometry payload and releases map ownership', () => {
+      const graphic = new Graphic({
+        attributes: {[MapConstants.DRAWING_IDENTIFIER]: 'statistics-selection'},
+        symbol: new SimpleFillSymbol(),
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [100, 0],
+              [100, 100],
+              [0, 0],
+            ],
+          ],
+        }),
+      });
+      const drawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        graphic,
+        2056,
+        InternalDrawingLayer.StatisticsArea,
+      );
+      const dispatch = vi.spyOn(store, 'dispatch');
+      service.completeStatisticsSelection({drawingRepresentation}, false);
+      expect(dispatch).toHaveBeenCalledWith(
+        StatisticsActions.setSelection({geometry: drawingRepresentation.geometry, radiusInMeters: undefined}),
+      );
+      expect(dispatch).toHaveBeenLastCalledWith(ToolActions.deactivateTool());
     });
 
     it('completes selections by dispatching ToolActions.cancelTool if the selection is `undefined`', () => {

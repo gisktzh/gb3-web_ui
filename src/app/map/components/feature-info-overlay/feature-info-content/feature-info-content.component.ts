@@ -1,5 +1,4 @@
-import {Component, ElementRef, computed, inject, input, signal, viewChild, ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
-import {ConfigService} from '../../../../shared/services/config.service';
+import {Component, computed, inject, input, OnDestroy, ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {selectPinnedFeatureId} from '../../../../state/map/reducers/feature-info.reducer';
@@ -8,10 +7,11 @@ import {TableColumnIdentifierDirective} from './table-column-identifier.directiv
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapService} from '../../../interfaces/map.service';
 import {MAP_SERVICE} from '../../../../app.tokens';
-import {ResizableInfoTableComponent, TableHeader, TableRows} from './resizable-info-table.component';
+import {ResizableInfoTableComponent} from '../info-table/resizable-info-table.component';
 import {Store} from '@ngrx/store';
-import {TableCell} from './info-table-cell.component';
+import {TableCell, TableData, TableHeader} from '../info-table/info-table.types';
 import {formatDateValue} from '../../../../shared/utils/feature-info-field.utils';
+import {ResultMarkingController} from '../info-table/result-marking.controller';
 
 /**
  * Default value to be displayed when a field has no value (i.e. undefined)
@@ -23,6 +23,13 @@ const DEFAULT_CELL_VALUE = '-';
  */
 const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 
+interface FeatureTableHeader extends TableHeader {
+  fid: number;
+  hasGeometry: boolean;
+}
+
+type FeatureTableCell = TableCell & {fid: number};
+
 /**
  * Important to know: All tables are isolated from each other, yet the pinned state is shared among all of them. As such, the pinnedFeature
  * is added to the global state and handled accordingly in this component here.
@@ -30,20 +37,17 @@ const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 @Component({
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
+  styleUrls: ['./feature-info-content.component.scss'],
   imports: [TableColumnIdentifierDirective, MatRadioButton, MatRadioGroup, ResizableInfoTableComponent],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class FeatureInfoContentComponent {
-  private readonly configService = inject(ConfigService);
+export class FeatureInfoContentComponent implements OnDestroy {
   private readonly store = inject(Store);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
 
-  public readonly container = viewChild.required<ElementRef<HTMLElement>>('container');
-
   public readonly layer = input.required<FeatureInfoResultLayer>();
   public readonly topicId = input.required<string>();
-  public readonly staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
 
   public readonly pinnedFeatureUniqueIdentifier = this.store.selectSignal(selectPinnedFeatureId);
   public readonly pinnedFeatureId = computed(() => {
@@ -75,31 +79,40 @@ export class FeatureInfoContentComponent {
     return this.pinnedFeatureId() ?? this.hoveredFeatureId();
   });
 
-  public readonly hoveredFeatureId = signal<number | null>(null);
-  public readonly hoverEnabled = signal(true);
+  public readonly marking = new ResultMarkingController<number>({
+    enabled: () => true,
+    canMark: (fid) => !!this.featureGeometries().get(fid),
+    hasPinned: () => this.pinnedFeatureUniqueIdentifier() !== undefined,
+    isPinned: (fid) => this.pinnedFeatureId() === fid,
+    preview: (fid) => this.highlightFeatureOnMapIfExists(fid),
+    clearPreview: () => this.store.dispatch(FeatureInfoActions.clearHighlight()),
+    pin: (fid) => this.highlightFeatureOnMapIfExists(fid, true, true),
+    unpin: () => this.store.dispatch(FeatureInfoActions.clearHighlight()),
+  });
+  public readonly hoveredFeatureId = this.marking.hoveredKey;
+  public readonly hoverEnabled = this.marking.hoverEnabled;
 
-  public readonly tableData = computed(() => {
-    const tableHeaders: TableHeader[] = [];
-    const tableRows: TableRows = new Map<string, TableCell[]>();
+  public readonly tableData = computed<TableData<FeatureTableHeader, FeatureTableCell>>(() => {
+    const features = this.layer().features;
+    const headers = features.map(({fid, geometry}, featureIndex) =>
+      this.createTableHeaderForFeature(fid, featureIndex, features.length, !!geometry),
+    );
+    const fieldsByFeature = features.map(({fields}) => this.indexFieldsByLabelOccurrence(fields));
+    const rowDefinitions = new Map<string, string>();
 
-    this.layer().features.forEach(({fid, geometry, fields}, featureIdx, features) => {
-      const tableHeader = this.createTableHeaderForFeature(fid, featureIdx, features.length, !!geometry);
-      tableHeaders.push(tableHeader);
-
-      fields.forEach((feature) => {
-        const tableCell = this.createTableCellForFeatureAndField(fid, feature);
-
-        if (tableRows.has(feature.label)) {
-          // see: https://stackoverflow.com/questions/70723319/object-is-possibly-undefined-using-es6-map-get-right-after-map-set
-          // -> it should never happen, but IF it were to happen, we are not doing anything.
-          tableRows.get(feature.label)?.push(tableCell);
-        } else {
-          tableRows.set(feature.label, [tableCell]);
-        }
-      });
+    fieldsByFeature.forEach((fields) => {
+      fields.forEach(({field, key}) => rowDefinitions.set(key, field.label));
     });
 
-    return {tableHeaders, tableRows};
+    const rows = [...rowDefinitions].map(([key, label]) => ({
+      label,
+      cells: features.map(({fid}, featureIndex) => {
+        const field = fieldsByFeature[featureIndex].find((indexedField) => indexedField.key === key)?.field;
+        return field ? this.createTableCellForFeatureAndField(fid, field) : this.createEmptyTableCell(fid);
+      }),
+    }));
+
+    return {headers, rows};
   });
 
   public readonly featureGeometries = computed(() => {
@@ -113,36 +126,17 @@ export class FeatureInfoContentComponent {
   });
 
   public toggleHighlightForFeature(fid: number, hasGeometry: boolean) {
-    if (!hasGeometry) {
-      return;
-    }
-
-    this.hoveredFeatureId.set(fid);
-
-    if (this.pinnedFeatureId() === fid) {
-      this.store.dispatch(FeatureInfoActions.clearHighlight());
-    } else {
-      this.highlightFeatureOnMapIfExists(fid, true, true);
+    if (hasGeometry) {
+      this.marking.toggle(fid);
     }
   }
 
   public onFeatureHoverStart(fid: number) {
-    if (this.hoverEnabled()) {
-      this.hoveredFeatureId.set(fid);
-      // Would otherwise reset the pinned feature on hover, which we don't want.
-      if (this.pinnedFeatureUniqueIdentifier() === undefined) {
-        this.highlightFeatureOnMapIfExists(fid);
-      }
-    }
+    this.marking.hoverStart(fid);
   }
 
   public onFeatureHoverEnd() {
-    this.hoveredFeatureId.set(null);
-
-    if (this.pinnedFeatureUniqueIdentifier() === undefined) {
-      // Would otherwise reset the pinned feature on hover, which we don't want.
-      this.store.dispatch(FeatureInfoActions.clearHighlight());
-    }
+    this.marking.hoverEnd();
   }
 
   private createUniqueColumnIdentifierForFid(fid: number): string {
@@ -163,14 +157,28 @@ export class FeatureInfoContentComponent {
     }
   }
 
-  private createTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number, hasGeometry: boolean): TableHeader {
+  private indexFieldsByLabelOccurrence(fields: FeatureInfoResultFeatureField[]) {
+    const labelOccurrences = new Map<string, number>();
+
+    return fields.map((field) => {
+      const occurrence = labelOccurrences.get(field.label) ?? 0;
+      labelOccurrences.set(field.label, occurrence + 1);
+      return {field, key: `${field.label}\u0000${occurrence}`};
+    });
+  }
+
+  private createTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number, hasGeometry: boolean): FeatureTableHeader {
     const displayValue = `${DEFAULT_TABLE_HEADER_PREFIX} ${featureIndex + 1}/${totalFeatures}`;
     return {displayValue, fid, hasGeometry};
   }
 
-  private createTableCellForFeatureAndField(fid: number, feature: FeatureInfoResultFeatureField): TableCell {
+  private createEmptyTableCell(fid: number): FeatureTableCell {
+    return {cellType: 'text', fid, displayValue: DEFAULT_CELL_VALUE};
+  }
+
+  private createTableCellForFeatureAndField(fid: number, feature: FeatureInfoResultFeatureField): FeatureTableCell {
     if (feature.value === null) {
-      return {cellType: 'text', fid, displayValue: DEFAULT_CELL_VALUE};
+      return this.createEmptyTableCell(fid);
     }
 
     switch (feature.type) {
@@ -206,10 +214,14 @@ export class FeatureInfoContentComponent {
   }
 
   public onResizeHandlerResizeEnd() {
-    this.hoverEnabled.set(true);
+    this.marking.endResize();
   }
 
   public onResizeHandlerResizeStart() {
-    this.hoverEnabled.set(false);
+    this.marking.startResize();
+  }
+
+  public ngOnDestroy() {
+    this.marking.destroy();
   }
 }
