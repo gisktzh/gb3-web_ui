@@ -2,12 +2,14 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {Injectable, inject} from '@angular/core';
 import {OerebExtractActions} from '../actions/oereb-extract.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
-import {catchError, iif, map, of, switchMap, tap} from 'rxjs';
+import {catchError, iif, map, of, switchMap, takeUntil, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {concatLatestFrom} from '@ngrx/operators';
 import {selectHasOerebMapActive} from '../selectors/has-oereb-map-active.selector';
 import {OerebExtractCouldNotBeLoaded} from 'src/app/shared/errors/map.errors';
 import {Gb3OerebExtractService} from 'src/app/shared/services/apis/gb3/gb3-oereb-extract.service';
+import {QueryLocationActions} from '../actions/query-location.actions';
+import {FeatureInfoActions} from '../actions/feature-info.actions';
 
 @Injectable()
 export class OerebExtractEffects {
@@ -22,9 +24,9 @@ export class OerebExtractEffects {
     );
   });
 
-  public interceptMapClick$ = createEffect(() => {
+  public requestOnFeatureQuery$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapConfigActions.handleMapClick),
+      ofType(FeatureInfoActions.sendRequest),
       concatLatestFrom(() => this.store.select(selectHasOerebMapActive)),
       switchMap(([{x, y}, hasOerebMapActive]) =>
         iif(
@@ -45,6 +47,16 @@ export class OerebExtractEffects {
             return OerebExtractActions.updateContent({oerebExtract});
           }),
           catchError((error: unknown) => of(OerebExtractActions.setError({error}))),
+          takeUntil(
+            this.actions$.pipe(
+              ofType(
+                QueryLocationActions.setPoint,
+                FeatureInfoActions.sendRequest,
+                FeatureInfoActions.invalidateContent,
+                MapConfigActions.clearFeatureInfoContent,
+              ),
+            ),
+          ),
         ),
       ),
     );

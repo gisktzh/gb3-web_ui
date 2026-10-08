@@ -10,8 +10,8 @@
     </bottom-sheet-item>
   }
   @if (bottomSheetContent() === 'feature-info') {
-    <bottom-sheet-item overlayTitle="Info" bottomSheetHeight="large">
-      <feature-info body />
+    <bottom-sheet-item data-test-id="query-results-mobile" overlayTitle="Info" bottomSheetHeight="large">
+      <query-results body [showInteractiveElements]="showInteractiveElements()" />
     </bottom-sheet-item>
   }
   @if (bottomSheetContent() === 'map-attributes') {

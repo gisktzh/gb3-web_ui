@@ -1,0 +1,51 @@
+@use '@angular/material' as mat;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.query-results__tabs {
+  @include mat.tabs-overrides(
+    (
+      active-indicator-height: 0,
+      active-label-text-color: ktzh-variables.$zh-white,
+      active-hover-label-text-color: ktzh-variables.$zh-white,
+      active-focus-label-text-color: ktzh-variables.$zh-white,
+      inactive-label-text-color: ktzh-variables.$zh-black100,
+      inactive-hover-label-text-color: ktzh-variables.$zh-black100,
+      inactive-focus-label-text-color: ktzh-variables.$zh-black100,
+      label-text-font: ktzh-variables.$zh-font-family-bold,
+    )
+  );
+
+  position: relative;
+  margin-bottom: 16px;
+  padding: 6px;
+  border-radius: 3px;
+  background-color: ktzh-variables.$zh-light-grey;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: calc(50% - 6px);
+    height: calc(100% - 12px);
+    border-radius: 3px;
+    background-color: ktzh-variables.$zh-black100;
+    transition: transform 200ms ease-in-out;
+  }
+
+  &--statistics::before {
+    transform: translateX(100%);
+  }
+
+  [mat-tab-link] {
+    min-width: 0;
+    flex: 1 1 50%;
+    border-radius: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .query-results__tabs::before {
+    transition: none;
+  }
+}
