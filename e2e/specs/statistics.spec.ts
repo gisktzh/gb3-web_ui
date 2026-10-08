@@ -46,6 +46,7 @@ test.describe('Statistics', () => {
 
       const queryCount = statisticsSession.statisticsQueries.length;
       const lastMap = page.getByTestId('active-map-item-' + statisticsSession.topic.topic);
+      await lastMap.getByTestId('active-map-item-header').hover();
       await lastMap.getByTestId('delete').click();
       await expect(lastMap).toHaveCount(0);
       await expect(statisticsButton).toBeDisabled();
@@ -268,6 +269,7 @@ test.describe('Statistics', () => {
     await expectStatisticsResult(page, statisticsSession, restoredResponseIndex, additionalTopic!.topic);
     await expect(host.getByTestId(/^statistics-result-/)).toHaveCount(2);
     const removedResponseIndex = statisticsSession.statisticsResponses.length;
+    await addedItem.getByTestId('active-map-item-header').hover();
     await addedItem.getByTestId('delete').click();
     await expect(addedItem).toHaveCount(0);
     await expectStatisticsResult(page, statisticsSession, removedResponseIndex);
