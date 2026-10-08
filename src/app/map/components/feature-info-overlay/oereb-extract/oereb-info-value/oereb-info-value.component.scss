@@ -19,3 +19,7 @@
 .oereb-detail-list__item {
   color: ktzh-variables.$zh-black60;
 }
+
+.oereb-detail-list__image {
+  object-fit: contain;
+}

@@ -1,0 +1,12 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+:host ::ng-deep {
+  .statistics-tools__button {
+    @include mixins.tool-button;
+  }
+}
+
+.statistics-tools {
+  display: flex;
+  flex-direction: column;
+}

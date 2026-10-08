@@ -1,4 +1,5 @@
 <mat-card
+  data-test-id="active-map-items"
   appearance="raised"
   class="active-map-items"
   [class.active-map-items--hide-shadow]="screenMode() === 'mobile'"
@@ -85,6 +86,7 @@
       let isLastActiveMapItem = $last
     ) {
       <active-map-item
+        [attr.data-test-id]="'active-map-item-' + activeMapItem.id"
         [activeMapItem]="activeMapItem"
         [isFirstActiveMapItem]="isFirstActiveMapItem"
         [isLastActiveMapItem]="isLastActiveMapItem"

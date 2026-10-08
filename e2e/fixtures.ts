@@ -3,7 +3,7 @@ import {findEntry as defaultFindEntry} from 'playwright-advanced-har/lib/utils/s
 import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
 import path from 'node:path';
-import {expect, type Page} from '@playwright/test';
+import {expect, type Page, type Request} from '@playwright/test';
 import {canonicalizeUrl} from './utils/canonicalize.utils';
 
 // URL pattern. If pattern matches,
@@ -63,10 +63,10 @@ function postDataEquals(left: string, right: string): boolean {
 }
 
 async function waitForMapReady(page: Page): Promise<void> {
-  await expect(page.locator('map-page')).toBeVisible({timeout: 30_000});
-  await expect(page.locator('map-page canvas').first()).toBeVisible({timeout: 30_000});
-  await expect(page.locator('input[aria-label="Massstab anpassen"]')).not.toHaveValue('', {timeout: 30_000});
-  await expect(page.locator('input[aria-label="Koordinaten eingeben"]')).not.toHaveValue('', {timeout: 30_000});
+  await expect(page.getByTestId('map-container')).toBeVisible({timeout: 30_000});
+  await expect(page.getByTestId('map-container').locator('canvas').first()).toBeVisible({timeout: 30_000});
+  await expect(page.getByTestId('input-map-scale')).not.toHaveValue('', {timeout: 30_000});
+  await expect(page.getByTestId('input-map-coordinates')).not.toHaveValue('', {timeout: 30_000});
 }
 
 export const test = base.extend<Gb3Fixtures>({
@@ -82,6 +82,7 @@ export const test = base.extend<Gb3Fixtures>({
         console.log(`[har] ${shouldUpdate ? 'Writing' : 'Using'} HAR file at ${usedFilePath}`);
       }
 
+      const cancelledRequests = new WeakSet<Request>();
       await advancedRouteFromHAR(usedFilePath, {
         url: HAR_TARGET_PATTERN,
         update: shouldUpdate,
@@ -89,11 +90,18 @@ export const test = base.extend<Gb3Fixtures>({
         updateContent: 'embed',
         matcher: {
           async findEntry(har, request, matcher) {
+            // Prefer completed responses; status -1 entries cannot be fulfilled as HTTP responses.
+            const replayableHar = {
+              ...har,
+              log: {
+                ...har.log,
+                entries: har.log.entries.filter(({response}) => response.status > 0),
+              },
+            };
+            const redactedRequest = new CanonicalizedRedactedRequest(request);
             if (matcher) {
-              const redactedRequest = new CanonicalizedRedactedRequest(request);
-
               const scoredEntries = await Promise.all(
-                har.log.entries.map(async (entry) => {
+                replayableHar.log.entries.map(async (entry) => {
                   return {
                     entry,
                     score: await matcher(redactedRequest, entry),
@@ -143,7 +151,13 @@ export const test = base.extend<Gb3Fixtures>({
               }
             }
 
-            return defaultFindEntry(har, request, matcher);
+            const completedEntry = await defaultFindEntry(replayableHar, redactedRequest, matcher);
+            if (completedEntry) return completedEntry;
+
+            // Some catalogue icons were only recorded as cancelled. Replay that cancellation instead of reporting a missing entry.
+            const recordedEntry = await defaultFindEntry(har, redactedRequest, matcher);
+            if (recordedEntry && recordedEntry.response.status <= 0) cancelledRequests.add(request);
+            return null;
           },
           matchFunction: customMatcher({
             urlComparator(a, b) {
@@ -154,6 +168,10 @@ export const test = base.extend<Gb3Fixtures>({
         },
         notFound: async (route) => {
           const request = route.request();
+          if (cancelledRequests.has(request)) {
+            await route.abort('aborted');
+            return;
+          }
           const postData = request.postData();
           const errorMessage = `[har] No response matched ${request.method()} ${request.url()} in file ${usedFilePath}${postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : ''}`;
           if (process.env['CI']) {
@@ -191,13 +209,14 @@ export const test = base.extend<Gb3Fixtures>({
 
   filterForLayer: async ({page}, use) => {
     await use(async (searchTerm) => {
-      const filterInput = page.locator('input[placeholder="Karten und Layer filtern"]');
+      const filterInput = page.getByTestId('catalogue-filter').getByTestId('search-input');
       await expect(filterInput).toBeVisible();
       // Since the search input listenes to KeyUp events, we need to actually type the search term.
       await filterInput.fill(searchTerm);
       await filterInput.dispatchEvent('keyup', {key: searchTerm.at(-1)});
 
-      await expect(page.locator('map-data-item-map, map-data-item-favourite').filter({hasText: searchTerm}).first()).toBeVisible({
+      const catalogueItems = page.getByTestId(/^catalogue-map-/).or(page.getByTestId('catalogue-favourite'));
+      await expect(catalogueItems.filter({hasText: searchTerm}).first()).toBeVisible({
         timeout: 30_000,
       });
     });
@@ -247,7 +266,7 @@ export const test = base.extend<Gb3Fixtures>({
       await waitForMapReady(page);
 
       if (shouldSkipTour) {
-        const skipButton = page.getByRole('button', {name: 'Überspringen'});
+        const skipButton = page.getByTestId('onboarding-skip');
         await skipButton.waitFor({state: 'visible', timeout: 5_000}).catch(() => undefined);
         if (await skipButton.isVisible()) {
           await skipButton.click();
@@ -291,7 +310,7 @@ export const test = base.extend<Gb3Fixtures>({
         });
       }
 
-      await page.getByText('Login').click();
+      await page.getByTestId('navbar-login').click();
 
       await page.waitForLoadState('networkidle');
 

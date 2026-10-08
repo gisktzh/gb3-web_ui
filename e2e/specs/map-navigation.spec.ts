@@ -7,6 +7,10 @@ test.describe('Map operation', () => {
 
     await openUrlWithCoordinates('2702555', '1241686');
 
+    const desktopToolDividers = page.locator('map-tools-desktop .map-tools-desktop__list').first().locator('mat-divider');
+    await expect(desktopToolDividers.first()).toBeVisible();
+    await expect(desktopToolDividers.first()).toHaveCSS('width', '30px');
+
     const mapHome = page.locator('[data-test-id="map-home"]');
     await expect(mapHome).toBeVisible();
     await mapHome.click();

@@ -32,8 +32,12 @@ import {
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {DrawingLayerNotInitialized, EditFeatureInitializationFailed, NonEditableLayerType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
+import {StatisticsSelectionTool} from '../../../../shared/types/statistics-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
+import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
+import {deriveCircleFromGeometry} from '../../../../shared/utils/statistics-geometry.utils';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
+import {GeometrySelection} from '../../../../shared/interfaces/geometry-selection.interface';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
 import {MatDialog} from '@angular/material/dialog';
@@ -46,7 +50,7 @@ import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/
 import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
 import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal-drawing-representation-to-esri-graphic.utils';
-import {SupportedEsriTool} from './strategies/supported-esri-tool.type';
+import {SupportedEsriPolygonTool, SupportedEsriTool} from './strategies/supported-esri-tool.type';
 import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawable-tool.strategy';
 import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
 import {DrawingMode} from './types/drawing-mode.type';
@@ -171,6 +175,12 @@ export class EsriToolService implements ToolService {
     );
   }
 
+  public initializeStatisticsSelection(selectionTool: StatisticsSelectionTool) {
+    this.initializeInternalDrawingTool(InternalDrawingLayer.StatisticsArea, (layer) =>
+      this.setStatisticsSelectionStrategy(selectionTool, layer),
+    );
+  }
+
   public completeDrawing(graphic: Graphic, mode: DrawingMode) {
     switch (mode) {
       case 'add':
@@ -290,6 +300,24 @@ export class EsriToolService implements ToolService {
       this.store.dispatch(ToolActions.cancelTool());
     }
     this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
+  }
+
+  public completeStatisticsSelection(selection: GeometrySelection | undefined, isCircle: boolean) {
+    if (selection) {
+      const geometry = selection.drawingRepresentation.geometry;
+      // Esri hands a drawn circle over as an approximating polygon, so centre and radius have to be recovered to keep the radius input
+      // in the panel in sync with what is shown on the map.
+      const circle = isCircle ? deriveCircleFromGeometry(geometry) : undefined;
+      this.store.dispatch(
+        StatisticsActions.setSelection({
+          geometry,
+          radiusInMeters: circle?.radiusInMeters,
+        }),
+      );
+    }
+    // Unlike the data download selection, the drawn area stays adjustable: the tool hands the map back so that the following clicks
+    // move the area around instead of being swallowed by a tool that has nothing left to draw.
+    this.endDrawing();
   }
 
   public async addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: DrawingLayer) {
@@ -583,6 +611,21 @@ export class EsriToolService implements ToolService {
     }
   }
 
+  private setStatisticsSelectionStrategy(selectionType: StatisticsSelectionTool, layer: GraphicsLayer) {
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.StatisticsArea, false);
+    const polygonTool: SupportedEsriPolygonTool = selectionType === 'select-statistics-circle' ? 'circle' : 'polygon';
+
+    this.toolStrategy = new EsriPolygonSelectionStrategy(
+      layer,
+      this.esriMapViewService.getMapView(),
+      areaStyle,
+      (selection) => this.completeStatisticsSelection(selection, polygonTool === 'circle'),
+      polygonTool,
+      this.configService.mapConfig.defaultMapConfig.srsId,
+      InternalDrawingLayer.StatisticsArea,
+    );
+  }
+
   private setDataDownloadSelectionStrategy(selectionType: DataDownloadSelectionTool, layer: GraphicsLayer) {
     const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.Selection, false);
 
@@ -592,7 +635,7 @@ export class EsriToolService implements ToolService {
           layer,
           this.esriMapViewService.getMapView(),
           areaStyle,
-          (selection) => this.completeSelection(selection),
+          (selection) => this.completeDownloadGeometrySelection(selection),
           'circle',
           this.configService.mapConfig.defaultMapConfig.srsId,
         );
@@ -602,7 +645,7 @@ export class EsriToolService implements ToolService {
           layer,
           this.esriMapViewService.getMapView(),
           areaStyle,
-          (selection) => this.completeSelection(selection),
+          (selection) => this.completeDownloadGeometrySelection(selection),
           'polygon',
           this.configService.mapConfig.defaultMapConfig.srsId,
         );
@@ -612,7 +655,7 @@ export class EsriToolService implements ToolService {
           layer,
           this.esriMapViewService.getMapView(),
           areaStyle,
-          (selection) => this.completeSelection(selection),
+          (selection) => this.completeDownloadGeometrySelection(selection),
           'rectangle',
           this.configService.mapConfig.defaultMapConfig.srsId,
         );
@@ -660,5 +703,9 @@ export class EsriToolService implements ToolService {
 
   private isGraphicsLayer(drawingLayer: Layer | undefined): drawingLayer is GraphicsLayer {
     return !!drawingLayer && !!(drawingLayer as GraphicsLayer).graphics;
+  }
+
+  private completeDownloadGeometrySelection(selection: GeometrySelection | undefined) {
+    this.completeSelection(selection ? {type: 'polygon', drawingRepresentation: selection.drawingRepresentation} : undefined);
   }
 }

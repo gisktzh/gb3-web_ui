@@ -4,11 +4,10 @@ import {selectBottomSheetContent} from 'src/app/state/map/reducers/map-ui.reduce
 import {BottomSheetItemComponent} from './bottom-sheet-item/bottom-sheet-item.component';
 import {BasemapSelectionListComponent} from '../map-controls/basemap-selector/basemap-selection-list/basemap-selection-list.component';
 import {LegendComponent} from '../legend-overlay/legend/legend.component';
-import {FeatureInfoComponent} from '../feature-info-overlay/feature-info/feature-info.component';
+import {QueryResultsComponent} from '../feature-info-overlay/query-results/query-results.component';
 import {MapAttributeFilterComponent} from '../map-attribute-filter/map-attribute-filter.component';
 import {ShareLinkMobileComponent} from '../share-link-mobile/share-link-mobile.component';
 import {SearchWindowMobileComponent} from '../search-window-mobile/search-window-mobile.component';
-
 import {MapManagementMobileComponent} from '../map-management-mobile/map-management-mobile.component';
 
 @Component({
@@ -20,7 +19,7 @@ import {MapManagementMobileComponent} from '../map-management-mobile/map-managem
     BottomSheetItemComponent,
     BasemapSelectionListComponent,
     LegendComponent,
-    FeatureInfoComponent,
+    QueryResultsComponent,
     MapAttributeFilterComponent,
     ShareLinkMobileComponent,
     SearchWindowMobileComponent,

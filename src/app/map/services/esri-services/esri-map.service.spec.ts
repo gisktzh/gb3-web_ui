@@ -403,6 +403,33 @@ describe('EsriMapService', () => {
     expect(wmsLayer.sublayers.getItemAt(2)!.id).toBe(1);
   });
 
+  it('renders statistics features with their output SRS and dedicated style without replacing the selection area', () => {
+    service = TestBed.inject(EsriMapService);
+    service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsHighlight);
+    service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsArea);
+    const geometry: Point & HasSrs = {type: 'Point', coordinates: [2680600, 1254500], srs: 2056};
+    service.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.StatisticsArea);
+    service.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.StatisticsHighlight);
+    const highlight = internalLayers.find((layer) => layer.id === `${internalLayerPrefix}${InternalDrawingLayer.StatisticsHighlight}`)!;
+    const area = internalLayers.find((layer) => layer.id === `${internalLayerPrefix}${InternalDrawingLayer.StatisticsArea}`)!;
+    expect(highlight.graphics.length).toBe(1);
+    expect(highlight.graphics.getItemAt(0)?.geometry).toMatchObject({
+      type: 'point',
+      x: 2680600,
+      y: 1254500,
+      spatialReference: {wkid: 2056},
+    });
+    expect(highlight.graphics.getItemAt(0)?.symbol).toMatchObject({
+      type: 'simple-marker',
+      size: 8,
+      color: {r: 255, g: 255, b: 0, a: 0.8},
+    });
+    service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsHighlight);
+    expect(highlight.graphics.length).toBe(0);
+    expect(area.graphics.length).toBe(1);
+    service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsArea);
+  });
+
   describe('clearInternalDrawingLayer', () => {
     it('clear all geometries from an internal layers', () => {
       for (const internalDrawingLayerKey in InternalDrawingLayer) {

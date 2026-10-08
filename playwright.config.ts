@@ -16,6 +16,7 @@ export default defineConfig({
   globalTeardown: require.resolve('./e2e/global.teardown'),
   use: {
     baseURL: 'http://localhost:4200',
+    testIdAttribute: 'data-test-id',
     trace: 'retain-on-failure',
     ignoreHTTPSErrors: true,
     screenshot: 'only-on-failure',
