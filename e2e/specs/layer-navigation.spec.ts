@@ -35,7 +35,9 @@ test.describe('Layer navigation', () => {
     await opacitySlider.fill('0.5');
     await expect(opacitySlider).toHaveValue('0.5');
 
-    await activeMapItem.getByRole('button', {name: 'Ebenen'}).click();
+    // `exact: true` avoids matching the layers-panel toggle button, whose accessible name ("Ebenen
+    // ausblenden"/"Ebenen anzeigen") also contains "Ebenen" as a substring.
+    await activeMapItem.getByRole('button', {name: 'Ebenen', exact: true}).click();
     const firstLayer = layerRows.first();
     const boundaryPointsLayer = layerRows.filter({has: page.getByText('Grenzpunkte', {exact: true})});
     await expect(boundaryPointsLayer).toHaveCount(1);
