@@ -269,8 +269,6 @@ describe('Gb3OerebExtractService', () => {
       };
 
       service.loadOerebExtract(x, y).subscribe((actual) => {
-        // throw new Error(JSON.stringify(actual));
-        // console.error(actual);
         expect(httpGetSpy).toHaveBeenCalledTimes(1);
         expect(httpGetSpy).toHaveBeenCalledWith(
           `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/oereb?x=${x}&y=${y}`,
