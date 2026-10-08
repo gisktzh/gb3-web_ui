@@ -20,7 +20,6 @@ export type CheckA11yOptions = {
   exclude?: string[];
 };
 
-
 // URL pattern. If pattern matches,
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
 const IS_WRITING_HAR = !!process.env['WRITE_HAR'];
@@ -521,7 +520,7 @@ export const test = base.extend<Gb3Fixtures>({
     });
   },
 
-  openOerebInfoRequest: async ({page, search}, use) => {
+  openOerebInfoRequest: async ({page, search, clickDefaultMapViewCenter}, use) => {
     await use(async (address: string) => {
       await page.goto('/maps?initialMapIds=OerebKatasterZH');
       await page.waitForLoadState('networkidle');
@@ -534,7 +533,10 @@ export const test = base.extend<Gb3Fixtures>({
       const map = page.locator('map-page');
       await expect(map).toBeVisible();
 
-      await map.click();
+      // The search result is panned to the center of the *visible* map area (i.e. excluding the area obscured
+      // by the sidebar/toolbar, see DEFAULT_DESKTOP_MAP_VIEW_PADDING), not the geometric center of the map
+      // viewport. Clicking the geometric center instead would hit a different world coordinate.
+      await clickDefaultMapViewCenter();
       await page.waitForLoadState('networkidle');
 
       await expect(page.locator('h3', {hasText: 'Info'})).toBeVisible();
