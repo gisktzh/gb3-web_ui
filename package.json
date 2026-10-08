@@ -21,7 +21,7 @@
     "generate-gb3-api": "npx swagger-typescript-api generate -p https://maps.zh.ch/api-docs/gb3/v4/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body --extract-request-body --extract-request-body && node ./remove-generated-api-version-references.js ./src/app/shared/models/gb3-api-generated.interfaces.ts",
     "lint": "eslint",
     "knip": "knip",
-    "e2e": "ng e2e --grep-invert accessibility",
+    "e2e": "ng e2e --grep-invert accessibility --test-project=chromium",
     "a11y": "ng e2e --grep accessibility --test-project=chromium"
   },
   "private": true,
