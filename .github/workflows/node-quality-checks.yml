@@ -156,7 +156,7 @@ jobs:
 
       - name: Run tests
         run: |
-          xvfb-run --auto-servernum npm run a11y -- --configuration ci --test-project chromium
+          xvfb-run --auto-servernum npm run a11y -- --configuration ci
         env:
           CI: 1
           LIBGL_ALWAYS_SOFTWARE: 1
