@@ -30,6 +30,7 @@ import {maximumStatisticsAreaInSquareMeters} from '../../../shared/configs/stati
 import {selectStatisticsHighlights} from '../selectors/statistics-highlights.selector';
 import {selectStatisticsAreaToDraw} from '../selectors/query-graphics.selector';
 import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
+import type {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 
 @Injectable()
 export class StatisticsEffects {
@@ -136,11 +137,12 @@ export class StatisticsEffects {
           return undefined;
         }
 
-        const selection = geometry
-          ? moveGeometryTo(geometry, center)
-          : mode === 'umkreis'
-            ? createCircle(center, radiusInMeters)
-            : undefined;
+        let selection: GeometryWithSrs | undefined;
+        if (geometry) {
+          selection = moveGeometryTo(geometry, center);
+        } else if (mode === 'umkreis') {
+          selection = createCircle(center, radiusInMeters);
+        }
         return selection ? StatisticsActions.setSelection({geometry: selection, radiusInMeters: undefined}) : undefined;
       }),
       filter((action) => action !== undefined),

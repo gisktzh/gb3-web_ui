@@ -56,6 +56,7 @@ export class StatisticsItemComponent implements OnDestroy {
         layer.status === 'ok'
           ? mapStatisticsDataToView(layer, (value) => this.decimalPipe.transform(value, '1.0-2') ?? value.toString())
           : [];
+      const tableLabel = `Statistik zu ${layer.title}`;
 
       return {
         layer,
@@ -69,7 +70,7 @@ export class StatisticsItemComponent implements OnDestroy {
               showMarking: sectionIndex === 0 && headerIndex === 0,
             })),
           },
-          tableLabel: `Statistik zu ${layer.title}${section.title !== undefined ? `: ${section.title}` : ''}`,
+          tableLabel: section.title === undefined ? tableLabel : `${tableLabel}: ${section.title}`,
         })),
       };
     }),

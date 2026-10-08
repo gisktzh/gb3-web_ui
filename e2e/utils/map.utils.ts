@@ -34,10 +34,10 @@ async function mapViewport(page: Page) {
 }
 
 /** Read the visible map's URL/scale and layout without Angular debug hooks or map-service calls. */
-export async function getMapPoint(page: Page, offset = {x: 0, y: 0}): Promise<MapPoint> {
+export async function getMapPoint(page: Page, offset?: {x: number; y: number}): Promise<MapPoint> {
   const viewport = await mapViewport(page);
   const center = {x: viewport.x + viewport.width / 2, y: viewport.y + viewport.height / 2};
-  const position = {x: Math.round(center.x + offset.x), y: Math.round(center.y + offset.y)};
+  const position = {x: Math.round(center.x + (offset?.x ?? 0)), y: Math.round(center.y + (offset?.y ?? 0))};
   expect(position.x).toBeGreaterThan(viewport.x);
   expect(position.x).toBeLessThan(viewport.x + viewport.width);
   expect(position.y).toBeGreaterThan(viewport.y);

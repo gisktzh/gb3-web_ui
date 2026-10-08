@@ -23,7 +23,7 @@ export const test = base.extend<{statisticsSession: StatisticsSession; addStatis
     }
 
     // Each scenario records different queries; separate files prevent later tests from overwriting them.
-    await useHar(testInfo.title.replace(/\W+/g, '-').toLowerCase());
+    await useHar(testInfo.title.replaceAll(/\W+/g, '-').toLowerCase());
     const statisticsQueries: URL[] = [];
     const featureQueries: URL[] = [];
     const statisticsResponses: Response[] = [];
@@ -38,7 +38,7 @@ export const test = base.extend<{statisticsSession: StatisticsSession; addStatis
       const pathname = new URL(response.url()).pathname;
       if (/\/topics\/[^/]+\/statistic_info$/.test(pathname)) statisticsResponses.push(response);
       if (/\/topics\/[^/]+\/feature_info$/.test(pathname)) featureResponses.push(response);
-      if (/\/gb3\/v4\/topics$/.test(pathname) && response.ok()) catalogueResponses.push(response);
+      if (pathname.endsWith('/gb3/v4/topics') && response.ok()) catalogueResponses.push(response);
     };
     page.on('request', onRequest);
     page.on('response', onResponse);

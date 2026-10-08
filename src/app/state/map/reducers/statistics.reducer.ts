@@ -2,7 +2,6 @@ import {createFeature, createReducer, on} from '@ngrx/store';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {StatisticsState} from '../states/statistics.state';
 import {defaultStatisticsRadiusInMeters} from '../../../shared/configs/statistics.config';
-import {selectQueryPoint} from './query-location.reducer';
 import {QueryModeActions} from '../actions/query-mode.actions';
 
 export const statisticsFeatureKey = 'statistics';
@@ -93,4 +92,4 @@ export const {
   selectPinnedLayer,
 } = statisticsFeature;
 
-export const selectCenter = selectQueryPoint;
+export {selectQueryPoint as selectCenter} from './query-location.reducer';
