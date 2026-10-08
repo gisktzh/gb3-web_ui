@@ -81,6 +81,23 @@ Prefer `getByTestId()` for e2e locators. Playwright uses the `data-test-id` attr
 instead of selecting by translated labels or component structure. Keep assertions about visible text and accessibility separate.
 For third-party controls without test IDs, scope their native elements under an application test ID.
 
+##### Browser parallelization: npm scripts vs. CI/CD
+
+Playwright is configured with three projects (`chromium`, `firefox`, `webkit`, see `playwright.config.ts`). How many of
+them actually run differs between your machine and CI, to keep local iteration fast while still getting full
+cross-browser coverage before merging:
+
+- **Locally**, `npm run e2e` (and `npm run a11y`) only run against `chromium` by default (`--test-project=chromium` is
+  baked into the npm script). A single, fast browser run is normally enough while developing.
+- **On CI**, the `e2e` job runs as a matrix of three parallel jobs, one per browser, each overriding the project via
+  `npm run e2e -- --test-project <browser>` (see `.github/workflows/node-quality-checks.yml`). This gives full
+  `chromium`/`firefox`/`webkit` coverage, parallelized across jobs instead of within a single job.
+- **Accessibility (a11y) checks are the one exception**: they only ever run on `chromium`, locally and on CI (see
+  [Accessibility (a11y) checks](#accessibility-a11y-checks) below for why).
+
+If you need to run e2e tests against another browser locally, pass `--test-project` explicitly, e.g.
+`npm run e2e -- --test-project firefox`.
+
 #### Running tests with HAR mocks
 
 HAR stands for Http ARchive. Playwright is able to use HAR files to play back API responses and make tests more deterministic while allowing for adaptions to test data without having to deploy any environment first.
@@ -110,11 +127,39 @@ We use [`@axe-core/playwright`](https://github.com/dequelabs/axe-core-npm/tree/d
 
 A `checkA11y()` fixture (see `e2e/fixtures.ts`) is available in every spec. It scans the current page/DOM state, attaches the full JSON result to the Playwright report (useful for reviewing "incomplete"/needs-manual-review findings even on green runs), and fails the test listing every violation with its impact, help text and affected selectors.
 
+##### Running the tests
+
+```
+ng e2e --grep accessibility --test-project=chromium
+```
+
+or
+
+```
+npm run a11y
+```
+
+##### Co-located with the functional tests, but run separately
+
+A11y tests are **not** kept in separate spec files. Each a11y test lives right next to the functional test(s) it builds
+on, in the same `*.spec.ts` file, wrapped in `describeA11y()` (see `e2e/fixtures.ts`), which groups it under a
+top-level `accessibility` describe-block. This keeps it close to the flow it's checking and lets it reuse the same
+HAR fixture/navigation instead of re-recording or re-navigating from scratch.
+
+The two suites are still kept fully separate at **execution time**, purely via Playwright's `--grep`/`--grep-invert`
+pattern matching on that `accessibility` describe-block name:
+
+- `npm run e2e` runs `ng e2e --grep-invert accessibility`, i.e. everything _except_ the a11y tests.
+- `npm run a11y` runs `ng e2e --grep accessibility`, i.e. _only_ the a11y tests.
+
+So a single spec file can contribute to both the regular e2e run and the a11y run, without ever running both from the
+same `npm` script invocation.
+
 To keep the suite fast and avoid tripling CI time, a11y checks:
 
-- are added as small, additional tests placed next to the relevant functional test in the same spec file, so they reuse the same HAR fixture/flow instead of re-recording or re-navigating,
+- are added as small, additional tests placed next to the relevant functional test in the same spec file (see above), so they reuse the same HAR fixture/flow instead of re-recording or re-navigating,
 - are scanned once per distinct, meaningful DOM state (e.g. once per opened dialog/panel), not after every micro-interaction,
-- only run on `chromium` (guarded via `test.skip(browserName !== 'chromium', ...)`), since axe evaluates the DOM/CSSOM which doesn't meaningfully differ between browser engines.
+- only run on `chromium`, both locally and on CI (declaratively skipped for `firefox`/`webkit` by `describeA11y()`), since axe evaluates the DOM/CSSOM which doesn't meaningfully differ between browser engines. See [Browser parallelization: npm scripts vs. CI/CD](#browser-parallelization-npm-scripts-vs-cicd) above for how this compares to the regular e2e suite.
 
 Automated scans catch common issues (missing/invalid ARIA, color contrast, missing labels, invalid landmarks/heading structure, insufficient target size, etc.) but should not be treated as a full accessibility audit
 
