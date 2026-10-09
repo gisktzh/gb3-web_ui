@@ -12,33 +12,14 @@ pending:
   src/app/map/components/drawing-edit-overlay/drawing-edit/text-edit/text-edit.component.ts: {}
   src/app/map/components/drawing-symbols/drawing-symbols-collection/drawing-symbols-collection.component.ts: {}
   src/app/map/components/drawing-symbols/drawing-symbols.component.ts: {}
-  src/app/map/components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component.ts: {}
-  src/app/map/components/elevation-profile-overlay/elevation-profile-overlay.component.ts: {}
-  src/app/map/components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component.ts: {}
   src/app/map/components/favourite-deletion-dialog/favourite-deletion-dialog.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-item/feature-info-item.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-report-download/feature-info-report-download.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info/feature-info.component.ts: {}
   src/app/map/components/feature-info-overlay/info-table/info-table-cell.component.ts: {}
   src/app/map/components/feature-info-overlay/info-table/resizable-info-table.component.ts: {}
-  src/app/map/components/feature-info-overlay/oereb-extract/oereb-extract.component.ts: {}
-  src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-list/oereb-info-list-map-overlay.component.ts: {}
-  src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-value/oereb-info-value.component.ts: {}
   src/app/map/components/feature-info-overlay/oereb-extract/oereb-not-concerned-themes-list/oereb-not-concerned-themes-list.component.ts: {}
   src/app/map/components/feature-info-overlay/query-results/query-results.component.ts: {}
   src/app/map/components/feature-info-overlay/statistics-item/statistics-item.component.ts: {}
   src/app/map/components/feature-info-overlay/statistics/statistics.component.ts: {}
-  src/app/map/components/legend-overlay/legend-content/legend-content.component.ts: {}
-  src/app/map/components/legend-overlay/legend-item/legend-item.component.ts: {}
-  src/app/map/components/legend-overlay/legend-overlay.component.ts: {}
-  src/app/map/components/legend-overlay/legend/legend.component.ts: {}
-  src/app/map/components/map-attribute-filter-overlay/map-attribute-filter-overlay.component.ts: {}
-  src/app/map/components/map-attribute-filter/map-attribute-filter.component.ts: {}
   src/app/map/components/map-notice-dialog/map-notice-dialog.component.ts: {}
-  src/app/map/components/map-overlay/map-overlay-list-item/map-overlay-list-item.component.ts: {}
-  src/app/map/components/map-overlay/map-overlay.component.ts: {}
   src/app/map/components/map-tools/data-download-dialog/data-download-dialog.component.ts: {}
   src/app/map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component.ts: {}
   src/app/map/components/map-tools/data-download-email-dialog/data-download-email-dialog.component.ts: {}
@@ -146,12 +127,63 @@ dedicated:
   src/app/map/components/bottom-sheet-overlay/bottom-sheet-overlay.component.ts:
     coveredBy:
       - src/app/map/components/bottom-sheet-overlay/bottom-sheet-overlay.component.spec.ts
+  src/app/map/components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component.ts:
+    coveredBy:
+      - src/app/map/components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component.spec.ts
+  src/app/map/components/elevation-profile-overlay/elevation-profile-overlay.component.ts:
+    coveredBy:
+      - src/app/map/components/elevation-profile-overlay/elevation-profile-overlay.component.spec.ts
+  src/app/map/components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component.ts:
+    coveredBy:
+      - src/app/map/components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component.spec.ts
   src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.ts:
     coveredBy:
       - src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.spec.ts
+  src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.spec.ts
+  src/app/map/components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component.spec.ts
+  src/app/map/components/feature-info-overlay/feature-info-item/feature-info-item.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/feature-info-item/feature-info-item.component.spec.ts
   src/app/map/components/feature-info-overlay/feature-info-overlay.component.ts:
     coveredBy:
       - src/app/map/components/feature-info-overlay/feature-info-overlay.component.spec.ts
+  src/app/map/components/feature-info-overlay/feature-info-report-download/feature-info-report-download.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/feature-info-report-download/feature-info-report-download.component.spec.ts
+  src/app/map/components/feature-info-overlay/feature-info/feature-info.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/feature-info/feature-info.component.spec.ts
+  src/app/map/components/feature-info-overlay/oereb-extract/oereb-extract.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/oereb-extract/oereb-extract.component.spec.ts
+  src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-list/oereb-info-list-map-overlay.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-list/oereb-info-list-map-overlay.component.spec.ts
+  src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-value/oereb-info-value.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-value/oereb-info-value.component.spec.ts
+  src/app/map/components/legend-overlay/legend-content/legend-content.component.ts:
+    coveredBy:
+      - src/app/map/components/legend-overlay/legend-content/legend-content.component.spec.ts
+  src/app/map/components/legend-overlay/legend-item/legend-item.component.ts:
+    coveredBy:
+      - src/app/map/components/legend-overlay/legend-item/legend-item.component.spec.ts
+  src/app/map/components/legend-overlay/legend-overlay.component.ts:
+    coveredBy:
+      - src/app/map/components/legend-overlay/legend-overlay.component.spec.ts
+  src/app/map/components/legend-overlay/legend/legend.component.ts:
+    coveredBy:
+      - src/app/map/components/legend-overlay/legend/legend.component.spec.ts
+  src/app/map/components/map-attribute-filter-overlay/map-attribute-filter-overlay.component.ts:
+    coveredBy:
+      - src/app/map/components/map-attribute-filter-overlay/map-attribute-filter-overlay.component.spec.ts
+  src/app/map/components/map-attribute-filter/map-attribute-filter.component.ts:
+    coveredBy:
+      - src/app/map/components/map-attribute-filter/map-attribute-filter.component.spec.ts
   src/app/map/components/map-container/map-container.component.ts:
     coveredBy:
       - src/app/map/components/map-container/map-container.component.spec.ts
@@ -200,6 +232,12 @@ dedicated:
   src/app/map/components/map-management-mobile/map-management-mobile.component.ts:
     coveredBy:
       - src/app/map/components/map-management-mobile/map-management-mobile.component.spec.ts
+  src/app/map/components/map-overlay/map-overlay-list-item/map-overlay-list-item.component.ts:
+    coveredBy:
+      - src/app/map/components/map-overlay/map-overlay-list-item/map-overlay-list-item.component.spec.ts
+  src/app/map/components/map-overlay/map-overlay.component.ts:
+    coveredBy:
+      - src/app/map/components/map-overlay/map-overlay.component.spec.ts
   src/app/map/components/search-window-mobile/search-window-mobile.component.ts:
     coveredBy:
       - src/app/map/components/search-window-mobile/search-window-mobile.component.spec.ts
