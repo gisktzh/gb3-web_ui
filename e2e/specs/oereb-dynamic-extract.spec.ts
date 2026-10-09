@@ -40,7 +40,7 @@ test.describe('OEREB Extract', () => {
     await expect(parcelInfo).toContainText('29640');
     await expect(page.locator('.list-item__content.list-item__content--is-nested').nth(1)).toContainText('Gossweiler Ingenieure AG');
     await expect(page.locator('map-overlay-list-item').first()).toContainText('Nutzungsplanung (kantonal/kommunal): Grundnutzungen');
-    await expect(page.locator('mat-expansion-panel-header').nth(9)).toContainText('Wohnzone, 2-geschossig, dicht (W2D)');
+    await expect(page.locator('map-overlay-list-item p', {hasText: 'Wohnzone, 2-geschossig, dicht (W2D)'}).first()).toBeVisible();
     await expect(page.locator('.oereb-info-list').first()).toContainText('Rechtsstatus rechtskräftig');
   });
 });
