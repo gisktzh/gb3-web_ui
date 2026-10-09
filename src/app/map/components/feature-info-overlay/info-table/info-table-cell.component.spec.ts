@@ -1,6 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {inputBinding, signal} from '@angular/core';
-import {InfoTableCellComponent, TableCell} from './info-table-cell.component';
+import {InfoTableCellComponent} from './info-table-cell.component';
+import {TableCell} from './info-table.types';
 
 describe('InfoTableCellComponent', () => {
   let fixture: ComponentFixture<InfoTableCellComponent>;
