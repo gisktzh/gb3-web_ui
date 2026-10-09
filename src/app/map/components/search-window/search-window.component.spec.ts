@@ -174,7 +174,7 @@ describe('SearchWindowComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    await Promise.resolve();
+    await fixture.whenStable();
 
     expect(setTermSpy).toHaveBeenCalledWith('Selected result', false);
   });
@@ -184,7 +184,7 @@ describe('SearchWindowComponent', () => {
 
     fixture.detectChanges();
 
-    await Promise.resolve();
+    await fixture.whenStable();
 
     expect(setTermSpy).not.toHaveBeenCalled();
   });
@@ -218,13 +218,13 @@ describe('SearchWindowComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    await Promise.resolve();
+    await fixture.whenStable();
 
     store.overrideSelector(selectSelectedSearchResult, secondSearchResult);
     store.refreshState();
     fixture.detectChanges();
 
-    await Promise.resolve();
+    await fixture.whenStable();
 
     expect(setTermSpy).toHaveBeenNthCalledWith(1, 'First result', false);
     expect(setTermSpy).toHaveBeenNthCalledWith(2, 'Second result', false);
