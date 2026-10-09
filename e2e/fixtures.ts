@@ -56,6 +56,10 @@ type Gb3Fixtures = {
   openMapForLayerFiltering: (x: string, y: string) => Promise<void>;
   openOerebInfoRequest: (address: string) => Promise<void>;
   openPrintDialog: (x: string, y: string, layerName: string) => Promise<void>;
+  openOerebDynamicExtract: () => Promise<Locator>;
+  openDrawingTools: () => Promise<void>;
+  openLegend: (x: string, y: string, layerName: string) => Promise<void>;
+  openFavouriteCreationDialog: () => Promise<Locator>;
   openDataDownloadSelectionTools: (x: string, y: string, layerName: string) => Promise<Locator>;
   openMunicipalityDownloadDialog: (dataDownloadSelectionTools: Locator) => Promise<Locator>;
   selectMunicipalityAndContinue: (municipalityDownloadDialog: Locator, municipalityName: string) => Promise<Locator>;
@@ -616,6 +620,82 @@ export const test = base.extend<Gb3Fixtures>({
       await expect(dataDownloadDialog).toBeVisible();
 
       return dataDownloadDialog;
+    });
+  },
+  openOerebDynamicExtract: async ({page, openUrlWithCoordinates, login, filterForLayer, clickMapInTheList}, use) => {
+    await use(async () => {
+      await openUrlWithCoordinates('2684549', '1253620');
+      await login();
+
+      const gisBrowser = page.locator('span', {hasText: 'GIS-Browser'}).last();
+      await gisBrowser.scrollIntoViewIfNeeded();
+      await gisBrowser.click();
+
+      await filterForLayer('ÖREB-Kataster Raumplanung');
+      await clickMapInTheList('ÖREB-Kataster Raumplanung');
+
+      await page.mouse.click(600, 600);
+      await page.waitForLoadState('networkidle');
+
+      const oerebExtract = page.locator('oereb-extract');
+      await expect(oerebExtract).toBeVisible();
+      return oerebExtract;
+    });
+  },
+
+  openDrawingTools: async ({page, openUrlWithCoordinates}, use) => {
+    await use(async () => {
+      await openUrlWithCoordinates('2702555', '1241686');
+      await page.waitForLoadState('networkidle');
+
+      await expect(page.locator('map-container')).toBeVisible();
+
+      const drawingMenuOpenButton = page.locator('button[aria-label="Zeichnen"]');
+      await expect(drawingMenuOpenButton).toBeVisible();
+      await drawingMenuOpenButton.click();
+
+      await expect(page.locator('drawing-tools')).toBeVisible();
+    });
+  },
+
+  openLegend: async ({page, openMapWithActiveLayer}, use) => {
+    await use(async (x: string, y: string, layerName: string) => {
+      await openMapWithActiveLayer(x, y, layerName);
+
+      const legendButton = page.locator('button', {hasText: 'Legende'});
+      await expect(legendButton).toBeVisible();
+      await legendButton.click();
+      await page.waitForLoadState('networkidle');
+
+      await expect(page.locator('h3', {hasText: 'Legende'})).toBeVisible();
+
+      const layerLegend = page.locator('legend', {hasText: layerName});
+      await expect(layerLegend).toBeVisible();
+      await layerLegend.click();
+    });
+  },
+
+  openFavouriteCreationDialog: async ({page, openUrlWithCoordinates, login, selectTopic, clickMapInTheList}, use) => {
+    await use(async () => {
+      await openUrlWithCoordinates('2682260', '1248390');
+      await login();
+
+      const gisBrowser = page.locator('span', {hasText: 'GIS-Browser'}).last();
+      await gisBrowser.scrollIntoViewIfNeeded();
+      await gisBrowser.click();
+      await page.waitForLoadState('networkidle');
+
+      await selectTopic('Bauten');
+      await clickMapInTheList('AWA-Standorte');
+
+      const favouriteButton = page.locator('active-map-items button:has(mat-icon[svgicon="ktzh_star"])');
+      await favouriteButton.scrollIntoViewIfNeeded();
+      await expect(favouriteButton).toBeEnabled();
+      await favouriteButton.click();
+
+      const favouriteDialog = page.locator('favourite-creation-dialog');
+      await expect(favouriteDialog).toBeVisible();
+      return favouriteDialog;
     });
   },
 });
