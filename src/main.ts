@@ -6,7 +6,7 @@ import {provideRouter, Router, withInMemoryScrolling} from '@angular/router';
 import {ErrorHandlerService} from './app/error-handling/error-handler.service';
 import {EmbeddedErrorHandlerService} from './app/embedded-page/services/embedded-error-handler.service';
 import {errorHandlerServiceFactory} from './app/shared/factories/error-handler-service.factory';
-import {GRAV_CMS_SERVICE, NEWS_SERVICE, TIME_SERVICE, DRAWING_SYMBOLS_SERVICE} from './app/app.tokens';
+import {GRAV_CMS_SERVICE, NEWS_SERVICE, TIME_SERVICE, STATISTICS_SERVICE} from './app/app.tokens';
 import {timeServiceFactory} from './app/shared/factories/time-service.factory';
 import {KTZHNewsService} from './app/shared/services/apis/ktzh/ktzhnews.service';
 import {KTZHNewsServiceMock} from './app/shared/services/apis/ktzh/ktzhnews.service.mock';
@@ -41,7 +41,6 @@ bootstrapApplication(AppComponent, {
     {provide: TIME_SERVICE, useFactory: timeServiceFactory},
     {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsServiceMock, ConfigService], useFactory: newsFactory},
     {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsServiceMock, ConfigService], useFactory: gravCmsFactory},
-    {provide: DRAWING_SYMBOLS_SERVICE, useClass: EsriDrawingSymbolsService},
     {provide: STATISTICS_SERVICE, useClass: Gb3StatisticsService},
     {provide: LOCALE_ID, useValue: 'de-CH'},
     {
