@@ -20,7 +20,7 @@ describe('SearchResultEntryMapComponent', () => {
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
     const link = element.querySelector<HTMLAnchorElement>('a');
-    expect(link?.getAttribute('href')).toBe('/maps?initialMapIds=map-42');
+    expect(link?.getAttribute('href')).toBe('/maps?topics=map-42');
     expect(link?.getAttribute('aria-label')).toBe('Karte Flood map öffnen.');
     expect(element.querySelector<HTMLImageElement>('img')?.alt).toBe('Flood map');
   });
