@@ -124,22 +124,19 @@ describe('ShareLinkDialogComponent', () => {
     it('should close the dialog without an aborted value by default', () => {
       component.close();
 
-      expect(dialogRefMock.close).toHaveBeenCalledOnce();
-      expect(dialogRefMock.close).toHaveBeenCalledWith(false);
+      expect(dialogRefMock.close).toHaveBeenCalledExactlyOnceWith(false);
     });
 
     it('should close the dialog with the provided aborted value', () => {
       component.close(true);
 
-      expect(dialogRefMock.close).toHaveBeenCalledOnce();
-      expect(dialogRefMock.close).toHaveBeenCalledWith(true);
+      expect(dialogRefMock.close).toHaveBeenCalledExactlyOnceWith(true);
     });
 
     it('should close the dialog with false when explicitly passed false', () => {
       component.close(false);
 
-      expect(dialogRefMock.close).toHaveBeenCalledOnce();
-      expect(dialogRefMock.close).toHaveBeenCalledWith(false);
+      expect(dialogRefMock.close).toHaveBeenCalledExactlyOnceWith(false);
     });
   });
 
