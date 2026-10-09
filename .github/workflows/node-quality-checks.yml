@@ -16,6 +16,27 @@ env:
   NODE_VERSION: '24'
 
 jobs:
+  component-test-inventory:
+    name: Check component test inventory
+    runs-on: ${{ inputs.runner_version }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies, check component test inventory and run its script tests
+        run: |
+          npm ci --ignore-scripts
+          npm run component-tests:check
+          npm run component-tests:test
+
   lint:
     name: Run lint
     runs-on: ${{ inputs.runner_version }}

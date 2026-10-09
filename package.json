@@ -15,6 +15,10 @@
     "watch": "ng build --configuration development",
     "test": "ng test",
     "test-ci": "ng test --no-watch --no-progress --coverage",
+    "component-tests:sync": "node ./scripts/component-test-inventory.mjs sync",
+    "component-tests:check": "node ./scripts/component-test-inventory.mjs check",
+    "component-tests:check-complete": "node ./scripts/component-test-inventory.mjs check --fail-on-pending",
+    "component-tests:test": "node --test \"scripts/*.test.mjs\"",
     "prepare": "node ./prepare.mjs",
     "update-version": "node ./update-version.js",
     "format-all": "prettier --write ./src",
@@ -90,8 +94,8 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-rxjs-angular-x": "^1.0.1",
     "eslint-plugin-rxjs-x": "~1.0.6",
+    "happy-dom": "^20.14.5",
     "husky": "^9.0.0",
-    "jsdom": "^30.0.0",
     "knip": "~6.40.0",
     "lint-staged": "^17.0.0",
     "playwright-advanced-har": "^1.4.1",
@@ -99,6 +103,7 @@
     "prettier": "~3.9.6",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.20.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "yaml": "^2.9.1"
   }
 }

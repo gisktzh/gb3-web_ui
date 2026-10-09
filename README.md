@@ -46,11 +46,23 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ### Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Unit tests run with [Vitest](https://vitest.dev/) in a `happy-dom` environment:
+
+```shell
+npm test -- --watch=false
+```
+
+Run a focused component spec with Angular's `--include` option:
+
+```shell
+npm test -- --watch=false --include=src/app/path/example.component.spec.ts
+```
+
+See the [component testing guide](docs/testing/component-tests.md) for test boundaries, conventions, the coverage inventory, and rollout workflow.
 
 > [!WARNING]
 > Starting with `@arcgis/core` 4.32, memory demands have increased significantly due to more types, which requires more work for checking types.
-> As such, karma may run into memory overflows. If this happens, you can increase the memory limit for the node process by setting the `NODE_OPTIONS`
+> As such, the test process may run into memory overflows. If this happens, you can increase the memory limit for the Node.js process by setting the `NODE_OPTIONS`
 > environment variable to `--max_old_space_size=80192` (or any other value that suits your needs).
 
 ### Running end-to-end tests
