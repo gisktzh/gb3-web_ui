@@ -1,5 +1,5 @@
 import {TestBed} from '@angular/core/testing';
-import {provideEffects} from '@ngrx/effects';
+import {EffectSources, provideEffects} from '@ngrx/effects';
 import {provideStore, Store} from '@ngrx/store';
 import {EMPTY, firstValueFrom, Observable, of, Subject} from 'rxjs';
 import {DRAWING_SYMBOLS_SERVICE, MAP_SERVICE, STATISTICS_SERVICE} from '../../../app.tokens';
@@ -27,10 +27,15 @@ import {
   reducer as featureInfoReducer,
   selectData as selectFeatureInfoData,
   selectLoadingState as selectFeatureInfoLoadingState,
+  selectFeatureInfoState,
   selectQueryLocation,
 } from '../reducers/feature-info.reducer';
-import {reducer as generalInfoReducer} from '../reducers/general-info.reducer';
-import {reducer as oerebExtractReducer, selectData as selectOerebExtractData} from '../reducers/oereb-extract.reducer';
+import {reducer as generalInfoReducer, selectGeneralInfoState} from '../reducers/general-info.reducer';
+import {
+  reducer as oerebExtractReducer,
+  selectData as selectOerebExtractData,
+  selectOerebExtractState,
+} from '../reducers/oereb-extract.reducer';
 import {reducer as statisticsReducer, selectGeometry, selectLoadingState} from '../reducers/statistics.reducer';
 import {reducer as queryLocationReducer, selectQueryPoint} from '../reducers/query-location.reducer';
 import {reducer as mapConfigReducer} from '../reducers/map-config.reducer';
@@ -54,6 +59,9 @@ import {selectActiveTool} from '../reducers/tool.reducer';
 import {selectItems} from '../selectors/active-map-items.selector';
 import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
 import {ToolType} from '../../../shared/types/tool.type';
+import {TimeSliderConfiguration} from '../../../shared/interfaces/topic.interface';
+import {ActiveMapItemEffects} from './active-map-item.effects';
+import {TimeSliderService} from '../../../map/services/time-slider.service';
 
 describe('shared feature/statistics query location', () => {
   let store: Store;
@@ -97,6 +105,47 @@ describe('shared feature/statistics query location', () => {
       results: {topic, layers: [], isSingleLayer: false, report: {url: null, description: null}},
     },
   });
+  const extract: OerebExtractResponse = {
+    municipalityName: 'Zürich',
+    municipalityCode: 261,
+    parcelNumber: '1234',
+    completeness: 'vollständig',
+    area: 100,
+    statusOfficialSurvey: '2026-01-01',
+    egrid: 'CH1234',
+    kbo: {title: 'KBO'},
+    surveyor: {title: 'Vermessung'},
+    staticExtractUrl: 'https://example.com/extract.pdf',
+    concernedThemes: [],
+    notConcernedThemes: [],
+    notAvailableThemes: [],
+  };
+  const oerebItem = () => {
+    const item = createGb2WmsMapItemMock('KatOerebRaumplanungZH', 1);
+    Object.assign(item.settings.layers[0], {queryable: true, minScale: 1, maxScale: 1000000});
+    return item;
+  };
+  const initialTimeExtent = {start: new Date('2025-01-01'), end: new Date('2025-12-31')};
+  const changedTimeExtent = {start: new Date('2026-01-01'), end: new Date('2026-12-31')};
+  const configuredItem = () => {
+    const item = additionalItem();
+    Object.assign(item.settings, {
+      filterConfigurations: [
+        {name: 'Kategorie', parameter: 'FILTER_CATEGORY', filterValues: [{name: 'A', values: ['A'], isActive: false}]},
+      ],
+      timeSliderExtent: initialTimeExtent,
+      timeSliderConfiguration: {
+        name: 'Jahr',
+        dateFormat: 'YYYY',
+        minimumDate: '2025',
+        maximumDate: '2026',
+        alwaysMaxRange: false,
+        sourceType: 'parameter',
+        source: {startRangeParameter: 'FILTER_FROM', endRangeParameter: 'FILTER_TO', layerIdentifiers: [item.settings.layers[0].layer]},
+      } satisfies TimeSliderConfiguration,
+    });
+    return item;
+  };
   const statisticsResults: StatisticsResult[] = [
     {
       topic: 'StatBeschaeftigteZH',
@@ -140,6 +189,8 @@ describe('shared feature/statistics query location', () => {
         {provide: MatDialog, useValue: {open: vi.fn()}},
         {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
         FeatureHighlightingService,
+        ActiveMapItemEffects,
+        {provide: TimeSliderService, useValue: {isLayerVisible: () => undefined}},
         provideEffects(
           FeatureInfoEffects,
           GeneralInfoEffects,
@@ -152,6 +203,12 @@ describe('shared feature/statistics query location', () => {
       ],
     });
     store = TestBed.inject(Store);
+    const mapItemEffects = TestBed.inject(ActiveMapItemEffects);
+    // Include the layer state effects without creating or updating live map layers.
+    TestBed.inject(EffectSources).addEffects({
+      setTimeSliderExtent$: mapItemEffects.setTimeSliderExtent$,
+      clearFeatureInfoContentAfterRemovingAllMapItems$: mapItemEffects.clearFeatureInfoContentAfterRemovingAllMapItems$,
+    });
     TestBed.inject(FeatureHighlightingService).init();
     store.dispatch(MapConfigActions.setScale({scale: 1000}));
     const item = createGb2WmsMapItemMock('StatBeschaeftigteZH', 1);
@@ -351,7 +408,7 @@ describe('shared feature/statistics query location', () => {
     expect(statistics.loadStatistics).toHaveBeenCalledTimes(2);
   });
 
-  it('reloads both maps at the retained point when returning to features after adding a map in the statistics tab', async () => {
+  it('retains feature results after adding a map in statistics and queries both maps on the next click', async () => {
     const first = featureInfo('StatBeschaeftigteZH');
     const second = featureInfo('AdditionalTopic');
     topics.loadFeatureInfos.mockReturnValueOnce(of([first])).mockReturnValueOnce(of([first, second]));
@@ -360,11 +417,13 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
     const item = additionalItem();
     store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: item, position: 1}));
-    expect(await firstValueFrom(store.select(selectFeatureInfoData))).toEqual([]);
-    expect(await firstValueFrom(store.select(selectFeatureInfoLoadingState))).toBeUndefined();
+    expect(await firstValueFrom(store.select(selectFeatureInfoData))).toEqual([first.featureInfo.results]);
+    expect(await firstValueFrom(store.select(selectFeatureInfoLoadingState))).toBe('loaded');
     expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
 
     store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
+    expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
+    store.dispatch(MapConfigActions.handleMapClick({x: point.coordinates[0], y: point.coordinates[1], scale: 1000}));
     expect(topics.loadFeatureInfos).toHaveBeenLastCalledWith(point.coordinates[0], point.coordinates[1], 1000, [
       expect.objectContaining({topic: 'StatBeschaeftigteZH', layersToQuery: 'stat-ent-p'}),
       expect.objectContaining({topic: 'AdditionalTopic', layersToQuery: item.settings.layers[0].layer}),
@@ -372,13 +431,13 @@ describe('shared feature/statistics query location', () => {
     expect(topics.loadFeatureInfos).toHaveBeenCalledTimes(2);
     expect(await firstValueFrom(store.select(selectFeatureInfoData))).toEqual([first.featureInfo.results, second.featureInfo.results]);
     expect(await firstValueFrom(store.select(selectQueryPoint))).toEqual(point);
-    expect(generalInfo.loadGeneralInfo).toHaveBeenCalledOnce();
+    expect(generalInfo.loadGeneralInfo).toHaveBeenCalledTimes(2);
   });
 
-  it('refreshes immediately when a queryable map is added while features are active', () => {
+  it('does not query when a queryable map is added while features are active', () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: additionalItem(), position: 1}));
-    expect(topics.loadFeatureInfos).toHaveBeenCalledTimes(2);
+    expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
     expect(topics.loadFeatureInfos).toHaveBeenLastCalledWith(point.coordinates[0], point.coordinates[1], 1000, expect.any(Array));
   });
 
@@ -389,21 +448,21 @@ describe('shared feature/statistics query location', () => {
     expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
   });
 
-  it('includes the ÖREB extract when an ÖREB map is added in the statistics tab and features are reopened', () => {
+  it('requests a newly added ÖREB map only on the next explicit query', () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     expect(oerebExtract.loadOerebExtract).not.toHaveBeenCalled();
     store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
-    const item = createGb2WmsMapItemMock('KatOerebRaumplanungZH', 1);
-    Object.assign(item.settings.layers[0], {queryable: true, minScale: 1, maxScale: 1000000});
+    const item = oerebItem();
     store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: item, position: 1}));
     expect(oerebExtract.loadOerebExtract).not.toHaveBeenCalled();
     store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
+    expect(oerebExtract.loadOerebExtract).not.toHaveBeenCalled();
+    store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     expect(oerebExtract.loadOerebExtract).toHaveBeenCalledExactlyOnceWith(point.coordinates[0], point.coordinates[1]);
   });
 
-  it('cancels a pending ÖREB extract when its map is removed while statistics are active', async () => {
-    const item = createGb2WmsMapItemMock('KatOerebRaumplanungZH', 1);
-    Object.assign(item.settings.layers[0], {queryable: true, minScale: 1, maxScale: 1000000});
+  it('retains a pending ÖREB extract after removing its map until the next explicit query', async () => {
+    const item = oerebItem();
     store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: item, position: 1}));
     const pending = new Subject<OerebExtractResponse>();
     const cancel = vi.fn();
@@ -419,8 +478,13 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
     store.dispatch(ActiveMapItemActions.removeActiveMapItem({activeMapItem: item}));
-    expect(cancel).toHaveBeenCalledOnce();
+    expect(cancel).not.toHaveBeenCalled();
     store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
+    pending.next(extract);
+    expect(await firstValueFrom(store.select(selectOerebExtractData))).toEqual(extract);
+    expect(oerebExtract.loadOerebExtract).toHaveBeenCalledOnce();
+    store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+    expect(cancel).toHaveBeenCalledOnce();
     expect(await firstValueFrom(store.select(selectOerebExtractData))).toBeNull();
     expect(oerebExtract.loadOerebExtract).toHaveBeenCalledOnce();
   });
@@ -439,83 +503,144 @@ describe('shared feature/statistics query location', () => {
     expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
   });
 
-  it('cancels obsolete feature requests on layer changes while inactive and waits for the feature tab', async () => {
-    const pending = new Subject<FeatureInfoResponse[]>();
-    const cancel = vi.fn();
-    topics.loadFeatureInfos.mockReturnValueOnce(
-      new Observable<FeatureInfoResponse[]>((subscriber) => {
-        const subscription = pending.subscribe(subscriber);
-        return () => {
-          cancel();
-          subscription.unsubscribe();
+  describe.each(['loaded', 'pending'] as const)('%s feature queries', (status) => {
+    it.each(['feature', 'statistics'] as const)(
+      'retains feature, general and ÖREB queries through map configuration and tab changes while %s is active',
+      async (queryMode) => {
+        const item = configuredItem();
+        const oereb = oerebItem();
+        const added = createGb2WmsMapItemMock('NewTopic', 1);
+        Object.assign(added.settings.layers[0], {queryable: true, minScale: 1, maxScale: 1000000});
+        store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: item, position: 1}));
+        store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: oereb, position: 2}));
+        const results = [featureInfo('StatBeschaeftigteZH'), featureInfo('AdditionalTopic')];
+        const general: GeneralInfoResponse = {
+          locationInformation: {queryPosition: point, heightDom: 410, heightDtm: 400},
+          alternativeSpatialReferences: [],
+          externalMaps: [],
         };
-      }),
+        const pendingFeatures = new Subject<FeatureInfoResponse[]>();
+        const pendingGeneral = new Subject<GeneralInfoResponse>();
+        const pendingExtract = new Subject<OerebExtractResponse>();
+        const cancelFeatures = vi.fn();
+        const cancelGeneral = vi.fn();
+        const cancelExtract = vi.fn();
+        const tracked = <T>(source: Subject<T>, cancel: () => void) =>
+          new Observable<T>((subscriber) => {
+            const subscription = source.subscribe(subscriber);
+            return () => {
+              cancel();
+              subscription.unsubscribe();
+            };
+          });
+        topics.loadFeatureInfos.mockReturnValueOnce(status === 'loaded' ? of(results) : tracked(pendingFeatures, cancelFeatures));
+        generalInfo.loadGeneralInfo.mockReturnValueOnce(status === 'loaded' ? of(general) : tracked(pendingGeneral, cancelGeneral));
+        oerebExtract.loadOerebExtract.mockReturnValueOnce(status === 'loaded' ? of(extract) : tracked(pendingExtract, cancelExtract));
+        store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+        store.dispatch(FeatureInfoActions.highlightFeature({feature: point, pinnedFeatureId: 'topic_layer_1'}));
+        store.dispatch(QueryModeActions.setQueryMode({queryMode}));
+        const featureState = await firstValueFrom(store.select(selectFeatureInfoState));
+        const generalState = await firstValueFrom(store.select(selectGeneralInfoState));
+        const extractState = await firstValueFrom(store.select(selectOerebExtractState));
+        const changes = [
+          MapConfigActions.setScale({scale: 1_000_001}),
+          MapConfigActions.setMapExtent({x: point.coordinates[0] + 100, y: point.coordinates[1] + 100, scale: 2000}),
+          ActiveMapItemActions.setOpacity({activeMapItem: item, opacity: 0.5}),
+          ActiveMapItemActions.setLoadingState({id: item.id, loadingState: 'loaded'}),
+          ActiveMapItemActions.setSublayerVisibility({activeMapItem: item, layerId: item.settings.layers[0].id, visible: false}),
+          ActiveMapItemActions.setSublayerVisibility({activeMapItem: item, layerId: item.settings.layers[0].id, visible: true}),
+          ActiveMapItemActions.setVisibility({activeMapItem: item, visible: false}),
+          ActiveMapItemActions.setVisibility({activeMapItem: item, visible: true}),
+          ActiveMapItemActions.setAttributeFilterValueState({
+            activeMapItem: item,
+            attributeFilterParameter: 'FILTER_CATEGORY',
+            filterValueName: 'A',
+            isFilterValueActive: true,
+          }),
+          ActiveMapItemActions.setTimeSliderExtent({activeMapItem: item, timeExtent: changedTimeExtent}),
+          ActiveMapItemActions.addActiveMapItem({activeMapItem: added, position: 3}),
+          ActiveMapItemActions.removeActiveMapItem({activeMapItem: added}),
+          ActiveMapItemActions.removeActiveMapItem({activeMapItem: oereb}),
+          QueryModeActions.setQueryMode({queryMode: 'statistics'}),
+          QueryModeActions.setQueryMode({queryMode: 'feature'}),
+        ];
+        for (const action of changes) {
+          store.dispatch(action);
+          expect(await firstValueFrom(store.select(selectFeatureInfoState)), action.type).toEqual(featureState);
+          expect(await firstValueFrom(store.select(selectGeneralInfoState)), action.type).toEqual(generalState);
+          expect(await firstValueFrom(store.select(selectOerebExtractState)), action.type).toEqual(extractState);
+          expect(topics.loadFeatureInfos, action.type).toHaveBeenCalledOnce();
+          expect(generalInfo.loadGeneralInfo, action.type).toHaveBeenCalledOnce();
+          expect(oerebExtract.loadOerebExtract, action.type).toHaveBeenCalledOnce();
+          expect(cancelFeatures, action.type).not.toHaveBeenCalled();
+          expect(cancelGeneral, action.type).not.toHaveBeenCalled();
+          expect(cancelExtract, action.type).not.toHaveBeenCalled();
+        }
+        if (status === 'pending') {
+          pendingFeatures.next(results);
+          pendingGeneral.next(general);
+          pendingExtract.next(extract);
+        }
+        expect(await firstValueFrom(store.select(selectFeatureInfoData))).toEqual(results.map((result) => result.featureInfo.results));
+        expect(await firstValueFrom(store.select(selectOerebExtractData))).toEqual(extract);
+        expect(await firstValueFrom(store.select(selectFeatureInfoQueryLoadingState))).toBe('loaded');
+      },
     );
-    store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
-    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
-    store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: additionalItem(), position: 1}));
-    expect(cancel).toHaveBeenCalledOnce();
-    pending.next([featureInfo('stale')]);
-    expect(await firstValueFrom(store.select(selectFeatureInfoData))).toEqual([]);
-    expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
-    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
-    expect(topics.loadFeatureInfos).toHaveBeenCalledTimes(2);
   });
 
-  it('replaces pending feature requests after active layer changes without cancelling the fresh request or duplicating it on tab return', async () => {
-    const first = new Subject<FeatureInfoResponse[]>();
-    const second = new Subject<FeatureInfoResponse[]>();
-    const cancelFirst = vi.fn();
-    const cancelSecond = vi.fn();
-    topics.loadFeatureInfos
-      .mockReturnValueOnce(
-        new Observable<FeatureInfoResponse[]>((subscriber) => {
-          const subscription = first.subscribe(subscriber);
-          return () => {
-            cancelFirst();
-            subscription.unsubscribe();
-          };
-        }),
-      )
-      .mockReturnValueOnce(
-        new Observable<FeatureInfoResponse[]>((subscriber) => {
-          const subscription = second.subscribe(subscriber);
-          return () => {
-            cancelSecond();
-            subscription.unsubscribe();
-          };
-        }),
-      );
-    store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
-    store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: additionalItem(), position: 1}));
-    expect(cancelFirst).toHaveBeenCalledOnce();
-    expect(cancelSecond).not.toHaveBeenCalled();
-    first.next([featureInfo('stale')]);
-    expect(await firstValueFrom(store.select(selectFeatureInfoData))).toEqual([]);
-    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
-    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
-    expect(topics.loadFeatureInfos).toHaveBeenCalledTimes(2);
-    const fresh = [featureInfo('StatBeschaeftigteZH'), featureInfo('AdditionalTopic')];
-    second.next(fresh);
-    expect(await firstValueFrom(store.select(selectFeatureInfoData))).toEqual(fresh.map((info) => info.featureInfo.results));
-  });
-
-  it('refreshes after sublayer visibility and scale eligibility change, but not for opacity or loading changes', async () => {
-    const item = additionalItem();
+  it('uses current scale, visibility, filters and time extent on the next explicit query', async () => {
+    const item = configuredItem();
+    item.settings.layers.push({...item.settings.layers[0], id: 1, layer: 'new-scale-layer', minScale: 1500});
     store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: item, position: 1}));
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
-    store.dispatch(ActiveMapItemActions.setOpacity({activeMapItem: item, opacity: 0.5}));
-    store.dispatch(ActiveMapItemActions.setLoadingState({id: item.id, loadingState: 'loaded'}));
+    const initialLayers = topics.loadFeatureInfos.mock.calls[0][3];
+    expect(initialLayers).toEqual([
+      expect.objectContaining({topic: 'StatBeschaeftigteZH', layersToQuery: 'stat-ent-p'}),
+      expect.objectContaining({
+        topic: 'AdditionalTopic',
+        layersToQuery: item.settings.layers[0].layer,
+        timeSliderExtent: initialTimeExtent,
+      }),
+    ]);
+    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+    store.dispatch(MapConfigActions.setScale({scale: 2000}));
+    store.dispatch(ActiveMapItemActions.setSublayerVisibility({activeMapItem: item, layerId: 0, visible: false}));
+    store.dispatch(
+      ActiveMapItemActions.setAttributeFilterValueState({
+        activeMapItem: item,
+        attributeFilterParameter: 'FILTER_CATEGORY',
+        filterValueName: 'A',
+        isFilterValueActive: true,
+      }),
+    );
+    store.dispatch(ActiveMapItemActions.setTimeSliderExtent({activeMapItem: item, timeExtent: changedTimeExtent}));
+    const original = (await firstValueFrom(store.select(selectItems)))[0];
+    store.dispatch(ActiveMapItemActions.setVisibility({activeMapItem: original, visible: false}));
+    const oereb = oerebItem();
+    store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: oereb, position: 2}));
+    store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
     expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
-    store.dispatch(ActiveMapItemActions.setSublayerVisibility({activeMapItem: item, layerId: item.settings.layers[0].id, visible: false}));
+    expect(generalInfo.loadGeneralInfo).toHaveBeenCalledOnce();
+    expect(oerebExtract.loadOerebExtract).not.toHaveBeenCalled();
+
+    const x = point.coordinates[0] + 100;
+    const y = point.coordinates[1] + 100;
+    store.dispatch(MapConfigActions.handleMapClick({x, y, scale: 2000}));
     expect(topics.loadFeatureInfos).toHaveBeenCalledTimes(2);
-    store.dispatch(ActiveMapItemActions.setSublayerVisibility({activeMapItem: item, layerId: item.settings.layers[0].id, visible: true}));
-    expect(topics.loadFeatureInfos).toHaveBeenCalledTimes(3);
-    store.dispatch(MapConfigActions.setScale({scale: 1_000_001}));
-    expect(topics.loadFeatureInfos).toHaveBeenCalledTimes(3);
-    expect(await firstValueFrom(store.select(selectFeatureInfoData))).toEqual([]);
-    store.dispatch(MapConfigActions.setScale({scale: 1000}));
-    expect(topics.loadFeatureInfos).toHaveBeenCalledTimes(4);
+    expect(topics.loadFeatureInfos).toHaveBeenLastCalledWith(x, y, 2000, [
+      expect.objectContaining({
+        topic: 'AdditionalTopic',
+        layersToQuery: 'new-scale-layer',
+        filterConfigurations: [
+          {name: 'Kategorie', parameter: 'FILTER_CATEGORY', filterValues: [{name: 'A', values: ['A'], isActive: true}]},
+        ],
+        timeSliderExtent: changedTimeExtent,
+      }),
+      expect.objectContaining({topic: 'KatOerebRaumplanungZH', layersToQuery: oereb.settings.layers[0].layer}),
+    ]);
+    expect(generalInfo.loadGeneralInfo).toHaveBeenCalledTimes(2);
+    expect(generalInfo.loadGeneralInfo).toHaveBeenLastCalledWith(x, y, 2000);
+    expect(oerebExtract.loadOerebExtract).toHaveBeenCalledExactlyOnceWith(x, y);
   });
 
   it('preserves the query point when resetting the selection mode, and clears it on overlay closure', async () => {
@@ -528,7 +653,7 @@ describe('shared feature/statistics query location', () => {
     expect(await firstValueFrom(store.select(selectQueryLocation))).toEqual({});
   });
 
-  it('cancels feature requests on point changes and closure so stale responses cannot repopulate data', () => {
+  it('cancels feature requests on point changes and closure so stale responses cannot repopulate data', async () => {
     const first = new Subject<FeatureInfoResponse[]>();
     const cancelFirst = vi.fn();
     topics.loadFeatureInfos.mockReturnValueOnce(
@@ -543,12 +668,72 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     store.dispatch(QueryLocationActions.setPoint({point: {...point, coordinates: [2680010, 1254010]}, scale: 1000}));
     expect(cancelFirst).toHaveBeenCalledOnce();
+    first.next([featureInfo('old point')]);
+    expect(await firstValueFrom(store.select(selectFeatureInfoData))).toEqual([]);
     const cancelSecond = vi.fn();
     topics.loadFeatureInfos.mockReturnValueOnce(new Observable(() => cancelSecond));
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     store.dispatch(MapConfigActions.clearFeatureInfoContent());
     expect(cancelSecond).toHaveBeenCalledOnce();
   });
+
+  it.each(['point change', 'overlay closure'] as const)('cancels a pending ÖREB extract after %s', async (change) => {
+    store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: oerebItem(), position: 1}));
+    const pending = new Subject<OerebExtractResponse>();
+    const cancel = vi.fn();
+    oerebExtract.loadOerebExtract.mockReturnValueOnce(
+      new Observable<OerebExtractResponse>((subscriber) => {
+        const subscription = pending.subscribe(subscriber);
+        return () => {
+          cancel();
+          subscription.unsubscribe();
+        };
+      }),
+    );
+    store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+    store.dispatch(
+      change === 'point change'
+        ? QueryLocationActions.setPoint({point: {...point, coordinates: [2680010, 1254010]}, scale: 1000})
+        : MapConfigActions.clearFeatureInfoContent(),
+    );
+    expect(cancel).toHaveBeenCalledOnce();
+    pending.next(extract);
+    expect(await firstValueFrom(store.select(selectOerebExtractData))).toBeNull();
+  });
+
+  it.each(['loaded', 'pending'] as const)(
+    'clears %s feature queries when all map items are removed without querying again',
+    async (status) => {
+      const pending = new Subject<FeatureInfoResponse[]>();
+      const cancel = vi.fn();
+      topics.loadFeatureInfos.mockReturnValueOnce(
+        status === 'loaded'
+          ? of([featureInfo('StatBeschaeftigteZH')])
+          : new Observable<FeatureInfoResponse[]>((subscriber) => {
+              const subscription = pending.subscribe(subscriber);
+              return () => {
+                cancel();
+                subscription.unsubscribe();
+              };
+            }),
+      );
+      store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
+      store.dispatch(FeatureInfoActions.highlightFeature({feature: point, pinnedFeatureId: 'topic_layer_1'}));
+      store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
+      if (status === 'pending') expect(cancel).toHaveBeenCalledOnce();
+      pending.next([featureInfo('removed map')]);
+      expect(await firstValueFrom(store.select(selectFeatureInfoState))).toEqual({
+        data: [],
+        loadingState: undefined,
+        queryLocation: {},
+        highlightedFeature: undefined,
+        pinnedFeatureId: undefined,
+      });
+      store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
+      store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
+      expect(topics.loadFeatureInfos).toHaveBeenCalledOnce();
+    },
+  );
 
   it('retains an oversized selection and updates feature info without sending a statistics request', async () => {
     store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));

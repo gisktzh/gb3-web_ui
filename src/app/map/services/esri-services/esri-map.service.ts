@@ -53,6 +53,7 @@ import {hasNonNullishProperty} from './type-guards/esri-nullish.type-guard';
 import Transformation from '@arcgis/core/geometry/operators/support/Transformation';
 import KMLLayer from '@arcgis/core/layers/KMLLayer';
 import Point from '@arcgis/core/geometry/Point';
+import Extent from '@arcgis/core/geometry/Extent';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import WMSLayer, {WMSLayerFormatType} from '@arcgis/core/layers/WMSLayer';
 import Graphic from '@arcgis/core/Graphic';
@@ -76,6 +77,7 @@ import {RequestInterceptor} from '@arcgis/core/request/types';
 import {ResourceHandle} from '@arcgis/core/core/Handles';
 import {ClickEvent, LayerViewCreateEvent} from '@arcgis/core/views/input/types';
 import {MapViewPadding} from '../../../shared/interfaces/map-view-padding.interface';
+import {calculateBoundingBox} from '../../../shared/utils/geojson-bounds.utils';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -492,6 +494,20 @@ export class EsriMapService implements MapService {
   }
 
   public zoomToExtent(geometry: GeometryWithSrs, expandFactor: number = 1.075, duration?: number): Promise<never> {
+    const bounds = calculateBoundingBox(geometry);
+    if (!bounds) {
+      return Promise.resolve() as Promise<never>;
+    }
+
+    if (geometry.type === 'GeometryCollection') {
+      const {minX, maxX, minY, maxY} = bounds;
+      if (minX === maxX && minY === maxY) {
+        return this.zoomToExtent({type: 'Point', coordinates: [minX, minY], srs: geometry.srs}, expandFactor, duration);
+      }
+      const extent = new Extent({xmin: minX, xmax: maxX, ymin: minY, ymax: maxY, spatialReference: {wkid: geometry.srs}});
+      return this.getMapView().goTo(extent.expand(expandFactor), {duration}) as never;
+    }
+
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
 
     if (esriGeometry instanceof Point) {

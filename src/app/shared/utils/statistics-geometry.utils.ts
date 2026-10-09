@@ -1,5 +1,6 @@
 import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../interfaces/geojson-types-with-srs.interface';
 import {Position} from 'geojson';
+import {calculateBoundingBox} from './geojson-bounds.utils';
 
 /**
  * The number of segments used to approximate a circle as a polygon. High enough that the result looks round at any sensible map scale.
@@ -89,25 +90,6 @@ export function deriveCircleFromGeometry(geometry: GeometryWithSrs): {center: Po
   };
 }
 
-interface BoundingBox {
-  minX: number;
-  maxX: number;
-  minY: number;
-  maxY: number;
-}
-
-function calculateBoundingBox(geometry: GeometryWithSrs): BoundingBox | undefined {
-  const positions = extractPositions(geometry);
-  if (positions.length === 0) {
-    return undefined;
-  }
-
-  const xs = positions.map(([x]) => x);
-  const ys = positions.map(([, y]) => y);
-
-  return {minX: Math.min(...xs), maxX: Math.max(...xs), minY: Math.min(...ys), maxY: Math.max(...ys)};
-}
-
 function translateGeometry<T extends GeometryWithSrs>(geometry: T, deltaX: number, deltaY: number): T {
   const movePosition = ([x, y]: Position): Position => [x + deltaX, y + deltaY];
 
@@ -168,21 +150,4 @@ function calculateRingArea(ring: Position[]): number {
     doubledArea += (ring[j][0] - originX) * (ring[i][1] - originY) - (ring[i][0] - originX) * (ring[j][1] - originY);
   }
   return Math.abs(doubledArea / 2);
-}
-
-function extractPositions(geometry: GeometryWithSrs): Position[] {
-  switch (geometry.type) {
-    case 'Point':
-      return [geometry.coordinates];
-    case 'MultiPoint':
-    case 'LineString':
-      return geometry.coordinates;
-    case 'MultiLineString':
-    case 'Polygon':
-      return geometry.coordinates.flat();
-    case 'MultiPolygon':
-      return geometry.coordinates.flat(2);
-    case 'GeometryCollection':
-      return geometry.geometries.flatMap((child) => extractPositions({...child, srs: geometry.srs}));
-  }
 }

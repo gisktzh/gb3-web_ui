@@ -56,23 +56,6 @@ describe('FeatureInfo Reducer', () => {
     });
   });
 
-  describe('invalidateContent', () => {
-    it('discards stale results and highlights while retaining the query location', () => {
-      const mockCurrentState: FeatureInfoState = {
-        queryLocation: {x: 5555, y: 0},
-        loadingState: 'loaded',
-        data: [{topic: 'Topic1', layers: [], isSingleLayer: false, report: {url: null, description: null}}],
-        pinnedFeatureId: 'old-feature',
-        highlightedFeature: {type: 'Point', srs: 2056, coordinates: [5555, 0]},
-      };
-
-      expect(reducer(mockCurrentState, FeatureInfoActions.invalidateContent())).toEqual({
-        ...initialState,
-        queryLocation: mockCurrentState.queryLocation,
-      });
-    });
-  });
-
   describe('clearHighlight', () => {
     it('removes the highlight only, but leaves state untouched otherwise', () => {
       const action = FeatureInfoActions.clearHighlight();
