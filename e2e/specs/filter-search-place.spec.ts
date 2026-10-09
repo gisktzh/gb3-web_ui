@@ -7,7 +7,7 @@ test.describe('Test filter search', () => {
     search,
     useHar,
     captureConsole,
-    clickDefaultMapViewCenter
+    clickDefaultMapViewCenter,
   }) => {
     await useHar();
     captureConsole();
