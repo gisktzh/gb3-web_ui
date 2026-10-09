@@ -1,6 +1,5 @@
 version: 1
 pending:
-  src/app/map/components/feature-info-overlay/info-table/info-table-cell.component.ts: {}
   src/app/map/components/feature-info-overlay/info-table/resizable-info-table.component.ts: {}
   src/app/map/components/feature-info-overlay/oereb-extract/oereb-not-concerned-themes-list/oereb-not-concerned-themes-list.component.ts: {}
   src/app/map/components/feature-info-overlay/query-results/query-results.component.ts: {}
@@ -155,6 +154,9 @@ dedicated:
   src/app/map/components/feature-info-overlay/feature-info/feature-info.component.ts:
     coveredBy:
       - src/app/map/components/feature-info-overlay/feature-info/feature-info.component.spec.ts
+  src/app/map/components/feature-info-overlay/info-table/info-table-cell.component.ts:
+    coveredBy:
+      - src/app/map/components/feature-info-overlay/info-table/info-table-cell.component.spec.ts
   src/app/map/components/feature-info-overlay/oereb-extract/oereb-extract.component.ts:
     coveredBy:
       - src/app/map/components/feature-info-overlay/oereb-extract/oereb-extract.component.spec.ts
@@ -525,7 +527,7 @@ host:
 e2e:
   src/app/embedded-page/embedded-map-page.component.ts:
     coveredBy:
-      - e2e/specs/open-map-with-url.spec.ts
+      - e2e/specs/embedded-map-page.spec.ts
     reason: Requires real iframe and browser lifecycle behavior.
 abstract:
   src/app/data-catalogue/components/abstract-base-detail/abstract-base-detail.component.ts:
