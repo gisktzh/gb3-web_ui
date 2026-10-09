@@ -31,7 +31,8 @@ export type ScreenCoordsList = ScreenCoords[];
 
 type Gb3Fixtures = {
   useHar: (postFix?: string) => Promise<void>;
-  captureConsole: () => void;
+  /** @param expectedErrors Console messages that a test provokes on purpose and that should therefore not be reported. */
+  captureConsole: (expectedErrors?: (string | RegExp)[]) => void;
   checkA11y: (options?: CheckA11yOptions) => Promise<void>;
   filterForLayer: (searchTerm: string) => Promise<void>;
   clickMapInTheList: (nameOfTheMap: string, expectedActiveMapName?: string) => Promise<void>;
@@ -235,11 +236,14 @@ export const test = base.extend<Gb3Fixtures>({
   },
 
   captureConsole: async ({page}, use) => {
-    await use(() => {
+    await use((expectedErrors = []) => {
       page.on('console', (msg) => {
         if (msg.type() === 'error' || process.env['CAPTURE_CONSOLE']) {
           const filtered = ['Animation Frame', 'prepare', 'preRender', 'render', 'postRender', 'update', 'finish'];
-          if (!filtered.includes(msg.text())) {
+          const isExpected = expectedErrors.some((expected) =>
+            typeof expected === 'string' ? msg.text().includes(expected) : expected.test(msg.text()),
+          );
+          if (!filtered.includes(msg.text()) && !isExpected) {
             console.log(`[browser ${msg.type()}]`, msg.text());
           }
         }
