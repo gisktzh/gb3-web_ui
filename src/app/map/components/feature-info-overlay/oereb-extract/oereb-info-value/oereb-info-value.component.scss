@@ -10,6 +10,11 @@
   gap: 6px;
 }
 
+.oereb-detail-list__label {
+  display: block;
+  margin-bottom: 6px;
+}
+
 .oereb-detail-list__link {
   @include mixins.external-link-decoration;
   display: block;

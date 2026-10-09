@@ -1,23 +1,5 @@
 import {Page} from '@playwright/test';
-import {test, expect, ScreenCoordsList, ScreenCoords} from '../fixtures';
-
-async function openMapAndDrawingTools(
-  page: Page,
-  openUrlWithCoordinates: (x: string, y: string, shouldSkipTour?: boolean | undefined) => Promise<void>,
-) {
-  await openUrlWithCoordinates('2702555', '1241686');
-  await page.waitForLoadState('networkidle');
-
-  const mapContainer = page.locator('map-container');
-  await expect(mapContainer).toBeVisible();
-
-  const drawingMenuOpenButton = page.locator('button[aria-label="Zeichnen"]');
-  await expect(drawingMenuOpenButton).toBeVisible();
-  await drawingMenuOpenButton.click();
-
-  const drawingMenu = page.locator('drawing-tools');
-  await expect(drawingMenu).toBeVisible();
-}
+import {test, expect, describeA11y, ScreenCoordsList, ScreenCoords} from '../fixtures';
 
 function isScreenCoordsList(coords: ScreenCoords | ScreenCoordsList): coords is ScreenCoordsList {
   return Array.isArray(coords[0]);
@@ -122,13 +104,13 @@ async function assertShapeEdit(
 }
 
 test.describe('Drawing', () => {
-  test('draws a point and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
+  test('draws a point and can edit it', async ({page, openDrawingTools, useHar, captureConsole}) => {
     test.slow();
 
     await useHar('point');
     captureConsole();
 
-    await openMapAndDrawingTools(page, openUrlWithCoordinates);
+    await openDrawingTools();
 
     const mapContainer = page.locator('map-container');
     const drawingMenu = page.locator('drawing-tools');
@@ -151,13 +133,13 @@ test.describe('Drawing', () => {
     await assertShapeEdit(page, 'point-edit', pointCoords, ['8', '0.6', '0.3', '20'], ['#00ff00', '#00ff00']);
   });
 
-  test('draws a line and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
+  test('draws a line and can edit it', async ({page, openDrawingTools, useHar, captureConsole}) => {
     test.slow();
 
     await useHar('line');
     captureConsole();
 
-    await openMapAndDrawingTools(page, openUrlWithCoordinates);
+    await openDrawingTools();
 
     const mapContainer = page.locator('map-container');
     const drawingMenu = page.locator('drawing-tools');
@@ -184,13 +166,13 @@ test.describe('Drawing', () => {
     await assertShapeEdit(page, 'line-edit', lineCoords, ['8', '0.6'], ['#00ff00']);
   });
 
-  test('draws a polygon and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
+  test('draws a polygon and can edit it', async ({page, openDrawingTools, useHar, captureConsole}) => {
     test.slow();
 
     await useHar('polygon');
     captureConsole();
 
-    await openMapAndDrawingTools(page, openUrlWithCoordinates);
+    await openDrawingTools();
 
     const mapContainer = page.locator('map-container');
     const drawingMenu = page.locator('drawing-tools');
@@ -218,13 +200,13 @@ test.describe('Drawing', () => {
     await assertShapeEdit(page, 'polygon-edit', polygonCoords, ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
   });
 
-  test('draws a rectangle and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
+  test('draws a rectangle and can edit it', async ({page, openDrawingTools, useHar, captureConsole}) => {
     test.slow();
 
     await useHar('rectangle');
     captureConsole();
 
-    await openMapAndDrawingTools(page, openUrlWithCoordinates);
+    await openDrawingTools();
 
     const mapContainer = page.locator('map-container');
     const drawingMenu = page.locator('drawing-tools');
@@ -250,13 +232,13 @@ test.describe('Drawing', () => {
     await assertShapeEdit(page, 'polygon-edit', reactangleCoords, ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
   });
 
-  test('draws a circle and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
+  test('draws a circle and can edit it', async ({page, openDrawingTools, useHar, captureConsole}) => {
     test.slow();
 
     await useHar('circle');
     captureConsole();
 
-    await openMapAndDrawingTools(page, openUrlWithCoordinates);
+    await openDrawingTools();
 
     const mapContainer = page.locator('map-container');
     const drawingMenu = page.locator('drawing-tools');
@@ -282,13 +264,13 @@ test.describe('Drawing', () => {
     await assertShapeEdit(page, 'polygon-edit', circleCoords, ['8', '0.6', '0.7'], ['#00ff00', '#00ff00']);
   });
 
-  test('draws text and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
+  test('draws text and can edit it', async ({page, openDrawingTools, useHar, captureConsole}) => {
     test.slow();
 
     await useHar('text');
     captureConsole();
 
-    await openMapAndDrawingTools(page, openUrlWithCoordinates);
+    await openDrawingTools();
 
     const mapContainer = page.locator('map-container');
     const drawingMenu = page.locator('drawing-tools');
@@ -337,13 +319,13 @@ test.describe('Drawing', () => {
     await assertShapeEdit(page, 'text-edit', [textCoords[0], textCoords[1] - 10], ['12', '8', '13'], ['#00ff00', '#00ff00'], ['Changed']);
   });
 
-  test('draws a symbol and can edit it', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
+  test('draws a symbol and can edit it', async ({page, openDrawingTools, useHar, captureConsole}) => {
     test.slow();
 
     await useHar('symbol');
     captureConsole();
 
-    await openMapAndDrawingTools(page, openUrlWithCoordinates);
+    await openDrawingTools();
 
     const mapContainer = page.locator('map-container');
     const drawingMenu = page.locator('drawing-tools');
@@ -435,5 +417,21 @@ test.describe('Drawing', () => {
     await expect(mapContainer).toBeVisible();
 
     await assertShapeEdit(page, 'symbol-edit', symbolCoords, ['20', '60'], [], [], 'Hedgehog');
+  });
+
+  describeA11y(() => {
+    test('has no detectable accessibility violations with the drawing tools open', async ({
+      openDrawingTools,
+      useHar,
+      captureConsole,
+      checkA11y,
+    }) => {
+      await useHar('point');
+      captureConsole();
+
+      await openDrawingTools();
+
+      await checkA11y({include: ['drawing-tools']});
+    });
   });
 });

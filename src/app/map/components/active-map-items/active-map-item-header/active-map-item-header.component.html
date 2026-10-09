@@ -3,6 +3,9 @@
     class="active-map-item-header__button"
     (click)="activeMapItemExpansionPanel().toggle()"
     [attr.data-test-id]="activeMapItemExpansionPanel().expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
+    [attr.aria-label]="activeMapItemExpansionPanel().expanded ? 'Ebenen ausblenden' : 'Ebenen anzeigen'"
+    [attr.aria-expanded]="activeMapItemExpansionPanel().expanded"
+    [attr.aria-controls]="activeMapItemExpansionPanel().id"
     mat-icon-button
   >
     <mat-icon [fontIcon]="activeMapItemExpansionPanel().expanded ? 'arrow_drop_down' : 'arrow_right'" />
@@ -21,6 +24,7 @@
       class="active-map-item-header__image-container__checkbox"
       [checked]="activeMapItem().visible"
       (change)="toggleMapItemVisibility(activeMapItem())"
+      [aria-label]="activeMapItem().title + ' ein-/ausblenden'"
     />
     <loading-and-process-bar
       [loadingState]="activeMapItem().loadingState"
@@ -48,6 +52,7 @@
           [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, geometadataUuid]"
           mat-icon-button
           data-test-id="info"
+          aria-label="Informationen zur Karte"
         >
           <mat-icon>info</mat-icon>
         </a>
@@ -57,7 +62,13 @@
           [vertical]="true"
         />
       }
-      <button class="active-map-item-header__button" (click)="removeActiveMapItem(activeMapItem())" mat-icon-button data-test-id="delete">
+      <button
+        class="active-map-item-header__button"
+        (click)="removeActiveMapItem(activeMapItem())"
+        mat-icon-button
+        data-test-id="delete"
+        aria-label="Karte entfernen"
+      >
         <mat-icon>delete</mat-icon>
       </button>
       <mat-divider

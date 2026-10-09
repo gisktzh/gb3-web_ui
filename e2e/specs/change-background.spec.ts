@@ -1,5 +1,5 @@
 import {Locator} from '@playwright/test';
-import {test, expect} from '../fixtures';
+import {test, expect, describeA11y} from '../fixtures';
 
 test.describe('Map operation', () => {
   test('changes base map when selecting', async ({page, openUrlWithCoordinates, useHar, captureConsole}) => {
@@ -28,5 +28,24 @@ test.describe('Map operation', () => {
     await historicMap.click();
 
     await assertBackgroundImage(baseMapSelector, 'url("http://localhost:4200/assets/images/basemaps/arewildbackgroundzh.webp")');
+  });
+
+  describeA11y(() => {
+    test('has no detectable accessibility violations with the basemap selector expanded', async ({
+      page,
+      openUrlWithCoordinates,
+      useHar,
+      captureConsole,
+      checkA11y,
+    }) => {
+      await useHar();
+      captureConsole();
+
+      await openUrlWithCoordinates('2685889', '1250981');
+      await page.locator('basemap-selector button').click();
+      await expect(page.locator('button', {hasText: 'Historische Karte J. Wild (~1850)'})).toBeVisible();
+
+      await checkA11y();
+    });
   });
 });

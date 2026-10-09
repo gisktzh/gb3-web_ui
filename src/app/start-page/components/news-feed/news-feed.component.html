@@ -6,8 +6,8 @@
 />
 <link-grid-list>
   @for (newsEntry of news(); track $index) {
-    <link-grid-list-item [url]="newsEntry.link" [title]="newsEntry.title" entryType="Mitteilung" [entryDate]="newsEntry.date">
+    <li link-grid-list-item [url]="newsEntry.link" [title]="newsEntry.title" entryType="Mitteilung" [entryDate]="newsEntry.date">
       {{ newsEntry.teaserText }}
-    </link-grid-list-item>
+    </li>
   }
 </link-grid-list>

@@ -1,53 +1,22 @@
-import {test, expect} from '../fixtures';
+import {test, expect, describeA11y} from '../fixtures';
 
 test.describe('Data download', () => {
-  test('downloads specified data', async ({page, useHar, openUrlWithCoordinates, filterForLayer, clickMapInTheList, captureConsole}) => {
+  test('downloads specified data', async ({
+    page,
+    useHar,
+    openDataDownloadSelectionTools,
+    openMunicipalityDownloadDialog,
+    selectMunicipalityAndContinue,
+    captureConsole,
+  }) => {
     test.setTimeout(120_000);
 
     await useHar();
     captureConsole();
 
-    await openUrlWithCoordinates('2702555', '1241686');
-    await page.waitForLoadState('networkidle');
-
-    await filterForLayer('Amtliche Vermessung in Farbe');
-    await clickMapInTheList('Amtliche Vermessung in Farbe');
-
-    const dataDownloadDialogButton = page.locator('[data-test-id="map-data-download"]');
-    await expect(dataDownloadDialogButton).toBeVisible();
-
-    await dataDownloadDialogButton.click();
-    await page.waitForLoadState('networkidle');
-
-    const dataDownloadSelectionTools = page.locator('data-download-selection-tools');
-    await expect(dataDownloadSelectionTools).toBeVisible();
-
-    const municipalityDownloadButton = dataDownloadSelectionTools.locator('[aria-label="Selektion: Auswahl einer Zürcher Gemeinde."]');
-    await expect(municipalityDownloadButton).toBeVisible();
-    await municipalityDownloadButton.click();
-
-    const municipalityDownloadDialog = page.locator('api-dialog-wrapper[title="Daten beziehen"]');
-    await expect(municipalityDownloadDialog).toBeVisible();
-
-    const municipalityInput = municipalityDownloadDialog.locator('[aria-label="Gemeinde"]');
-    await municipalityInput.focus();
-    await municipalityInput.clear();
-    await municipalityInput.fill('Volken');
-
-    const selectedableOption = municipalityDownloadDialog.locator('mat-option');
-    await expect(selectedableOption).toContainText('Volken');
-    await selectedableOption.click();
-
-    const continueButton = municipalityDownloadDialog.locator('[data-test-id="data-download-municipality-submit"]');
-    await expect(continueButton).toBeVisible();
-    await continueButton.click();
-
-    await expect(municipalityDownloadDialog).not.toBeVisible();
-    await page.waitForLoadState('networkidle');
-
-    const dataDownloadDialog = page.locator('data-download-dialog');
-    await expect(dataDownloadDialog).toBeVisible();
-
+    const dataDownloadSelectionTools = await openDataDownloadSelectionTools('2702555', '1241686', 'Amtliche Vermessung in Farbe');
+    const municipalityDownloadDialog = await openMunicipalityDownloadDialog(dataDownloadSelectionTools);
+    const dataDownloadDialog = await selectMunicipalityAndContinue(municipalityDownloadDialog, 'Volken');
     const activeMapItemsList = dataDownloadDialog.locator('expandable-list-item[header="Geodaten zu den Aktiven Karten"]');
     const remainingGeoDataItemsList = dataDownloadDialog.locator('expandable-list-item[header="Restliche Geodaten"]');
 
@@ -105,5 +74,39 @@ test.describe('Data download', () => {
     const downloadButton = page.locator('a[title="Download: Amtliche Vermessung - Datenmodell CH (OGD)"]');
     await downloadButton.waitFor({timeout: 120_000});
     await expect(await downloadButton.getAttribute('href')).toContain('https://geoservices.zh.ch/geoshopapi/v1/orders/asdf1234/download');
+  });
+
+  describeA11y(() => {
+    test('has no detectable accessibility violations while the data download dialogs are open', async ({
+      useHar,
+      openDataDownloadSelectionTools,
+      openMunicipalityDownloadDialog,
+      selectMunicipalityAndContinue,
+      captureConsole,
+      checkA11y,
+    }) => {
+      // Three axe scans plus the dialog flow regularly exceed the default timeout on the slower, WebGL-software-rendered CI runners.
+      test.slow();
+
+      await useHar();
+      captureConsole();
+
+      const dataDownloadSelectionTools = await openDataDownloadSelectionTools('2702555', '1241686', 'Amtliche Vermessung in Farbe');
+
+      // First distinct state: the selection-tool step, before any area is chosen.
+      await checkA11y();
+
+      const municipalityDownloadDialog = await openMunicipalityDownloadDialog(dataDownloadSelectionTools);
+
+      // Second distinct state: the municipality-picker dialog overlaying the map. It's a modal overlay on top of
+      // the already-scanned page, so scope the scan to the dialog itself instead of re-scanning the page behind it.
+      await checkA11y({include: ['api-dialog-wrapper[title="Daten beziehen"]']});
+
+      await selectMunicipalityAndContinue(municipalityDownloadDialog, 'Volken');
+
+      // Third distinct state: the final data-selection dialog listing available downloads. Same reasoning as
+      // above: scope to the new dialog rather than re-scanning the unchanged page behind it.
+      await checkA11y({include: ['data-download-dialog']});
+    });
   });
 });

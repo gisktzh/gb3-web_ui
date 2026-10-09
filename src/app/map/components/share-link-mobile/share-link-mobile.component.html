@@ -1,7 +1,13 @@
 <div class="share-link-mobile">
   <div class="share-link-mobile__input">
     <span class="share-link-mobile__input__title">Link auf aktive Karten</span>
-    <input [value]="shareLinkUrl() ?? '?'" readonly [disabled]="savingState() !== 'loaded'" class="share-link-mobile__input__text" />
+    <input
+      aria-label="Link auf aktive Karten"
+      [value]="shareLinkUrl() ?? '?'"
+      readonly
+      [disabled]="savingState() !== 'loaded'"
+      class="share-link-mobile__input__text"
+    />
   </div>
   <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="shareLinkUrl() ?? ''" [disabled]="savingState() !== 'loaded'">
     <mat-icon>content_copy</mat-icon>

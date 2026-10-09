@@ -5,63 +5,64 @@
     [class.active-map-item__connection-line--mobile]="screenMode() === 'mobile'"
   ></span>
 }
-<mat-expansion-panel
-  #activeMapItemExpansionPanel
-  hideToggle="true"
-  class="active-map-item"
-  [class.active-map-item--expanded]="activeMapItemExpansionPanel.expanded"
->
-  <mat-expansion-panel-header class="active-map-item__header">
-    <!-- the `stopPropagation` prevents the expansion panel from opening by just clicking somewhere on the header -->
+<div class="active-map-item" [class.active-map-item--expanded]="activeMapItemExpansionPanel.expanded">
+  <!--
+    This is a plain, non-interactive container (not `mat-expansion-panel-header`, which hardcodes
+    `role="button"` and can't be overridden). The expand/collapse toggle button lives inside
+    `active-map-item-header`; the other buttons/checkbox there are independent siblings, so no
+    interactive control is nested inside another interactive element (axe-core `nested-interactive`).
+  -->
+  <div class="active-map-item__header" [attr.id]="activeMapItemExpansionPanel._headerId">
     <active-map-item-header
       class="active-map-item__header__item"
       [activeMapItem]="activeMapItem()"
       [activeMapItemExpansionPanel]="activeMapItemExpansionPanel"
       [isDragAndDropDisabled]="isDragAndDropDisabled()"
-      (click)="$event.stopPropagation()"
     >
       <ng-container activeMapItemDragHandle>
         <ng-content select="[activeMapItemDragHandle]" />
       </ng-container>
     </active-map-item-header>
-  </mat-expansion-panel-header>
-  <!-- Expansion panel content -->
-  <ng-template matExpansionPanelContent>
-    <div class="active-map-item__tabs">
-      <div class="active-map-item__tabs__header">
-        <div class="active-map-item__tabs__header__buttons">
-          <button
-            [class.active-map-item__tabs__header__buttons__button--selected]="activeTab() === 'layers'"
-            class="active-map-item__tabs__header__buttons__button"
-            mat-flat-button
-            (click)="activeTab.set('layers')"
-            [disabled]="activeMapItem().isSingleLayer"
-          >
-            Ebenen
-          </button>
-          <button
-            [class.active-map-item__tabs__header__buttons__button--selected]="activeTab() === 'settings'"
-            class="active-map-item__tabs__header__buttons__button"
-            mat-flat-button
-            (click)="activeTab.set('settings')"
-          >
-            Einstellungen
-          </button>
+  </div>
+  <mat-expansion-panel #activeMapItemExpansionPanel hideToggle="true" class="active-map-item__panel">
+    <!-- Expansion panel content -->
+    <ng-template matExpansionPanelContent>
+      <div class="active-map-item__tabs">
+        <div class="active-map-item__tabs__header">
+          <div class="active-map-item__tabs__header__buttons">
+            <button
+              [class.active-map-item__tabs__header__buttons__button--selected]="activeTab() === 'layers'"
+              class="active-map-item__tabs__header__buttons__button"
+              mat-flat-button
+              (click)="activeTab.set('layers')"
+              [disabled]="activeMapItem().isSingleLayer"
+            >
+              Ebenen
+            </button>
+            <button
+              [class.active-map-item__tabs__header__buttons__button--selected]="activeTab() === 'settings'"
+              class="active-map-item__tabs__header__buttons__button"
+              mat-flat-button
+              (click)="activeTab.set('settings')"
+            >
+              Einstellungen
+            </button>
+          </div>
+        </div>
+        <div class="active-map-item__tabs__content" [class.active-map-item__tabs__content--inverted]="activeMapItemExpansionPanel.expanded">
+          @switch (activeTab()) {
+            @case ('layers') {
+              <active-map-item-layers [activeMapItem]="activeMapItem()" />
+            }
+            @case ('settings') {
+              <active-map-item-settings [activeMapItem]="activeMapItem()" />
+            }
+          }
         </div>
       </div>
-      <div class="active-map-item__tabs__content" [class.active-map-item__tabs__content--inverted]="activeMapItemExpansionPanel.expanded">
-        @switch (activeTab()) {
-          @case ('layers') {
-            <active-map-item-layers [activeMapItem]="activeMapItem()" />
-          }
-          @case ('settings') {
-            <active-map-item-settings [activeMapItem]="activeMapItem()" />
-          }
-        }
-      </div>
-    </div>
-  </ng-template>
-</mat-expansion-panel>
+    </ng-template>
+  </mat-expansion-panel>
+</div>
 <!-- small connection line between elements - this is the bottom element -->
 @if (!isLastActiveMapItem()) {
   <span
