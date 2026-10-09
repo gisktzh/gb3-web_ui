@@ -1,13 +1,6 @@
 version: 1
 pending:
-  src/app/map/components/active-map-items/active-map-item-header/active-map-item-header.component.ts: {}
-  src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component.ts: {}
-  src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layers.component.ts: {}
-  src/app/map/components/active-map-items/active-map-item-settings/active-map-item-settings.component.ts: {}
-  src/app/map/components/active-map-items/active-map-item/active-map-item.component.ts: {}
   src/app/map/components/api-dialog-wrapper/api-dialog-wrapper.component.ts: {}
-  src/app/map/components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component.ts: {}
-  src/app/map/components/bottom-sheet-overlay/bottom-sheet-overlay.component.ts: {}
   src/app/map/components/drawing-edit-overlay/drawing-edit-overlay.component.ts: {}
   src/app/map/components/drawing-edit-overlay/drawing-edit/color-picker-edit/color-picker-edit.component.ts: {}
   src/app/map/components/drawing-edit-overlay/drawing-edit/drawing-edit.component.ts: {}
@@ -43,22 +36,6 @@ pending:
   src/app/map/components/legend-overlay/legend/legend.component.ts: {}
   src/app/map/components/map-attribute-filter-overlay/map-attribute-filter-overlay.component.ts: {}
   src/app/map/components/map-attribute-filter/map-attribute-filter.component.ts: {}
-  src/app/map/components/map-container/map-container.component.ts: {}
-  src/app/map/components/map-controls/basemap-selector/basemap-selection-list/basemap-selection-list.component.ts: {}
-  src/app/map/components/map-controls/basemap-selector/basemap-selector.component.ts: {}
-  src/app/map/components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component.ts: {}
-  src/app/map/components/map-controls/data-input/data-input.component.ts: {}
-  src/app/map/components/map-controls/map-controls.component.ts: {}
-  src/app/map/components/map-controls/map-rotation-button/map-rotation-button.component.ts: {}
-  src/app/map/components/map-controls/scale-bar/scale-bar.component.ts: {}
-  src/app/map/components/map-controls/ui-toggle/ui-toggle.component.ts: {}
-  src/app/map/components/map-controls/zoom-controls/zoom-controls.component.ts: {}
-  src/app/map/components/map-data-catalogue/base-map-data-item/base-map-data-item.component.ts: {}
-  src/app/map/components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component.ts: {}
-  src/app/map/components/map-data-catalogue/base-map-data-item/map-data-item-map.component.ts: {}
-  src/app/map/components/map-data-catalogue/map-data-catalogue.component.ts: {}
-  src/app/map/components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component.ts: {}
-  src/app/map/components/map-management-mobile/map-management-mobile.component.ts: {}
   src/app/map/components/map-notice-dialog/map-notice-dialog.component.ts: {}
   src/app/map/components/map-overlay/map-overlay-list-item/map-overlay-list-item.component.ts: {}
   src/app/map/components/map-overlay/map-overlay.component.ts: {}
@@ -85,16 +62,11 @@ pending:
   src/app/map/components/map-tools/print-dialog/print-dialog.component.ts: {}
   src/app/map/components/map-tools/product/product.component.ts: {}
   src/app/map/components/map-tools/statistics-tools/statistics-tools.component.ts: {}
-  src/app/map/components/search-window-mobile/search-window-mobile.component.ts: {}
-  src/app/map/components/search-window/result-groups/result-group/result-group.component.ts: {}
-  src/app/map/components/search-window/result-groups/result-groups.component.ts: {}
-  src/app/map/components/search-window/search-window.component.ts: {}
   src/app/map/components/share-link-dialog/share-link-dialog.component.ts: {}
   src/app/map/components/share-link-mobile/share-link-mobile.component.ts: {}
   src/app/map/components/symbols-drawing-tool-input/symbol-drawing-tool-input.component.ts: {}
   src/app/map/components/text-drawing-tool-input/text-drawing-tool-input.component.ts: {}
   src/app/map/components/time-slider/time-slider.component.ts: {}
-  src/app/map/map-page.component.ts: {}
 dedicated:
   src/app/app.component.ts:
     coveredBy:
@@ -150,15 +122,99 @@ dedicated:
   src/app/error-handling/components/fatal-error-page/fatal-error-page.component.ts:
     coveredBy:
       - src/app/error-handling/components/fatal-error-page/fatal-error-page.component.spec.ts
+  src/app/map/components/active-map-items/active-map-item-header/active-map-item-header.component.ts:
+    coveredBy:
+      - src/app/map/components/active-map-items/active-map-item-header/active-map-item-header.component.spec.ts
+  src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component.ts:
+    coveredBy:
+      - src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component.spec.ts
+  src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layers.component.ts:
+    coveredBy:
+      - src/app/map/components/active-map-items/active-map-item-layers/active-map-item-layers.component.spec.ts
+  src/app/map/components/active-map-items/active-map-item-settings/active-map-item-settings.component.ts:
+    coveredBy:
+      - src/app/map/components/active-map-items/active-map-item-settings/active-map-item-settings.component.spec.ts
+  src/app/map/components/active-map-items/active-map-item/active-map-item.component.ts:
+    coveredBy:
+      - src/app/map/components/active-map-items/active-map-item/active-map-item.component.spec.ts
   src/app/map/components/active-map-items/active-map-items.component.ts:
     coveredBy:
       - src/app/map/components/active-map-items/active-map-items.component.spec.ts
+  src/app/map/components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component.ts:
+    coveredBy:
+      - src/app/map/components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component.spec.ts
+  src/app/map/components/bottom-sheet-overlay/bottom-sheet-overlay.component.ts:
+    coveredBy:
+      - src/app/map/components/bottom-sheet-overlay/bottom-sheet-overlay.component.spec.ts
   src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.ts:
     coveredBy:
       - src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.spec.ts
   src/app/map/components/feature-info-overlay/feature-info-overlay.component.ts:
     coveredBy:
       - src/app/map/components/feature-info-overlay/feature-info-overlay.component.spec.ts
+  src/app/map/components/map-container/map-container.component.ts:
+    coveredBy:
+      - src/app/map/components/map-container/map-container.component.spec.ts
+  src/app/map/components/map-controls/basemap-selector/basemap-selection-list/basemap-selection-list.component.ts:
+    coveredBy:
+      - src/app/map/components/map-controls/basemap-selector/basemap-selection-list/basemap-selection-list.component.spec.ts
+  src/app/map/components/map-controls/basemap-selector/basemap-selector.component.ts:
+    coveredBy:
+      - src/app/map/components/map-controls/basemap-selector/basemap-selector.component.spec.ts
+  src/app/map/components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component.ts:
+    coveredBy:
+      - src/app/map/components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component.spec.ts
+  src/app/map/components/map-controls/data-input/data-input.component.ts:
+    coveredBy:
+      - src/app/map/components/map-controls/data-input/data-input.component.spec.ts
+  src/app/map/components/map-controls/map-controls.component.ts:
+    coveredBy:
+      - src/app/map/components/map-controls/map-controls.component.spec.ts
+  src/app/map/components/map-controls/map-rotation-button/map-rotation-button.component.ts:
+    coveredBy:
+      - src/app/map/components/map-controls/map-rotation-button/map-rotation-button.component.spec.ts
+  src/app/map/components/map-controls/scale-bar/scale-bar.component.ts:
+    coveredBy:
+      - src/app/map/components/map-controls/scale-bar/scale-bar.component.spec.ts
+  src/app/map/components/map-controls/ui-toggle/ui-toggle.component.ts:
+    coveredBy:
+      - src/app/map/components/map-controls/ui-toggle/ui-toggle.component.spec.ts
+  src/app/map/components/map-controls/zoom-controls/zoom-controls.component.ts:
+    coveredBy:
+      - src/app/map/components/map-controls/zoom-controls/zoom-controls.component.spec.ts
+  src/app/map/components/map-data-catalogue/base-map-data-item/base-map-data-item.component.ts:
+    coveredBy:
+      - src/app/map/components/map-data-catalogue/base-map-data-item/base-map-data-item.component.spec.ts
+  src/app/map/components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component.ts:
+    coveredBy:
+      - src/app/map/components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component.spec.ts
+  src/app/map/components/map-data-catalogue/base-map-data-item/map-data-item-map.component.ts:
+    coveredBy:
+      - src/app/map/components/map-data-catalogue/base-map-data-item/map-data-item-map.component.spec.ts
+  src/app/map/components/map-data-catalogue/map-data-catalogue.component.ts:
+    coveredBy:
+      - src/app/map/components/map-data-catalogue/map-data-catalogue.component.spec.ts
+  src/app/map/components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component.ts:
+    coveredBy:
+      - src/app/map/components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component.spec.ts
+  src/app/map/components/map-management-mobile/map-management-mobile.component.ts:
+    coveredBy:
+      - src/app/map/components/map-management-mobile/map-management-mobile.component.spec.ts
+  src/app/map/components/search-window-mobile/search-window-mobile.component.ts:
+    coveredBy:
+      - src/app/map/components/search-window-mobile/search-window-mobile.component.spec.ts
+  src/app/map/components/search-window/result-groups/result-group/result-group.component.ts:
+    coveredBy:
+      - src/app/map/components/search-window/result-groups/result-group/result-group.component.spec.ts
+  src/app/map/components/search-window/result-groups/result-groups.component.ts:
+    coveredBy:
+      - src/app/map/components/search-window/result-groups/result-groups.component.spec.ts
+  src/app/map/components/search-window/search-window.component.ts:
+    coveredBy:
+      - src/app/map/components/search-window/search-window.component.spec.ts
+  src/app/map/map-page.component.ts:
+    coveredBy:
+      - src/app/map/map-page.component.spec.ts
   src/app/onboarding-guide/components/center-anchor/center-anchor.component.ts:
     coveredBy:
       - src/app/onboarding-guide/components/center-anchor/center-anchor.component.spec.ts
