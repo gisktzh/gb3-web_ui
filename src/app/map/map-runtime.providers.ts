@@ -4,6 +4,7 @@ import {makeEnvironmentProviders} from '@angular/core';
 import {provideEffects} from '@ngrx/effects';
 import {DRAWING_SYMBOLS_SERVICE, MAP_LOADER_SERVICE, MAP_SERVICE} from '../app.tokens';
 import {Gb3PrintService} from '../shared/services/apis/gb3/gb3-print.service';
+import {AnimatedDialogService} from '../shared/services/animated-dialog.service';
 import {Gb3ShareLinkService} from '../shared/services/apis/gb3/gb3-share-link.service';
 import {MAP_EFFECTS} from '../state/map/map.effects';
 import {EsriDrawingSymbolsService} from './services/esri-services/esri-drawing-symbols.service';
@@ -21,6 +22,7 @@ export function provideMapRuntime() {
     // Dialog content inherits the map route providers through the CDK dialog injector.
     Dialog,
     MatDialog,
+    AnimatedDialogService,
     EsriToolService,
     MapDrawingService,
     FavouritesService,

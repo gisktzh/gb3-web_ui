@@ -65,7 +65,6 @@ import {AuthStatusEffects} from './auth/effects/auth-status.effects';
 import {PageNotificationEffects} from './app/effects/page-notification.effects';
 import {GeolocationEffects} from './map/effects/geolocation.effects';
 import {GeneralInfoEffects} from './map/effects/general-info.effects';
-import {MapUiEffects} from './map/effects/map-ui.effects';
 import {DataCatalogueState} from './data-catalogue/states/data-catalogue.state';
 import {DataCatalogueEffects} from './data-catalogue/effects/data-catalogue.effects';
 import {SearchState} from './app/states/search.state';
@@ -177,7 +176,6 @@ export const rootEffects = [
   PageNotificationEffects,
   GeolocationEffects,
   GeneralInfoEffects,
-  MapUiEffects,
   QueryModeEffects,
   DataCatalogueEffects,
   SearchEffects,
