@@ -33,6 +33,7 @@ import {MapToolsComponent} from './components/map-tools/map-tools.component';
 import {MapControlsComponent} from './components/map-controls/map-controls.component';
 import {SearchBarComponent} from '../shared/components/search/search-bar/search-bar.component';
 import {SearchMode} from '../shared/types/search-mode.type';
+import {MapViewPadding} from '../shared/interfaces/map-view-padding.interface';
 
 describe('MapPageComponent', () => {
   let component: MapPageComponent;
@@ -47,6 +48,11 @@ describe('MapPageComponent', () => {
 
   const initialMapExtentServiceMock: Partial<InitialMapExtentService> = {
     calculateInitialExtent: vi.fn(() => ({
+      x: 100,
+      y: 200,
+      scale: 5000,
+    })),
+    calculateInitialExtentForPaddedView: vi.fn(() => ({
       x: 100,
       y: 200,
       scale: 5000,
@@ -72,7 +78,6 @@ describe('MapPageComponent', () => {
     isMaxZoomedIn: false,
     isMaxZoomedOut: false,
     activeBasemapId: 'base',
-    initialMaps: [],
     predefinedInitialExtent: false,
     initialMapPadding: {top: 0, right: 0, bottom: 0, left: 0},
     initialMapPaddingMobile: {top: 0, right: 0, bottom: 0, left: 0},
@@ -84,7 +89,7 @@ describe('MapPageComponent', () => {
   };
 
   const mapUiState: MapUiState = {
-    sideBarWidth: undefined,
+    rightSideBarWidth: undefined,
     mapSideDrawerContent: 'none',
     isLegendOverlayVisible: false,
     isFeatureInfoOverlayVisible: false,
@@ -97,6 +102,7 @@ describe('MapPageComponent', () => {
     hideZoomButtons: false,
     toolMenuVisibility: undefined,
     bottomSheetContent: 'search',
+    legendOverlayWidth: undefined,
   };
 
   @Component({
@@ -115,7 +121,9 @@ describe('MapPageComponent', () => {
     selector: 'map-container',
     template: '<div></div>',
   })
-  class MockMapContainerComponent {}
+  class MockMapContainerComponent {
+    public readonly viewPadding = input<MapViewPadding | undefined>(undefined);
+  }
 
   @Component({
     selector: 'active-map-items',
@@ -255,7 +263,6 @@ describe('MapPageComponent', () => {
         y: 200,
         scale: 5000,
         basemapId: 'base',
-        initialMaps: [],
       }),
     );
   });
@@ -310,16 +317,16 @@ describe('MapPageComponent', () => {
   });
 
   it('should expose the configured side bar width', () => {
-    store.overrideSelector(selectMapUiState, {...mapUiState, sideBarWidth: 360});
+    store.overrideSelector(selectMapUiState, {...mapUiState, rightSideBarWidth: 360});
     store.refreshState();
 
-    expect(component.sideBarWidth()).toBe(360);
+    expect(component.rightSideBarWidth()).toBe(360);
   });
 
   it('should persist a resized side bar width', () => {
-    component.setSideBarWidth(420);
+    component.setRightSideBarWidth(420);
 
-    expect(storeDispatchSpy).toHaveBeenCalledWith(MapUiActions.setSideBarWidth({width: 420}));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(MapUiActions.setRightSideBarWidth({width: 420}));
   });
 
   it('should report when a side bar overlay is visible', () => {

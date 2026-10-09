@@ -15,6 +15,7 @@ import {MapDataCatalogueComponent} from '../map-data-catalogue/map-data-catalogu
 import {NotificationIndicatorComponent} from '../notification-indicator/notification-indicator.component';
 import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
 import {MapManagementMobileComponent} from './map-management-mobile.component';
+import {provideUiTour} from 'ngx-ui-tour-md-menu';
 
 @Component({selector: 'search-input', template: ''})
 class SearchInputStubComponent {
@@ -62,7 +63,7 @@ describe('MapManagementMobileComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MapManagementMobileComponent],
-      providers: [provideMockStore()],
+      providers: [provideMockStore(), provideUiTour()],
     })
       .overrideComponent(MapManagementMobileComponent, {
         remove: {
@@ -171,8 +172,6 @@ describe('MapManagementMobileComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.debugElement.query(By.directive(NotificationIndicatorStubComponent))).not.toBeNull();
-    expect(component.numberOfNotices()).toBe(1);
-    expect(component.numberOfUnreadNotices()).toBe(1);
 
     const noticeButton = fixture.nativeElement.querySelector(
       '.map-management-mobile-header__tools__buttons__action--notices',

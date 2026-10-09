@@ -14,6 +14,7 @@ describe('MapContainerComponent', () => {
   const mapServiceMock: Partial<MapService> = {
     assignMapElement: vi.fn(),
     deInit: vi.fn(),
+    setViewPadding: vi.fn(),
   };
 
   const featureHighlightingServiceMock: Partial<FeatureHighlightingService> = {

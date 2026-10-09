@@ -35,7 +35,7 @@ describe('MapControlsComponent', () => {
     });
     store.overrideSelector(selectMapUiState, {
       hideUiElements: false,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
       isFeatureInfoOverlayVisible: false,
@@ -47,6 +47,7 @@ describe('MapControlsComponent', () => {
       hideZoomButtons: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
 
@@ -126,7 +127,7 @@ describe('MapControlsComponent', () => {
   it('should hide the basemap selector when hideUiElements is true', () => {
     store.overrideSelector(selectMapUiState, {
       hideUiElements: true,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
       isFeatureInfoOverlayVisible: false,
@@ -138,6 +139,7 @@ describe('MapControlsComponent', () => {
       hideZoomButtons: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();
@@ -150,7 +152,7 @@ describe('MapControlsComponent', () => {
   it('should hide the scale bar when hideUiElements is true', () => {
     store.overrideSelector(selectMapUiState, {
       hideUiElements: true,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
       isFeatureInfoOverlayVisible: false,
@@ -162,6 +164,7 @@ describe('MapControlsComponent', () => {
       hideZoomButtons: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();
@@ -174,7 +177,7 @@ describe('MapControlsComponent', () => {
   it('should hide the coordinate scale inputs when hideUiElements is true', () => {
     store.overrideSelector(selectMapUiState, {
       hideUiElements: true,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
       isFeatureInfoOverlayVisible: false,
@@ -186,6 +189,7 @@ describe('MapControlsComponent', () => {
       hideZoomButtons: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();
@@ -198,7 +202,7 @@ describe('MapControlsComponent', () => {
   it('should not hide the zoom controls when hideUiElements is true', () => {
     store.overrideSelector(selectMapUiState, {
       hideUiElements: true,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
       isFeatureInfoOverlayVisible: false,
@@ -210,6 +214,7 @@ describe('MapControlsComponent', () => {
       hideZoomButtons: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();
@@ -222,7 +227,7 @@ describe('MapControlsComponent', () => {
   it('should keep map UI elements visible when hideUiElements changes back to false', () => {
     store.overrideSelector(selectMapUiState, {
       hideUiElements: true,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
       isFeatureInfoOverlayVisible: false,
@@ -234,13 +239,14 @@ describe('MapControlsComponent', () => {
       hideZoomButtons: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();
 
     store.overrideSelector(selectMapUiState, {
       hideUiElements: false,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
       isFeatureInfoOverlayVisible: false,
@@ -252,6 +258,7 @@ describe('MapControlsComponent', () => {
       hideZoomButtons: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();

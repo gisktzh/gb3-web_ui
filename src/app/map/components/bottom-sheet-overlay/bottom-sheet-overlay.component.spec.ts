@@ -13,6 +13,7 @@ import {ShareLinkMobileComponent} from '../share-link-mobile/share-link-mobile.c
 import {SearchWindowMobileComponent} from '../search-window-mobile/search-window-mobile.component';
 import {MapManagementMobileComponent} from '../map-management-mobile/map-management-mobile.component';
 import {By} from '@angular/platform-browser';
+import {selectActiveMapItemState} from 'src/app/state/map/reducers/active-map-item.reducer';
 
 @Component({
   selector: 'bottom-sheet-item',
@@ -116,6 +117,7 @@ describe('BottomSheetOverlayComponent', () => {
 
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectBottomSheetContent, 'none');
+    store.overrideSelector(selectActiveMapItemState, {items: []});
     store.refreshState();
 
     fixture = TestBed.createComponent(BottomSheetOverlayComponent, {

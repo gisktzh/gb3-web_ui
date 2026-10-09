@@ -39,7 +39,7 @@ describe('ZoomControlsComponent', () => {
     });
     store.overrideSelector(selectMapUiState, {
       hideUiElements: false,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       hideZoomButtons: false,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
@@ -51,6 +51,7 @@ describe('ZoomControlsComponent', () => {
       hideToggleUiElementsButton: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.overrideSelector(selectScreenHeight, 'regular');
     store.refreshState();
@@ -92,7 +93,7 @@ describe('ZoomControlsComponent', () => {
   it('should hide the home and zoom buttons when zoom buttons are hidden', () => {
     store.overrideSelector(selectMapUiState, {
       hideUiElements: false,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       hideZoomButtons: true,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
@@ -104,6 +105,7 @@ describe('ZoomControlsComponent', () => {
       hideToggleUiElementsButton: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();
@@ -116,7 +118,7 @@ describe('ZoomControlsComponent', () => {
   it('should hide the home and zoom buttons when UI elements are hidden', () => {
     store.overrideSelector(selectMapUiState, {
       hideUiElements: true,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       hideZoomButtons: true,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
@@ -128,6 +130,7 @@ describe('ZoomControlsComponent', () => {
       hideToggleUiElementsButton: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();
@@ -151,7 +154,7 @@ describe('ZoomControlsComponent', () => {
     showLocateMeButton.set(true);
     store.overrideSelector(selectMapUiState, {
       hideUiElements: true,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       hideZoomButtons: false,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
@@ -163,6 +166,7 @@ describe('ZoomControlsComponent', () => {
       hideToggleUiElementsButton: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();
@@ -176,7 +180,7 @@ describe('ZoomControlsComponent', () => {
     showLocateMeButton.set(true);
     store.overrideSelector(selectMapUiState, {
       hideUiElements: true,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       hideZoomButtons: false,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
@@ -188,6 +192,7 @@ describe('ZoomControlsComponent', () => {
       hideToggleUiElementsButton: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();
@@ -201,7 +206,7 @@ describe('ZoomControlsComponent', () => {
     showLocateMeButton.set(true);
     store.overrideSelector(selectMapUiState, {
       hideUiElements: false,
-      sideBarWidth: 0,
+      rightSideBarWidth: 0,
       hideZoomButtons: true,
       mapSideDrawerContent: 'none',
       isLegendOverlayVisible: false,
@@ -213,6 +218,7 @@ describe('ZoomControlsComponent', () => {
       hideToggleUiElementsButton: false,
       toolMenuVisibility: undefined,
       bottomSheetContent: 'search',
+      legendOverlayWidth: undefined,
     });
     store.refreshState();
     fixture.detectChanges();

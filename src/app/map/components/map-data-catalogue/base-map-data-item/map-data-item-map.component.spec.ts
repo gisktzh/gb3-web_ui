@@ -41,7 +41,6 @@ describe('MapDataItemMapComponent', () => {
       isMaxZoomedIn: false,
       isMaxZoomedOut: false,
       activeBasemapId: '',
-      initialMaps: [],
       predefinedInitialExtent: false,
       initialMapPadding: {
         top: 0,
