@@ -144,6 +144,10 @@ async function selectHarEntry(request: Request, candidates: Entry[]): Promise<En
 async function waitForMapReady(page: Page): Promise<void> {
   await expect(page.getByTestId('map-container')).toBeVisible({timeout: 30_000});
   await expect(page.getByTestId('map-container').locator('canvas').first()).toBeVisible({timeout: 30_000});
+  // The scale/coordinate inputs only exist in the desktop layout.
+  if ((page.viewportSize()?.width ?? 1920) < 768) {
+    return;
+  }
   await expect(page.getByTestId('input-map-scale')).not.toHaveValue('', {timeout: 30_000});
   await expect(page.getByTestId('input-map-coordinates')).not.toHaveValue('', {timeout: 30_000});
 }
