@@ -66,9 +66,7 @@ import {AuthStatusEffects} from './auth/effects/auth-status.effects';
 import {PageNotificationEffects} from './app/effects/page-notification.effects';
 import {GeolocationEffects} from './map/effects/geolocation.effects';
 import {GeneralInfoEffects} from './map/effects/general-info.effects';
-import {PrintEffects} from './map/effects/print.effects';
 import {MapUiEffects} from './map/effects/map-ui.effects';
-import {ShareLinkEffects} from './map/effects/share-link.effects';
 import {ToolEffects} from './map/effects/tool.effects';
 import {DataCatalogueState} from './data-catalogue/states/data-catalogue.state';
 import {DataCatalogueEffects} from './data-catalogue/effects/data-catalogue.effects';
@@ -181,9 +179,7 @@ export const rootEffects = [
   PageNotificationEffects,
   GeolocationEffects,
   GeneralInfoEffects,
-  PrintEffects,
   MapUiEffects,
-  ShareLinkEffects,
   ToolEffects,
   QueryModeEffects,
   StatisticsEffects,
