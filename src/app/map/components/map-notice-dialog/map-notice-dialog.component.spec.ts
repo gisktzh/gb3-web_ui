@@ -4,6 +4,11 @@ import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {MapNoticeDialogComponent} from './map-notice-dialog.component';
 import {immerable} from 'immer';
 import {AddToMapVisitor} from '../../interfaces/add-to-map.visitor';
+import {MapNoticesService} from '../../services/map-notices.service';
+import {MockStore, provideMockStore} from '@ngrx/store/testing';
+import {provideUiTour} from 'ngx-ui-tour-md-menu';
+import {selectAllItems} from 'src/app/state/map/selectors/active-map-items.selector';
+import {signal} from '@angular/core';
 
 describe('MapNoticeDialogComponent', () => {
   let component: MapNoticeDialogComponent;
@@ -92,6 +97,12 @@ describe('MapNoticeDialogComponent', () => {
     close: vi.fn(),
   };
 
+  const mapNoticesServiceMock: Partial<MapNoticesService> = {
+    disableAutoOpening: vi.fn(),
+    enableAutoOpening: vi.fn(),
+    skipAutoOpeningOfMapNotices: signal('0'),
+  };
+
   beforeEach(async () => {
     vi.clearAllMocks();
 
@@ -103,10 +114,23 @@ describe('MapNoticeDialogComponent', () => {
           useValue: activeMapItemsWithNoticesMock,
         },
         {provide: MatDialogRef, useValue: dialogRefMock},
+        provideMockStore(),
+        provideUiTour(),
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(MapNoticeDialogComponent, {
+        remove: {
+          providers: [MapNoticesService],
+        },
+        add: {
+          providers: [{provide: MapNoticesService, useValue: mapNoticesServiceMock}],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(MapNoticeDialogComponent);
+    const store = TestBed.inject(MockStore);
+    store.overrideSelector(selectAllItems, []);
 
     component = fixture.componentInstance;
     compiled = fixture.nativeElement as HTMLElement;
@@ -181,8 +205,13 @@ describe('MapNoticeDialogComponent', () => {
             useValue: [] as Gb2WmsActiveMapItem[],
           },
           {provide: MatDialogRef, useValue: dialogRefMock},
+          provideMockStore(),
+          provideUiTour(),
         ],
       }).compileComponents();
+
+      const store = TestBed.inject(MockStore);
+      store.overrideSelector(selectAllItems, []);
 
       fixture = TestBed.createComponent(MapNoticeDialogComponent);
       component = fixture.componentInstance;
@@ -211,6 +240,23 @@ describe('MapNoticeDialogComponent', () => {
       button?.click();
 
       expect(dialogRefMock.close).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('close with disabling auto-opening', () => {
+    it('should tell the map notices service to disable auto-opening', () => {
+      const button = Array.from(compiled.querySelectorAll<HTMLButtonElement>('button')).find((element) =>
+        element.textContent?.includes('Nicht mehr automatisch anzeigen'),
+      );
+
+      expect(button).toBeTruthy();
+
+      button?.click();
+
+      fixture.detectChanges();
+
+      expect(dialogRefMock.close).toHaveBeenCalledOnce();
+      expect(mapNoticesServiceMock.disableAutoOpening).toHaveBeenCalledOnce();
     });
   });
 });
