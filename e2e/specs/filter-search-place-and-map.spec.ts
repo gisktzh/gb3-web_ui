@@ -22,6 +22,12 @@ test.describe('Test filter search for maps and places', () => {
     await expect.poll(async () => Number(await zoomInput.inputValue())).toBeLessThanOrEqual(24_000);
 
     await search('Amtliche Vermessung in Farbe');
+
+    if (await page.isVisible('[data-test-id="close-map-notices-button"]')) {
+      await page.locator('[data-test-id="close-map-notices-button"]').click();
+      await page.waitForTimeout(750);
+    }
+
     const activeMapItem = page.locator('active-map-item').filter({hasText: 'Amtliche Vermessung in Farbe'}).first();
     await expect(activeMapItem).toBeVisible({timeout: 30_000});
 
