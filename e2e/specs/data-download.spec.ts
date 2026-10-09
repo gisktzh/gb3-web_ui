@@ -85,6 +85,9 @@ test.describe('Data download', () => {
       captureConsole,
       checkA11y,
     }) => {
+      // Three axe scans plus the dialog flow regularly exceed the default timeout on the slower, WebGL-software-rendered CI runners.
+      test.slow();
+
       await useHar();
       captureConsole();
 
