@@ -225,6 +225,12 @@ export const test = base.extend<Gb3Fixtures>({
 
       const activeMapItem = page.locator('active-map-item').filter({hasText: expectedActiveMapName}).first();
       await expect(activeMapItem).toBeVisible({timeout: 30_000});
+
+      if (await page.isVisible('[data-test-id="close-map-notices-button"]')) {
+        await page.locator('[data-test-id="close-map-notices-button"]').click();
+        await page.waitForTimeout(750);
+      }
+
       await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});
     });
   },

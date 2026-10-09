@@ -74,6 +74,10 @@ export const test = base.extend<{statisticsSession: StatisticsSession; addStatis
         const activeMapItem = page.getByTestId('active-map-item-' + id);
         await expect(activeMapItem).toBeVisible({timeout: 30_000});
         await expect(activeMapItem.getByTestId('loading-progress')).toHaveCount(0, {timeout: 30_000});
+        if (await page.isVisible('[data-test-id="close-map-notices-button"]')) {
+          await page.locator('[data-test-id="close-map-notices-button"]').click();
+          await page.waitForTimeout(750);
+        }
       };
       const addMap = async (selectedTopic: Topic) => {
         await filterForLayer(selectedTopic.title);

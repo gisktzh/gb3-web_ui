@@ -7,6 +7,11 @@
   .active-map-items__header__buttons__action {
     @include mat-mixins.mat-icon-custom-svg-size(18px);
   }
+
+  .active-map-items__header__buttons__action--notices {
+    @include mat-mixins.mat-icon-custom-svg-size(24px);
+    z-index: 0;
+  }
 }
 
 .active-map-items {

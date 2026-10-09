@@ -1,13 +1,11 @@
-import {Component, OnDestroy, computed, inject, signal, ChangeDetectionStrategy} from '@angular/core';
+import {Component, OnDestroy, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {isActiveMapItemOfType} from 'src/app/shared/type-guards/active-map-item-type.type-guard';
 import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from 'src/app/state/map/actions/active-map-item.actions';
 import {LayerCatalogActions} from 'src/app/state/map/actions/layer-catalog.actions';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectItems} from 'src/app/state/map/selectors/active-map-items.selector';
 import {selectFilterString} from 'src/app/state/map/reducers/layer-catalog.reducer';
-import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {MatButton, MatIconButton} from '@angular/material/button';
 
 import {MatBadge} from '@angular/material/badge';
@@ -18,6 +16,9 @@ import {MatDivider} from '@angular/material/divider';
 import {MatTooltip} from '@angular/material/tooltip';
 import {ActiveMapItemsComponent} from '../active-map-items/active-map-items.component';
 import {MapDataCatalogueComponent} from '../map-data-catalogue/map-data-catalogue.component';
+import {MapNoticesService} from '../../services/map-notices.service';
+import {ONBOARDING_STEPS, OnboardingGuideService} from 'src/app/onboarding-guide/services/onboarding-guide.service';
+import {mapOnboardingGuideConfig} from 'src/app/onboarding-guide/data/map-onboarding-guide.config';
 
 type TabType = 'activeMaps' | 'mapsCatalogue';
 
@@ -32,6 +33,7 @@ const FAVOURITE_HELPER_MESSAGES = {
   templateUrl: './map-management-mobile.component.html',
   styleUrls: ['./map-management-mobile.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [OnboardingGuideService, MapNoticesService, {provide: ONBOARDING_STEPS, useValue: mapOnboardingGuideConfig}],
   imports: [
     MatButton,
     MatBadge,
@@ -47,23 +49,13 @@ const FAVOURITE_HELPER_MESSAGES = {
 })
 export class MapManagementMobileComponent implements OnDestroy {
   private readonly store = inject(Store);
+  protected readonly mapNoticesService = inject(MapNoticesService);
 
   public readonly activeMapItems = this.store.selectSignal(selectItems);
   public readonly activeTab = signal<TabType>('mapsCatalogue');
   public readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
   public readonly filterString = this.store.selectSignal(selectFilterString);
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
-
-  public readonly gb2ActiveMapItems = computed(() => {
-    return this.activeMapItems().filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
-  });
-  public readonly numberOfNotices = computed(() => {
-    return this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice).length;
-  });
-  public readonly numberOfUnreadNotices = computed(() => {
-    return this.gb2ActiveMapItems().filter((activeMapItem) => activeMapItem.settings.notice && !activeMapItem.settings.isNoticeMarkedAsRead)
-      .length;
-  });
 
   constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
@@ -86,7 +78,7 @@ export class MapManagementMobileComponent implements OnDestroy {
   }
 
   public showMapNotices() {
-    this.store.dispatch(MapUiActions.showMapNoticesDialog());
+    this.mapNoticesService.openMapNotices();
   }
 
   public filterCatalog(filterString: string) {
