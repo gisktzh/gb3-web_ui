@@ -5,6 +5,7 @@ import {MapOverlayListItemComponent} from '../../map-overlay/map-overlay-list-it
 import {FeatureInfoContentComponent} from '../feature-info-content/feature-info-content.component';
 import {FeatureInfoReportDownloadComponent} from '../feature-info-report-download/feature-info-report-download.component';
 import {FeatureInfoItemComponent} from './feature-info-item.component';
+import {By} from '@angular/platform-browser';
 
 @Component({
   selector: 'map-overlay-list-item',
@@ -101,7 +102,7 @@ describe('FeatureInfoItemComponent', () => {
   });
 
   it('should pass title and metadata link to the main overlay', () => {
-    const overlay = fixture.debugElement.query((element) => element.componentInstance instanceof MockMapOverlayListItemComponent)
+    const overlay = fixture.debugElement.query(By.directive(MockMapOverlayListItemComponent))
       .componentInstance as MockMapOverlayListItemComponent;
 
     expect(overlay.forceExpanded()).toBe(true);
@@ -113,7 +114,7 @@ describe('FeatureInfoItemComponent', () => {
     showInteractiveElements.set(false);
     fixture.detectChanges();
 
-    const overlay = fixture.debugElement.query((element) => element.componentInstance instanceof MockMapOverlayListItemComponent)
+    const overlay = fixture.debugElement.query(By.directive(MockMapOverlayListItemComponent))
       .componentInstance as MockMapOverlayListItemComponent;
 
     expect(overlay.metaDataLink()).toBeUndefined();
@@ -132,7 +133,7 @@ describe('FeatureInfoItemComponent', () => {
     compiled = fixture.nativeElement as HTMLElement;
     fixture.detectChanges();
 
-    const report = fixture.debugElement.query((element) => element.componentInstance instanceof MockFeatureInfoReportDownloadComponent)
+    const report = fixture.debugElement.query(By.directive(MockFeatureInfoReportDownloadComponent))
       .componentInstance as MockFeatureInfoReportDownloadComponent;
 
     expect(report.reportUrl()).toBe('https://example.com/report.pdf');
@@ -151,7 +152,7 @@ describe('FeatureInfoItemComponent', () => {
 
     fixture.detectChanges();
 
-    const report = fixture.debugElement.query((element) => element.componentInstance instanceof MockFeatureInfoReportDownloadComponent);
+    const report = fixture.debugElement.query(By.directive(MockFeatureInfoReportDownloadComponent));
 
     expect(report).toBeNull();
   });
@@ -169,7 +170,7 @@ describe('FeatureInfoItemComponent', () => {
 
     fixture.detectChanges();
 
-    expect(fixture.debugElement.query((element) => element.componentInstance instanceof MockFeatureInfoReportDownloadComponent)).toBeNull();
+    expect(fixture.debugElement.query(By.directive(MockFeatureInfoReportDownloadComponent))).toBeNull();
   });
 
   it('should render a sublayer overlay for multi-layer results', () => {
@@ -187,7 +188,7 @@ describe('FeatureInfoItemComponent', () => {
 
     fixture.detectChanges();
 
-    const overlays = fixture.debugElement.queryAll((element) => element.componentInstance instanceof MockMapOverlayListItemComponent);
+    const overlays = fixture.debugElement.queryAll(By.directive(MockMapOverlayListItemComponent));
 
     expect(overlays).toHaveLength(2);
 
@@ -214,7 +215,7 @@ describe('FeatureInfoItemComponent', () => {
 
     fixture.detectChanges();
 
-    const overlays = fixture.debugElement.queryAll((element) => element.componentInstance instanceof MockMapOverlayListItemComponent);
+    const overlays = fixture.debugElement.queryAll(By.directive(MockMapOverlayListItemComponent));
 
     const sublayerOverlay = overlays[1].componentInstance as MockMapOverlayListItemComponent;
 
@@ -237,7 +238,7 @@ describe('FeatureInfoItemComponent', () => {
 
     fixture.detectChanges();
 
-    const overlays = fixture.debugElement.queryAll((element) => element.componentInstance instanceof MockMapOverlayListItemComponent);
+    const overlays = fixture.debugElement.queryAll(By.directive(MockMapOverlayListItemComponent));
 
     const sublayerOverlay = overlays[1].componentInstance as MockMapOverlayListItemComponent;
 
@@ -257,7 +258,7 @@ describe('FeatureInfoItemComponent', () => {
 
     fixture.detectChanges();
 
-    const content = fixture.debugElement.query((element) => element.componentInstance instanceof MockFeatureInfoContentComponent)
+    const content = fixture.debugElement.query(By.directive(MockFeatureInfoContentComponent))
       .componentInstance as MockFeatureInfoContentComponent;
 
     expect(content.layer()).toBe(layer);
@@ -278,13 +279,13 @@ describe('FeatureInfoItemComponent', () => {
 
     fixture.detectChanges();
 
-    const content = fixture.debugElement.query((element) => element.componentInstance instanceof MockFeatureInfoContentComponent)
+    const content = fixture.debugElement.query(By.directive(MockFeatureInfoContentComponent))
       .componentInstance as MockFeatureInfoContentComponent;
 
     expect(content.layer()).toBe(layer);
     expect(content.topicId()).toBe('feature-1');
 
-    expect(fixture.debugElement.queryAll((element) => element.componentInstance instanceof MockMapOverlayListItemComponent).length).toBe(1);
+    expect(fixture.debugElement.queryAll(By.directive(MockMapOverlayListItemComponent))).toHaveLength(1);
   });
 
   it('should render the configured icon for a multi-layer result', () => {
@@ -341,10 +342,6 @@ describe('FeatureInfoItemComponent', () => {
 
     fixture.detectChanges();
 
-    const contentComponents = fixture.debugElement.queryAll(
-      (element) => element.componentInstance instanceof MockFeatureInfoContentComponent,
-    );
-
-    expect(contentComponents).toHaveLength(2);
+    expect(fixture.debugElement.queryAll(By.directive(MockFeatureInfoContentComponent))).toHaveLength(2);
   });
 });

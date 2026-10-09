@@ -11,6 +11,7 @@ import {LoadingAndProcessBarComponent} from '../../../../shared/components/loadi
 import {FeatureInfoGeneralInformationComponent} from '../feature-info-general-information/feature-info-general-information.component';
 import {FeatureInfoItemComponent} from '../feature-info-item/feature-info-item.component';
 import {GeneralInfoResponse} from 'src/app/shared/interfaces/general-info.interface';
+import {By} from '@angular/platform-browser';
 
 @Component({
   selector: 'loading-and-process-bar',
@@ -93,7 +94,7 @@ describe('FeatureInfoComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    const loadingBar = fixture.debugElement.query((element) => element.componentInstance instanceof MockLoadingAndProcessBarComponent)
+    const loadingBar = fixture.debugElement.query(By.directive(MockLoadingAndProcessBarComponent))
       .componentInstance as MockLoadingAndProcessBarComponent;
 
     expect(loadingBar.loadingState()).toBe('loading');
@@ -119,9 +120,8 @@ describe('FeatureInfoComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    const generalInfo = fixture.debugElement.query(
-      (element) => element.componentInstance instanceof MockFeatureInfoGeneralInformationComponent,
-    ).componentInstance as MockFeatureInfoGeneralInformationComponent;
+    const generalInfo = fixture.debugElement.query(By.directive(MockFeatureInfoGeneralInformationComponent))
+      .componentInstance as MockFeatureInfoGeneralInformationComponent;
 
     expect(generalInfo.generalInfoData()).toBe(generalInfoData);
     expect(compiled.querySelector('mat-divider')).toBeTruthy();
@@ -132,9 +132,7 @@ describe('FeatureInfoComponent', () => {
     store.overrideSelector(selectData, undefined);
     fixture.detectChanges();
 
-    expect(
-      fixture.debugElement.query((element) => element.componentInstance instanceof MockFeatureInfoGeneralInformationComponent),
-    ).toBeNull();
+    expect(fixture.debugElement.query(By.directive(MockFeatureInfoGeneralInformationComponent))).toBeNull();
 
     expect(compiled.querySelector('mat-divider')).toBeNull();
   });
@@ -148,7 +146,7 @@ describe('FeatureInfoComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    const featureItems = fixture.debugElement.queryAll((element) => element.componentInstance instanceof MockFeatureInfoItemComponent);
+    const featureItems = fixture.debugElement.queryAll(By.directive(MockFeatureInfoItemComponent));
 
     expect(featureItems).toHaveLength(2);
   });
@@ -162,7 +160,7 @@ describe('FeatureInfoComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    const featureItems = fixture.debugElement.queryAll((element) => element.componentInstance instanceof MockFeatureInfoItemComponent);
+    const featureItems = fixture.debugElement.queryAll(By.directive(MockFeatureInfoItemComponent));
 
     const firstItem = featureItems[0].componentInstance as MockFeatureInfoItemComponent;
     const secondItem = featureItems[1].componentInstance as MockFeatureInfoItemComponent;
@@ -180,7 +178,7 @@ describe('FeatureInfoComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    const featureItem = fixture.debugElement.query((element) => element.componentInstance instanceof MockFeatureInfoItemComponent)
+    const featureItem = fixture.debugElement.query(By.directive(MockFeatureInfoItemComponent))
       .componentInstance as MockFeatureInfoItemComponent;
 
     expect(featureItem.showInteractiveElements()).toBe(false);
@@ -226,11 +224,9 @@ describe('FeatureInfoComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    expect(
-      fixture.debugElement.query((element) => element.componentInstance instanceof MockFeatureInfoGeneralInformationComponent),
-    ).toBeNull();
+    expect(fixture.debugElement.query(By.directive(MockFeatureInfoGeneralInformationComponent))).toBeNull();
 
-    expect(fixture.debugElement.query((element) => element.componentInstance instanceof MockFeatureInfoItemComponent)).toBeNull();
+    expect(fixture.debugElement.query(By.directive(MockFeatureInfoItemComponent))).toBeNull();
 
     expect(compiled.textContent).not.toContain('Keine kartenspezifischen Treffer!');
   });
