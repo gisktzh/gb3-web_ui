@@ -137,7 +137,8 @@ Feature queries and statistics selections share a query point: moving either rec
 Feature results remain tied to the last query point. Zooming, switching tabs, and changing layers, filters or time ranges do not
 reload them; the next query point change uses the current layers and map scale. Closing the panel or removing all maps clears feature results.
 Hovering over statistics table headers or values previews the returned feature geometries in a separate highlight layer.
-The Markieren control pins or unpins a layer's marking; hovering over other layers does not replace a pinned marking.
+The Markieren control pins a layer's marking and zooms to its returned feature geometries. Unpinning keeps the current map extent;
+hovering over other layers does not replace a pinned marking or move the map.
 Pinned markings are hidden outside the statistics tab, restored with cached results on return, and cleared when the query changes.
 Hover previews are cleared on mouse leave or when leaving the statistics tab.
 

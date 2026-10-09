@@ -12,6 +12,8 @@ import {ResizableInfoTableComponent} from '../info-table/resizable-info-table.co
 import {mapStatisticsDataToView} from '../../../utils/map-statistics-data-to-view.utils';
 import {InfoTableCellComponent} from '../info-table/info-table-cell.component';
 import {ResultMarkingController} from '../info-table/result-marking.controller';
+import {MAP_SERVICE} from '../../../../app.tokens';
+import {MapService} from '../../../interfaces/map.service';
 
 @Component({
   selector: 'statistics-item',
@@ -24,6 +26,7 @@ import {ResultMarkingController} from '../info-table/result-marking.controller';
 export class StatisticsItemComponent implements OnDestroy {
   private readonly decimalPipe = new DecimalPipe(inject(LOCALE_ID));
   private readonly store = inject(Store);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
 
   public readonly result = input.required<StatisticsResult>();
   public readonly showInteractiveElements = input(true);
@@ -44,7 +47,13 @@ export class StatisticsItemComponent implements OnDestroy {
     isPinned: (layer) => this.pinnedLayerName() === layer.layer,
     preview: (layer) => this.store.dispatch(StatisticsActions.hoverLayer({topic: this.result().topic, layer: layer.layer})),
     clearPreview: () => this.store.dispatch(StatisticsActions.clearHover()),
-    pin: (layer) => this.store.dispatch(StatisticsActions.highlightLayer({topic: this.result().topic, layer: layer.layer})),
+    pin: (layer) => {
+      if (!layer.featureGeometry) {
+        return;
+      }
+      this.store.dispatch(StatisticsActions.highlightLayer({topic: this.result().topic, layer: layer.layer}));
+      this.mapService.zoomToExtent(layer.featureGeometry);
+    },
     unpin: () => this.store.dispatch(StatisticsActions.clearHighlight()),
   });
   public readonly hoverEnabled = this.marking.hoverEnabled;
@@ -75,10 +84,6 @@ export class StatisticsItemComponent implements OnDestroy {
       };
     }),
   );
-
-  public highlightLayer(layer: StatisticsResultLayer) {
-    this.marking.pin(layer);
-  }
 
   public toggleLayerHighlight(layer: StatisticsResultLayer) {
     this.marking.toggle(layer);

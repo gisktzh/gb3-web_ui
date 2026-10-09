@@ -20,7 +20,7 @@ import Layer from '@arcgis/core/layers/Layer';
 import {defaultMapConfig} from 'src/app/shared/configs/map.config';
 import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
-import {HasSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
+import {GeometryWithSrs, HasSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
 import {Point} from 'geojson';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
 import Graphic from '@arcgis/core/Graphic';
@@ -29,6 +29,7 @@ import {ActiveMapItem} from '../../models/active-map-item.model';
 import {InitialMapExtentService} from '../initial-map-extent.service';
 import EsriPoint from '@arcgis/core/geometry/Point';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import Extent from '@arcgis/core/geometry/Extent';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -530,6 +531,104 @@ describe('EsriMapService', () => {
       service = TestBed.inject(EsriMapService);
       service.handleZoom('zoomOut');
       expect(mapViewMock.zoom).toBe(-2);
+    });
+  });
+
+  describe('zoomToExtent', () => {
+    const goTo = vi.fn();
+
+    beforeEach(() => {
+      mapViewMock.goTo = goTo;
+      goTo.mockResolvedValue(undefined);
+      service = TestBed.inject(EsriMapService);
+    });
+
+    it('uses the existing point scale and animation duration', async () => {
+      await service.zoomToExtent({type: 'Point', coordinates: [10, 20], srs: 2056}, undefined, 200);
+
+      expect(goTo).toHaveBeenCalledExactlyOnceWith(
+        {center: expect.objectContaining({x: 10, y: 20, spatialReference: expect.objectContaining({wkid: 2056})}), scale: 750},
+        {duration: 200},
+      );
+    });
+
+    it('fits all multipoint coordinates with the existing extent margin', async () => {
+      await service.zoomToExtent({
+        type: 'MultiPoint',
+        coordinates: [
+          [0, 0],
+          [10, 20],
+          [5, 10],
+        ],
+        srs: 2056,
+      });
+
+      expect(goTo).toHaveBeenCalledOnce();
+      const extent = goTo.mock.calls[0][0] as Extent;
+      expect(extent.xmin).toBeCloseTo(-0.375);
+      expect(extent.xmax).toBeCloseTo(10.375);
+      expect(extent.ymin).toBeCloseTo(-0.75);
+      expect(extent.ymax).toBeCloseTo(20.75);
+      expect(extent.spatialReference.wkid).toBe(2056);
+    });
+
+    it('fits combined bounds of nested collections with the requested margin and duration', async () => {
+      await service.zoomToExtent(
+        {
+          type: 'GeometryCollection',
+          srs: 2056,
+          geometries: [
+            {type: 'Point', coordinates: [0, 0]},
+            {
+              type: 'GeometryCollection',
+              geometries: [
+                {
+                  type: 'LineString',
+                  coordinates: [
+                    [5, 10],
+                    [10, 20],
+                  ],
+                },
+              ],
+            },
+            {type: 'MultiPoint', coordinates: []},
+          ],
+        },
+        1.2,
+        200,
+      );
+
+      expect(goTo).toHaveBeenCalledOnce();
+      const extent = goTo.mock.calls[0][0] as Extent;
+      expect(extent.xmin).toBeCloseTo(-1);
+      expect(extent.xmax).toBeCloseTo(11);
+      expect(extent.ymin).toBeCloseTo(-2);
+      expect(extent.ymax).toBeCloseTo(22);
+      expect(extent.spatialReference.wkid).toBe(2056);
+      expect(goTo.mock.calls[0][1]).toEqual({duration: 200});
+    });
+
+    it('uses point zoom when a collection has only one distinct position', async () => {
+      await service.zoomToExtent({
+        type: 'GeometryCollection',
+        srs: 2056,
+        geometries: [
+          {type: 'Point', coordinates: [10, 20]},
+          {type: 'MultiPoint', coordinates: [[10, 20]]},
+        ],
+      });
+
+      expect(goTo).toHaveBeenCalledExactlyOnceWith({center: expect.objectContaining({x: 10, y: 20}), scale: 750}, {duration: undefined});
+    });
+
+    it.each<GeometryWithSrs>([
+      {type: 'Point', coordinates: [], srs: 2056},
+      {type: 'MultiPoint', coordinates: [], srs: 2056},
+      {type: 'Polygon', coordinates: [], srs: 2056},
+      {type: 'GeometryCollection', geometries: [{type: 'GeometryCollection', geometries: []}], srs: 2056},
+    ])('does not navigate for empty $type', async (geometry) => {
+      await service.zoomToExtent(geometry);
+      expect(goTo).not.toHaveBeenCalled();
     });
   });
 
