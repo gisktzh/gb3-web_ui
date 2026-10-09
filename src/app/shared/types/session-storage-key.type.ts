@@ -1,1 +1,1 @@
-export type SessionStorageKey = 'shareLinkItem';
+export type SessionStorageKey = 'shareLinkItem' | 'pendingShareLinkId';

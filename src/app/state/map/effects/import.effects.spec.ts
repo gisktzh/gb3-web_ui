@@ -125,7 +125,7 @@ describe('ImportEffects', () => {
       const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       const drawingLayersToOverride = [UserDrawingLayer.Drawings];
       symbolizationToGb3ConverterUtils
-        .convertExternalToInternalRepresentation(mockDrawing, UserDrawingLayer.Drawings)
+        .convertExternalToInternalRepresentation(mockDrawing, UserDrawingLayer.Drawings, TestBed.inject(DRAWING_SYMBOLS_SERVICE))
         .then((drawingsToAdd) => {
           const converterSpy = vi
             .spyOn(symbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation')
@@ -135,7 +135,7 @@ describe('ImportEffects', () => {
           actions$ = of(ImportActions.createActiveMapItemFromDrawing({drawing: mockDrawing}));
           effects.addDrawingToMap$.subscribe((action) => {
             expect(converterSpy).toHaveBeenCalledTimes(1);
-            expect(converterSpy).toHaveBeenCalledWith(mockDrawing, UserDrawingLayer.Drawings);
+            expect(converterSpy).toHaveBeenCalledWith(mockDrawing, UserDrawingLayer.Drawings, TestBed.inject(DRAWING_SYMBOLS_SERVICE));
             expect(mapServiceSpy).toHaveBeenCalledTimes(1);
             expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem.id);
             expect(toolServiceSpy).toHaveBeenCalledTimes(1);

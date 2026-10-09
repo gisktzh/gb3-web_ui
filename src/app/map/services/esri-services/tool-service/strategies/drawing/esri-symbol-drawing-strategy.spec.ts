@@ -1,6 +1,8 @@
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {TestBed} from '@angular/core/testing';
+import {Injector} from '@angular/core';
+import {Dialog} from '@angular/cdk/dialog';
 import {provideMockStore} from '@ngrx/store/testing';
 import MapView from '@arcgis/core/views/MapView';
 import Map from '@arcgis/core/Map';
@@ -15,6 +17,15 @@ import {DrawingMode} from '../../types/drawing-mode.type';
 import {EsriDrawingSymbolDefinition} from './drawing-symbol/esri-drawing-symbol-definition';
 import {EsriDrawingSymbolDescriptor} from './drawing-symbol/esri-drawing-symbol-descriptor';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+
+vi.mock('@arcgis/core/widgets/Sketch/SketchViewModel', () => ({
+  default: class {
+    public pointSymbol: unknown;
+    public create = vi.fn();
+    public update = vi.fn();
+    public cancel = vi.fn();
+  },
+}));
 
 class EsriSymbolDrawingStrategyWrapper extends EsriSymbolDrawingStrategy {
   public get svm() {
@@ -67,6 +78,31 @@ describe('EsriSymbolDrawingStrategy', () => {
     mapView.map!.layers.add(layer);
   });
 
+  it('opens the real dialog with a symbols service provided only by the map injector', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({imports: [MatDialogModule], providers: [provideMockStore({})]});
+    const rootInjector = TestBed.inject(Injector);
+    const mapInjector = Injector.create({
+      parent: rootInjector,
+      providers: [Dialog, MatDialog, {provide: DRAWING_SYMBOLS_SERVICE, useValue: mockDrawingsSymbolService}],
+    });
+    const mapDialog = mapInjector.get(MatDialog);
+    expect(mapDialog).not.toBe(TestBed.inject(MatDialog));
+    mockDrawingsSymbolService.getCollectionInfos.mockReturnValue({});
+    expect(rootInjector.get(DRAWING_SYMBOLS_SERVICE, null)).toBeNull();
+    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, mapDialog);
+
+    try {
+      strategy.start();
+      TestBed.tick();
+      expect(document.querySelector('symbol-drawing-tool-input drawing-symbols')).not.toBeNull();
+      expect(mockDrawingsSymbolService.getCollectionInfos).toHaveBeenCalled();
+    } finally {
+      mapDialog.closeAll();
+      mapInjector.destroy();
+    }
+  });
+
   it('should not attempt to add anything when the initial dialog was closed without a value', async () => {
     vi.useFakeTimers();
 
@@ -82,6 +118,7 @@ describe('EsriSymbolDrawingStrategy', () => {
     await vi.runAllTimersAsync();
 
     expect(callbackSpy).toHaveBeenCalledWith(undefined, 'add');
+    expect(dialog.open).toHaveBeenCalledWith(SymbolDrawingToolInputComponent, expect.objectContaining({disableClose: true}));
 
     vi.useRealTimers();
   });

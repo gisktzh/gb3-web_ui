@@ -60,7 +60,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         },
       ];
 
-      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1);
+      const actual = utils.convertInternalToExternalRepresentation(drawingsMock);
 
       expect(actual.geojson.features.length).toEqual(2);
       expect(actual.geojson.features[0].properties.text).toEqual(drawingsMock[0].labelText);
@@ -99,10 +99,16 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
-        width: 100,
-        height: 100,
-      });
+      const actual = utils.convertInternalToPrintableRepresentation(
+        drawingsMock,
+        1,
+        1,
+        {
+          width: 100,
+          height: 100,
+        },
+        TestBed.inject(DRAWING_SYMBOLS_SERVICE),
+      );
 
       const actualStyle = getStyleFromConvertedLayer(actual);
 
@@ -142,10 +148,16 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
-        width: 100,
-        height: 100,
-      });
+      const actual = utils.convertInternalToPrintableRepresentation(
+        drawingsMock,
+        1,
+        1,
+        {
+          width: 100,
+          height: 100,
+        },
+        TestBed.inject(DRAWING_SYMBOLS_SERVICE),
+      );
 
       const actualStyle = getStyleFromConvertedLayer(actual);
 
@@ -185,10 +197,16 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
-        width: 100,
-        height: 100,
-      });
+      const actual = utils.convertInternalToPrintableRepresentation(
+        drawingsMock,
+        1,
+        1,
+        {
+          width: 100,
+          height: 100,
+        },
+        TestBed.inject(DRAWING_SYMBOLS_SERVICE),
+      );
 
       const actualStyle = getStyleFromConvertedLayer(actual);
 
@@ -228,10 +246,16 @@ describe('SymbolizationToGb3ConverterUtils', () => {
 
       const mapDrawingSymbolFromJSONSpy = vi.spyOn(DrawingSymbolServiceStub.prototype, 'getSVGString').mockReturnValue(mockSVGString);
 
-      const actual = utils.convertInternalToExternalRepresentation(drawingsMock, 1, 1, {
-        width: 100,
-        height: 100,
-      });
+      const actual = utils.convertInternalToPrintableRepresentation(
+        drawingsMock,
+        1,
+        1,
+        {
+          width: 100,
+          height: 100,
+        },
+        TestBed.inject(DRAWING_SYMBOLS_SERVICE),
+      );
 
       const actualStyle = getStyleFromConvertedLayer(actual);
 
@@ -276,7 +300,11 @@ describe('SymbolizationToGb3ConverterUtils', () => {
       };
       const mockedSource: UserDrawingLayer = UserDrawingLayer.Drawings;
 
-      const actual = await utils.convertExternalToInternalRepresentation(mockVectorLayer, mockedSource);
+      const actual = await utils.convertExternalToInternalRepresentation(
+        mockVectorLayer,
+        mockedSource,
+        TestBed.inject(DRAWING_SYMBOLS_SERVICE),
+      );
 
       expect(actual[0].labelText).toEqual(mockText);
       expect(actual[0].geometry.type).toEqual('Point');
@@ -327,7 +355,11 @@ describe('SymbolizationToGb3ConverterUtils', () => {
         .spyOn(DrawingSymbolServiceStub.prototype, 'mapDrawingSymbolFromJSON')
         .mockResolvedValue(mockMapDrawingSymbol);
 
-      const actual = await utils.convertExternalToInternalRepresentation(mockVectorLayer, mockedSource);
+      const actual = await utils.convertExternalToInternalRepresentation(
+        mockVectorLayer,
+        mockedSource,
+        TestBed.inject(DRAWING_SYMBOLS_SERVICE),
+      );
 
       expect(actual[0].geometry.type).toEqual('Point');
       expect(actual[0].geometry.srs).toEqual(2056);

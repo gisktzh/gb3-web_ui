@@ -82,6 +82,7 @@ describe('EsriToolService', () => {
     TestBed.configureTestingModule({
       imports: [MatDialogModule],
       providers: [
+        EsriToolService,
         provideMockStore({selectors: [{selector: selectDrawingLayers, value: []}]}),
         {
           provide: EsriMapViewService,

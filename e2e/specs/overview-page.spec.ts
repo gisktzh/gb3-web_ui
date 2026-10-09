@@ -20,6 +20,8 @@ test.describe('Overview page', () => {
     await expect(startGisBrowserLink).toBeVisible();
     await expect(startGisBrowserLink).toHaveAttribute('href', '/maps');
 
+    // The overview recording has no map API responses; reuse the map recording for navigation.
+    await page.routeFromHAR('e2e/hars/open-map-with-url.har', {notFound: 'fallback'});
     await startGisBrowserLink.click();
     await expect(page).toHaveURL(/\/maps(?:[?#]|$)/, {timeout: 30_000});
   });

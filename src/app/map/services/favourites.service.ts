@@ -27,7 +27,8 @@ import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeSliderService} from './time-slider.service';
-import {TIME_SERVICE} from '../../app.tokens';
+import {TIME_SERVICE, DRAWING_SYMBOLS_SERVICE} from '../../app.tokens';
+import {DrawingSymbolsService} from '../../shared/interfaces/drawing-symbols-service.interface';
 
 export interface CreateFavouritePayload {
   title: string;
@@ -35,14 +36,13 @@ export interface CreateFavouritePayload {
   storeScale: boolean;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FavouritesService {
   private readonly store = inject(Store);
   private readonly gb3FavouritesService = inject(Gb3FavouritesService);
   private readonly timeSliderService = inject(TimeSliderService);
   private readonly timeService = inject(TIME_SERVICE);
+  private readonly drawingSymbolsService = inject<DrawingSymbolsService>(DRAWING_SYMBOLS_SERVICE);
 
   private readonly activeMapItemConfigurations = this.store.selectSignal(selectActiveMapItemConfigurations);
   public readonly availableMaps = this.store.selectSignal(selectMaps);
@@ -136,6 +136,7 @@ export class FavouritesService {
         ...(await this.symbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
           measurements,
           UserDrawingLayer.Measurements,
+          this.drawingSymbolsService,
         )),
       );
     }
@@ -143,7 +144,11 @@ export class FavouritesService {
     if (drawings.geojson.features.length > 0) {
       drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing));
       drawingsToAdd.push(
-        ...(await this.symbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawings, UserDrawingLayer.Drawings)),
+        ...(await this.symbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
+          drawings,
+          UserDrawingLayer.Drawings,
+          this.drawingSymbolsService,
+        )),
       );
     }
 

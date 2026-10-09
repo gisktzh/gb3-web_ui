@@ -11,7 +11,7 @@
  */
 
 /** Manually added **/
-import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
+import {SupportedDrawingTool} from 'src/app/shared/types/supported-drawing-tool.type';
 import {ReportOrientation, ReportType} from '../interfaces/print.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../interfaces/print-rules.interface';
 import {DrawingSymbolDefinition} from '../interfaces/drawing-symbol/drawing-symbol-definition.interface';
@@ -1187,7 +1187,7 @@ export interface GeojsonFeature {
      * @example "polygon"
      */
     /** Manually added **/
-    tool: SupportedEsriTool;
+    tool: SupportedDrawingTool;
   };
   /** GeoJSON geometry object */
   geometry: Geometry;

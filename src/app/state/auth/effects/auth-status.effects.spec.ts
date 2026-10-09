@@ -33,6 +33,8 @@ import {InternalShareLinkItem} from 'src/app/shared/interfaces/internal-share-li
 import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
 import {UuidUtils} from 'src/app/shared/utils/uuid.utils';
 import {ToolService} from 'src/app/map/interfaces/tool.service';
+import {MapAuthStatusEffects} from './map-auth-status.effects';
+import {FavouritesService} from '../../../map/services/favourites.service';
 
 const mockUuid = '32b50136-2190-4faa-8fef-b9d07319c749'; // Chosen by fair dice roll.
 const mockOAuthService: Partial<AuthService> = {
@@ -44,6 +46,7 @@ describe('AuthStatusEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: AuthStatusEffects;
+  let mapEffects: MapAuthStatusEffects;
   let storageService: SessionStorageService;
   let timeService: TimeService;
 
@@ -56,6 +59,9 @@ describe('AuthStatusEffects', () => {
         provideMockActions(() => actions$),
         provideMockStore(),
         AuthStatusEffects,
+        MapAuthStatusEffects,
+        FavouritesService,
+        Gb3ShareLinkService,
         {provide: MAP_SERVICE, useClass: MapServiceStub},
         {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
         {provide: AuthService, useValue: mockOAuthService},
@@ -74,6 +80,7 @@ describe('AuthStatusEffects', () => {
       measurements: [],
     });
     effects = TestBed.inject(AuthStatusEffects);
+    mapEffects = TestBed.inject(MapAuthStatusEffects);
 
     vi.spyOn(UuidUtils, 'createUuid').mockReturnValue(mockUuid);
   });
@@ -175,7 +182,7 @@ describe('AuthStatusEffects', () => {
         const expectedAction = AuthStatusActions.completeRestoreApplication({mapRestoreItem});
 
         actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
-        effects.restoreApplicationAfterRedirectOrRefresh$.subscribe((action) => {
+        mapEffects.restoreApplicationAfterRedirectOrRefresh$.subscribe((action) => {
           expect(action).toEqual(expectedAction);
           expect(storageServiceGetSpy).toHaveBeenCalledTimes(1);
           expect(storageServiceGetSpy).toHaveBeenCalledWith('shareLinkItem');
@@ -196,7 +203,7 @@ describe('AuthStatusEffects', () => {
 
       let newAction;
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
-      effects.restoreApplicationAfterRedirectOrRefresh$.subscribe((action) => (newAction = action));
+      mapEffects.restoreApplicationAfterRedirectOrRefresh$.subscribe((action) => (newAction = action));
       await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
@@ -223,7 +230,7 @@ describe('AuthStatusEffects', () => {
       const expectedAction = ActiveMapItemActions.addInitialMapItems({initialMapItems: mapRestoreItem.activeMapItems});
 
       actions$ = of(AuthStatusActions.completeRestoreApplication({mapRestoreItem}));
-      effects.setActiveMapItemsAfterApplicationRestore$.subscribe((action) => {
+      mapEffects.setActiveMapItemsAfterApplicationRestore$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });
     });
@@ -274,7 +281,7 @@ describe('AuthStatusEffects', () => {
       const expectedAction = DrawingActions.addDrawings({drawings: mapRestoreItem.drawings});
 
       actions$ = of(AuthStatusActions.completeRestoreApplication({mapRestoreItem}));
-      effects.setInitialDrawingsAfterApplicationRestore$.subscribe((action) => {
+      mapEffects.setInitialDrawingsAfterApplicationRestore$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
       });
     });
@@ -342,7 +349,7 @@ describe('AuthStatusEffects', () => {
 
       const expectedAction = AuthStatusActions.completeRestoreApplication({mapRestoreItem});
       actions$ = of(expectedAction);
-      effects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe(([action, _]) => {
+      mapEffects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe(([action, _]) => {
         expect(action).toEqual(expectedAction);
         expect(mapServiceSpy).toHaveBeenCalledTimes(1);
         expect(mapServiceSpy).toHaveBeenCalledWith();
@@ -367,7 +374,7 @@ describe('AuthStatusEffects', () => {
 
       const expectedAction = AuthStatusActions.completeRestoreApplication({mapRestoreItem});
       actions$ = of(expectedAction);
-      effects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe(([action, _]) => {
+      mapEffects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe(([action, _]) => {
         expect(action).toEqual(expectedAction);
         expect(mapServiceSpy).not.toHaveBeenCalled();
       });
@@ -422,7 +429,7 @@ describe('AuthStatusEffects', () => {
 
       let newAction;
       actions$ = of(AuthStatusActions.completeRestoreApplication({mapRestoreItem}));
-      effects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe((action) => (newAction = action));
+      mapEffects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe((action) => (newAction = action));
       await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
@@ -478,7 +485,7 @@ describe('AuthStatusEffects', () => {
 
       let newAction;
       actions$ = of(AuthStatusActions.completeRestoreApplication({mapRestoreItem}));
-      effects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe((action) => (newAction = action));
+      mapEffects.addInitialDrawingsToMapAfterApplicationRestore$.subscribe((action) => (newAction = action));
       await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
