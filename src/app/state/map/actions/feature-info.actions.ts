@@ -10,7 +10,6 @@ export const FeatureInfoActions = createActionGroup({
     'Send Request': props<Coordinate & {scale: number}>(),
     'Update Content': props<{featureInfos: FeatureInfoResponse[]}>(),
     'Clear Content': emptyProps(),
-    'Invalidate Content': emptyProps(),
     'Highlight Feature': props<{feature: GeometryWithSrs; pinnedFeatureId: string | undefined}>(),
     'Clear Highlight': emptyProps(),
     'Set Error': errorProps(),

@@ -29,16 +29,23 @@ test.describe('Statistics', () => {
       await expect(statisticsTab).toHaveCount(0);
       await waitForMap(page);
       expect(statisticsSession.statisticsQueries).toHaveLength(0);
+      const featureQueryCountBeforeAdd = statisticsSession.featureQueries.length;
 
       await statisticsSession.addMap(statisticsSession.topic);
       await expect(statisticsButton).toBeEnabled();
       await expect(featuresTab).toHaveAttribute('aria-selected', 'true');
       await expect(statisticsTab).toBeVisible();
       await expect(host.getByTestId('statistics-radius')).toHaveCount(0);
-      await expectFeatureResponse(page, statisticsSession, point.coordinates);
       await waitForMap(page);
+      expect(statisticsSession.featureQueries).toHaveLength(featureQueryCountBeforeAdd);
       expect(statisticsSession.statisticsQueries).toHaveLength(0);
 
+      // Adding a map keeps the previous result until the next explicit point query.
+      const queryPoint = await getMapPoint(page);
+      await clickMapPoint(page, queryPoint);
+      await expectFeatureResponse(page, statisticsSession, queryPoint.coordinates);
+      await waitForMap(page);
+      const featureQueryCount = statisticsSession.featureQueries.length;
       await statisticsTab.click();
       await expectStatisticsResult(page, statisticsSession);
       await expect(statisticsTab).toHaveAttribute('aria-selected', 'true');
@@ -57,6 +64,7 @@ test.describe('Statistics', () => {
       await expect(host.getByTestId('query-feature-results')).toBeVisible();
       await waitForMap(page);
       expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+      expect(statisticsSession.featureQueries).toHaveLength(featureQueryCount);
 
       await statisticsSession.addMap(statisticsSession.topic);
       await expect(statisticsButton).toBeEnabled();
@@ -65,6 +73,7 @@ test.describe('Statistics', () => {
       await expect(page.getByTestId('statistics-tools')).toHaveCount(0);
       await waitForMap(page);
       expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+      expect(statisticsSession.featureQueries).toHaveLength(featureQueryCount);
     });
   });
 
@@ -343,6 +352,7 @@ test.describe('Statistics', () => {
 
       // Removing the last supported map must return the mobile query to features.
       const finalQueryCount = statisticsSession.statisticsQueries.length;
+      const finalFeatureQueryCount = statisticsSession.featureQueries.length;
       await host.getByTestId('bottom-sheet-close').tap();
       await page.getByTestId('map-management-open').tap();
       const management = page.getByTestId('map-management-mobile');
@@ -351,6 +361,18 @@ test.describe('Statistics', () => {
       const lastMap = management.getByTestId('active-map-item-' + statisticsSession.topic.topic);
       await lastMap.getByTestId('delete').tap();
       await expect(lastMap).toHaveCount(0);
+      await expect(host).toHaveCount(0);
+      await expect(page.getByTestId('statistics-tools')).toHaveCount(0);
+      await waitForMap(page);
+      expect(statisticsSession.statisticsQueries).toHaveLength(finalQueryCount);
+      expect(statisticsSession.featureQueries).toHaveLength(finalFeatureQueryCount);
+
+      // A new touch query reopens Info after the mode has fallen back to Features.
+      await management.getByTestId('bottom-sheet-close').tap();
+      await expect(management).toBeHidden();
+      await waitForMap(page);
+      await page.touchscreen.tap(nextPoint.position.x, nextPoint.position.y);
+      await expect(host.getByTestId('bottom-sheet-title')).toHaveText('Info');
       await expect(host.getByTestId('query-feature-results')).toBeVisible();
       await expect(host.getByTestId('query-tab-feature')).toHaveCount(0);
       await expect(host.getByTestId('query-tab-statistics')).toHaveCount(0);
@@ -358,6 +380,7 @@ test.describe('Statistics', () => {
       await expect(page.getByTestId('statistics-tools')).toHaveCount(0);
       await waitForMap(page);
       expect(statisticsSession.statisticsQueries).toHaveLength(finalQueryCount);
+      expect(statisticsSession.featureQueries).toHaveLength(finalFeatureQueryCount);
     });
   });
 });
