@@ -13,16 +13,8 @@ pending:
   src/app/map/components/drawing-symbols/drawing-symbols-collection/drawing-symbols-collection.component.ts: {}
   src/app/map/components/drawing-symbols/drawing-symbols.component.ts: {}
   src/app/map/components/favourite-deletion-dialog/favourite-deletion-dialog.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-item/feature-info-item.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-report-download/feature-info-report-download.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info/feature-info.component.ts: {}
   src/app/map/components/feature-info-overlay/info-table/info-table-cell.component.ts: {}
   src/app/map/components/feature-info-overlay/info-table/resizable-info-table.component.ts: {}
-  src/app/map/components/feature-info-overlay/oereb-extract/oereb-extract.component.ts: {}
-  src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-list/oereb-info-list-map-overlay.component.ts: {}
-  src/app/map/components/feature-info-overlay/oereb-extract/oereb-info-value/oereb-info-value.component.ts: {}
   src/app/map/components/feature-info-overlay/oereb-extract/oereb-not-concerned-themes-list/oereb-not-concerned-themes-list.component.ts: {}
   src/app/map/components/feature-info-overlay/query-results/query-results.component.ts: {}
   src/app/map/components/feature-info-overlay/statistics-item/statistics-item.component.ts: {}
