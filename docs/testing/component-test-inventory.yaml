@@ -44,8 +44,6 @@ pending:
   src/app/map/components/favourite-creation-dialog/favourite-creation-dialog.component.ts: {}
   src/app/map/components/favourite-deletion-dialog/favourite-deletion-dialog.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-content/info-table-cell.component.ts: {}
-  src/app/map/components/feature-info-overlay/feature-info-content/resizable-info-table.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-item/feature-info-item.component.ts: {}
   src/app/map/components/feature-info-overlay/feature-info-overlay.component.ts: {}
