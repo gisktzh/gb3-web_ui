@@ -27,11 +27,21 @@ describe('OerebExtractComponent', () => {
         laws: [],
         hints: [],
         responsibleOffices: [{title: 'Planning office'}],
-        restrictions: [{id: 2, name: 'Residential zone', measurement: {areaM2: 120, percentage: 0.25}}],
+        restrictions: [
+          {
+            id: 2,
+            name: 'Residential zone',
+            measurement: {areaM2: 120, percentage: 0.25},
+            legalStatus: 'rechtskräftig',
+          },
+        ],
       },
     ],
     notConcernedThemes: [{id: 3, name: 'Forest boundaries', hints: [{title: 'No restriction'}]}],
     notAvailableThemes: [{id: 4, name: 'Noise', hints: [{title: 'Unavailable', href: 'https://example.test/noise'}]}],
+    completeness: '',
+    area: 0,
+    statusOfficialSurvey: '',
   });
 
   class MockResizeObserver implements ResizeObserver {
@@ -60,18 +70,20 @@ describe('OerebExtractComponent', () => {
   });
 
   it('maps parcel and authority data into display tables', () => {
-    const cadastreRows = component.oerebCadastreData().tableRows;
-    expect(cadastreRows.get('Gemeinde')?.[0].displayValue).toBe('Zürich');
-    expect(cadastreRows.get('BFS-Nr.')?.[0].displayValue).toBe('261');
-    expect(cadastreRows.get('Grundstück-Nr.')?.[0].displayValue).toBe('ZH-42');
-    expect(cadastreRows.get('EGRIS_EGRID')?.[0].displayValue).toBe('CH123');
+    const cadastreRows = component.oerebCadastreData().rows;
+    expect(cadastreRows.filter((r) => r.label === 'Gemeinde')[0].cells[0].displayValue).toBe('Zürich');
+    expect(cadastreRows.filter((r) => r.label === 'BFS-Nr.')[0].cells[0].displayValue).toBe('261');
+    expect(cadastreRows.filter((r) => r.label === 'Grundstück-Nr.')[0].cells[0].displayValue).toBe('ZH-42');
+    expect(cadastreRows.filter((r) => r.label === 'EGRIS_EGRID')[0].cells[0].displayValue).toBe('CH123');
 
-    expect(component.kboAndSurveyorData().tableRows.get('ÖREB-Kataster')?.[0]).toEqual({
+    expect(
+      component.kboAndSurveyorData().rows.filter((r) => r.label === 'Zuständige Nachführungsstelle ÖREB-Kataster')[0].cells[0],
+    ).toEqual({
       displayValue: 'Cadastre office',
       cellType: 'url',
       url: 'https://example.test/cadastre',
     });
-    expect(component.kboAndSurveyorData().tableRows.get('Email ÖREB')?.[0]).toEqual({
+    expect(component.kboAndSurveyorData().rows.filter((r) => r.label === 'Zuständige Stelle Amtliche Vermessung')[0].cells[0]).toEqual({
       displayValue: 'Surveyor',
       cellType: 'text',
     });
@@ -87,8 +99,9 @@ describe('OerebExtractComponent', () => {
   it('maps concerned themes and their restriction measurements', () => {
     const theme = component.concernedThemes()[0];
     expect(theme.name).toBe('Land-use planning');
-    expect(theme.generalInfo.items).toHaveLength(2);
+    expect(theme.generalInfo.items).toHaveLength(4);
     expect(theme.restrictions[0].items).toEqual([
+      {itemLabel: 'Rechtsstatus', itemType: 'text', text: 'rechtskräftig'},
       {itemLabel: 'Fläche', itemType: 'text', text: '120m2'},
       {itemLabel: 'Anteil', itemType: 'text', text: '25%'},
     ]);
@@ -97,15 +110,15 @@ describe('OerebExtractComponent', () => {
   });
 
   it('maps and renders non-concerned and unavailable themes separately', () => {
-    expect(component.notConcernedThemes().tableRows.get('Forest boundaries')?.[0]).toEqual({
-      displayValue: '',
-      cellType: 'list',
-      items: [{cellType: 'text', displayValue: 'No restriction'}],
+    expect(component.notConcernedThemes().filter((i) => i.itemLabel === 'Forest boundaries')[0]).toEqual({
+      itemLabel: 'Forest boundaries',
+      itemType: 'list',
+      items: [{itemLabel: 'No restriction', itemType: 'text', text: 'No restriction'}],
     });
-    expect(component.notAvailableThemes().tableRows.get('Noise')?.[0]).toEqual({
-      displayValue: '',
-      cellType: 'list',
-      items: [{cellType: 'url', displayValue: 'Unavailable', url: 'https://example.test/noise'}],
+    expect(component.notAvailableThemes().filter((i) => i.itemLabel === 'Noise')[0]).toEqual({
+      itemLabel: 'Noise',
+      itemType: 'list',
+      items: [{itemType: 'url', itemLabel: 'Unavailable', url: 'https://example.test/noise'}],
     });
     expect(compiled.textContent).toContain('Nicht betroffene Themen');
     expect(compiled.textContent).toContain('Nicht verfügbare Themen');

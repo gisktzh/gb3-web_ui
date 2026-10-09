@@ -41,6 +41,7 @@ describe('LegendOverlayComponent', () => {
     public readonly isVisible = input(false);
     public readonly overlayTitle = input('');
     public readonly location = input<ResizeHandlerLocation>('left');
+    public readonly width = input<number | undefined>(undefined);
     public readonly closeEvent = output();
     public readonly printButtonEvent = output();
   }

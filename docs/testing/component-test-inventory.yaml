@@ -150,12 +150,6 @@ dedicated:
   src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.ts:
     coveredBy:
       - src/app/map/components/feature-info-overlay/feature-info-content/feature-info-content.component.spec.ts
-  src/app/map/components/feature-info-overlay/feature-info-content/info-table-cell.component.ts:
-    coveredBy:
-      - src/app/map/components/feature-info-overlay/feature-info-content/info-table-cell.component.spec.ts
-  src/app/map/components/feature-info-overlay/feature-info-content/resizable-info-table.component.ts:
-    coveredBy:
-      - src/app/map/components/feature-info-overlay/feature-info-content/resizable-info-table.component.spec.ts
   src/app/map/components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component.ts:
     coveredBy:
       - src/app/map/components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component.spec.ts

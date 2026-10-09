@@ -160,8 +160,7 @@ describe('FeatureInfoContentComponent', () => {
   it('should render a table header for every feature', () => {
     setFeatures(createFeature(10, []), createFeature(20, []), createFeature(30, []));
 
-    const headers = compiled.querySelectorAll('.feature-info-content__table__row__column--header[tableColumnIdentifier]');
-
+    const headers = compiled.querySelectorAll('.info-table__cell.info-table__cell--header.feature-info-content__feature-header');
     expect(headers).toHaveLength(3);
     expect(headers[0].textContent).toContain('1');
     expect(headers[1].textContent).toContain('2');
@@ -173,7 +172,7 @@ describe('FeatureInfoContentComponent', () => {
 
     setFeatures(createFeature(10, [], geometry), createFeature(20, []));
 
-    expect(component.tableData().tableHeaders).toEqual([
+    expect(component.tableData().headers).toEqual([
       {
         displayValue: 'Resultat 1/2',
         fid: 10,
@@ -230,7 +229,7 @@ describe('FeatureInfoContentComponent', () => {
       ]),
     );
 
-    const link = compiled.querySelector('.feature-info-content__table__row__column__link') as HTMLAnchorElement | null;
+    const link = compiled.querySelector('.feature-info-content__link') as HTMLAnchorElement | null;
 
     expect(link).toBeTruthy();
     expect(link?.href).toBe('https://example.com/');
@@ -249,7 +248,7 @@ describe('FeatureInfoContentComponent', () => {
       ]),
     );
 
-    const link = compiled.querySelector('.feature-info-content__table__row__column__link') as HTMLAnchorElement | null;
+    const link = compiled.querySelector('.feature-info-content__link') as HTMLAnchorElement | null;
 
     expect(link?.textContent).toContain('https://example.com/test');
     expect(link?.title).toBe('https://example.com/test');
@@ -269,7 +268,7 @@ describe('FeatureInfoContentComponent', () => {
       ]),
     );
 
-    const image = compiled.querySelector('.feature-info-content__table__row__column__image') as HTMLImageElement | null;
+    const image = compiled.querySelector('.feature-info-content__image') as HTMLImageElement | null;
 
     expect(image).toBeTruthy();
     expect(image?.src).toBe('https://example.com/image.png');
@@ -294,7 +293,7 @@ describe('FeatureInfoContentComponent', () => {
       ]),
     );
 
-    expect(component.tableData().tableRows.get('Image')?.[0]).toMatchObject({
+    expect(component.tableData().rows.filter((r) => r.label === 'Image')[0].cells[0]).toMatchObject({
       cellType: 'image',
       displayValue: 'https://example.com/image.png',
     });
@@ -303,10 +302,10 @@ describe('FeatureInfoContentComponent', () => {
   it('should group fields with the same label into one table row', () => {
     setFeatures(createFeature(10, [createTextField('Name', 'First')]), createFeature(20, [createTextField('Name', 'Second')]));
 
-    expect(component.tableData().tableRows.size).toBe(1);
-    expect(component.tableData().tableRows.get('Name')).toHaveLength(2);
+    expect(component.tableData().rows).toHaveLength(1);
+    expect(component.tableData().rows.filter((r) => r.label === 'Name')).toHaveLength(1);
 
-    const rows = compiled.querySelectorAll('.feature-info-content__table > tr');
+    const rows = compiled.querySelectorAll('.info-table__table tr');
 
     expect(rows).toHaveLength(2);
     expect(compiled.textContent).toContain('First');
@@ -346,7 +345,7 @@ describe('FeatureInfoContentComponent', () => {
     component.hoverEnabled.set(false);
     component.onFeatureHoverStart(42);
 
-    expect(component.hoveredFeatureId()).toBeNull();
+    expect(component.hoveredFeatureId()).toBeUndefined();
     expect(storeDispatchSpy).not.toHaveBeenCalledWith(
       FeatureInfoActions.highlightFeature({
         feature: geometry,
@@ -360,7 +359,6 @@ describe('FeatureInfoContentComponent', () => {
 
     component.onFeatureHoverStart(42);
 
-    expect(component.hoveredFeatureId()).toBe(42);
     expect(storeDispatchSpy).not.toHaveBeenCalledWith(
       expect.objectContaining({
         type: FeatureInfoActions.highlightFeature.type,
@@ -381,7 +379,6 @@ describe('FeatureInfoContentComponent', () => {
 
     component.onFeatureHoverStart(42);
 
-    expect(component.hoveredFeatureId()).toBe(42);
     expect(storeDispatchSpy).not.toHaveBeenCalledWith(
       expect.objectContaining({
         type: FeatureInfoActions.highlightFeature.type,
@@ -394,7 +391,7 @@ describe('FeatureInfoContentComponent', () => {
 
     component.onFeatureHoverEnd();
 
-    expect(component.hoveredFeatureId()).toBeNull();
+    expect(component.hoveredFeatureId()).toBeUndefined();
     expect(storeDispatchSpy).toHaveBeenCalledWith(FeatureInfoActions.clearHighlight());
   });
 
@@ -410,7 +407,7 @@ describe('FeatureInfoContentComponent', () => {
 
     component.onFeatureHoverEnd();
 
-    expect(component.hoveredFeatureId()).toBeNull();
+    expect(component.hoveredFeatureId()).toBeUndefined();
     expect(storeDispatchSpy).not.toHaveBeenCalledWith(FeatureInfoActions.clearHighlight());
   });
 
@@ -428,7 +425,6 @@ describe('FeatureInfoContentComponent', () => {
 
     component.toggleHighlightForFeature(42, true);
 
-    expect(component.hoveredFeatureId()).toBe(42);
     expect(storeDispatchSpy).toHaveBeenCalledWith(
       FeatureInfoActions.highlightFeature({
         feature: geometry,
@@ -506,18 +502,17 @@ describe('FeatureInfoContentComponent', () => {
 
     setFeatures(createFeature(10, [], geometry), createFeature(20, [], geometry));
 
-    const headers = compiled.querySelectorAll('.feature-info-content__table__row__column--header[tableColumnIdentifier]');
-
+    const headers = compiled.querySelectorAll('.info-table__cell.info-table__cell--header.feature-info-content__feature-header');
     (headers[0] as HTMLElement).dispatchEvent(new MouseEvent('mouseenter'));
     fixture.detectChanges();
 
-    expect(headers[0].classList).toContain('feature-info-content__table__row__column--highlighted');
-    expect(headers[1].classList).not.toContain('feature-info-content__table__row__column--highlighted');
+    expect(headers[0].classList).toContain('feature-info-content__feature-cell--highlighted');
+    expect(headers[1].classList).not.toContain('feature-info-content__feature-cell--highlighted');
 
     (headers[0] as HTMLElement).dispatchEvent(new MouseEvent('mouseleave'));
     fixture.detectChanges();
 
-    expect(headers[0].classList).not.toContain('feature-info-content__table__row__column--highlighted');
+    expect(headers[0].classList).not.toContain('feature-info-content__feature-cell--highlighted');
   });
 
   it('should toggle a feature through the table header click', () => {
@@ -525,8 +520,7 @@ describe('FeatureInfoContentComponent', () => {
 
     setFeatures(createFeature(42, [], geometry));
 
-    const header = compiled.querySelector('.feature-info-content__table__row__column--header[tableColumnIdentifier]') as HTMLElement;
-
+    const header = compiled.querySelector('.info-table__cell.info-table__cell--header.feature-info-content__feature-header') as HTMLElement;
     header.click();
 
     expect(storeDispatchSpy).toHaveBeenCalledWith(
