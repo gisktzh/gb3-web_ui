@@ -55,7 +55,9 @@ test.describe('Onboarding guide tour', () => {
       await openUrlWithCoordinates('2702555', '1241686', false);
       await expect(page.locator('mat-card-title', {hasText: 'Willkommen auf dem GIS-Browser des Kantons Zürich'})).toBeVisible();
 
-      await checkA11y();
+      // The tour is rendered by ngx-ui-tour-md-menu inside a mat-menu panel (role="menu") containing a card; that's
+      // third-party markup we can't remediate.
+      await checkA11y({exclude: ['.mat-mdc-menu-panel']});
     });
   });
 });

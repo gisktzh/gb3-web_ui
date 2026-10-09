@@ -52,6 +52,7 @@
           [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, geometadataUuid]"
           mat-icon-button
           data-test-id="info"
+          aria-label="Informationen zur Karte"
         >
           <mat-icon>info</mat-icon>
         </a>
@@ -61,7 +62,13 @@
           [vertical]="true"
         />
       }
-      <button class="active-map-item-header__button" (click)="removeActiveMapItem(activeMapItem())" mat-icon-button data-test-id="delete">
+      <button
+        class="active-map-item-header__button"
+        (click)="removeActiveMapItem(activeMapItem())"
+        mat-icon-button
+        data-test-id="delete"
+        aria-label="Karte entfernen"
+      >
         <mat-icon>delete</mat-icon>
       </button>
       <mat-divider

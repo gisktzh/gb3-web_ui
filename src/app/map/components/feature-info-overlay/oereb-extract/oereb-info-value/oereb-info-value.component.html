@@ -17,10 +17,10 @@
     />
   </a>
 } @else if (localItem.itemType === 'list') {
+  @if (showListLabel()) {
+    <span class="oereb-detail-list__label">{{ localItem.itemLabel }}</span>
+  }
   <ul class="oereb-detail-list">
-    @if (showListLabel()) {
-      {{ localItem.itemLabel }}
-    }
     @for (item of localItem.items; track $index) {
       <li>
         <oereb-info-value [item]="item" />

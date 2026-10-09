@@ -8,6 +8,7 @@
       mat-flat-button
       (click)="switchBasemap(availableBasemap.id)"
       class="basemap-selection-list__item"
+      [attr.aria-label]="availableBasemap.title"
       [class.basemap-selection-list__item--active]="availableBasemap.id === activeBasemapId()"
     >
       @switch (availableBasemap.type) {

@@ -1,12 +1,19 @@
 @if (loadingState() === 'loading') {
-  <mat-progress-bar data-test-id="loading-progress" class="loading-and-process-bar" mode="query" />
+  <mat-progress-bar data-test-id="loading-progress" aria-label="Ladevorgang" class="loading-and-process-bar" mode="query" />
 }
 @if (loadingState() === 'error') {
-  <mat-progress-bar data-test-id="loading-progress" class="loading-and-process-bar" color="warn" mode="determinate" value="100" />
+  <mat-progress-bar
+    data-test-id="loading-progress"
+    aria-label="Ladevorgang"
+    class="loading-and-process-bar"
+    color="warn"
+    mode="determinate"
+    value="100"
+  />
 }
 @if (loadingState() === undefined || loadingState() === null || loadingState() === 'loaded') {
   <!-- Only show the view state if the loading state is either undefined or 'completed' -->
   @if (viewProcessState() === 'updating') {
-    <mat-progress-bar data-test-id="loading-progress" class="loading-and-process-bar" mode="buffer" />
+    <mat-progress-bar data-test-id="loading-progress" aria-label="Ladevorgang" class="loading-and-process-bar" mode="buffer" />
   }
 }
