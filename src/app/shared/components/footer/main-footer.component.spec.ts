@@ -64,11 +64,6 @@ describe('MainFooterComponent', () => {
   });
 
   it('should render release when available', () => {
-    if (!environment.appRelease) {
-      expect(true).toBe(true);
-      return;
-    }
-
     const text = compiled.textContent ?? '';
 
     expect(text).toContain(environment.appRelease);
