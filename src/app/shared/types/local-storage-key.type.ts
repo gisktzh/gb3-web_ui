@@ -1,1 +1,1 @@
-export type LocalStorageKey = 'onboardingGuidesViewed';
+export type LocalStorageKey = 'onboardingGuidesViewed' | 'skipAutoOpeningOfMapNotices';

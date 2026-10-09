@@ -39,6 +39,10 @@ export class OnboardingGuideService {
     this.tourService.start();
   }
 
+  public isGuideShown() {
+    return this.tourService.getStatus() > 0; // !== OFF, see ngx-ui-tour-core/types/ngx-ui-tour-core.d.ts
+  }
+
   private initSubscriptions() {
     // Set the flag to prevent auto showing the guide when a tour starts; sadly, the ends$ event fires somehow twice and cannot be used
     this.tourService.start$
