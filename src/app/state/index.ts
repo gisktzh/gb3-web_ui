@@ -1,6 +1,5 @@
 import {LayerCatalogApiEffects} from './app/effects/layer-catalog-api.effects';
 import {QueryModeEffects} from './map/effects/query-mode.effects';
-import {StatisticsEffects} from './map/effects/statistics.effects';
 import {ActionReducerMap, MetaReducer} from '@ngrx/store';
 import {reducer as mapConfigReducer} from './map/reducers/map-config.reducer';
 import {reducer as legendReducer} from './map/reducers/legend.reducer';
@@ -67,7 +66,6 @@ import {PageNotificationEffects} from './app/effects/page-notification.effects';
 import {GeolocationEffects} from './map/effects/geolocation.effects';
 import {GeneralInfoEffects} from './map/effects/general-info.effects';
 import {MapUiEffects} from './map/effects/map-ui.effects';
-import {ToolEffects} from './map/effects/tool.effects';
 import {DataCatalogueState} from './data-catalogue/states/data-catalogue.state';
 import {DataCatalogueEffects} from './data-catalogue/effects/data-catalogue.effects';
 import {SearchState} from './app/states/search.state';
@@ -180,9 +178,7 @@ export const rootEffects = [
   GeolocationEffects,
   GeneralInfoEffects,
   MapUiEffects,
-  ToolEffects,
   QueryModeEffects,
-  StatisticsEffects,
   DataCatalogueEffects,
   SearchEffects,
   AppLayoutEffects,

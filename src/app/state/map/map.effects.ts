@@ -15,6 +15,7 @@ import {PrintEffects} from './effects/print.effects';
 import {MapUiEffects} from './effects/map-ui.effects';
 import {ShareLinkEffects} from './effects/share-link.effects';
 import {ToolEffects} from './effects/tool.effects';
+import {StatisticsEffects} from './effects/statistics.effects';
 import {DrawingEffects} from './effects/drawing.effects';
 import {MapAttributeFiltersItemEffects} from './effects/map-attribute-filters-item.effects';
 import {OverlayPrintEffects} from './effects/overlay-print.effects';
@@ -42,6 +43,7 @@ export const MAP_EFFECTS = [
   MapUiEffects,
   ShareLinkEffects,
   ToolEffects,
+  StatisticsEffects,
   DrawingEffects,
   DataDownloadOrderEffects,
   DataDownloadOrderStatusJobEffects,
