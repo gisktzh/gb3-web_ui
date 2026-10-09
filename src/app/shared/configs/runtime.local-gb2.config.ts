@@ -14,11 +14,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       gb2StaticFiles: {
         baseUrl: 'http://localhost:3000',
       },
-      gb2WmsCapabilities: {
-        baseUrl: 'http://localhost:3000/wms',
-      },
       gb2Wms: {
-        baseUrl: 'http://localhost:3000',
+        baseUrl: 'http://localhost:3000/wms',
       },
       geoLion: {
         baseUrl: 'https://geolion.zh.ch',
@@ -61,11 +58,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       gb2StaticFiles: {
         baseUrl: 'http://127.0.0.1:3000',
       },
-      gb2WmsCapabilities: {
-        baseUrl: 'http://127.0.0.1:3000/wms',
-      },
       gb2Wms: {
-        baseUrl: 'http://127.0.0.1:3000',
+        baseUrl: 'http://127.0.0.1:3000/wms',
       },
       geoLion: {
         baseUrl: 'https://geolion.ktzh.ch/',

@@ -1,5 +1,5 @@
 import {Injectable, inject} from '@angular/core';
-import {Basemap} from '../../shared/interfaces/basemap.interface';
+import {CallableBasemap} from '../../shared/interfaces/basemap.interface';
 import {ConfigService} from '../../shared/services/config.service';
 
 @Injectable({
@@ -8,10 +8,10 @@ import {ConfigService} from '../../shared/services/config.service';
 export class BasemapConfigService {
   private readonly configService = inject(ConfigService);
 
-  private readonly _availableBasemaps: Basemap[] = this.configService.basemapConfig.availableBasemaps;
-  private readonly defaultBasemap: Basemap = this.configService.basemapConfig.defaultBasemap;
+  private readonly _availableBasemaps: CallableBasemap[] = this.configService.basemapConfig.availableBasemaps;
+  private readonly defaultBasemap: CallableBasemap = this.configService.basemapConfig.defaultBasemap;
 
-  public get availableBasemaps(): Basemap[] {
+  public get availableBasemaps(): CallableBasemap[] {
     return this._availableBasemaps;
   }
 
