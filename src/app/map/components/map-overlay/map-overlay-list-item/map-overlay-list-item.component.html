@@ -1,18 +1,56 @@
-<mat-expansion-panel
-  #expansionPanel
-  [disabled]="disabled()"
-  [expanded]="forceExpanded()"
-  [class.list-item--no-content-indent]="removeContentIndent()"
-  class="list-item"
-  hideToggle
->
-  <mat-expansion-panel-header class="list-item__header" [class.list-item__header--no-background]="!hasBackgroundColor()">
+<div class="list-item">
+  <mat-expansion-panel
+    #expansionPanel
+    [disabled]="disabled()"
+    [expanded]="forceExpanded()"
+    [class.list-item--no-content-indent]="removeContentIndent()"
+    class="list-item__panel"
+    hideToggle
+  >
+    <ng-template matExpansionPanelContent>
+      <div
+        class="list-item__content"
+        [class.list-item__content--has-border]="hasBorder()"
+        [class.list-item__content--is-nested]="nestingLevel() > 0"
+      >
+        <ng-content />
+      </div>
+    </ng-template>
+  </mat-expansion-panel>
+  <!--
+    The header is a plain, non-interactive div (not a mat-expansion-panel-header, which hardcodes role="button")
+    because it contains a real, focusable info-link anchor; nesting that inside another interactive element would
+    violate the WAI-ARIA "no nested interactive controls" rule. Instead, the toggle button inside it is the sole
+    accessible disclosure control (keyboard/AT-operable, with aria-expanded/aria-controls/aria-label), consistent
+    with the pattern used elsewhere (e.g. base-map-data-item, active-map-item-header). The row-level click below is
+    a mouse-only convenience that mirrors the toggle button's own action; it adds no role/tabindex, so it stays
+    non-interactive to assistive tech and does not reintroduce the nested-interactive violation. It is placed after
+    the panel in the DOM (and moved back above it visually via CSS `order`) so that `expansionPanel.expanded` is
+    always up to date by the time the header reads it - reading it before the panel's own `[expanded]` input is
+    processed causes an ExpressionChangedAfterItHasBeenCheckedError in dev mode.
+  -->
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+  <div
+    class="list-item__header"
+    [id]="expansionPanel._headerId"
+    [class.list-item__header--no-background]="!hasBackgroundColor()"
+    [class.list-item__header--disabled]="disabled()"
+    (click)="expansionPanel.toggle()"
+  >
     <div class="list-item__header__content">
-      <mat-icon
-        [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
-        [class.list-item__header__content__toggle--position-end]="toggleButtonPosition() === 'end'"
+      <button
+        type="button"
         class="list-item__header__content__toggle"
-      />
+        [class.list-item__header__content__toggle--position-end]="toggleButtonPosition() === 'end'"
+        [disabled]="disabled()"
+        [attr.aria-expanded]="expansionPanel.expanded"
+        [attr.aria-controls]="expansionPanel.id"
+        [attr.aria-label]="expansionPanel.expanded ? 'Zuklappen' : 'Aufklappen'"
+        (click)="$event.stopPropagation(); expansionPanel.toggle()"
+        mat-icon-button
+      >
+        <mat-icon [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'" />
+      </button>
       <span class="list-item__header__content__icon"><ng-content select="[header-icon]" /></span>
       <p class="list-item__header__content__title" [matTooltip]="overlayTitle()" showTooltipIfTruncated>
         {{ overlayTitle() }}
@@ -30,14 +68,5 @@
         </a>
       }
     </div>
-  </mat-expansion-panel-header>
-  <ng-template matExpansionPanelContent>
-    <div
-      class="list-item__content"
-      [class.list-item__content--has-border]="hasBorder()"
-      [class.list-item__content--is-nested]="nestingLevel() > 0"
-    >
-      <ng-content />
-    </div>
-  </ng-template>
-</mat-expansion-panel>
+  </div>
+</div>

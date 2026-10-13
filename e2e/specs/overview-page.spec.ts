@@ -1,13 +1,12 @@
-import {test, expect} from '../fixtures';
+import {test, expect, describeA11y} from '../fixtures';
 
 test.describe('Overview page', () => {
-  test('shows the most important parts', async ({page, useHar, captureConsole}) => {
+  test('shows the most important parts', async ({page, useHar, captureConsole, openHomePage}) => {
     await useHar();
     captureConsole();
 
-    await page.goto('/', {waitUntil: 'domcontentloaded'});
+    await openHomePage();
 
-    await expect(page.locator('h1', {hasText: 'Geoportal'})).toBeVisible();
     await expect(page.locator('gis-browser-teaser')).toBeVisible();
     await expect(page.locator('h2', {hasText: 'Häufig verwendet'})).toBeVisible();
     await expect(page.locator('h2', {hasText: 'News'})).toBeVisible();
@@ -22,5 +21,16 @@ test.describe('Overview page', () => {
 
     await startGisBrowserLink.click();
     await expect(page).toHaveURL(/\/maps(?:[?#]|$)/, {timeout: 30_000});
+  });
+
+  describeA11y(() => {
+    test('has no detectable accessibility violations', async ({useHar, captureConsole, openHomePage, checkA11y}) => {
+      await useHar();
+      captureConsole();
+
+      await openHomePage();
+
+      await checkA11y();
+    });
   });
 });

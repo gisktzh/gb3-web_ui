@@ -24,7 +24,7 @@ describe('NewsFeedComponent', () => {
 
     expect(fixture.componentInstance.loadingState()).toBe('loaded');
     expect(fixture.componentInstance.news()).toHaveLength(3);
-    expect(element.querySelectorAll('link-grid-list-item')).toHaveLength(3);
+    expect(element.querySelectorAll('li[link-grid-list-item]')).toHaveLength(3);
     expect(element.textContent).not.toContain('Teaser 3');
   });
 });

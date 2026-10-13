@@ -1,5 +1,12 @@
 <div class="map-tools-mobile">
-  <button (click)="showShareLink()" class="map-tools-mobile__button" data-test-id="map-share" mat-icon-button matTooltip="Teilen">
+  <button
+    (click)="showShareLink()"
+    class="map-tools-mobile__button"
+    data-test-id="map-share"
+    mat-icon-button
+    matTooltip="Teilen"
+    aria-label="Teilen"
+  >
     <mat-icon svgIcon="ktzh_share" />
   </button>
   <mat-divider class="map-tools-mobile__divider" vertical />
@@ -10,6 +17,7 @@
     mat-icon-button
     [disabled]="numberOfQueryLegends() === 0"
     matTooltip="Legende"
+    aria-label="Legende"
   >
     <mat-icon svgIcon="ktzh_legend_mobile" />
   </button>
@@ -25,6 +33,7 @@
         ? geolocationState().errorReason || 'Ein Fehler ist aufgetreten'
         : 'Deinen Standort anzeigen'
     "
+    aria-label="Deinen Standort anzeigen"
   >
     <mat-icon svgIcon="ktzh_locate_me" />
     <loading-and-process-bar [loadingState]="geolocationState().loadingState" />
@@ -36,6 +45,7 @@
     data-test-id="map-background-map-mobile"
     mat-icon-button
     matTooltip="Hintergrundkarte wählen"
+    aria-label="Hintergrundkarte wählen"
   >
     <mat-icon svgIcon="ktzh_background_map_mobile" />
   </button>

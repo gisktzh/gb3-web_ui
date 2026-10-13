@@ -53,6 +53,12 @@
         background-color: functions.get-color-from-palette('accent', 50);
         color: functions.get-color-from-palette('accent', 300);
 
+        // Material renders the label in its own child element, which otherwise keeps the library-default color
+        // instead of inheriting the one set above (#6d6d6d on #d8d8d8 only reaches a 3.63:1 contrast ratio).
+        ::ng-deep .mdc-button__label {
+          color: inherit;
+        }
+
         &:last-of-type {
           background-color: functions.get-color-from-palette('accent');
           color: functions.get-contrast-color-from-palette('accent');

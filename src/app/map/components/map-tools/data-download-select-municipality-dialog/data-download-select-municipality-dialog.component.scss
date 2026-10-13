@@ -1,6 +1,16 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .data-download-select-municipality-dialog {
   width: 657px;
   .data-download-select-municipality-dialog__content {
     width: 100%;
+  }
+}
+
+:host ::ng-deep .data-download-select-municipality-dialog {
+  // The default Material label color (#7d7d7d on this field's #efefef background) only reaches a contrast ratio
+  // of 3.58:1; darken it to comfortably clear the WCAG AA 4.5:1 minimum.
+  .data-download-select-municipality-dialog__content .mdc-floating-label {
+    color: ktzh-variables.$zh-black80;
   }
 }
