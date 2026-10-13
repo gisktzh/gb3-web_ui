@@ -206,7 +206,6 @@ describe('AuthService', () => {
       isAuthenticated$.next(true);
 
       await Promise.resolve();
-      await Promise.resolve();
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(oauthLoadUserProfileSpy).toHaveBeenCalled();
@@ -236,7 +235,6 @@ describe('AuthService', () => {
       isAuthenticated$.next(true);
 
       await Promise.resolve();
-      await Promise.resolve();
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(oauthLoadUserProfileSpy).toHaveBeenCalled();
@@ -259,12 +257,11 @@ describe('AuthService', () => {
       const oauthGetAccessTokenSpy = mockOAuthService.getAccessToken.mockReturnValue('test-token');
 
       service = TestBed.inject(AuthService);
-      await Promise.resolve();
+      await vi.runAllTimersAsync();
 
       isAuthenticated$.next(false);
 
-      await Promise.resolve();
-      await Promise.resolve();
+      await vi.runAllTimersAsync();
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(mockOAuthService.loadUserProfile).not.toHaveBeenCalled();
@@ -286,12 +283,11 @@ describe('AuthService', () => {
 
       service = TestBed.inject(AuthService);
 
-      await Promise.resolve();
+      await vi.runAllTimersAsync();
 
       isAuthenticated$.next(false);
 
-      await Promise.resolve();
-      await Promise.resolve();
+      await vi.runAllTimersAsync();
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(mockOAuthService.loadUserProfile).not.toHaveBeenCalled();

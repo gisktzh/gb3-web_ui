@@ -119,6 +119,12 @@ export function createInventoryTool({repositoryRoot = defaultRepositoryRoot, log
     if (status === 'dedicated' && !metadata.coveredBy?.length) {
       errors.push(`${componentPath}: dedicated components require 'coveredBy' evidence.`);
     }
+    if (status === 'dedicated') {
+      const siblingSpecPath = componentPath.replace(/\.component\.ts$/, '.component.spec.ts');
+      if (typeof metadata.coverage === 'string' && !metadata.coveredBy?.includes(siblingSpecPath)) {
+        errors.push(`${componentPath}: dedicated coverage must reference its sibling spec: ${siblingSpecPath}`);
+      }
+    }
     if (status === 'host' && !metadata.hostedBy?.length && !metadata.coveredBy?.length) {
       errors.push(`${componentPath}: host-covered components require 'hostedBy' or 'coveredBy' evidence.`);
     }

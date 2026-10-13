@@ -15,12 +15,6 @@
     },
     {
       "matchManagers": ["npm"],
-      "matchUpdateTypes": ["major", "minor", "patch"],
-      "groupName": "karma",
-      "matchPackageNames": ["karma{/,}**"]
-    },
-    {
-      "matchManagers": ["npm"],
       "groupName": "angular",
       "matchPackageNames": [
         "@angular/{/,}**",
@@ -71,6 +65,11 @@
       "groupName": "nodejs",
       "automerge": false,
       "description": "Keep Node.js runtime, engines.node, @types/node, .nvmrc and Docker base images aligned."
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["mcr.microsoft.com/playwright"],
+      "groupName": "playwright monorepo"
     }
   ]
 }
