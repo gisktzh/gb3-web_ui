@@ -4,7 +4,6 @@ import {FeatureHighlightingService} from '../../services/feature-highlighting.se
 import {MAP_SERVICE} from '../../../app.tokens';
 import {MapContainerComponent} from './map-container.component';
 import {provideMockStore} from '@ngrx/store/testing';
-import {EsriStylesLoaderService} from '../../services/esri-services/esri-styles-loader.service';
 
 describe('MapContainerComponent', () => {
   let component: MapContainerComponent;
@@ -21,10 +20,6 @@ describe('MapContainerComponent', () => {
     init: vi.fn(),
   };
 
-  const esriStylesLoaderServiceMock: Partial<EsriStylesLoaderService> = {
-    ensureLoaded: vi.fn().mockResolvedValue(undefined),
-  };
-
   beforeEach(async () => {
     vi.clearAllMocks();
 
@@ -36,7 +31,6 @@ describe('MapContainerComponent', () => {
           provide: FeatureHighlightingService,
           useValue: featureHighlightingServiceMock,
         },
-        {provide: EsriStylesLoaderService, useValue: esriStylesLoaderServiceMock},
         provideMockStore(),
       ],
     }).compileComponents();
@@ -56,10 +50,6 @@ describe('MapContainerComponent', () => {
     const mapElement = compiled.querySelector('.map-container');
 
     expect(mapElement).toBeTruthy();
-  });
-
-  it('loads the ArcGIS styles when the map container is created', () => {
-    expect(esriStylesLoaderServiceMock.ensureLoaded).toHaveBeenCalledOnce();
   });
 
   it('should assign the rendered map element to the map service after view initialization', () => {
