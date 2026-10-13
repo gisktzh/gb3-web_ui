@@ -100,7 +100,7 @@ describe('ActiveMapItemsComponent', () => {
   });
 
   it('enables favourite creation only for authenticated users with active maps', () => {
-    const favouriteButton = () => compiled.querySelector<HTMLButtonElement>(`span[aria-label="${component.toolTipsFavourite()}"] button`)!;
+    const favouriteButton = () => compiled.querySelector<HTMLButtonElement>(`button[aria-label="${component.toolTipsFavourite()}"]`)!;
 
     expect(favouriteButton().disabled).toBe(true);
 

@@ -91,9 +91,7 @@ describe('LinkGridListItemComponent', () => {
 
       fixture.detectChanges();
 
-      const item = compiled.querySelector<HTMLLIElement>('.link-grid-list-item');
-
-      expect(item?.classList).toContain('link-grid-list-item--large');
+      expect(compiled.classList).toContain('link-grid-list-item--large');
     });
 
     it('should not apply large class when size is small', () => {
@@ -101,9 +99,7 @@ describe('LinkGridListItemComponent', () => {
 
       fixture.detectChanges();
 
-      const item = compiled.querySelector<HTMLLIElement>('.link-grid-list-item');
-
-      expect(item?.classList).not.toContain('link-grid-list-item--large');
+      expect(compiled.classList).not.toContain('link-grid-list-item--large');
     });
   });
 

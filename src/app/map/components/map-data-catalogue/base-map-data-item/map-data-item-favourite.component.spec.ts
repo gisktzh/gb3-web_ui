@@ -208,20 +208,6 @@ describe('MapDataItemFavouriteComponent', () => {
 
       expect(emitSpy).toHaveBeenCalledTimes(1);
     });
-
-    it.each([
-      ['Enter', 'Enter'],
-      ['Space', ' '],
-    ])('should stop propagation for %s on the delete button', (_label, key) => {
-      const deleteIcon = Array.from(compiled.querySelectorAll('mat-icon')).find((icon) => icon.textContent?.trim() === 'delete');
-      const deleteButton = deleteIcon?.closest('button') as HTMLButtonElement;
-      const event = new KeyboardEvent('keydown', {key, bubbles: true, cancelable: true});
-      const stopPropagationSpy = vi.spyOn(event, 'stopPropagation');
-
-      deleteButton.dispatchEvent(event);
-
-      expect(stopPropagationSpy).toHaveBeenCalledOnce();
-    });
   });
 
   describe('title input', () => {

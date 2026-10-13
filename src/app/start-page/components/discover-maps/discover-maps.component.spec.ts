@@ -27,7 +27,7 @@ describe('DiscoverMapsComponent', () => {
 
     expect(fixture.componentInstance.loadingState()).toBe('loaded');
     expect(fixture.componentInstance.discoverMapsItems()).toEqual(items.slice(0, 2));
-    expect((fixture.nativeElement as HTMLElement).querySelectorAll('link-grid-list-item')).toHaveLength(2);
+    expect((fixture.nativeElement as HTMLElement).querySelectorAll('li[link-grid-list-item]')).toHaveLength(2);
   });
 
   it('explains an empty successful response', async () => {

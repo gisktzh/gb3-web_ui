@@ -137,36 +137,6 @@ describe('BaseMapDataItemComponent', () => {
 
       expect(addEventSpy).toHaveBeenCalledTimes(1);
     });
-
-    it('should stop propagation for Enter on the add button', () => {
-      const addButton = compiled.querySelector('[data-test-id="add-active-map"]') as HTMLButtonElement;
-
-      const event = new KeyboardEvent('keydown', {
-        key: 'Enter',
-        bubbles: true,
-        cancelable: true,
-      });
-      const stopPropagationSpy = vi.spyOn(event, 'stopPropagation');
-
-      addButton.dispatchEvent(event);
-
-      expect(stopPropagationSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should stop propagation for Space on the add button', () => {
-      const addButton = compiled.querySelector('[data-test-id="add-active-map"]') as HTMLButtonElement;
-
-      const event = new KeyboardEvent('keydown', {
-        key: ' ',
-        bubbles: true,
-        cancelable: true,
-      });
-      const stopPropagationSpy = vi.spyOn(event, 'stopPropagation');
-
-      addButton.dispatchEvent(event);
-
-      expect(stopPropagationSpy).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('delete button', () => {

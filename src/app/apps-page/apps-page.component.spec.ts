@@ -29,8 +29,8 @@ describe('AppsPageComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    const link = element.querySelector<HTMLAnchorElement>('link-grid-list-item a');
-    const image = element.querySelector<HTMLImageElement>('link-grid-list-item img');
+    const link = element.querySelector<HTMLAnchorElement>('li[link-grid-list-item] a');
+    const image = element.querySelector<HTMLImageElement>('li[link-grid-list-item] img');
     expect(link?.href).toBe(app.appUrl);
     expect(link?.textContent).toContain(app.title);
     expect(image?.getAttribute('src')).toBe(app.image.url);

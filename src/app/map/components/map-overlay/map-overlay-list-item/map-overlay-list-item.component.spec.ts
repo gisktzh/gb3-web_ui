@@ -226,7 +226,7 @@ describe('MapOverlayListItemComponent', () => {
     forceExpanded.set(false);
     fixture.detectChanges();
 
-    const toggle = compiled.querySelector<HTMLElement>('.list-item__header__content__toggle');
+    const toggle = compiled.querySelector<HTMLElement>('.list-item__header__content__toggle mat-icon');
 
     expect(toggle?.getAttribute('fontIcon')).toBe('arrow_right');
   });
@@ -235,7 +235,7 @@ describe('MapOverlayListItemComponent', () => {
     forceExpanded.set(true);
     fixture.detectChanges();
 
-    const toggle = compiled.querySelector<HTMLElement>('.list-item__header__content__toggle');
+    const toggle = compiled.querySelector<HTMLElement>('.list-item__header__content__toggle mat-icon');
 
     expect(toggle?.getAttribute('fontIcon')).toBe('arrow_drop_down');
   });
