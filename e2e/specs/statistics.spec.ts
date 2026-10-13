@@ -1,5 +1,6 @@
 import {test, expect} from '../fixtures/statistics.fixture';
-import {clickMapPoint, getMapPoint, mapScreenshot, waitForMap, type MapPoint} from '../utils/map.utils';
+import type {Page} from '@playwright/test';
+import {clickMapPoint, getMapPoint, mapScreenshot, setMapScale, waitForMap, type MapPoint} from '../utils/map.utils';
 import {
   resultHost,
   expectFeatureResponse,
@@ -7,6 +8,11 @@ import {
   expectStatisticsCircle,
   expectStatisticsPolygon,
 } from '../utils/query-results.utils';
+
+function mapView(page: Page) {
+  const params = new URL(page.url()).searchParams;
+  return {x: params.get('x'), y: params.get('y'), scale: params.get('scale')};
+}
 
 test.describe('Statistics', () => {
   test.describe.configure({timeout: 120_000});
@@ -29,16 +35,23 @@ test.describe('Statistics', () => {
       await expect(statisticsTab).toHaveCount(0);
       await waitForMap(page);
       expect(statisticsSession.statisticsQueries).toHaveLength(0);
+      const featureQueryCountBeforeAdd = statisticsSession.featureQueries.length;
 
       await statisticsSession.addMap(statisticsSession.topic);
       await expect(statisticsButton).toBeEnabled();
       await expect(featuresTab).toHaveAttribute('aria-selected', 'true');
       await expect(statisticsTab).toBeVisible();
       await expect(host.getByTestId('statistics-radius')).toHaveCount(0);
-      await expectFeatureResponse(page, statisticsSession, point.coordinates);
       await waitForMap(page);
+      expect(statisticsSession.featureQueries).toHaveLength(featureQueryCountBeforeAdd);
       expect(statisticsSession.statisticsQueries).toHaveLength(0);
 
+      // Adding a map keeps the previous result until the next explicit point query.
+      const queryPoint = await getMapPoint(page);
+      await clickMapPoint(page, queryPoint);
+      await expectFeatureResponse(page, statisticsSession, queryPoint.coordinates);
+      await waitForMap(page);
+      const featureQueryCount = statisticsSession.featureQueries.length;
       await statisticsTab.click();
       await expectStatisticsResult(page, statisticsSession);
       await expect(statisticsTab).toHaveAttribute('aria-selected', 'true');
@@ -57,6 +70,7 @@ test.describe('Statistics', () => {
       await expect(host.getByTestId('query-feature-results')).toBeVisible();
       await waitForMap(page);
       expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+      expect(statisticsSession.featureQueries).toHaveLength(featureQueryCount);
 
       await statisticsSession.addMap(statisticsSession.topic);
       await expect(statisticsButton).toBeEnabled();
@@ -65,6 +79,7 @@ test.describe('Statistics', () => {
       await expect(page.getByTestId('statistics-tools')).toHaveCount(0);
       await waitForMap(page);
       expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+      expect(statisticsSession.featureQueries).toHaveLength(featureQueryCount);
     });
   });
 
@@ -168,17 +183,40 @@ test.describe('Statistics', () => {
   });
 
   test('previews and pins markings and preserves cached results across accessible tab switches', async ({page, statisticsSession}) => {
-    await page.getByTestId('map-select-statistic').click();
     const point = await getMapPoint(page);
     await clickMapPoint(page, point);
+    await expectFeatureResponse(page, statisticsSession, point.coordinates);
+    await waitForMap(page);
+    const host = resultHost(page);
+    const features = host.getByTestId('query-tab-feature');
+    const statistics = host.getByTestId('query-tab-statistics');
+    const featureContent = await host.getByTestId('query-feature-results').innerText();
+    await statistics.click();
     const result = await expectStatisticsResult(page, statisticsSession);
     expect(result.feature_geometry, 'The recorded area must include geometries that can be marked.').not.toBeNull();
-    const host = resultHost(page);
     const item = host.getByTestId('statistics-result-' + result.topic);
     const header = item.getByTestId('statistics-layer-' + result.layer).getByTestId('statistics-marking-header');
     // Material owns the native input inside the application control's test ID.
     const radio = header.getByTestId('statistics-marking').locator('input');
     await expect(radio).toBeEnabled();
+    await waitForMap(page);
+    const queryCount = statisticsSession.statisticsQueries.length;
+    const featureQueryCount = statisticsSession.featureQueries.length;
+    const statisticsContent = await item.innerText();
+    // The recorded topic has a point layer visible below 1:10000. Cross that
+    // boundary to exercise changes in the scale-dependent query layer list.
+    const scaleBoundary = statisticsSession.topic.layers.find(
+      (layer) => layer.initially_visible && layer.queryable && layer.max_scale && layer.max_scale < 15_000,
+    )?.max_scale;
+    const zoomScale = scaleBoundary ? Math.max(1, scaleBoundary - 1) : 30_000;
+    for (const tab of [features, statistics]) {
+      await tab.click();
+      await setMapScale(page, zoomScale);
+      await setMapScale(page, 15_000);
+      expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+      expect(statisticsSession.featureQueries).toHaveLength(featureQueryCount);
+    }
+    await expect(item).toHaveText(statisticsContent, {useInnerText: true});
     await page.mouse.move(0, 0);
     await waitForMap(page);
     const unmarkedMap = await mapScreenshot(page);
@@ -189,23 +227,22 @@ test.describe('Statistics', () => {
     await expect(radio).not.toBeChecked();
     await expect.poll(async () => (await mapScreenshot(page)).equals(unmarkedMap)).toBe(true);
 
+    const viewBeforePin = mapView(page);
     await radio.focus();
     await radio.press('Space');
     await expect(radio).toBeChecked();
-    await expect.poll(async () => (await mapScreenshot(page)).equals(unmarkedMap)).toBe(false);
-    const statisticsContent = await item.innerText();
-    const queryCount = statisticsSession.statisticsQueries.length;
-    const features = host.getByTestId('query-tab-feature');
-    const statistics = host.getByTestId('query-tab-statistics');
+    await expect.poll(() => mapView(page)).not.toEqual(viewBeforePin);
+    await waitForMap(page);
+    const pinnedView = mapView(page);
+    expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
+    expect(statisticsSession.featureQueries).toHaveLength(featureQueryCount);
     await statistics.focus();
     await statistics.press('Home');
     await expect(features).toBeFocused();
     await features.press('Space');
     await expect(features).toHaveAttribute('aria-selected', 'true');
-    await expectFeatureResponse(page, statisticsSession, point.coordinates);
+    await expect(host.getByTestId('query-feature-results')).toHaveText(featureContent, {useInnerText: true});
     await waitForMap(page);
-    const featureQueryCount = statisticsSession.featureQueries.length;
-    const featureContent = await host.getByTestId('query-feature-results').innerText();
     await features.press('End');
     await expect(statistics).toBeFocused();
     await statistics.press('Space');
@@ -215,11 +252,15 @@ test.describe('Statistics', () => {
     await features.click();
     await expect(host.getByTestId('query-feature-results')).toHaveText(featureContent, {useInnerText: true});
     await statistics.click();
+    await waitForMap(page);
+    await expect.poll(() => mapView(page)).toEqual(pinnedView);
+    const pinnedMap = await mapScreenshot(page);
     await header.click();
     await page.mouse.move(0, 0);
     await expect(radio).not.toBeChecked();
-    await expect.poll(async () => (await mapScreenshot(page)).equals(unmarkedMap)).toBe(true);
+    await expect.poll(async () => (await mapScreenshot(page)).equals(pinnedMap)).toBe(false);
     await waitForMap(page);
+    expect(mapView(page)).toEqual(pinnedView);
     expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
     expect(statisticsSession.featureQueries).toHaveLength(featureQueryCount);
   });
@@ -343,6 +384,7 @@ test.describe('Statistics', () => {
 
       // Removing the last supported map must return the mobile query to features.
       const finalQueryCount = statisticsSession.statisticsQueries.length;
+      const finalFeatureQueryCount = statisticsSession.featureQueries.length;
       await host.getByTestId('bottom-sheet-close').tap();
       await page.getByTestId('map-management-open').tap();
       const management = page.getByTestId('map-management-mobile');
@@ -351,6 +393,18 @@ test.describe('Statistics', () => {
       const lastMap = management.getByTestId('active-map-item-' + statisticsSession.topic.topic);
       await lastMap.getByTestId('delete').tap();
       await expect(lastMap).toHaveCount(0);
+      await expect(host).toHaveCount(0);
+      await expect(page.getByTestId('statistics-tools')).toHaveCount(0);
+      await waitForMap(page);
+      expect(statisticsSession.statisticsQueries).toHaveLength(finalQueryCount);
+      expect(statisticsSession.featureQueries).toHaveLength(finalFeatureQueryCount);
+
+      // A new touch query reopens Info after the mode has fallen back to Features.
+      await management.getByTestId('bottom-sheet-close').tap();
+      await expect(management).toBeHidden();
+      await waitForMap(page);
+      await page.touchscreen.tap(nextPoint.position.x, nextPoint.position.y);
+      await expect(host.getByTestId('bottom-sheet-title')).toHaveText('Info');
       await expect(host.getByTestId('query-feature-results')).toBeVisible();
       await expect(host.getByTestId('query-tab-feature')).toHaveCount(0);
       await expect(host.getByTestId('query-tab-statistics')).toHaveCount(0);
@@ -358,6 +412,7 @@ test.describe('Statistics', () => {
       await expect(page.getByTestId('statistics-tools')).toHaveCount(0);
       await waitForMap(page);
       expect(statisticsSession.statisticsQueries).toHaveLength(finalQueryCount);
+      expect(statisticsSession.featureQueries).toHaveLength(finalFeatureQueryCount);
     });
   });
 });

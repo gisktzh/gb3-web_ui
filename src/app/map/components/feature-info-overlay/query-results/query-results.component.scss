@@ -1,7 +1,8 @@
 @use '@angular/material' as mat;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.query-results__tabs {
+:host .query-results__tabs {
+  // Keep the segmented control's neutral colors above the intranet Material theme.
   @include mat.tabs-overrides(
     (
       active-indicator-height: 0,
@@ -14,7 +15,9 @@
       label-text-font: ktzh-variables.$zh-font-family-bold,
     )
   );
+}
 
+.query-results__tabs {
   position: relative;
   margin-bottom: 16px;
   padding: 6px;

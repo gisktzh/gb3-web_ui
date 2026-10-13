@@ -49,12 +49,7 @@ export class OerebExtractEffects {
           catchError((error: unknown) => of(OerebExtractActions.setError({error}))),
           takeUntil(
             this.actions$.pipe(
-              ofType(
-                QueryLocationActions.setPoint,
-                FeatureInfoActions.sendRequest,
-                FeatureInfoActions.invalidateContent,
-                MapConfigActions.clearFeatureInfoContent,
-              ),
+              ofType(QueryLocationActions.setPoint, FeatureInfoActions.sendRequest, MapConfigActions.clearFeatureInfoContent),
             ),
           ),
         ),
