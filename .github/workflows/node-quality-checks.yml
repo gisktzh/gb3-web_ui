@@ -114,7 +114,7 @@ jobs:
     name: Run end-to-end tests (${{ matrix.browser }})
     runs-on: ${{ inputs.runner_version }}
     container:
-      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      image: mcr.microsoft.com/playwright:v1.64.0-noble
     permissions:
       contents: read
     strategy:
