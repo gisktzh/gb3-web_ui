@@ -13,4 +13,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  // The surrounding `.map-controls` container sets `pointer-events: none` so the map stays clickable through
+  // transparent gaps between the floating controls; this re-enables clicks for the toggle itself (same pattern
+  // as `.zoom-controls`/`.basemap-selector`).
+  pointer-events: all;
 }

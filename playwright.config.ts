@@ -8,10 +8,11 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
-  // ArcGIS uses WebGL heavily. Running the browser projects concurrently on the
-  // same CI host makes WebKit in particular compete for the software renderer.
-  // CI runs one browser per matrix job, so one worker keeps each browser isolated.
-  workers: 1,
+  // ArcGIS uses WebGL heavily, rendered via Mesa's software rasterizer on CI (no real
+  // GPU), so tests compete for CPU rather than a display/engine conflict. Each matrix
+  // job already runs a single browser project, so we're trying 2 workers per job to
+  // see whether that contention is small enough to still be a net speedup.
+  workers: process.env['CI'] ? 2 : undefined,
   reporter: process.env['CI'] ? [['line'], ['html', {open: 'never'}]] : [['html', {open: 'never'}]],
   globalTeardown: require.resolve('./e2e/global.teardown'),
   use: {

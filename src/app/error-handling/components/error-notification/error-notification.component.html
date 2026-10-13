@@ -4,10 +4,10 @@
       <span>{{ data.error }}</span>
     </div>
     <div class="error-notification__content__actions" matSnackBarActions>
-      <button (click)="close()" class="error-notification__content__actions__button" mat-icon-button>
+      <button (click)="close()" class="error-notification__content__actions__button" mat-icon-button aria-label="Schliessen">
         <mat-icon>close</mat-icon>
       </button>
     </div>
   </div>
-  <mat-progress-bar color="warn" [value]="(progressbarValue$ | async)!" mode="determinate" />
+  <mat-progress-bar aria-label="Verbleibende Anzeigedauer" color="warn" [value]="(progressbarValue$ | async)!" mode="determinate" />
 </div>

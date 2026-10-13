@@ -1,4 +1,4 @@
-import {test, expect} from '../fixtures';
+import {test, expect, describeA11y} from '../fixtures';
 
 test.describe('Onboarding guide tour', () => {
   test('shows the onboarding guide', async ({page, useHar, openUrlWithCoordinates, captureConsole}) => {
@@ -39,5 +39,25 @@ test.describe('Onboarding guide tour', () => {
     await assertStep('Hintergrund');
     await assertStep('Info-Klick');
     await expect(page.locator('button', {hasText: 'Beenden'})).toBeVisible({timeout: 30_000});
+  });
+
+  describeA11y(() => {
+    test('has no detectable accessibility violations while showing the onboarding guide', async ({
+      page,
+      useHar,
+      openUrlWithCoordinates,
+      captureConsole,
+      checkA11y,
+    }) => {
+      await useHar();
+      captureConsole();
+
+      await openUrlWithCoordinates('2702555', '1241686', false);
+      await expect(page.locator('mat-card-title', {hasText: 'Willkommen auf dem GIS-Browser des Kantons Zürich'})).toBeVisible();
+
+      // The tour is rendered by ngx-ui-tour-md-menu inside a mat-menu panel (role="menu") containing a card; that's
+      // third-party markup we can't remediate.
+      await checkA11y({exclude: ['.mat-mdc-menu-panel']});
+    });
   });
 });

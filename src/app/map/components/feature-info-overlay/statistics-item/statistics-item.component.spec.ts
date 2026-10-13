@@ -10,6 +10,7 @@ import {StatisticsItemComponent} from './statistics-item.component';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {selectHighlightedLayer, selectPinnedLayer} from '../../../../state/map/reducers/statistics.reducer';
 import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
+import {MAP_SERVICE} from '../../../../app.tokens';
 
 @Component({
   selector: 'map-overlay-list-item',
@@ -61,6 +62,7 @@ class ResizableInfoTableStubComponent {
 describe('StatisticsItemComponent', () => {
   let fixture: ComponentFixture<StatisticsItemComponent>;
   let store: MockStore;
+  const mapService = {zoomToExtent: vi.fn()};
   const markingResult: StatisticsResult = {
     topic: 'topic',
     title: 'Statistics',
@@ -78,7 +80,10 @@ describe('StatisticsItemComponent', () => {
   const identifier = {topic: 'topic', layer: 'layer'};
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({imports: [StatisticsItemComponent], providers: [provideMockStore()]})
+    await TestBed.configureTestingModule({
+      imports: [StatisticsItemComponent],
+      providers: [provideMockStore(), {provide: MAP_SERVICE, useValue: mapService}],
+    })
       .overrideComponent(StatisticsItemComponent, {
         remove: {imports: [MapOverlayListItemComponent, ResizableInfoTableComponent]},
         add: {imports: [MapOverlayListItemStubComponent, ResizableInfoTableStubComponent]},
@@ -157,13 +162,14 @@ describe('StatisticsItemComponent', () => {
     expect(items.map((item) => item.metaDataLink())).toEqual([undefined, undefined]);
   });
 
-  it('ties marking to the table header control, reflects checked state, and toggles it off on repeated clicks', () => {
+  it('zooms once when pinning from the header and unpins on repeated clicks without zooming', () => {
     const dispatch = vi.spyOn(store, 'dispatch');
     fixture.detectChanges();
     expect(dispatch).not.toHaveBeenCalled();
     const header: HTMLElement = fixture.nativeElement.querySelector('th');
     header.click();
-    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.highlightLayer({topic: 'topic', layer: 'layer'}));
+    expect(dispatch).toHaveBeenCalledExactlyOnceWith(StatisticsActions.highlightLayer({topic: 'topic', layer: 'layer'}));
+    expect(mapService.zoomToExtent).toHaveBeenCalledExactlyOnceWith(markingResult.layers[0].featureGeometry);
     store.overrideSelector(selectHighlightedLayer, {topic: 'topic', layer: 'layer'});
     store.overrideSelector(selectPinnedLayer, {topic: 'topic', layer: 'layer'});
     store.refreshState();
@@ -171,15 +177,68 @@ describe('StatisticsItemComponent', () => {
     expect(fixture.nativeElement.querySelector('input[type="radio"]').checked).toBe(true);
     header.click();
     expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.clearHighlight());
+    expect(mapService.zoomToExtent).toHaveBeenCalledOnce();
 
     fixture.componentRef.setInput('showInteractiveElements', false);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('mat-radio-button')).toBeNull();
     dispatch.mockClear();
+    mapService.zoomToExtent.mockClear();
     header.click();
     header.dispatchEvent(new MouseEvent('mouseenter'));
     header.dispatchEvent(new MouseEvent('mouseleave'));
     expect(dispatch).not.toHaveBeenCalled();
+    expect(mapService.zoomToExtent).not.toHaveBeenCalled();
+  });
+
+  it.each([false, true])('zooms once from the radio and unpins without zoom when previously hovered is %s', (hovered) => {
+    if (hovered) {
+      store.overrideSelector(selectHighlightedLayer, identifier);
+      store.refreshState();
+    }
+    fixture.detectChanges();
+    const dispatch = vi.spyOn(store, 'dispatch');
+    const radio: HTMLInputElement = fixture.nativeElement.querySelector('input[type="radio"]');
+    radio.click();
+    expect(dispatch).toHaveBeenCalledExactlyOnceWith(StatisticsActions.highlightLayer(identifier));
+    expect(mapService.zoomToExtent).toHaveBeenCalledExactlyOnceWith(markingResult.layers[0].featureGeometry);
+    store.overrideSelector(selectHighlightedLayer, identifier);
+    store.overrideSelector(selectPinnedLayer, identifier);
+    store.refreshState();
+    fixture.detectChanges();
+    dispatch.mockClear();
+    radio.click();
+    expect(dispatch).toHaveBeenCalledExactlyOnceWith(StatisticsActions.clearHighlight());
+    expect(mapService.zoomToExtent).toHaveBeenCalledOnce();
+    store.overrideSelector(selectHighlightedLayer, undefined);
+    store.overrideSelector(selectPinnedLayer, undefined);
+    store.refreshState();
+    fixture.detectChanges();
+    expect(radio.checked).toBe(false);
+  });
+
+  it('zooms to the newly pinned layer when another layer was already pinned', () => {
+    const otherLayer = {
+      ...markingResult.layers[0],
+      layer: 'other-layer',
+      featureGeometry: {
+        type: 'MultiPoint' as const,
+        coordinates: [
+          [2681000, 1255000],
+          [2682000, 1256000],
+        ],
+        srs: 2056 as const,
+      },
+    };
+    fixture.componentRef.setInput('result', {...markingResult, layers: [...markingResult.layers, otherLayer]});
+    store.overrideSelector(selectPinnedLayer, identifier);
+    store.refreshState();
+    fixture.detectChanges();
+    const dispatch = vi.spyOn(store, 'dispatch');
+    const headers: NodeListOf<HTMLElement> = fixture.nativeElement.querySelectorAll('th');
+    headers[1].click();
+    expect(dispatch).toHaveBeenCalledExactlyOnceWith(StatisticsActions.highlightLayer({topic: 'topic', layer: 'other-layer'}));
+    expect(mapService.zoomToExtent).toHaveBeenCalledExactlyOnceWith(otherLayer.featureGeometry);
   });
 
   it.each(['th', 'td'])('previews geometry while hovering a %s and clears it on mouse leave', (selector) => {
@@ -200,6 +259,7 @@ describe('StatisticsItemComponent', () => {
     fixture.detectChanges();
     expect(cell.classList.contains('statistics-item__cell--highlighted')).toBe(false);
     expect(fixture.nativeElement.querySelector('input[type="radio"]').checked).toBe(false);
+    expect(mapService.zoomToExtent).not.toHaveBeenCalled();
   });
 
   it('pins an already hovered layer on click instead of clearing its preview', () => {
@@ -218,6 +278,7 @@ describe('StatisticsItemComponent', () => {
     expect(dispatch).not.toHaveBeenCalled();
     header.click();
     expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.clearHighlight());
+    expect(mapService.zoomToExtent).toHaveBeenCalledExactlyOnceWith(markingResult.layers[0].featureGeometry);
   });
 
   it.each([identifier, {topic: 'other-topic', layer: 'other-layer'}])(
@@ -232,6 +293,7 @@ describe('StatisticsItemComponent', () => {
       header.dispatchEvent(new MouseEvent('mouseenter'));
       header.dispatchEvent(new MouseEvent('mouseleave'));
       expect(dispatch).not.toHaveBeenCalled();
+      expect(mapService.zoomToExtent).not.toHaveBeenCalled();
     },
   );
 
@@ -244,12 +306,15 @@ describe('StatisticsItemComponent', () => {
     const keydown = new KeyboardEvent('keydown', {key: ' ', bubbles: true, cancelable: true});
     radio.dispatchEvent(keydown);
     expect(keydown.defaultPrevented).toBe(true);
-    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.highlightLayer(identifier));
+    expect(dispatch).toHaveBeenCalledExactlyOnceWith(StatisticsActions.highlightLayer(identifier));
+    expect(mapService.zoomToExtent).toHaveBeenCalledExactlyOnceWith(markingResult.layers[0].featureGeometry);
     store.overrideSelector(selectPinnedLayer, identifier);
     store.refreshState();
     fixture.detectChanges();
+    dispatch.mockClear();
     radio.dispatchEvent(new KeyboardEvent('keydown', {key: ' ', bubbles: true, cancelable: true}));
-    expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.clearHighlight());
+    expect(dispatch).toHaveBeenCalledExactlyOnceWith(StatisticsActions.clearHighlight());
+    expect(mapService.zoomToExtent).toHaveBeenCalledOnce();
   });
 
   it('suppresses hover previews while resizing a table', () => {
@@ -264,6 +329,7 @@ describe('StatisticsItemComponent', () => {
     table.resizeEnd.emit();
     header.dispatchEvent(new MouseEvent('mouseenter'));
     expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.hoverLayer(identifier));
+    expect(mapService.zoomToExtent).not.toHaveBeenCalled();
   });
 
   it('clears its temporary preview when the result component is destroyed', () => {
@@ -273,6 +339,7 @@ describe('StatisticsItemComponent', () => {
     expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.hoverLayer(identifier));
     fixture.destroy();
     expect(dispatch).toHaveBeenLastCalledWith(StatisticsActions.clearHover());
+    expect(mapService.zoomToExtent).not.toHaveBeenCalled();
   });
 
   it('disables marking when the result has no feature geometry', () => {
@@ -295,5 +362,6 @@ describe('StatisticsItemComponent', () => {
     fixture.nativeElement.querySelector('th').click();
     fixture.nativeElement.querySelector('th').dispatchEvent(new MouseEvent('mouseenter'));
     expect(dispatch).not.toHaveBeenCalled();
+    expect(mapService.zoomToExtent).not.toHaveBeenCalled();
   });
 });

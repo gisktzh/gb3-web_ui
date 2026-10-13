@@ -18,7 +18,9 @@
     .link-list-item__item__link {
       text-decoration: none;
       font-family: ktzh-variables.$zh-font-family-bold;
-      color: functions.get-color-from-palette('accent', 200);
+      // 'A400' (#737373) is the darkest-still-light-enough shade in the palette that meets the WCAG AA 4.5:1
+      // contrast ratio against the page background (#fafafa); shade 200 (#808080) only reached 3.78:1.
+      color: functions.get-color-from-palette('accent', 'A400');
       font-size: larger;
       padding-top: 8px;
       padding-bottom: 8px;

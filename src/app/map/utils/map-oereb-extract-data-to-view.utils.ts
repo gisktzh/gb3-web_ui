@@ -1,5 +1,4 @@
 import {NotConcernedTheme} from 'src/app/shared/models/gb3-api-generated.interfaces';
-import {TableData, TextTableCell, UrlTableCell} from '../components/feature-info-overlay/info-table/info-table.types';
 import {OerebConcernedTheme, OerebExtractValue} from 'src/app/shared/interfaces/oereb-extract.interface';
 import {OerebExtractListItem} from '../types/oereb-extract-list-item.type';
 import {OerebExtractTheme} from '../interfaces/oereb-extract-theme.interface';

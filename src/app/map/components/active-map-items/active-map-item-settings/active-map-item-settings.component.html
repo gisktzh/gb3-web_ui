@@ -3,7 +3,7 @@
   <slider-wrapper title="Deckvermögen" [value]="formattedCurrentOpacity()" minValue="0%" maxValue="100%">
     <ng-container content>
       <mat-slider [min]="0" [max]="1" [step]="0.01" color="primary" class="active-map-item-settings__transparency__slider">
-        <input matSliderThumb [(ngModel)]="currentOpacity" />
+        <input matSliderThumb aria-label="Deckvermögen" [(ngModel)]="currentOpacity" />
       </mat-slider>
     </ng-container>
   </slider-wrapper>

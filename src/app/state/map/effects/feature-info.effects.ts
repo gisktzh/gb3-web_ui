@@ -1,7 +1,7 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {distinctUntilChanged, filter, of, skip, switchMap, takeUntil, tap} from 'rxjs';
+import {of, switchMap, takeUntil, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
@@ -15,11 +15,6 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {FeatureInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {QueryLocationActions} from '../actions/query-location.actions';
-import {QueryModeActions} from '../actions/query-mode.actions';
-import {selectQueryMode} from '../reducers/query-mode.reducer';
-import {selectQueryPoint} from '../reducers/query-location.reducer';
-import {selectScale} from '../reducers/map-config.reducer';
-import {selectLoadingState} from '../reducers/feature-info.reducer';
 
 @Injectable()
 export class FeatureInfoEffects {
@@ -55,28 +50,6 @@ export class FeatureInfoEffects {
     );
   });
 
-  public invalidateOnLayerChanges$ = createEffect(() => {
-    return this.store.select(selectQueryLayers).pipe(
-      distinctUntilChanged((previous, current) => JSON.stringify(previous) === JSON.stringify(current)),
-      skip(1),
-      map(() => FeatureInfoActions.invalidateContent()),
-    );
-  });
-
-  public refreshInvalidatedContent$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(FeatureInfoActions.invalidateContent, QueryModeActions.setQueryMode),
-      concatLatestFrom(() => [
-        this.store.select(selectQueryMode),
-        this.store.select(selectQueryPoint),
-        this.store.select(selectScale),
-        this.store.select(selectLoadingState),
-      ]),
-      filter(([, queryMode, point, , loadingState]) => queryMode === 'feature' && point !== undefined && loadingState === undefined),
-      map(([, , point, scale]) => FeatureInfoActions.sendRequest({x: point!.coordinates[0], y: point!.coordinates[1], scale})),
-    );
-  });
-
   public openFeatureInfoOverlayOnRequest$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FeatureInfoActions.sendRequest),
@@ -107,12 +80,7 @@ export class FeatureInfoEffects {
           catchError((error: unknown) => of(FeatureInfoActions.setError({error}))),
           takeUntil(
             this.actions$.pipe(
-              ofType(
-                QueryLocationActions.setPoint,
-                MapConfigActions.clearFeatureInfoContent,
-                FeatureInfoActions.clearContent,
-                FeatureInfoActions.invalidateContent,
-              ),
+              ofType(QueryLocationActions.setPoint, MapConfigActions.clearFeatureInfoContent, FeatureInfoActions.clearContent),
             ),
           ),
         );

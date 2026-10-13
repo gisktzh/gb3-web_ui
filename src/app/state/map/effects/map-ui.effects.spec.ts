@@ -1,4 +1,5 @@
 import {createEnvironmentInjector, EnvironmentInjector} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../../../map/components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FavouriteDeletionDialogComponent} from '../../../map/components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
