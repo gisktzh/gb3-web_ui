@@ -77,9 +77,7 @@ export const HANDLE_GROUP_KEY = 'EsriToolService';
  * * Because Esri cancels drawings when pressing escape, we need to intercept this in order for our state to become updated. This is
  * done via custom handles on the MapView object which manually fire the deactivation event for our state to become updated.
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class EsriToolService implements ToolService {
   private readonly esriMapViewService = inject(EsriMapViewService);
   private readonly store = inject(Store);

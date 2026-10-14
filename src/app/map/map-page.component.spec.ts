@@ -13,7 +13,12 @@ import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {MapConfigActions} from '../state/map/actions/map-config.actions';
 import {MapUiState} from '../state/map/states/map-ui.state';
 import {MapConfigState} from '../state/map/states/map-config.state';
-import {Component, input, output} from '@angular/core';
+import {Component, inject, input, NO_ERRORS_SCHEMA, OnInit, output} from '@angular/core';
+import {NgTemplateOutlet} from '@angular/common';
+import {provideStore, Store} from '@ngrx/store';
+import {reducers} from '../state';
+import {SessionStorageService} from '../shared/services/session-storage.service';
+import {ShareLinkActions} from '../state/map/actions/share-link.actions';
 import {OnboardingGuideComponent} from '../onboarding-guide/components/onboarding-guide/onboarding-guide.component';
 import {CenterAnchorComponent} from '../onboarding-guide/components/center-anchor/center-anchor.component';
 import {MapService} from './interfaces/map.service';
@@ -250,6 +255,10 @@ describe('MapPageComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    store.resetSelectors();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -281,19 +290,20 @@ describe('MapPageComponent', () => {
     expect(storeDispatchSpy).not.toHaveBeenCalled();
   });
 
-  it('should start onboarding on desktop after view init', () => {
-    component.ngAfterViewInit();
+  it('should start onboarding on desktop after render', async () => {
+    await fixture.whenStable();
 
     expect(onboardingGuideServiceMock.autoStart).toHaveBeenCalled();
   });
 
-  it('should not start onboarding on mobile after view init', () => {
+  it('should not start onboarding on mobile after render', async () => {
+    await fixture.whenStable();
+    (onboardingGuideServiceMock.autoStart as Mock).mockClear();
+
     store.overrideSelector(selectScreenMode, 'mobile');
     store.refreshState();
-
-    onboardingGuideServiceMock.autoStart = vi.fn();
-
-    component.ngAfterViewInit();
+    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(onboardingGuideServiceMock.autoStart).not.toHaveBeenCalled();
   });
@@ -377,5 +387,76 @@ describe('MapPageComponent', () => {
     fixture.detectChanges();
 
     expect(compiled.querySelector('map-rotation-button')).toBeTruthy();
+  });
+});
+
+const mapCreated = vi.fn();
+
+@Component({selector: 'map-container', template: ''})
+class MapContainerStub implements OnInit {
+  private readonly store = inject(Store);
+  ngOnInit() {
+    mapCreated(this.store.selectSignal(selectMapConfigState)());
+  }
+}
+
+describe('MapPageComponent share-link initialization', () => {
+  const session = {get: vi.fn(), remove: vi.fn()};
+  const extent = {calculateInitialExtent: vi.fn(), calculateInitialExtentForPaddedView: vi.fn()};
+  const onboarding = {autoStart: vi.fn()};
+
+  beforeEach(() => {
+    session.get.mockReturnValue('shared-map');
+    extent.calculateInitialExtent.mockReturnValue({x: 10, y: 20, scale: 100});
+    extent.calculateInitialExtentForPaddedView.mockReturnValue({x: 10, y: 20, scale: 100});
+    TestBed.configureTestingModule({
+      imports: [MapPageComponent],
+      providers: [
+        provideStore(reducers),
+        {provide: SessionStorageService, useValue: session},
+        {provide: InitialMapExtentService, useValue: extent},
+      ],
+    }).overrideComponent(MapPageComponent, {
+      set: {
+        imports: [MapContainerStub, NgTemplateOutlet],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [{provide: OnboardingGuideService, useValue: onboarding}],
+      },
+    });
+  });
+
+  it('creates the map only after restoration, using its saved extent', () => {
+    const fixture = TestBed.createComponent(MapPageComponent);
+    fixture.detectChanges();
+    expect(mapCreated).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('waiting-page')).not.toBeNull();
+    const store = TestBed.inject(Store);
+    store.dispatch(MapConfigActions.setInitialMapConfig({x: 123, y: 456, scale: 789, basemapId: 'test'}));
+    fixture.detectChanges();
+    expect(mapCreated).not.toHaveBeenCalled();
+    store.dispatch(ShareLinkActions.completeApplicationInitialization());
+    fixture.detectChanges();
+    expect(mapCreated).toHaveBeenCalledWith(expect.objectContaining({center: {x: 123, y: 456}, scale: 789}));
+    expect(fixture.nativeElement.querySelector('waiting-page')).toBeNull();
+  });
+
+  it.each(['loading', 'validation'])('shows a usable default map after a %s failure', (failure) => {
+    const fixture = TestBed.createComponent(MapPageComponent);
+    fixture.detectChanges();
+    const store = TestBed.inject(Store);
+    store.dispatch(
+      failure === 'loading'
+        ? ShareLinkActions.setLoadingError({error: new Error('missing link')})
+        : ShareLinkActions.setInitializationError({error: new Error('invalid link')}),
+    );
+    fixture.detectChanges();
+    expect(mapCreated).toHaveBeenCalledWith(expect.objectContaining({center: {x: 10, y: 20}, scale: 100}));
+  });
+
+  it('renders ordinary map visits without waiting for a share link', () => {
+    session.get.mockReturnValue(null);
+    const fixture = TestBed.createComponent(MapPageComponent);
+    fixture.detectChanges();
+    expect(mapCreated).toHaveBeenCalledOnce();
   });
 });

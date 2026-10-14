@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {AuthService} from './auth.service';
 import {OAuthEvent, OAuthService, OAuthSuccessEvent} from 'angular-oauth2-oidc';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {SharedModule} from '../shared/shared.module';
+import {AuthModule} from './auth.module';
 import {Observable, Subject, Subscription} from 'rxjs';
 import {AuthNotificationService} from './notifications/auth-notification.service';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -74,7 +74,7 @@ describe('AuthService', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [SharedModule],
+      imports: [AuthModule],
       providers: [
         provideMockStore({}),
         {provide: AuthNotificationService, useValue: mockAuthNotificationService},

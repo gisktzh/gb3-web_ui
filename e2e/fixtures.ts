@@ -315,9 +315,15 @@ export const test = base.extend<Gb3Fixtures>({
       const activeMapItem = page.locator('active-map-item').filter({hasText: expectedActiveMapName}).first();
       await expect(activeMapItem).toBeVisible({timeout: 30_000});
 
-      if (await page.isVisible('[data-test-id="close-map-notices-button"]')) {
-        await page.locator('[data-test-id="close-map-notices-button"]').click();
-        await page.waitForTimeout(750);
+      // Not every map has notices, so the dialog is optional; wait briefly because it opens asynchronously.
+      const closeNoticesButton = page.getByTestId('close-map-notices-button');
+      const hasNotices = await closeNoticesButton
+        .waitFor({state: 'visible', timeout: 5_000})
+        .then(() => true)
+        .catch(() => false);
+      if (hasNotices) {
+        await closeNoticesButton.click();
+        await expect(closeNoticesButton).toBeHidden();
       }
 
       await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});

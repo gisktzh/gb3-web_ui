@@ -1,4 +1,4 @@
-import {EsriSketchTool} from '../../types/esri-sketch-tool.type';
+import {SupportedDrawingTool, SupportedPolygonDrawingTool} from '../../../../../shared/types/supported-drawing-tool.type';
 
-export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
-export type SupportedEsriPolygonTool = Extract<SupportedEsriTool, 'circle' | 'polygon' | 'rectangle'>;
+export type SupportedEsriTool = SupportedDrawingTool;
+export type SupportedEsriPolygonTool = SupportedPolygonDrawingTool;

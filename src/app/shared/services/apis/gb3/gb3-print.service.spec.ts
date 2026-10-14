@@ -37,6 +37,7 @@ describe('Gb3PrintService', () => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [
+        Gb3PrintService,
         provideMockStore(),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
