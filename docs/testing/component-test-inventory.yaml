@@ -5,7 +5,6 @@ pending:
   src/app/map/components/feature-info-overlay/query-results/query-results.component.ts: {}
   src/app/map/components/feature-info-overlay/statistics-item/statistics-item.component.ts: {}
   src/app/map/components/feature-info-overlay/statistics/statistics.component.ts: {}
-  src/app/map/components/map-tools/map-tools-desktop/map-tools-desktop.component.ts: {}
   src/app/map/components/map-tools/statistics-tools/statistics-tools.component.ts: {}
 dedicated:
   src/app/app.component.ts:
@@ -290,6 +289,9 @@ dedicated:
   src/app/map/components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component.ts:
     coveredBy:
       - src/app/map/components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component.spec.ts
+  src/app/map/components/map-tools/map-tools-desktop/map-tools-desktop.component.ts:
+    coveredBy:
+      - src/app/map/components/map-tools/map-tools-desktop/map-tools-desktop.component.spec.ts
   src/app/map/components/map-tools/map-tools-mobile/map-tools-mobile.component.ts:
     coveredBy:
       - src/app/map/components/map-tools/map-tools-mobile/map-tools-mobile.component.spec.ts
