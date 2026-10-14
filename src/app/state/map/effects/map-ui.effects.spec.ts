@@ -1,8 +1,11 @@
+import {createEnvironmentInjector, EnvironmentInjector} from '@angular/core';
+import {FavouriteCreationDialogComponent} from '../../../map/components/favourite-creation-dialog/favourite-creation-dialog.component';
+import {FavouriteDeletionDialogComponent} from '../../../map/components/favourite-deletion-dialog/favourite-deletion-dialog.component';
+import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import type {MockedObject} from 'vitest';
 import {TestBed} from '@angular/core/testing';
 import {MapUiEffects} from './map-ui.effects';
 import {provideMockActions} from '@ngrx/effects/testing';
-import {MatDialog} from '@angular/material/dialog';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MapUiActions} from '../actions/map-ui.actions';
@@ -21,11 +24,12 @@ import {InternalShareLinkItem} from 'src/app/shared/interfaces/internal-share-li
 import {ShareLinkItem} from 'src/app/shared/interfaces/share-link.interface';
 import {DRAWING_SYMBOLS_SERVICE} from 'src/app/app.tokens';
 import {DrawingSymbolServiceStub} from 'src/app/testing/map-testing/drawing-symbol-service.stub';
+import {AnimatedDialogService} from 'src/app/shared/services/animated-dialog.service';
 
 describe('MapUiEffects', () => {
   let actions$: Observable<Action>;
   let effects: MapUiEffects;
-  let dialogService: MockedObject<MatDialog>;
+  let dialogService: MockedObject<AnimatedDialogService>;
   let store: MockStore;
   const internalShareLinkItem: InternalShareLinkItem = {
     center: {x: 1, y: 1},
@@ -61,8 +65,8 @@ describe('MapUiEffects', () => {
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    const spyDialogService: Partial<MatDialog> = {
-      open: vi.fn().mockName('MatDialog.open'),
+    const spyDialogService: Partial<AnimatedDialogService> = {
+      open: vi.fn().mockName('AnimatedDialogService.open'),
     };
 
     TestBed.configureTestingModule({
@@ -70,18 +74,36 @@ describe('MapUiEffects', () => {
         MapUiEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: MatDialog, useValue: spyDialogService},
+        {provide: AnimatedDialogService, useValue: spyDialogService},
         {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
       ],
     });
 
     effects = TestBed.inject(MapUiEffects);
     store = TestBed.inject(MockStore);
-    dialogService = TestBed.inject(MatDialog) as MockedObject<MatDialog>;
+    dialogService = TestBed.inject(AnimatedDialogService) as MockedObject<AnimatedDialogService>;
   });
 
   afterEach(() => {
     store.resetSelectors();
+  });
+
+  it('opens favourite dialogs through the map route dialog service', () => {
+    const routeDialog = {open: vi.fn()};
+    const routeInjector = createEnvironmentInjector(
+      [MapUiEffects, {provide: AnimatedDialogService, useValue: routeDialog}],
+      TestBed.inject(EnvironmentInjector),
+    );
+    const routeEffects = routeInjector.get(MapUiEffects);
+    actions$ = of(MapUiActions.showCreateFavouriteDialog());
+    routeEffects.openCreateFavouriteDialog$.subscribe();
+    expect(routeDialog.open).toHaveBeenCalledWith(FavouriteCreationDialogComponent, expect.any(Object));
+    const favourite = {id: 'test'} as Favourite;
+    actions$ = of(MapUiActions.showDeleteFavouriteDialog({favouriteToDelete: favourite}));
+    routeEffects.openDeleteFavouriteDialog$.subscribe();
+    expect(routeDialog.open).toHaveBeenCalledWith(FavouriteDeletionDialogComponent, expect.objectContaining({data: {favourite}}));
+    expect(dialogService.open).not.toHaveBeenCalled();
+    routeInjector.destroy();
   });
 
   describe('openShareLinkDialog$', () => {

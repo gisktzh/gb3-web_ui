@@ -25,11 +25,13 @@ import {
 import {catchError} from 'rxjs';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {MapSearchEffects} from '../../map/effects/map-search.effects';
 
 describe('SearchEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: SearchEffects;
+  let mapEffects: MapSearchEffects;
   let searchService: SearchService;
 
   beforeEach(() => {
@@ -39,6 +41,8 @@ describe('SearchEffects', () => {
       imports: [],
       providers: [
         SearchEffects,
+        MapSearchEffects,
+        MapDrawingService,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
@@ -47,6 +51,7 @@ describe('SearchEffects', () => {
       ],
     });
     effects = TestBed.inject(SearchEffects);
+    mapEffects = TestBed.inject(MapSearchEffects);
     store = TestBed.inject(MockStore);
     searchService = TestBed.inject(SearchService);
   });
@@ -91,7 +96,7 @@ describe('SearchEffects', () => {
         searchResult: searchResultsMock,
       });
       actions$ = of(expectedAction);
-      effects.zoomToAndHighlightSelectedSearchResult$.subscribe(([action]) => {
+      mapEffects.zoomToAndHighlightSelectedSearchResult$.subscribe(([action]) => {
         expect(mapServiceSpy).toHaveBeenCalledTimes(1);
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(expectedAction);
@@ -102,7 +107,7 @@ describe('SearchEffects', () => {
   describe('clearSearchTermAfterFeatureInfoOpened$', () => {
     it('dispatches SearchActions.clearSearchTerm() if FeatureInfo is opened', () => {
       actions$ = of(MapUiActions.setFeatureInfoVisibility({isVisible: true}));
-      effects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => {
+      mapEffects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => {
         expect(action).toEqual(SearchActions.clearSearchTerm());
       });
     });
@@ -113,7 +118,7 @@ describe('SearchEffects', () => {
       let newAction;
 
       actions$ = of(MapUiActions.setFeatureInfoVisibility({isVisible: false}));
-      effects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
+      mapEffects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
       await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
@@ -136,7 +141,7 @@ describe('SearchEffects', () => {
       const mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'clearSearchResultHighlight');
 
       actions$ = of(SearchActions.clearSearchTerm());
-      effects.removeHighlightAfterChangingSearchTermOrClearingSearchResult$.subscribe(() => {
+      mapEffects.removeHighlightAfterChangingSearchTermOrClearingSearchResult$.subscribe(() => {
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
       });
     });
@@ -154,7 +159,7 @@ describe('SearchEffects', () => {
 
       let newAction;
       actions$ = of(MapUiActions.setFeatureInfoVisibility({isVisible: false}));
-      effects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
+      mapEffects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
       await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();

@@ -1,6 +1,20 @@
 <div class="map-tools-desktop">
   <div class="map-tools-desktop__list" typedTourAnchor="map.tools">
     <button
+      (click)="toggleToolMenu('feature')"
+      [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'feature'"
+      class="map-tools-desktop__list__button"
+      color="accent"
+      data-test-id="map-select-feature"
+      mat-icon-button
+      [matTooltip]="tooltipText.selectFeature"
+      [disabled]="!isMapReady()"
+      [aria-label]="tooltipText.selectFeature"
+    >
+      <mat-icon svgIcon="ktzh_select_feature" />
+    </button>
+    <mat-divider class="map-tools-desktop__list__divider" />
+    <button
       (click)="toggleToolMenu('measurement')"
       [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'measurement'"
       class="map-tools-desktop__list__button"
@@ -13,7 +27,6 @@
     >
       <mat-icon svgIcon="ktzh_measure_menu" />
     </button>
-    <mat-divider class="map-tools-desktop__list__divider" />
     <button
       (click)="toggleToolMenu('drawing')"
       [class.map-tools-desktop__list__button--active]="toolMenuVisibility() === 'drawing'"
@@ -52,7 +65,6 @@
     >
       <mat-icon svgIcon="ktzh_print" />
     </button>
-    <mat-divider class="map-tools-desktop__list__divider" />
     <button
       (click)="showShareLinkDialog()"
       class="map-tools-desktop__list__button"
@@ -77,7 +89,7 @@
       <mat-icon svgIcon="ktzh_map_management" />
     </button>
   </div>
-  @if (toolMenuVisibility() !== undefined; as toolMenuVisiblity) {
+  @if (toolMenuVisibility() !== undefined && toolMenuVisibility() !== 'feature') {
     <div class="map-tools-desktop__list" [attr.data-tool]="activeTool()">
       @if (toolMenuVisibility() === 'measurement') {
         <measurement-tools />
@@ -87,6 +99,9 @@
       }
       @if (toolMenuVisibility() === 'data-download') {
         <data-download-selection-tools />
+      }
+      @if (toolMenuVisibility() === 'statistics') {
+        <statistics-tools />
       }
     </div>
   }

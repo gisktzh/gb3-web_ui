@@ -6,7 +6,7 @@ import {MapService} from '../interfaces/map.service';
 import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {MapServiceStub} from '../../testing/map-testing/map.service.stub';
 import {MinimalGeometriesUtils} from '../../testing/map-testing/minimal-geometries.utils';
-import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
+import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {MAP_SERVICE} from '../../app.tokens';
 
 describe('MapDrawingService', () => {
@@ -59,6 +59,80 @@ describe('MapDrawingService', () => {
       expect(mapServiceSpy).toHaveBeenCalledTimes(1);
 
       expect(mapServiceSpy).toHaveBeenCalledWith(InternalDrawingLayer.FeatureHighlight);
+    });
+  });
+
+  describe('drawStatisticsHighlights', () => {
+    it('flattens nested geometry collections, inherits their SRS, and deduplicates identical geometries', () => {
+      const add = vi.spyOn(mapService, 'addGeometryToInternalDrawingLayer');
+      const clear = vi.spyOn(mapService, 'clearInternalDrawingLayer');
+      const point = MinimalGeometriesUtils.getMinimalPoint(2056);
+      const line = MinimalGeometriesUtils.getMinimalLineString(2056);
+      const polygon = MinimalGeometriesUtils.getMinimalPolygon(2056);
+      const collection: GeometryWithSrs = {
+        type: 'GeometryCollection',
+        srs: 2056,
+        geometries: [
+          {type: point.type, coordinates: point.coordinates},
+          {
+            type: 'GeometryCollection',
+            geometries: [
+              {type: line.type, coordinates: line.coordinates},
+              {type: polygon.type, coordinates: polygon.coordinates},
+              {type: 'GeometryCollection', geometries: []},
+            ],
+          },
+        ],
+      };
+      const original = structuredClone(collection);
+
+      service.drawStatisticsHighlights([collection, point]);
+
+      expect(clear).toHaveBeenCalledExactlyOnceWith(InternalDrawingLayer.StatisticsHighlight);
+      expect(add.mock.calls).toEqual([
+        [point, InternalDrawingLayer.StatisticsHighlight],
+        [line, InternalDrawingLayer.StatisticsHighlight],
+        [polygon, InternalDrawingLayer.StatisticsHighlight],
+      ]);
+      expect(clear.mock.invocationCallOrder[0]).toBeLessThan(add.mock.invocationCallOrder[0]);
+      expect(collection).toEqual(original);
+    });
+
+    it('preserves supported multipart geometries rather than passing collections to the renderer', () => {
+      const add = vi.spyOn(mapService, 'addGeometryToInternalDrawingLayer');
+      const geometries = [
+        MinimalGeometriesUtils.getMinimalMultiPoint(2056),
+        MinimalGeometriesUtils.getMinimalMultiLineString(2056),
+        MinimalGeometriesUtils.getMinimalMultiPolygon(2056),
+      ];
+
+      service.drawStatisticsHighlights(geometries);
+
+      expect(add.mock.calls).toEqual(geometries.map((geometry) => [geometry, InternalDrawingLayer.StatisticsHighlight]));
+    });
+
+    it.each([
+      {name: 'no geometries', geometries: []},
+      {name: 'an empty collection', geometries: [{type: 'GeometryCollection', geometries: [], srs: 2056}]},
+      {name: 'an empty multipoint', geometries: [{type: 'MultiPoint', coordinates: [], srs: 2056}]},
+    ] satisfies {name: string; geometries: GeometryWithSrs[]}[])('clears previous highlights for $name', ({geometries}) => {
+      const add = vi.spyOn(mapService, 'addGeometryToInternalDrawingLayer');
+      const clear = vi.spyOn(mapService, 'clearInternalDrawingLayer');
+
+      service.drawStatisticsHighlights(geometries);
+
+      expect(clear).toHaveBeenCalledExactlyOnceWith(InternalDrawingLayer.StatisticsHighlight);
+      expect(add).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('clearStatisticsHighlights', () => {
+    it('clears only the dedicated highlight layer, leaving the selection area and feature highlights untouched', () => {
+      const clear = vi.spyOn(mapService, 'clearInternalDrawingLayer');
+
+      service.clearStatisticsHighlights();
+
+      expect(clear).toHaveBeenCalledExactlyOnceWith(InternalDrawingLayer.StatisticsHighlight);
     });
   });
 

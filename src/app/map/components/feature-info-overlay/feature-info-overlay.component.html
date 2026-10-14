@@ -5,10 +5,10 @@
   [width]="width()"
   [isPrintButtonEnabled]="showInteractiveElements() && loadingState() === 'loaded' && featureInfoData().length > 0"
   [printLoadingState]="printLoadingState()"
-  [showPrintButton]="showInteractiveElements()"
+  [showPrintButton]="showInteractiveElements() && queryMode() === 'feature'"
   [isVisible]="isVisible()"
   overlayTitle="Info"
   location="right"
 >
-  <feature-info [showInteractiveElements]="showInteractiveElements()" />
+  <query-results [showInteractiveElements]="showInteractiveElements()" />
 </map-overlay>

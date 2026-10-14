@@ -150,6 +150,14 @@ describe('ActiveMapItemFactory', () => {
           visible: false,
         },
         {
+          id: InternalDrawingLayer.StatisticsHighlight,
+          userDrawingLayer: InternalDrawingLayer.StatisticsHighlight,
+          title: 'Statistics Highlight',
+          prefix: DrawingLayerPrefix.Internal,
+          opacity: undefined,
+          visible: undefined,
+        },
+        {
           id: InternalDrawingLayer.SearchResultHighlight,
           userDrawingLayer: InternalDrawingLayer.SearchResultHighlight,
           title: 'Search Result Highlight',

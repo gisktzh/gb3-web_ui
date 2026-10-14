@@ -8,4 +8,5 @@ import {OerebExtractListItem} from 'src/app/map/types/oereb-extract-list-item.ty
 })
 export class OerebInfoValueComponent {
   public readonly item = input.required<OerebExtractListItem>();
+  public readonly showListLabel = input(false);
 }

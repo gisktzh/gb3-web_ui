@@ -1,3 +1,5 @@
+import {ErrorHandler} from '@angular/core';
+import {EsriStylesLoaderService} from './esri-styles-loader.service';
 import {TestBed} from '@angular/core/testing';
 import {EsriMapService} from './esri-map.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -20,7 +22,7 @@ import Layer from '@arcgis/core/layers/Layer';
 import {defaultMapConfig} from 'src/app/shared/configs/map.config';
 import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
-import {HasSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
+import {GeometryWithSrs, HasSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
 import {Point} from 'geojson';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
 import Graphic from '@arcgis/core/Graphic';
@@ -31,8 +33,8 @@ import EsriPoint from '@arcgis/core/geometry/Point';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {Map as TopicMap} from '../../../shared/interfaces/topic.interface';
+import Extent from '@arcgis/core/geometry/Extent';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -88,6 +90,7 @@ describe('EsriMapService', () => {
     TestBed.configureTestingModule({
       imports: [AuthModule],
       providers: [
+        EsriToolService,
         provideMockStore({
           initialState: {
             activeMapItem: {
@@ -96,6 +99,7 @@ describe('EsriMapService', () => {
           },
         }),
         {provide: AuthService, useValue: mockAuthService},
+        {provide: EsriStylesLoaderService, useValue: {ensureLoaded: vi.fn().mockResolvedValue(undefined)}},
         {
           provide: EsriMapViewService,
           useValue: mapViewService,
@@ -114,7 +118,7 @@ describe('EsriMapService', () => {
     } as MapView;
     mapViewService.mapView.set(mapViewMock);
     store = TestBed.inject(MockStore);
-    toolServiceSpy = TestBed.inject(EsriToolService);
+    toolServiceSpy = EsriToolService.prototype;
     initialMapExtentService = TestBed.inject(InitialMapExtentService);
     vi.spyOn(toolServiceSpy, 'initializeMeasurement').mockImplementation(vi.fn());
     vi.spyOn(toolServiceSpy, 'addExistingDrawingsToLayer').mockImplementation(vi.fn());
@@ -123,6 +127,37 @@ describe('EsriMapService', () => {
   it('should be created', () => {
     service = TestBed.inject(EsriMapService);
     expect(service).toBeTruthy();
+    expect(service.getToolService()).toBe(TestBed.inject(EsriToolService));
+  });
+
+  it('does not create a view until CSS loads, and cancels when the container is removed', async () => {
+    vi.useFakeTimers();
+    let resolveCss!: () => void;
+    const css = new Promise<void>((resolve) => (resolveCss = resolve));
+    vi.spyOn(TestBed.inject(EsriStylesLoaderService), 'ensureLoaded').mockReturnValue(css);
+    service = TestBed.inject(EsriMapService);
+    service.assignMapElement(document.createElement('div'));
+    await vi.runAllTimersAsync();
+    expect(service.mapInitialized()).toBe(false);
+    service.deInit();
+    resolveCss();
+    await vi.runAllTimersAsync();
+    expect(service.mapInitialized()).toBe(false);
+    expect(mapViewService.mapView()).toBeUndefined();
+    vi.useRealTimers();
+  });
+
+  it('reports stylesheet failures without marking the map initialized', async () => {
+    vi.useFakeTimers();
+    const error = new Error('stylesheet unavailable');
+    vi.spyOn(TestBed.inject(EsriStylesLoaderService), 'ensureLoaded').mockRejectedValue(error);
+    const report = vi.spyOn(TestBed.inject(ErrorHandler), 'handleError').mockImplementation(vi.fn());
+    service = TestBed.inject(EsriMapService);
+    service.assignMapElement(document.createElement('div'));
+    await vi.runAllTimersAsync();
+    expect(report).toHaveBeenCalledWith(error);
+    expect(service.mapInitialized()).toBe(false);
+    vi.useRealTimers();
   });
 
   it('should init and deinit correctly', async () => {
@@ -407,6 +442,33 @@ describe('EsriMapService', () => {
     expect(wmsLayer.sublayers.getItemAt(2)!.id).toBe(1);
   });
 
+  it('renders statistics features with their output SRS and dedicated style without replacing the selection area', () => {
+    service = TestBed.inject(EsriMapService);
+    service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsHighlight);
+    service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsArea);
+    const geometry: Point & HasSrs = {type: 'Point', coordinates: [2680600, 1254500], srs: 2056};
+    service.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.StatisticsArea);
+    service.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.StatisticsHighlight);
+    const highlight = internalLayers.find((layer) => layer.id === `${internalLayerPrefix}${InternalDrawingLayer.StatisticsHighlight}`)!;
+    const area = internalLayers.find((layer) => layer.id === `${internalLayerPrefix}${InternalDrawingLayer.StatisticsArea}`)!;
+    expect(highlight.graphics).toHaveLength(1);
+    expect(highlight.graphics.getItemAt(0)?.geometry).toMatchObject({
+      type: 'point',
+      x: 2680600,
+      y: 1254500,
+      spatialReference: {wkid: 2056},
+    });
+    expect(highlight.graphics.getItemAt(0)?.symbol).toMatchObject({
+      type: 'simple-marker',
+      size: 8,
+      color: {r: 255, g: 255, b: 0, a: 0.8},
+    });
+    service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsHighlight);
+    expect(highlight.graphics).toHaveLength(0);
+    expect(area.graphics).toHaveLength(1);
+    service.clearInternalDrawingLayer(InternalDrawingLayer.StatisticsArea);
+  });
+
   describe('clearInternalDrawingLayer', () => {
     it('clear all geometries from an internal layers', () => {
       for (const internalDrawingLayerKey in InternalDrawingLayer) {
@@ -507,6 +569,104 @@ describe('EsriMapService', () => {
       service = TestBed.inject(EsriMapService);
       service.handleZoom('zoomOut');
       expect(mapViewMock.zoom).toBe(-2);
+    });
+  });
+
+  describe('zoomToExtent', () => {
+    const goTo = vi.fn();
+
+    beforeEach(() => {
+      mapViewMock.goTo = goTo;
+      goTo.mockResolvedValue(undefined);
+      service = TestBed.inject(EsriMapService);
+    });
+
+    it('uses the existing point scale and animation duration', async () => {
+      await service.zoomToExtent({type: 'Point', coordinates: [10, 20], srs: 2056}, undefined, 200);
+
+      expect(goTo).toHaveBeenCalledExactlyOnceWith(
+        {center: expect.objectContaining({x: 10, y: 20, spatialReference: expect.objectContaining({wkid: 2056})}), scale: 750},
+        {duration: 200},
+      );
+    });
+
+    it('fits all multipoint coordinates with the existing extent margin', async () => {
+      await service.zoomToExtent({
+        type: 'MultiPoint',
+        coordinates: [
+          [0, 0],
+          [10, 20],
+          [5, 10],
+        ],
+        srs: 2056,
+      });
+
+      expect(goTo).toHaveBeenCalledOnce();
+      const extent = goTo.mock.calls[0][0] as Extent;
+      expect(extent.xmin).toBeCloseTo(-0.375);
+      expect(extent.xmax).toBeCloseTo(10.375);
+      expect(extent.ymin).toBeCloseTo(-0.75);
+      expect(extent.ymax).toBeCloseTo(20.75);
+      expect(extent.spatialReference.wkid).toBe(2056);
+    });
+
+    it('fits combined bounds of nested collections with the requested margin and duration', async () => {
+      await service.zoomToExtent(
+        {
+          type: 'GeometryCollection',
+          srs: 2056,
+          geometries: [
+            {type: 'Point', coordinates: [0, 0]},
+            {
+              type: 'GeometryCollection',
+              geometries: [
+                {
+                  type: 'LineString',
+                  coordinates: [
+                    [5, 10],
+                    [10, 20],
+                  ],
+                },
+              ],
+            },
+            {type: 'MultiPoint', coordinates: []},
+          ],
+        },
+        1.2,
+        200,
+      );
+
+      expect(goTo).toHaveBeenCalledOnce();
+      const extent = goTo.mock.calls[0][0] as Extent;
+      expect(extent.xmin).toBeCloseTo(-1);
+      expect(extent.xmax).toBeCloseTo(11);
+      expect(extent.ymin).toBeCloseTo(-2);
+      expect(extent.ymax).toBeCloseTo(22);
+      expect(extent.spatialReference.wkid).toBe(2056);
+      expect(goTo.mock.calls[0][1]).toEqual({duration: 200});
+    });
+
+    it('uses point zoom when a collection has only one distinct position', async () => {
+      await service.zoomToExtent({
+        type: 'GeometryCollection',
+        srs: 2056,
+        geometries: [
+          {type: 'Point', coordinates: [10, 20]},
+          {type: 'MultiPoint', coordinates: [[10, 20]]},
+        ],
+      });
+
+      expect(goTo).toHaveBeenCalledExactlyOnceWith({center: expect.objectContaining({x: 10, y: 20}), scale: 750}, {duration: undefined});
+    });
+
+    it.each<GeometryWithSrs>([
+      {type: 'Point', coordinates: [], srs: 2056},
+      {type: 'MultiPoint', coordinates: [], srs: 2056},
+      {type: 'Polygon', coordinates: [], srs: 2056},
+      {type: 'GeometryCollection', geometries: [{type: 'GeometryCollection', geometries: []}], srs: 2056},
+    ])('does not navigate for empty $type', async (geometry) => {
+      await service.zoomToExtent(geometry);
+      expect(goTo).not.toHaveBeenCalled();
     });
   });
 

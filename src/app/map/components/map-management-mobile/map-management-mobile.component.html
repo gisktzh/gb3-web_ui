@@ -2,6 +2,7 @@
   @if (filterString() === undefined) {
     <div class="map-management-mobile-header__buttons">
       <button
+        data-test-id="map-management-tab-active"
         [class.map-management-mobile-header__buttons__button--selected]="activeTab() === 'activeMaps'"
         class="map-management-mobile-header__buttons__button"
         mat-flat-button
@@ -45,13 +46,13 @@
       <button
         class="map-management-mobile-header__tools__buttons__action map-management-mobile-header__tools__buttons__action--notices"
         (click)="showMapNotices()"
-        [disabled]="numberOfNotices() === 0"
+        [disabled]="mapNoticesService.numberOfNotices() === 0"
         mat-icon-button
       >
-        @if (numberOfUnreadNotices() > 0) {
+        <mat-icon icon="info" />
+        @if (mapNoticesService.numberOfUnreadNotices() > 0) {
           <notification-indicator />
         }
-        <mat-icon svgIcon="ktzh_notification" />
       </button>
       <mat-divider class="map-management-mobile-header__tools__buttons__divider" [vertical]="true" />
       <button

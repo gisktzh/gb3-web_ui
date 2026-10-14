@@ -14,6 +14,7 @@ import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {provideMockStore} from '@ngrx/store/testing';
 import {DOCUMENT} from '@angular/core';
+import {layerSymbolizations} from '../../../shared/configs/symbolization.config';
 
 const SRS: SupportedSrs = 2056;
 const mockIconUrl = '/path/to/icon.svg';
@@ -58,6 +59,7 @@ const minimalTestSet = [
 
 // we only mock some of the values; because we mainly need to test different colors and point types.
 const mockSymbolizations: LayerSymbolizations = {
+  [InternalDrawingLayer.StatisticsHighlight]: layerSymbolizations[InternalDrawingLayer.StatisticsHighlight],
   [UserDrawingLayer.Drawings]: {
     text: {
       color: {
@@ -160,6 +162,14 @@ describe('EsriSymbolizationService', () => {
         const result = service.createSymbolizationForDrawingLayer(geometry, InternalDrawingLayer.FeatureHighlight);
 
         expect(result).toBeInstanceOf(expectedInstanceOf);
+      });
+    });
+
+    minimalTestSet.forEach(({expectedInstanceOf, geometry, type}) => {
+      it(`supports ${type} on the dedicated statistics highlight layer`, () => {
+        expect(service.createSymbolizationForDrawingLayer(geometry, InternalDrawingLayer.StatisticsHighlight)).toBeInstanceOf(
+          expectedInstanceOf,
+        );
       });
     });
 

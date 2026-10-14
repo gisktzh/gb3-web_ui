@@ -12,4 +12,11 @@ const OerebMapOrder: OerebMapOrderItem[] = [
   {name: 'KatOerebVerEntsorgungZH', sort: 9},
 ];
 
-export const OerebMaps = [...OerebMapOrder].sort((a, b) => a.sort - b.sort).map((item) => item.name);
+const OerebAdjacentMapOrder: OerebMapOrderItem[] = [
+  {name: 'OerebProjekteZH', sort: 10},
+  {name: 'OerebThemenZH', sort: 11},
+];
+
+export const OerebMapsWithExtract = OerebMapOrder.map((item) => item.name);
+
+export const OerebMaps = [...OerebMapOrder, ...OerebAdjacentMapOrder].sort((a, b) => a.sort - b.sort).map((item) => item.name);

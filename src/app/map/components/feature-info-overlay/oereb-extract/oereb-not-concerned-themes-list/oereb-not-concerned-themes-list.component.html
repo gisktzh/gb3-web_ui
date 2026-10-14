@@ -1,0 +1,7 @@
+<ul class="oereb-not-concerned-themes-list">
+  @for (item of listItems(); track item.itemLabel) {
+    <li>
+      <oereb-info-value [item]="item" [showListLabel]="true" />
+    </li>
+  }
+</ul>

@@ -1,6 +1,6 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {of, switchMap, tap} from 'rxjs';
+import {of, switchMap, takeUntil, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {Gb3GeneralInfoService} from '../../../shared/services/apis/gb3/gb3-general-info.service';
@@ -8,6 +8,7 @@ import {GeneralInfoActions} from '../actions/general-info.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 
 import {GeneralInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
+import {QueryLocationActions} from '../actions/query-location.actions';
 
 @Injectable()
 export class GeneralInfoEffects {
@@ -22,10 +23,10 @@ export class GeneralInfoEffects {
     );
   });
 
-  public interceptMapClick$ = createEffect(() => {
+  public requestAtQueryPoint$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapConfigActions.handleMapClick),
-      map(({x, y, scale}) => GeneralInfoActions.sendRequest({x, y, scale})),
+      ofType(QueryLocationActions.setPoint),
+      map(({point, scale}) => GeneralInfoActions.sendRequest({x: point.coordinates[0], y: point.coordinates[1], scale})),
     );
   });
 
@@ -38,6 +39,7 @@ export class GeneralInfoEffects {
             return GeneralInfoActions.updateContent({generalInfo});
           }),
           catchError((error: unknown) => of(GeneralInfoActions.setError({error}))),
+          takeUntil(this.actions$.pipe(ofType(QueryLocationActions.setPoint, MapConfigActions.clearFeatureInfoContent))),
         ),
       ),
     );

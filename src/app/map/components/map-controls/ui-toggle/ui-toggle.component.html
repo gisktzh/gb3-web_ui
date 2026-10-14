@@ -7,6 +7,9 @@
     [matTooltip]="checked() ? 'Ui-Elemente anzeigen' : 'Ui-Elemente verbergen'"
     [aria-label]="checked() ? 'Ui-Elemente anzeigen' : 'Ui-Elemente verbergen'"
   >
-    <mat-slide-toggle [checked]="checked()" hideIcon color="primary" tabindex="-1" />
+    <!-- Purely decorative: the actual click/toggle behavior lives on the surrounding button; `inert` (not just
+         tabindex="-1") is needed to fully exclude this control from the accessibility tree, since axe's
+         nested-interactive rule still flags a merely non-tabbable-but-otherwise-focusable nested control. -->
+    <mat-slide-toggle [checked]="checked()" hideIcon color="primary" tabindex="-1" aria-hidden="true" inert />
   </button>
 }

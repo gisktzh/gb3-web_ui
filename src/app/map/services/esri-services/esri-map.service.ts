@@ -1,4 +1,5 @@
-import {Injectable, computed, effect, inject, signal, untracked} from '@angular/core';
+import {EsriStylesLoaderService} from './esri-styles-loader.service';
+import {ErrorHandler, Injectable, computed, effect, inject, signal, untracked} from '@angular/core';
 import esriConfig from '@arcgis/core/config';
 import * as affineTransformOperator from '@arcgis/core/geometry/operators/affineTransformOperator.js';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
@@ -36,6 +37,7 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
 import {EsriToolService} from './tool-service/esri-tool.service';
+import {ToolService} from '../../interfaces/tool.service';
 import {TransformationService} from './transformation.service';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
@@ -53,6 +55,7 @@ import {hasNonNullishProperty} from './type-guards/esri-nullish.type-guard';
 import Transformation from '@arcgis/core/geometry/operators/support/Transformation';
 import KMLLayer from '@arcgis/core/layers/KMLLayer';
 import Point from '@arcgis/core/geometry/Point';
+import Extent from '@arcgis/core/geometry/Extent';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import WMSLayer, {WMSLayerFormatType} from '@arcgis/core/layers/WMSLayer';
 import Graphic from '@arcgis/core/Graphic';
@@ -83,6 +86,7 @@ import {
   isInFeatureInfoScaleRange,
 } from '../../../shared/utils/feature-info-scale.utils';
 import {distinctUntilChanged, Observable, switchMap} from 'rxjs';
+import {calculateBoundingBox} from '../../../shared/utils/geojson-bounds.utils';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -101,6 +105,8 @@ enum EsriMouseButtonType {
 })
 export class EsriMapService implements MapService {
   private readonly store = inject(Store);
+  private readonly stylesLoader = inject(EsriStylesLoaderService);
+  private readonly errorHandler = inject(ErrorHandler);
   private readonly transformationService = inject(TransformationService);
   private readonly geoJSONMapperService = inject(GeoJSONMapperService);
   private readonly basemapConfigService = inject(BasemapConfigService);
@@ -200,42 +206,52 @@ export class EsriMapService implements MapService {
       }
     });
 
-    effect(async () => {
-      const mapContainerElement = this.mapContainerElement();
-      if (!mapContainerElement) {
+    effect((onCleanup) => {
+      const container = this.mapContainerElement();
+      if (!container) {
         return;
       }
 
-      const isMapInitialized = untracked(() => this.mapInitialized());
-      if (isMapInitialized) {
-        return;
-      }
-
-      this.mapInitialized.set(true);
-
-      const config = this.mapConfigState();
-      const activeMapItems = untracked(() => this.activeMapItems());
-      const drawings = untracked(() => this.drawings());
-
-      const {x, y} = config.center;
-      const {minScale, maxScale} = config.scaleSettings;
-      const {scale, srsId, activeBasemapId} = config;
-      const mapInstance = this.createMap(activeBasemapId);
-      this.setMapView(mapInstance, {x, y}, srsId, {scale, minScale, maxScale}, mapContainerElement);
-      this.attachMapViewListeners();
-      this.initDrawingLayers();
-      await Promise.all(
-        activeMapItems.map(async (mapItem, position) => {
-          mapItem.addToMap(this, position);
-
-          if (mapItem instanceof DrawingActiveMapItem) {
-            const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.drawingLayer);
-            return await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.drawingLayer);
-          }
-        }),
-      );
-      this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+      let cancelled = false;
+      onCleanup(() => (cancelled = true));
+      void this.initializeMap(container, () => cancelled || this.mapContainerElement() !== container).catch((error: unknown) => {
+        if (!cancelled && this.mapContainerElement() === container) {
+          this.mapInitialized.set(false);
+          this.errorHandler.handleError(error);
+        }
+      });
     });
+  }
+
+  private async initializeMap(container: HTMLDivElement, isCancelled: () => boolean): Promise<void> {
+    await this.stylesLoader.ensureLoaded();
+    if (isCancelled()) {
+      return;
+    }
+
+    this.mapInitialized.set(true);
+    const config = this.mapConfigState();
+    const activeMapItems = this.activeMapItems();
+    const drawings = this.drawings();
+    const {x, y} = config.center;
+    const {minScale, maxScale} = config.scaleSettings;
+    const {scale, srsId, activeBasemapId} = config;
+    const mapInstance = this.createMap(activeBasemapId);
+    this.setMapView(mapInstance, {x, y}, srsId, {scale, minScale, maxScale}, container);
+    this.attachMapViewListeners();
+    this.initDrawingLayers();
+    await Promise.all(
+      activeMapItems.map(async (mapItem, position) => {
+        mapItem.addToMap(this, position);
+        if (mapItem instanceof DrawingActiveMapItem) {
+          const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.drawingLayer);
+          await this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.drawingLayer);
+        }
+      }),
+    );
+    if (!isCancelled()) {
+      this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
+    }
   }
 
   public getMapView(): MapView {
@@ -507,6 +523,21 @@ export class EsriMapService implements MapService {
     if (scaleRange && scaleRange.minScale > scaleRange.maxScale) {
       return Promise.resolve() as Promise<never>;
     }
+
+    const bounds = calculateBoundingBox(geometry);
+    if (!bounds) {
+      return Promise.resolve() as Promise<never>;
+    }
+
+    if (geometry.type === 'GeometryCollection') {
+      const {minX, maxX, minY, maxY} = bounds;
+      if (minX === maxX && minY === maxY) {
+        return this.zoomToExtent({type: 'Point', coordinates: [minX, minY], srs: geometry.srs}, expandFactor, duration);
+      }
+      const extent = new Extent({xmin: minX, xmax: maxX, ymin: minY, ymax: maxY, spatialReference: {wkid: geometry.srs}});
+      return this.getMapView().goTo(extent.expand(expandFactor), {duration}) as never;
+    }
+
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
 
     if (esriGeometry instanceof Point) {
@@ -656,7 +687,7 @@ export class EsriMapService implements MapService {
     return graphics;
   }
 
-  public getToolService(): EsriToolService {
+  public getToolService(): ToolService {
     return this.esriToolService;
   }
 

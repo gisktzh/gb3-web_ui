@@ -1,12 +1,12 @@
 import {Injectable, OnDestroy, inject} from '@angular/core';
-import {selectFeatureInfoState} from '../../state/map/reducers/feature-info.reducer';
-import {distinctUntilChanged, map, of, Subscription, switchMap, tap} from 'rxjs';
+import {distinctUntilChanged, map, of, Subscription, switchMap, tap, filter} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectReady} from '../../state/map/reducers/map-config.reducer';
-import {GeometryWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapDrawingService} from './map-drawing.service';
 import {MAP_SERVICE} from '../../app.tokens';
 import {MapService} from '../interfaces/map.service';
+import {selectFeatureHighlightToDraw} from '../../state/map/selectors/query-graphics.selector';
+import {selectReady} from 'src/app/state/map/reducers/map-config.reducer';
+import {GeometryWithSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
 
 @Injectable()
 export class FeatureHighlightingService implements OnDestroy {
@@ -14,9 +14,9 @@ export class FeatureHighlightingService implements OnDestroy {
   private readonly mapDrawingService = inject(MapDrawingService);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
 
-  private readonly featureInfoState$ = this.store.select(selectFeatureInfoState);
   private readonly mapReadyState$ = this.store.select(selectReady);
-  private readonly subscriptions = new Subscription();
+  private readonly featureHighlightToDraw$ = this.store.select(selectFeatureHighlightToDraw);
+  private subscription?: Subscription;
   private initialized = false;
 
   public init() {
@@ -24,36 +24,29 @@ export class FeatureHighlightingService implements OnDestroy {
       return;
     }
     this.initialized = true;
-    this.subscriptions.add(
-      this.mapReadyState$
-        .pipe(
-          distinctUntilChanged(),
-          switchMap((isReady) =>
-            isReady
-              ? this.featureInfoState$.pipe(
-                  distinctUntilChanged(
-                    (previous, current) =>
-                      previous.highlightedFeature === current.highlightedFeature &&
-                      previous.highlightedFeatureSource === current.highlightedFeatureSource,
-                  ),
-                  switchMap(({highlightedFeature, highlightedFeatureSource}) =>
-                    highlightedFeature && highlightedFeatureSource
-                      ? this.mapService
-                          .observeFeatureInfoLayerVisibility(highlightedFeatureSource)
-                          .pipe(map((visible) => (visible ? highlightedFeature : undefined)))
-                      : of(undefined),
-                  ),
-                )
-              : of(undefined),
-          ),
-          tap((feature) => (feature ? this.highlightFeature(feature) : this.removeHighlightedFeature())),
-        )
-        .subscribe(),
-    );
+    this.subscription?.unsubscribe();
+    this.subscription = this.mapReadyState$
+      .pipe(
+        distinctUntilChanged(),
+        switchMap((isReady) =>
+          isReady
+            ? this.featureHighlightToDraw$.pipe(
+                distinctUntilChanged((previous, current) => previous.geometry === current.geometry && previous.source === current.source),
+                switchMap(({geometry, source, ready}) =>
+                  geometry && source && ready
+                    ? this.mapService.observeFeatureInfoLayerVisibility(source).pipe(map((visible) => (visible ? geometry : undefined)))
+                    : of(undefined),
+                ),
+              )
+            : of(undefined),
+        ),
+        tap((feature) => (feature ? this.highlightFeature(feature) : this.removeHighlightedFeature())),
+      )
+      .subscribe();
   }
 
   public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    this.subscription?.unsubscribe();
     this.removeHighlightedFeature();
   }
 

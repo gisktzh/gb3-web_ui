@@ -1,9 +1,8 @@
 import {createSelector} from '@ngrx/store';
 import {selectItems} from '../selectors/active-map-items.selector';
 import {selectScale} from '../reducers/map-config.reducer';
-import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
-import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {QueryTopic} from '../../../shared/interfaces/query-topic.interface';
+import {findVisibleMapLayers} from '../../../map/utils/visible-map-layers.utils';
 
 /**
  * Returns all activeMapItems that should be queried for a featureinfo, if
@@ -14,22 +13,17 @@ import {QueryTopic} from '../../../shared/interfaces/query-topic.interface';
  * visible are filtered out.
  */
 export const selectQueryLayers = createSelector(selectItems, selectScale, (activeMapItems, scale) => {
-  const queryTopics: QueryTopic[] = activeMapItems
-    .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
-    .filter((activeMapItem) => activeMapItem.visible)
-    .map((mapItem) => {
-      const layersToQuery: string[] = mapItem.settings.layers
-        .filter((layer) => layer.queryable && layer.visible && layer.minScale < scale && layer.maxScale > scale)
-        .map((layer) => layer.layer);
-      return {
-        topic: mapItem.settings.mapId,
-        layersToQuery: layersToQuery.join(','),
-        isSingleLayer: mapItem.isSingleLayer,
-        filterConfigurations: mapItem.settings.filterConfigurations,
-        timeSliderConfiguration: mapItem.settings.timeSliderConfiguration,
-        timeSliderExtent: mapItem.settings.timeSliderExtent,
-      };
-    });
+  const queryTopics: QueryTopic[] = findVisibleMapLayers(activeMapItems, scale).map(({item: mapItem, layers}) => {
+    const layersToQuery: string[] = layers.filter((layer) => layer.queryable).map((layer) => layer.layer);
+    return {
+      topic: mapItem.settings.mapId,
+      layersToQuery: layersToQuery.join(','),
+      isSingleLayer: mapItem.isSingleLayer,
+      filterConfigurations: mapItem.settings.filterConfigurations,
+      timeSliderConfiguration: mapItem.settings.timeSliderConfiguration,
+      timeSliderExtent: mapItem.settings.timeSliderExtent,
+    };
+  });
 
   return queryTopics.filter((queryTopic) => queryTopic.layersToQuery !== '');
 });

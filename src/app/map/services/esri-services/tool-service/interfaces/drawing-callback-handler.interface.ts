@@ -3,19 +3,22 @@ import {DataDownloadSelection} from '../../../../../shared/interfaces/data-downl
 import {DrawingMode} from '../types/drawing-mode.type';
 import {Gb3StyleRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
+import {GeometrySelection} from '../../../../../shared/interfaces/geometry-selection.interface';
 
 export type DrawingCallbackHandlerArgsDrawing = 'completeDrawing';
 export type DrawingCallbackHandlerArgsTextDrawing = 'completeTextDrawing';
 export type DrawingCallbackHandlerArgsSymbolDrawing = 'completeSymbolDrawing';
 export type DrawingCallbackHandlerArgsMeasurement = 'completeMeasurement';
 export type DrawingCallbackHandlerArgsSelection = 'completeSelection';
+export type DrawingCallbackHandlerArgsGeometrySelection = 'completeGeometrySelection';
 
 export type DrawingCallbackHandlerArgsType =
   | DrawingCallbackHandlerArgsDrawing
   | DrawingCallbackHandlerArgsTextDrawing
   | DrawingCallbackHandlerArgsSymbolDrawing
   | DrawingCallbackHandlerArgsMeasurement
-  | DrawingCallbackHandlerArgsSelection;
+  | DrawingCallbackHandlerArgsSelection
+  | DrawingCallbackHandlerArgsGeometrySelection;
 
 export type DrawingCallbackHandlerArgsLists<SymbolType extends MapDrawingSymbol = MapDrawingSymbol> = {
   completeDrawing: [Graphic, DrawingMode];
@@ -23,6 +26,7 @@ export type DrawingCallbackHandlerArgsLists<SymbolType extends MapDrawingSymbol 
   completeSymbolDrawing: [Graphic | undefined, DrawingMode, SymbolType?, number?, number?];
   completeMeasurement: [Graphic, Graphic, string, DrawingMode];
   completeSelection: [DataDownloadSelection | undefined];
+  completeGeometrySelection: [GeometrySelection | undefined];
 };
 
 export type DrawingInternalUpdateArgs<SymbolType extends MapDrawingSymbol = MapDrawingSymbol> = {

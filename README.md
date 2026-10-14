@@ -46,11 +46,23 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ### Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Unit tests run with [Vitest](https://vitest.dev/) in a `happy-dom` environment:
+
+```shell
+npm test -- --watch=false
+```
+
+Run a focused component spec with Angular's `--include` option:
+
+```shell
+npm test -- --watch=false --include=src/app/path/example.component.spec.ts
+```
+
+See the [component testing guide](docs/testing/component-tests.md) for test boundaries, conventions, the coverage inventory, and rollout workflow.
 
 > [!WARNING]
 > Starting with `@arcgis/core` 4.32, memory demands have increased significantly due to more types, which requires more work for checking types.
-> As such, karma may run into memory overflows. If this happens, you can increase the memory limit for the node process by setting the `NODE_OPTIONS`
+> As such, the test process may run into memory overflows. If this happens, you can increase the memory limit for the Node.js process by setting the `NODE_OPTIONS`
 > environment variable to `--max_old_space_size=80192` (or any other value that suits your needs).
 
 ### Running end-to-end tests
@@ -77,6 +89,27 @@ or
 npm run e2e
 ```
 
+Prefer `getByTestId()` for e2e locators. Playwright uses the `data-test-id` attribute; add a stable ID to application controls and results
+instead of selecting by translated labels or component structure. Keep assertions about visible text and accessibility separate.
+For third-party controls without test IDs, scope their native elements under an application test ID.
+
+##### Browser parallelization: npm scripts vs. CI/CD
+
+Playwright is configured with three projects (`chromium`, `firefox`, `webkit`, see `playwright.config.ts`). How many of
+them actually run differs between your machine and CI, to keep local iteration fast while still getting full
+cross-browser coverage before merging:
+
+- **Locally**, `npm run e2e` (and `npm run a11y`) only run against `chromium` by default (`--test-project=chromium` is
+  baked into the npm script). A single, fast browser run is normally enough while developing.
+- **On CI**, the `e2e` job runs as a matrix of three parallel jobs, one per browser, each overriding the project via
+  `npm run e2e -- --test-project <browser>` (see `.github/workflows/node-quality-checks.yml`). This gives full
+  `chromium`/`firefox`/`webkit` coverage, parallelized across jobs instead of within a single job.
+- **Accessibility (a11y) checks are the one exception**: they only ever run on `chromium`, locally and on CI (see
+  [Accessibility (a11y) checks](#accessibility-a11y-checks) below for why).
+
+If you need to run e2e tests against another browser locally, pass `--test-project` explicitly, e.g.
+`npm run e2e -- --test-project firefox`.
+
 #### Running tests with HAR mocks
 
 HAR stands for Http ARchive. Playwright is able to use HAR files to play back API responses and make tests more deterministic while allowing for adaptions to test data without having to deploy any environment first.
@@ -100,10 +133,73 @@ This will now start one window per specified .spec.ts file. An additional window
 
 If you also want to capture browser console out, you can use the `CAPTURE_CONSOLE` env var: `CAPTURE_CONSOLE=1 ng e2e`.
 
+#### Accessibility (a11y) checks
+
+We use [`@axe-core/playwright`](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright) to automatically scan for WCAG 2.2 AA violations. It runs in a real browser, so unlike DOM-only tools (e.g. `vitest-axe` in `jsdom`) it can also evaluate layout-dependent rules such as color contrast, target/touch size and reflow.
+
+A `checkA11y()` fixture (see `e2e/fixtures.ts`) is available in every spec. It scans the current page/DOM state, attaches the full JSON result to the Playwright report (useful for reviewing "incomplete"/needs-manual-review findings even on green runs), and fails the test listing every violation with its impact, help text and affected selectors.
+
+##### Running the tests
+
+```
+ng e2e --grep accessibility --test-project=chromium
+```
+
+or
+
+```
+npm run a11y
+```
+
+##### Co-located with the functional tests, but run separately
+
+A11y tests are **not** kept in separate spec files. Each a11y test lives right next to the functional test(s) it builds
+on, in the same `*.spec.ts` file, wrapped in `describeA11y()` (see `e2e/fixtures.ts`), which groups it under a
+top-level `accessibility` describe-block. This keeps it close to the flow it's checking and lets it reuse the same
+HAR fixture/navigation instead of re-recording or re-navigating from scratch.
+
+The two suites are still kept fully separate at **execution time**, purely via Playwright's `--grep`/`--grep-invert`
+pattern matching on that `accessibility` describe-block name:
+
+- `npm run e2e` runs `ng e2e --grep-invert accessibility`, i.e. everything _except_ the a11y tests.
+- `npm run a11y` runs `ng e2e --grep accessibility`, i.e. _only_ the a11y tests.
+
+So a single spec file can contribute to both the regular e2e run and the a11y run, without ever running both from the
+same `npm` script invocation.
+
+To keep the suite fast and avoid tripling CI time, a11y checks:
+
+- are added as small, additional tests placed next to the relevant functional test in the same spec file (see above), so they reuse the same HAR fixture/flow instead of re-recording or re-navigating,
+- are scanned once per distinct, meaningful DOM state (e.g. once per opened dialog/panel), not after every micro-interaction,
+- only run on `chromium`, both locally and on CI (declaratively skipped for `firefox`/`webkit` by `describeA11y()`), since axe evaluates the DOM/CSSOM which doesn't meaningfully differ between browser engines. See [Browser parallelization: npm scripts vs. CI/CD](#browser-parallelization-npm-scripts-vs-cicd) above for how this compares to the regular e2e suite.
+
+Automated scans catch common issues (missing/invalid ARIA, color contrast, missing labels, invalid landmarks/heading structure, insufficient target size, etc.) but should not be treated as a full accessibility audit
+
 ### Further help
 
 To get more help on the Angular CLI use `ng help` or go check out
 the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+### Statistics API
+
+The statistics tool uses `GET /gb3/v4/topics/:topic_name/statistic_info` through the configured API base URL.
+The statistics layer/field configuration lives in `src/app/shared/configs/statistics.config.ts`.
+The statistics toolbar button is disabled and the Features/Statistik tab selector is hidden unless a supported, non-temporary layer
+is present in the map. Hidden maps and layers still keep statistics available; no statistics feature flag is required.
+Hovering over the disabled statistics button explains when no supported layer is present; while the map loads, its normal tool-name tooltip remains.
+Removing the last supported layer returns to feature mode and cancels any active statistics selection tool.
+The statistics e2e availability scenarios cover adding/removing supported maps, keeping controls available for hidden maps/layers,
+and adding individual supported or unsupported layers. They use the authenticated catalogue and record one `statistics-*.har` per scenario.
+Only supported layers enabled in active, visible maps are queried, regardless of rendering scale limits.
+Selections, including the polygon generated by the circle tool, are sent as polygon WKT with their input SRID.
+Feature queries and statistics selections share a query point: moving either recenters the other without changing the selection's shape.
+Feature results remain tied to the last query point. Zooming, switching tabs, and changing layers, filters or time ranges do not
+reload them; the next query point change uses the current layers and map scale. Closing the panel or removing all maps clears feature results.
+Hovering over statistics table headers or values previews the returned feature geometries in a separate highlight layer.
+The Markieren control pins a layer's marking and zooms to its returned feature geometries. Unpinning keeps the current map extent;
+hovering over other layers does not replace a pinned marking or move the map.
+Pinned markings are hidden outside the statistics tab, restored with cached results on return, and cleared when the query changes.
+Hover previews are cleared on mouse leave or when leaving the statistics tab.
 
 ## Docker
 

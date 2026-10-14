@@ -3,7 +3,7 @@ import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {MapConstants} from '../../../../shared/constants/map.constants';
-import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelContent} from '@angular/material/expansion';
+import {MatExpansionPanel, MatExpansionPanelContent} from '@angular/material/expansion';
 import {MatTooltip} from '@angular/material/tooltip';
 import {DelayedMouseEnterDirective} from '../../../../shared/directives/delayed-mouse-enter.directive';
 import {MatIconButton} from '@angular/material/button';
@@ -24,7 +24,6 @@ import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-m
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatExpansionPanel,
-    MatExpansionPanelHeader,
     MatTooltip,
     DelayedMouseEnterDirective,
     MatIconButton,

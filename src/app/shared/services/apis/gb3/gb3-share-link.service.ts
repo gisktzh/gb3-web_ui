@@ -9,9 +9,7 @@ import {BasemapConfigService} from '../../../../map/services/basemap-config.serv
 import {FavouritesService} from '../../../../map/services/favourites.service';
 import {MapRestoreItem} from '../../../interfaces/map-restore-item.interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class Gb3ShareLinkService extends Gb3ApiService {
   private readonly basemapConfigService = inject(BasemapConfigService);
   private readonly favouritesService = inject(FavouritesService);

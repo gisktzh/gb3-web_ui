@@ -46,6 +46,10 @@ export class ToolEffects {
             case 'select-municipality':
               this.toolService.initializeDataDownloadSelection(tool);
               break;
+            case 'select-statistics-circle':
+            case 'select-statistics-polygon':
+              this.toolService.initializeStatisticsSelection(tool);
+              break;
           }
         }),
       );
