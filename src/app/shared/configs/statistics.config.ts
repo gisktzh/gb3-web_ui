@@ -20,22 +20,11 @@ export const maximumStatisticsRadiusInMeters = Math.floor(Math.sqrt(maximumStati
  * Manual statistics-map list and queries until the topics API exposes this configuration.
  * The test layers currently share fields but may acquire separate field configurations.
  */
-const statisticsFields = [
-  'ganzwhg',
-  'efh',
-  'wohn_m_n',
-  'geb_m_w',
-  'mfh',
-  'geb_o_w',
-  'prov_geb',
-  'andere_geb',
-  'anz_einw',
-  'anz_vzae',
-  'anz_besch',
-] as const;
 
 export const statisticsMapQueries: Record<string, readonly Omit<StatisticInfoQueryParameters, 'geometry' | 'srid'>[]> = {
-  StatBevoelkerungZH: [{layer: 'stat-bev-p', field: statisticsFields, statistic: 'sum'}],
-  StatBeschaeftigteZH: [{layer: 'stat-ent-p', field: statisticsFields, statistic: 'sum'}],
-  StatGebaeudeZH: [{layer: 'stat-geb-p', field: statisticsFields, statistic: 'sum'}],
+  StatBevoelkerungZH: [{layer: 'stat-bev-p', field: ['anz_einw'], statistic: 'sum'}],
+  StatBeschaeftigteZH: [{layer: 'stat-ent-p', field: ['anz_vzae', 'anz_besch'], statistic: 'sum'}],
+  StatGebaeudeZH: [
+    {layer: 'stat-geb-p', field: ['ganzwhg', 'efh', 'wohn_m_n', 'geb_m_w', 'mfh', 'geb_o_w', 'prov_geb', 'andere_geb'], statistic: 'sum'},
+  ],
 };
