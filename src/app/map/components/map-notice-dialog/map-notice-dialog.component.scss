@@ -22,7 +22,7 @@
     .map-notice__text-section__text {
       margin: 0;
 
-      a {
+      :host ::ng-deep & a {
         @include mixins.external-link-decoration;
       }
     }
