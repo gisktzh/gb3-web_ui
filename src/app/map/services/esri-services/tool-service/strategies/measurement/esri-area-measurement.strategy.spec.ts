@@ -190,10 +190,9 @@ describe('EsriAreaMeasurementStrategy', () => {
         callback({state: 'complete', graphic: graphic});
 
         const addedGraphic = layer.graphics.getItemAt(0);
-        const expectedLocation = location.centroid!;
         expect(addedGraphic?.geometry?.type).toEqual('point');
-        expect((addedGraphic?.geometry as Point).x).toEqual(expectedLocation.x);
-        expect((addedGraphic?.geometry as Point).y).toEqual(expectedLocation.y);
+        expect((addedGraphic?.geometry as Point).x).toEqual(4);
+        expect((addedGraphic?.geometry as Point).y).toEqual(4);
 
         return mockResourceHandle;
       });

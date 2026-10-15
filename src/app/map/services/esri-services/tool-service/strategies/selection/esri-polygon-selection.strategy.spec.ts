@@ -11,6 +11,7 @@ import {TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/esri-graphic-to-internal-drawing-representation.utils';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
+import {SupportedPolygonDrawingTool} from 'src/app/shared/types/supported-drawing-tool.type';
 
 class EsriPolygonSelectionStrategyWrapper extends EsriPolygonSelectionStrategy {
   public get svm() {
@@ -156,58 +157,25 @@ describe('EsriPolygonSelectionStrategy', () => {
   });
 
   describe('polygon type and mode', () => {
-    it('sets polygon type to rectangle', () => {
-      const strategy = new EsriPolygonSelectionStrategyWrapper(
-        layer,
-        mapView,
-        fillSymbol,
-        (selection) => callbackHandler.handle(selection),
-        'rectangle',
-        2056,
-      );
-      const spy = vi.spyOn(strategy.svm, 'create');
+    it.each(['rectangle', 'circle', 'polygon'] as SupportedPolygonDrawingTool[])(
+      'sets polygon type to %s',
+      (type: SupportedPolygonDrawingTool) => {
+        const strategy = new EsriPolygonSelectionStrategyWrapper(
+          layer,
+          mapView,
+          fillSymbol,
+          (selection) => callbackHandler.handle(selection),
+          type,
+          2056,
+        );
+        const spy = vi.spyOn(strategy.svm, 'create');
 
-      strategy.start();
+        strategy.start();
 
-      expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledTimes(1);
 
-      expect(spy).toHaveBeenCalledWith('rectangle', {mode: 'click'});
-    });
-
-    it('sets polygon type to circle', () => {
-      const strategy = new EsriPolygonSelectionStrategyWrapper(
-        layer,
-        mapView,
-        fillSymbol,
-        (selection) => callbackHandler.handle(selection),
-        'circle',
-        2056,
-      );
-      const spy = vi.spyOn(strategy.svm, 'create');
-
-      strategy.start();
-
-      expect(spy).toHaveBeenCalledTimes(1);
-
-      expect(spy).toHaveBeenCalledWith('circle', {mode: 'click'});
-    });
-
-    it('sets polygon type to polygon', () => {
-      const strategy = new EsriPolygonSelectionStrategyWrapper(
-        layer,
-        mapView,
-        fillSymbol,
-        (selection) => callbackHandler.handle(selection),
-        'polygon',
-        2056,
-      );
-      const spy = vi.spyOn(strategy.svm, 'create');
-
-      strategy.start();
-
-      expect(spy).toHaveBeenCalledTimes(1);
-
-      expect(spy).toHaveBeenCalledWith('polygon', {mode: 'click'});
-    });
+        expect(spy).toHaveBeenCalledWith(type, {mode: 'click'});
+      },
+    );
   });
 });

@@ -11,4 +11,5 @@ import {FormsModule} from '@angular/forms';
 export class ColorPickerEditComponent {
   public readonly value = model('');
   public readonly title = input('');
+  public readonly id = input.required<string>();
 }

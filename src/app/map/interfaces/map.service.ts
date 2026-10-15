@@ -24,7 +24,7 @@ export interface MapService extends AddToMapVisitor {
   setScale(scale: number): void;
 
   /** Sets the map center point */
-  setMapCenter(center: PointWithSrs): void;
+  setMapCenter(center: PointWithSrs): Promise<void>;
 
   /** Resets the extent of the map to the initial extent */
   resetExtent(): void;
@@ -63,7 +63,7 @@ export interface MapService extends AddToMapVisitor {
   reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number): void;
 
   /** Zooms to a selected point based on latitude, longitude, Srs and scale */
-  zoomToPoint(point: PointWithSrs, scale: number): void;
+  zoomToPoint(point: PointWithSrs, scale: number): Promise<void>;
 
   /**
    * Zooms to the extent of a given geometry

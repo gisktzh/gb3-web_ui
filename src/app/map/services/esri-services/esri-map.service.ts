@@ -443,10 +443,10 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public setMapCenter(center: PointWithSrs): Promise<never> {
+  public async setMapCenter(center: PointWithSrs) {
     return this.getMapView().goTo({
       center: this.createGeoReferencedPoint(center),
-    }) as never;
+    });
   }
 
   public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
@@ -500,11 +500,11 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public zoomToPoint(point: PointWithSrs, scale: number): Promise<never> {
+  public async zoomToPoint(point: PointWithSrs, scale: number) {
     return this.getMapView().goTo({
       center: this.createGeoReferencedPoint(point),
       scale: scale,
-    }) as never;
+    });
   }
 
   public zoomToExtent(geometry: GeometryWithSrs, expandFactor: number = 1.075, duration?: number): Promise<never> {
@@ -809,12 +809,12 @@ export class EsriMapService implements MapService {
 
     const timeSliderConfig = mapItem.settings.timeSliderConfiguration;
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    const timeSliderLayerNames = timeSliderLayerSource.layers.map((layer) => layer.layerName);
+    const timeSliderLayerNames = new Set(timeSliderLayerSource.layers.map((layer) => layer.layerName));
     const visibleTimeSliderLayers = mapItem.settings.layers.filter(
       (layer) => this.timeSliderService.isLayerVisible(layer, mapItem.settings.timeSliderConfiguration, timeSliderExtent) === true,
     );
     // include all layers that are not specified in the time slider config
-    const esriSublayers = esriLayer.sublayers.filter((sublayer) => !timeSliderLayerNames.includes(sublayer.name));
+    const esriSublayers = esriLayer.sublayers.filter((sublayer) => !timeSliderLayerNames.has(sublayer.name));
     // now add all layers that are in the time slider config and within the current time extent
     esriSublayers.addMany(
       visibleTimeSliderLayers
@@ -926,7 +926,7 @@ export class EsriMapService implements MapService {
     );
 
     // ensure that the reference distance is calculated after the map is ready, since the scale listener only fires after the first change
-    reactiveUtils.whenOnce(() => this.getMapView().ready).then(() => this.updateReferenceDistance());
+    void reactiveUtils.whenOnce(() => this.getMapView().ready).then(() => this.updateReferenceDistance());
     reactiveUtils.watch(
       () => this.getMapView().scale,
       () => this.updateReferenceDistance(),
@@ -971,7 +971,7 @@ export class EsriMapService implements MapService {
       },
     );
 
-    reactiveUtils
+    void reactiveUtils
       .whenOnce(() => this.getMapView().ready && this.transformationService.projectionOperatorLoaded)
       .then(() => {
         const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.getMapView().constraints;

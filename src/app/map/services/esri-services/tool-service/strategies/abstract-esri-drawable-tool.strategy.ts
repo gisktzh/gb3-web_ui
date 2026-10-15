@@ -33,12 +33,10 @@ export abstract class AbstractEsriDrawableToolStrategy<
     mapView: MapView,
     completeDrawingCallbackHandler: DrawingCallbackHandler<ArgsType, SymbolType>,
   ) {
-    // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
     this.sketchViewModel = new SketchViewModel({
       view: mapView,
       layer: layer,
-      tooltipOptions: {enabled: false}, // todo: check how we can fix the display; seems not implemented:
-      // https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/how-to-show-cursor-tooltips-when-a-sketch-tool-is/td-p/1276503
+      tooltipOptions: {enabled: false},
       updateOnGraphicClick: false,
     });
 

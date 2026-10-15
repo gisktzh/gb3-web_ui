@@ -20,7 +20,7 @@ export abstract class AbstractEsriDrawingStrategy<
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Drawings;
 
   public start(): void {
-    this.sketchViewModel.create(this.tool, {mode: 'click'});
+    void this.sketchViewModel.create(this.tool, {mode: 'click'});
 
     reactiveUtils.on(
       () => this.sketchViewModel,
@@ -42,7 +42,7 @@ export abstract class AbstractEsriDrawingStrategy<
   }
 
   public edit(graphic: Graphic) {
-    this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
+    void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
 
     reactiveUtils.on(
       () => this.sketchViewModel,

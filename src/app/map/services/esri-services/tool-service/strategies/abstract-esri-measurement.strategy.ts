@@ -1,4 +1,4 @@
-import {DrawingCallbackHandlerArgsMeasurement} from '../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandlerArgsMeasurement, DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Polygon from '@arcgis/core/geometry/Polygon';
@@ -7,7 +7,6 @@ import Polyline from '@arcgis/core/geometry/Polyline';
 import Point from '@arcgis/core/geometry/Point';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {AbstractEsriDrawableToolStrategy} from './abstract-esri-drawable-tool.strategy';
-import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
 import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
@@ -32,7 +31,7 @@ export abstract class AbstractEsriMeasurementStrategy<
   }
 
   public start(): void {
-    this.sketchViewModel.create(this.tool, {mode: 'click'});
+    void this.sketchViewModel.create(this.tool, {mode: 'click'});
 
     reactiveUtils.on(
       () => this.sketchViewModel,

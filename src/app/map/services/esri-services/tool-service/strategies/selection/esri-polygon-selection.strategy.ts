@@ -35,7 +35,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
   }
 
   public start(): void {
-    this.sketchViewModel.create(this.tool, {mode: 'click'});
+    void this.sketchViewModel.create(this.tool, {mode: 'click'});
 
     reactiveUtils.on(
       () => this.sketchViewModel,

@@ -50,6 +50,7 @@ export class TimeSliderComponent {
   public readonly changeTimeExtentEvent = output<TimeExtent>();
 
   public readonly initialTimeExtent = input.required<TimeExtent>();
+  public readonly id = input.required<string>();
   public readonly timeSliderConfiguration = input.required<TimeSliderConfiguration>();
 
   public readonly availableDates = computed(() => {

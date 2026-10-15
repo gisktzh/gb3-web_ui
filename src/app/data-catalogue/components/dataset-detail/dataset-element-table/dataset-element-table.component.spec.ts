@@ -21,7 +21,7 @@ describe('DatasetElementTableComponent', () => {
 
     const table = element.querySelector('table');
     const rows = element.querySelectorAll('tr');
-    expect(table?.getAttribute('aria-describedby')).toBe('Informationen zu den Attributen von Roads');
+    expect(table?.getAttribute('aria-description')).toBe('Informationen zu den Attributen von Roads');
     expect(rows).toHaveLength(3);
     expect(rows[1].textContent).toContain('id');
     expect(rows[1].querySelectorAll('td')[1].innerHTML).toContain('<br>');
