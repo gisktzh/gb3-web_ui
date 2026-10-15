@@ -1,5 +1,5 @@
 import {Injectable, OnDestroy, inject} from '@angular/core';
-import {distinctUntilChanged, map, of, Subscription, switchMap, tap, filter} from 'rxjs';
+import {distinctUntilChanged, map, of, Subscription, switchMap, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapDrawingService} from './map-drawing.service';
 import {MAP_SERVICE} from '../../app.tokens';
