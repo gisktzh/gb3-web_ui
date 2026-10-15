@@ -24,7 +24,5 @@ export const maximumStatisticsRadiusInMeters = Math.floor(Math.sqrt(maximumStati
 export const statisticsMapQueries: Record<string, readonly Omit<StatisticInfoQueryParameters, 'geometry' | 'srid'>[]> = {
   StatBevoelkerungZH: [{layer: 'stat-bev-p', field: ['anz_einw'], statistic: 'sum'}],
   StatBeschaeftigteZH: [{layer: 'stat-ent-p', field: ['anz_vzae', 'anz_besch'], statistic: 'sum'}],
-  StatGebaeudeZH: [
-    {layer: 'stat-geb-p', field: ['ganzwhg', 'efh', 'wohn_m_n', 'geb_m_w', 'mfh', 'geb_o_w', 'prov_geb', 'andere_geb'], statistic: 'sum'},
-  ],
+  StatGebaeudeZH: [{layer: 'stat-geb-p', field: ['ganzwhg', 'geb_m_w', 'geb_o_w'], statistic: 'sum'}],
 };
