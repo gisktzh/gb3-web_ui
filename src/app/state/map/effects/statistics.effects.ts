@@ -9,7 +9,7 @@ import {ToolActions} from '../actions/tool.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
-import {STATISTICS_SERVICE} from '../../../app.tokens';
+import {MAP_SERVICE, STATISTICS_SERVICE} from '../../../app.tokens';
 import {selectStatisticsQueries} from '../selectors/statistics-queries.selector';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
@@ -31,6 +31,7 @@ import {selectStatisticsHighlights} from '../selectors/statistics-highlights.sel
 import {selectStatisticsAreaToDraw} from '../selectors/query-graphics.selector';
 import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
 import type {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {MapService} from 'src/app/map/interfaces/map.service';
 
 @Injectable()
 export class StatisticsEffects {
@@ -39,6 +40,7 @@ export class StatisticsEffects {
   private readonly mapDrawingService = inject(MapDrawingService);
   private readonly statisticsService = inject(STATISTICS_SERVICE);
   private readonly areaService = inject(StatisticsAreaService);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
 
   public validateSelection$ = createEffect(() => {
     return this.actions$.pipe(
@@ -64,14 +66,16 @@ export class StatisticsEffects {
   public highlightResults$ = createEffect(
     () => {
       return this.store.select(selectStatisticsHighlights).pipe(
-        filter(({ready}) => ready),
-        tap(({geometries, queryMode}) => {
-          if (queryMode === 'statistics') {
-            this.mapDrawingService.drawStatisticsHighlights(geometries);
-          } else {
-            this.mapDrawingService.clearStatisticsHighlights();
-          }
-        }),
+        switchMap(({geometries, queryMode, source, ready}) =>
+          ready && geometries && queryMode === 'statistics' && source
+            ? this.mapService
+                .observeFeatureInfoLayerVisibility({mapItemId: source.topic, layerName: source.layer})
+                .pipe(map((visible) => (visible ? geometries : undefined)))
+            : of(undefined),
+        ),
+        tap((geometries) =>
+          geometries ? this.mapDrawingService.drawStatisticsHighlights(geometries) : this.mapDrawingService.clearStatisticsHighlights(),
+        ),
       );
     },
     {dispatch: false},

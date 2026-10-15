@@ -17,6 +17,7 @@ export const selectStatisticsHighlights = createSelector(
       ready,
       queryMode,
       geometries: queryMode === 'statistics' && geometry ? [geometry] : [],
+      source: highlightedLayer,
     };
   },
 );
