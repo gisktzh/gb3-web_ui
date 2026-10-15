@@ -507,11 +507,11 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public zoomToPoint(point: PointWithSrs, scale: number): Promise<never> {
+  public zoomToPoint(point: PointWithSrs, scale: number): Promise<void> {
     return this.getMapView().goTo({
       center: this.createGeoReferencedPoint(point),
       scale: scale,
-    }) as never;
+    });
   }
 
   public zoomToExtent(
@@ -519,15 +519,17 @@ export class EsriMapService implements MapService {
     expandFactor: number = 1.075,
     duration?: number,
     scaleRange?: FeatureInfoScaleRange,
-  ): Promise<never> {
+  ): Promise<void> {
     if (scaleRange && scaleRange.minScale > scaleRange.maxScale) {
-      return Promise.resolve() as Promise<never>;
+      return Promise.resolve();
     }
 
     const bounds = calculateBoundingBox(geometry);
     if (!bounds) {
-      return Promise.resolve() as Promise<never>;
+      return Promise.resolve();
     }
+
+    const view = this.getMapView();
 
     if (geometry.type === 'GeometryCollection') {
       const {minX, maxX, minY, maxY} = bounds;
@@ -535,47 +537,44 @@ export class EsriMapService implements MapService {
         return this.zoomToExtent({type: 'Point', coordinates: [minX, minY], srs: geometry.srs}, expandFactor, duration);
       }
       const extent = new Extent({xmin: minX, xmax: maxX, ymin: minY, ymax: maxY, spatialReference: {wkid: geometry.srs}});
-      return this.getMapView().goTo(extent.expand(expandFactor), {duration}) as never;
+      return view.goTo(extent.expand(expandFactor), {duration}) as never;
     }
 
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
 
     if (esriGeometry instanceof Point) {
-      return this.getMapView().goTo(
+      return view.goTo(
         {
           center: esriGeometry,
           scale: getVisibleFeatureInfoScale(DEFAULT_POINT_ZOOM_EXTENT_SCALE, scaleRange),
         },
         {duration},
-      ) as never;
+      );
     }
 
     if (hasNonNullishProperty(esriGeometry, 'extent')) {
       const extent = esriGeometry.extent.clone().expand(expandFactor);
-      if (scaleRange) {
-        const view = this.getMapView();
-        const projectedExtent = extent.spatialReference.equals(view.spatialReference)
-          ? extent
-          : this.transformationService.transform(extent);
-        const padding = view.padding ?? NO_VIEW_PADDING;
-        const width = Math.max(1, view.width - padding.left - padding.right);
-        const height = Math.max(1, view.height - padding.top - padding.bottom);
-        const angle = (view.rotation * Math.PI) / 180;
-        const cos = Math.abs(Math.cos(angle));
-        const sin = Math.abs(Math.sin(angle));
-        const resolution = Math.max(
-          (projectedExtent.width * cos + projectedExtent.height * sin) / width,
-          (projectedExtent.width * sin + projectedExtent.height * cos) / height,
-        );
-        const targetScale = resolution * (view.scale / view.resolution);
-        if (!isInFeatureInfoScaleRange(targetScale, scaleRange)) {
-          return view.goTo(
-            {center: projectedExtent.center, scale: getVisibleFeatureInfoScale(targetScale, scaleRange)},
-            {duration},
-          ) as never;
-        }
+
+      if (!scaleRange) {
+        return view.goTo(extent, {duration});
       }
-      return this.getMapView().goTo(extent, {duration}) as never;
+
+      const projectedExtent = extent.spatialReference.equals(view.spatialReference) ? extent : this.transformationService.transform(extent);
+      const padding = view.padding ?? NO_VIEW_PADDING;
+      const width = Math.max(1, view.width - padding.left - padding.right);
+      const height = Math.max(1, view.height - padding.top - padding.bottom);
+      const angle = (view.rotation * Math.PI) / 180;
+      const cos = Math.abs(Math.cos(angle));
+      const sin = Math.abs(Math.sin(angle));
+      const resolution = Math.max(
+        (projectedExtent.width * cos + projectedExtent.height * sin) / width,
+        (projectedExtent.width * sin + projectedExtent.height * cos) / height,
+      );
+      const targetScale = resolution * (view.scale / view.resolution);
+
+      if (!isInFeatureInfoScaleRange(targetScale, scaleRange)) {
+        return view.goTo({center: projectedExtent.center, scale: getVisibleFeatureInfoScale(targetScale, scaleRange)}, {duration});
+      }
     }
 
     throw new ZoomExtentMissing();

@@ -74,7 +74,12 @@ export interface MapService extends AddToMapVisitor {
    * @param animationDuration An optional duration in milliseconds for the animation to pan/zoom to the given extent.
    * @param scaleRange Optional visible scale denominators limiting the destination of this zoom only.
    */
-  zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, animationDuration?: number, scaleRange?: FeatureInfoScaleRange): void;
+  zoomToExtent(
+    geometry: GeometryWithSrs,
+    expandFactor?: number,
+    animationDuration?: number,
+    scaleRange?: FeatureInfoScaleRange,
+  ): Promise<void>;
 
   /** Returns the source layer's effective scale range, or undefined if it cannot be displayed. */
   getFeatureInfoScaleRange(source: FeatureHighlightSource): FeatureInfoScaleRange | undefined;
