@@ -931,7 +931,7 @@ describe('EsriMapService', () => {
       const point: GeometryWithSrs = {type: 'Point', srs: 2056, coordinates: [1, 2]};
       service.zoomToExtent(point, undefined, 400, scaleRange);
       expect(goTo).toHaveBeenCalledOnce();
-      expect(goTo).toHaveBeenLastCalledWith({center: expect.any(EsriPoint), scale: 10000}, {duration: 400});
+      expect(goTo).toHaveBeenLastCalledWith({center: expect.any(EsriPoint), scale: 10001}, {duration: 400});
       service.zoomToExtent(point);
       expect(goTo).toHaveBeenLastCalledWith({center: expect.any(EsriPoint), scale: 750}, {duration: undefined});
     });
@@ -939,7 +939,7 @@ describe('EsriMapService', () => {
     it('clamps a small polygon without first navigating to an invisible scale', () => {
       service.zoomToExtent(polygon, 1, undefined, scaleRange);
       expect(goTo).toHaveBeenCalledOnce();
-      expect(goTo).toHaveBeenLastCalledWith({center: expect.any(EsriPoint), scale: 10000}, {duration: undefined});
+      expect(goTo).toHaveBeenLastCalledWith({center: expect.any(EsriPoint), scale: 10001}, {duration: undefined});
     });
 
     it('preserves the native extent target when it is already in the visible range', () => {

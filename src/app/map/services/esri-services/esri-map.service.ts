@@ -81,7 +81,7 @@ import {ClickEvent, LayerViewCreateEvent} from '@arcgis/core/views/input/types';
 import {MapViewPadding} from '../../../shared/interfaces/map-view-padding.interface';
 import {FeatureHighlightSource, FeatureInfoScaleRange} from '../../../shared/interfaces/feature-highlight.interface';
 import {
-  clampFeatureInfoScale,
+  getVisibleFeatureInfoScale,
   intersectFeatureInfoScaleRanges,
   isInFeatureInfoScaleRange,
 } from '../../../shared/utils/feature-info-scale.utils';
@@ -544,7 +544,7 @@ export class EsriMapService implements MapService {
       return this.getMapView().goTo(
         {
           center: esriGeometry,
-          scale: scaleRange ? clampFeatureInfoScale(DEFAULT_POINT_ZOOM_EXTENT_SCALE, scaleRange) : DEFAULT_POINT_ZOOM_EXTENT_SCALE,
+          scale: getVisibleFeatureInfoScale(DEFAULT_POINT_ZOOM_EXTENT_SCALE, scaleRange),
         },
         {duration},
       ) as never;
@@ -569,7 +569,10 @@ export class EsriMapService implements MapService {
         );
         const targetScale = resolution * (view.scale / view.resolution);
         if (!isInFeatureInfoScaleRange(targetScale, scaleRange)) {
-          return view.goTo({center: projectedExtent.center, scale: clampFeatureInfoScale(targetScale, scaleRange)}, {duration}) as never;
+          return view.goTo(
+            {center: projectedExtent.center, scale: getVisibleFeatureInfoScale(targetScale, scaleRange)},
+            {duration},
+          ) as never;
         }
       }
       return this.getMapView().goTo(extent, {duration}) as never;

@@ -1,4 +1,9 @@
-import {clampFeatureInfoScale, intersectFeatureInfoScaleRanges, isInFeatureInfoScaleRange} from './feature-info-scale.utils';
+import {
+  clampFeatureInfoScale,
+  getVisibleFeatureInfoScale,
+  intersectFeatureInfoScaleRanges,
+  isInFeatureInfoScaleRange,
+} from './feature-info-scale.utils';
 
 describe('feature info scale ranges', () => {
   it('intersects the layer, topic and parent ranges without giving one priority', () => {
@@ -34,5 +39,17 @@ describe('feature info scale ranges', () => {
     expect(clampFeatureInfoScale(750, range)).toBe(10000);
     expect(clampFeatureInfoScale(20000, range)).toBe(20000);
     expect(clampFeatureInfoScale(100000, range)).toBe(50000);
+  });
+
+  it('defaults to a desired scale if no scale is given', () => {
+    expect(getVisibleFeatureInfoScale(1)).toBe(1);
+    expect(getVisibleFeatureInfoScale(750, undefined)).toBe(750);
+  });
+
+  it('adjusts the minimum scale to be one larger so features still get rendered', () => {
+    const range = {minScale: 10000, maxScale: 50000};
+    expect(getVisibleFeatureInfoScale(750, range)).toBe(10001);
+    expect(getVisibleFeatureInfoScale(20000, range)).toBe(20000);
+    expect(getVisibleFeatureInfoScale(100000, range)).toBe(50000);
   });
 });
