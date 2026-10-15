@@ -575,6 +575,8 @@ export class EsriMapService implements MapService {
       if (!isInFeatureInfoScaleRange(targetScale, scaleRange)) {
         return view.goTo({center: projectedExtent.center, scale: getVisibleFeatureInfoScale(targetScale, scaleRange)}, {duration});
       }
+
+      return view.goTo(extent, {duration});
     }
 
     throw new ZoomExtentMissing();

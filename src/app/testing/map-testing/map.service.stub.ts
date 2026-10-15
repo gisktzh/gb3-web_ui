@@ -88,7 +88,7 @@ export class MapServiceStub implements MapService {
 
   public zoomToPoint(point: PointWithSrs, number: number): void {}
 
-  public zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, duration?: number, scaleRange?: FeatureInfoScaleRange): void {}
+  public async zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, duration?: number, scaleRange?: FeatureInfoScaleRange) {}
 
   public getFeatureInfoScaleRange(source: FeatureHighlightSource): FeatureInfoScaleRange | undefined {
     return {minScale: 0, maxScale: Infinity};
