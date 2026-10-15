@@ -1,4 +1,4 @@
-import {Component, Injectable, effect, inject, viewChild, ChangeDetectionStrategy} from '@angular/core';
+import {Component, Injectable, effect, inject, untracked, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
 import {selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
@@ -11,6 +11,7 @@ import {DataCatalogueFilterDialogComponent} from '../data-catalogue-filter-dialo
 import {ActiveDataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
 import {selectActiveFilterValues} from '../../../state/data-catalogue/selectors/active-filter-values.selector';
 import {SearchActions} from '../../../state/app/actions/search.actions';
+import {selectTerm} from '../../../state/app/reducers/search.reducer';
 import {ConfigService} from '../../../shared/services/config.service';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
@@ -90,11 +91,16 @@ export class DataCatalogueOverviewComponent {
   );
   public heroText = GEO_DATA_CATALOGUE_SUMMARY;
   private readonly searchConfig = this.configService.searchConfig.dataCatalogPage;
+  private readonly searchTerm = this.store.selectSignal(selectTerm);
+  private readonly searchInput = viewChild.required(SearchInputComponent);
   private readonly paginator = viewChild.required<MatPaginator>(MatPaginator);
 
   constructor() {
     this.store.dispatch(DataCatalogueActions.loadCatalogue());
-    this.clearSearchTerm();
+
+    effect(() => {
+      this.searchInput().setTerm(untracked(this.searchTerm), false);
+    });
 
     effect(() => {
       if (this.dataCatalogueLoadingState() === 'loaded') {
