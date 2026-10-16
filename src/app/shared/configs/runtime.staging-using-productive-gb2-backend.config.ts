@@ -53,5 +53,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       overrideWmsUrl: 'https://web.wms.zh.ch',
     },
     accessMode: 'internet',
+    gb3BaseUrl: '//staging.geo.ktzh.ch',
   },
 ];

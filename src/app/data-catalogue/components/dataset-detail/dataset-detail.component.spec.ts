@@ -54,7 +54,7 @@ describe('DatasetDetailComponent', () => {
     lyr: [{href: 'https://example.com/map.lyr'}],
     pdf: {href: 'https://example.com/doc.pdf'},
     contact: {geodata: contact, metadata: contact},
-    maps: [{uuid: 'map-1', topic: 'terrain', name: 'Terrain map'}],
+    maps: [{uuid: 'map-1', topic: 'terrain', name: 'Terrain map', linkTargetEnv: 'internet'}],
     services: [{uuid: 'service-1', serviceType: 'WMS', name: 'Terrain WMS'}],
     products: [{uuid: 'product-1', name: 'Terrain package'}],
     layers: [
