@@ -9,7 +9,7 @@ import {SupportedSrs} from '../../../../../../shared/types/supported-srs.type';
 import Graphic from '@arcgis/core/Graphic';
 import {SupportedEsriPolygonTool, SupportedEsriTool} from '../supported-esri-tool.type';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {CreateEvent} from '@arcgis/core/widgets/Sketch/types';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy<DrawingCallbackHandlerArgsGeometrySelection> {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
@@ -58,8 +58,23 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     );
   }
 
-  public edit(_: Graphic) {
-    // currently, editing is not supported for selection strategies
+  public edit(graphic: Graphic) {
+    this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
+
+    reactiveUtils.on(
+      () => this.sketchViewModel,
+      'update',
+      ({state}: UpdateEvent) => {
+        switch (state) {
+          case 'active':
+          case 'start':
+            break;
+          case 'complete':
+            // TODO: Add completion
+            break;
+        }
+      },
+    );
   }
 
   private complete(graphic: Graphic) {
