@@ -32,6 +32,7 @@ import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
+import {ConfigService} from '../../config.service';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
@@ -180,7 +181,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                 printTitle: topic.print_title,
                 gb2Url: topic.gb2_url,
                 icon: this.createAbsoluteIconUrl(topic.icon),
-                wmsUrl: topic.wms_url,
+                // Hard-change the WMS URL to the one specified by the config.
+                wmsUrl: `${this.configService.apiConfig.gb2Wms.baseUrl}/${topic.topic}`,
                 minScale: topic.min_scale,
                 organisation: topic.organisation,
                 notice: topic.notice,

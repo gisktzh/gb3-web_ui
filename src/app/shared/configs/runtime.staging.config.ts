@@ -14,11 +14,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       gb2StaticFiles: {
         baseUrl: 'https://testmaps.kt.ktzh.ch',
       },
-      gb2WmsCapabilities: {
-        baseUrl: 'https://testmaps.kt.ktzh.ch/wms',
-      },
       gb2Wms: {
-        baseUrl: 'https://testmaps.kt.ktzh.ch',
+        baseUrl: 'https://testwms.kt.ktzh.ch',
       },
       geoLion: {
         baseUrl: 'https://testgeolion.kt.ktzh.ch',

@@ -203,7 +203,7 @@ describe('Gb3TopicsService', () => {
                   },
                 ],
                 searchConfigurations: undefined,
-                wmsUrl: 'https://maps.zh.ch/wms/StatGebAlterZH',
+                wmsUrl: 'https://wms.zh.ch/StatGebAlterZH',
                 gb2Url: 'https://maps.zh.ch/?topic=StatGebAlterZH',
                 layers: [
                   {

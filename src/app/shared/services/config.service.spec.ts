@@ -22,6 +22,7 @@ import {mapAnimationConfig} from '../configs/map-animation.config';
 import {dataDownloadConfig} from '../configs/data-download.config';
 import {AppActions} from '../../state/app/actions/app.actions';
 import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {CallableWmsBasemap} from '../interfaces/basemap.interface';
 
 interface ConfigServiceKey {
   serviceKey: keyof ConfigService;
@@ -61,7 +62,7 @@ describe('ConfigService', () => {
         ],
       });
 
-      expect(() => TestBed.inject(ConfigService)).toThrowError(HostNameResolutionMismatch);
+      expect(() => TestBed.inject(ConfigService)).toThrow(HostNameResolutionMismatch);
     });
 
     it('dispatches AppActions.setDynamicInternalUrlConfiguration with the correct values', () => {
@@ -85,6 +86,23 @@ describe('ConfigService', () => {
           dynamicInternalUrlsConfiguration: expectedDynamicInternalUrlsConfiguration,
         }),
       );
+    });
+
+    it('creates callable basemap WMS URLs', () => {
+      TestBed.configureTestingModule({
+        imports: [],
+        providers: [provideMockStore(), testingHostProvider, {provide: DOCUMENT, useFactory: documentFactory, deps: [HOST_TOKEN]}],
+      });
+
+      service = TestBed.inject(ConfigService);
+
+      const allWmsBasemapsHaveAValidUrl = service.basemapConfig.availableBasemaps.every(
+        (map) => map.type !== 'wms' || map.url.startsWith('https://wms.zh.ch/'),
+      );
+
+      expect(allWmsBasemapsHaveAValidUrl).toBeTruthy();
+      expect(service.basemapConfig.defaultBasemap.type).toEqual('wms');
+      expect((service.basemapConfig.defaultBasemap as CallableWmsBasemap).url.startsWith('https://wms.zh.ch/')).toBeTruthy();
     });
   });
 

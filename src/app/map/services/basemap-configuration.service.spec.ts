@@ -1,14 +1,14 @@
 import {TestBed} from '@angular/core/testing';
-
 import {BasemapConfigService} from './basemap-config.service';
-import {Basemap} from '../../shared/interfaces/basemap.interface';
+import {CallableBasemap} from '../../shared/interfaces/basemap.interface';
 import {ConfigService} from '../../shared/services/config.service';
 
-const mockBasemaps: Basemap[] = [
+const mockBasemaps: CallableBasemap[] = [
   {
     id: 'test-1',
     type: 'wms',
     relativeImagePath: 'test-1.png',
+    path: '/test1',
     url: 'https://www.my-test.com/test1',
     title: 'Test 1',
     srsId: 2056,
@@ -18,6 +18,7 @@ const mockBasemaps: Basemap[] = [
     id: 'test-2',
     type: 'wms',
     relativeImagePath: 'test-2.png',
+    path: '/test2',
     url: 'https://www.my-test.com/test2',
     title: 'Test 2',
     srsId: 2056,
@@ -27,6 +28,7 @@ const mockBasemaps: Basemap[] = [
     id: 'test-3',
     type: 'wms',
     relativeImagePath: 'test-3.png',
+    path: '/test3',
     url: 'https://www.my-test.com/test3',
     title: 'Test 3',
     srsId: 2056,
