@@ -48,5 +48,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     featureFlags: {},
     overrides: {},
     accessMode: 'internet',
+    gb3BaseUrl: '//dev.geo.zh.ch',
   },
 ];
