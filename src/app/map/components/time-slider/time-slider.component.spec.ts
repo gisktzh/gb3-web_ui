@@ -25,6 +25,8 @@ describe('TimeSliderComponent', () => {
     new Date('2020-04-01T00:00:00'),
   ];
 
+  const id = signal('asdf');
+
   const timeSliderServiceMock: Partial<TimeSliderService> = {
     createStops: vi.fn().mockReturnValue(dates),
     createValidTimeExtent: vi.fn(),
@@ -90,7 +92,11 @@ describe('TimeSliderComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(TimeSliderComponent, {
-      bindings: [inputBinding('initialTimeExtent', initialTimeExtent), inputBinding('timeSliderConfiguration', timeSliderConfiguration)],
+      bindings: [
+        inputBinding('initialTimeExtent', initialTimeExtent),
+        inputBinding('timeSliderConfiguration', timeSliderConfiguration),
+        inputBinding('id', id),
+      ],
     });
 
     component = fixture.componentInstance;
@@ -649,6 +655,7 @@ describe('TimeSliderComponent datepicker providers', () => {
     };
     fixture.componentRef.setInput('timeSliderConfiguration', config);
     fixture.componentRef.setInput('initialTimeExtent', {start: new Date(2000, 0, 1), end: new Date(2005, 0, 1)});
+    fixture.componentRef.setInput('id', 'asdf');
     fixture.detectChanges();
 
     const adapter = fixture.debugElement.injector.get(DateAdapter);

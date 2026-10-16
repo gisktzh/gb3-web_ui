@@ -58,7 +58,7 @@ export class MapServiceStub implements MapService {
 
   public handleZoom(zoomType: ZoomType): void {}
 
-  public setMapCenter(center: PointWithSrs): void {}
+  public async setMapCenter(center: PointWithSrs): Promise<void> {}
 
   public init(): void {}
 
@@ -84,7 +84,7 @@ export class MapServiceStub implements MapService {
 
   public setAttributeFilters(attributeFilterParameters: WmsFilterValue[], mapItem: Gb2WmsActiveMapItem): void {}
 
-  public zoomToPoint(point: PointWithSrs, number: number): void {}
+  public async zoomToPoint(point: PointWithSrs, number: number): Promise<void> {}
 
   public zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, duration?: number): void {}
 

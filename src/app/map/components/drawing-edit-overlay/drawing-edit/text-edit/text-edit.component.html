@@ -6,11 +6,11 @@
 <mat-divider class="divider" />
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Schrift</h3>
 <slider-edit [formField]="textStyleForm.style.fontSize" [minValue]="8" [maxValue]="48" [step]="1" title="Grösse" />
-<color-picker-edit [formField]="textStyleForm.style.fontColor" title="Farbe" />
+<color-picker-edit [formField]="textStyleForm.style.fontColor" title="Farbe" [id]="'text-edit-font-color'" />
 <mat-divider class="divider" />
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Halo</h3>
 <slider-edit [formField]="textStyleForm.style.haloRadius" [minValue]="1" [maxValue]="12" [step]="1" title="Grösse" />
-<color-picker-edit [formField]="textStyleForm.style.haloColor" title="Farbe" />
+<color-picker-edit [formField]="textStyleForm.style.haloColor" title="Farbe" [id]="'text-edit-halo-color'" />
 <mat-divider class="divider" />
 <h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Versatz</h3>
 <slider-edit [formField]="textStyleForm.style.labelYOffset" [minValue]="1" [maxValue]="20" [step]="1" title="Abstand" />

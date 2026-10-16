@@ -47,7 +47,7 @@ export class MapOverlayComponent {
     this.resizeableStyle.set(newStyle);
     const width = newStyle['width'];
     if (typeof width === 'string') {
-      this.resizeEvent.emit(parseFloat(width));
+      this.resizeEvent.emit(Number.parseFloat(width));
     }
   }
 }

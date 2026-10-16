@@ -10,7 +10,7 @@ describe('ColorPickerEditComponent', () => {
     value.set('#ff0000');
     await TestBed.configureTestingModule({imports: [ColorPickerEditComponent]}).compileComponents();
     fixture = TestBed.createComponent(ColorPickerEditComponent, {
-      bindings: [twoWayBinding('value', value), inputBinding('title', () => 'Farbe')],
+      bindings: [twoWayBinding('value', value), inputBinding('title', () => 'Farbe'), inputBinding('id', () => 'someid')],
     });
     fixture.detectChanges();
   });

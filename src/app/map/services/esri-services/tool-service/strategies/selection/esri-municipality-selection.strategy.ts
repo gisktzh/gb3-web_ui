@@ -1,7 +1,7 @@
 import {DataDownloadSelectMunicipalityDialogComponent} from '../../../../../components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
 import {PanelClass} from '../../../../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
-import {Observable, of, switchMap} from 'rxjs';
+import {Observable, of, switchMap, map} from 'rxjs';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
@@ -10,7 +10,6 @@ import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/in
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import {Municipality, MunicipalityWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {Gb3GeoshopMunicipalitiesService} from '../../../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
-import {map} from 'rxjs';
 import {ConfigService} from '../../../../../../shared/services/config.service';
 import {DrawingCallbackHandler, DrawingCallbackHandlerArgsSelection} from '../../interfaces/drawing-callback-handler.interface';
 

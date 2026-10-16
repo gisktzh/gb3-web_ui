@@ -1,11 +1,10 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {tap} from 'rxjs';
+import {tap, map} from 'rxjs';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapService} from '../../../map/interfaces/map.service';
 import {selectMapPageParams} from '../selectors/map-config-params.selector';
-import {map} from 'rxjs';
 import {UrlActions} from '../../app/actions/url.actions';
 import {Store} from '@ngrx/store';
 import {SearchActions} from '../../app/actions/search.actions';
@@ -60,7 +59,7 @@ export class MapConfigEffects {
       return this.actions$.pipe(
         ofType(MapConfigActions.setMapCenterAndDrawHighlight),
         tap(({center}) => {
-          this.mapService.setMapCenter(center);
+          void this.mapService.setMapCenter(center);
           this.mapDrawingService.drawSearchResultHighlight(center);
         }),
       );

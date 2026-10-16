@@ -9,7 +9,7 @@ import Polyline from '@arcgis/core/geometry/Polyline';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
 import {AbstractEsriDrawableToolStrategy} from '../tool-service/strategies/abstract-esri-drawable-tool.strategy';
-import {GeometryUnion} from '@arcgis/core/unionTypes';
+import {GeometryUnion} from '@arcgis/core/geometry/types';
 
 export class InternalDrawingRepresentationToEsriGraphicUtils {
   public static async convert(drawing: Gb3StyledInternalDrawingRepresentation): Promise<Graphic> {
