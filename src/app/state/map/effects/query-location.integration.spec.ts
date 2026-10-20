@@ -647,10 +647,11 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     store.dispatch(StatisticsActions.setMode({mode: 'polygon'}));
     expect(await firstValueFrom(store.select(selectQueryPoint))).toEqual(point);
-    expect(await firstValueFrom(store.select(selectGeometry))).toBeUndefined();
+    expect(await firstValueFrom(store.select(selectGeometry))).not.toBeUndefined();
     store.dispatch(MapConfigActions.clearFeatureInfoContent());
     expect(await firstValueFrom(store.select(selectQueryPoint))).toBeUndefined();
     expect(await firstValueFrom(store.select(selectQueryLocation))).toEqual({});
+    expect(await firstValueFrom(store.select(selectGeometry))).toBeUndefined();
   });
 
   it('cancels feature requests on point changes and closure so stale responses cannot repopulate data', async () => {

@@ -27,7 +27,6 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
   ) {
     super(layer, mapView, completeCallbackHandler);
 
-    layer.removeAll();
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.tool = polygonType;
     this.srs = srs;
@@ -43,8 +42,6 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
       ({state, graphic}: CreateEvent) => {
         switch (state) {
           case 'start':
-            this.layer.removeAll();
-            break;
           case 'active':
           case 'cancel':
             break; // currently, these events do not trigger any action
@@ -70,7 +67,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
           case 'start':
             break;
           case 'complete':
-            // TODO: Add completion
+            this.complete(graphic);
             break;
         }
       },

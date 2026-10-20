@@ -346,7 +346,7 @@ describe('StatisticsEffects', () => {
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
-      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.activateTool({tool: 'select-statistics-circle'})]);
+      expect(actualActions).toEqual([ToolActions.switchTool({tool: 'select-statistics-circle'})]);
     });
 
     it('clears the area and hands over the polygon tool for the polygon mode', () => {
@@ -356,7 +356,7 @@ describe('StatisticsEffects', () => {
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
-      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.activateTool({tool: 'select-statistics-polygon'})]);
+      expect(actualActions).toEqual([ToolActions.switchTool({tool: 'select-statistics-polygon'})]);
     });
 
     /** Re-activating the running tool would restart it, and the mode sync would answer with another mode change. */

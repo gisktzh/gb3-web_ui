@@ -607,8 +607,10 @@ export class EsriMapService implements MapService {
   }
 
   public cancelEditMode() {
-    this.isEditModeActive.set(false);
-    this.esriToolService.cancelTool();
+    if (this.isEditModeActive()) {
+      this.isEditModeActive.set(false);
+      this.esriToolService.cancelTool();
+    }
   }
 
   private createWmsLayer(

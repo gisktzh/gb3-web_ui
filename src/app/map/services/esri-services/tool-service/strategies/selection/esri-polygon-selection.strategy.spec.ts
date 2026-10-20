@@ -81,7 +81,7 @@ describe('EsriPolygonSelectionStrategy', () => {
   });
 
   describe('start', () => {
-    it('removes all existing layers on start', () => {
+    it('does not remove all existing layers on start (handled elsewhere)', () => {
       const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const layerRemoveAllSpy = vi.spyOn(layer, 'removeAll');
       const strategy = new EsriPolygonSelectionStrategyWrapper(
@@ -99,7 +99,7 @@ describe('EsriPolygonSelectionStrategy', () => {
 
         callback({state: 'start'});
 
-        expect(layerRemoveAllSpy).toHaveBeenCalledTimes(2);
+        expect(layerRemoveAllSpy).not.toHaveBeenCalled();
         expect(callbackSpy).not.toHaveBeenCalled();
 
         return mockResourceHandle;
