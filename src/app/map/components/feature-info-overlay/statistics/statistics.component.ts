@@ -21,8 +21,8 @@ import {
   minimumStatisticsRadiusInMeters,
 } from '../../../../shared/configs/statistics.config';
 import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {FeatureInfoGeneralInformationComponent} from '../feature-info-general-information/feature-info-general-information.component';
 import {StatisticsItemComponent} from '../statistics-item/statistics-item.component';
-import {DecimalPipe} from '@angular/common';
 
 @Component({
   selector: 'statistics',
@@ -31,13 +31,13 @@ import {DecimalPipe} from '@angular/common';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     LoadingAndProcessBarComponent,
+    FeatureInfoGeneralInformationComponent,
     StatisticsItemComponent,
     MatDivider,
     MatSelect,
     MatSelectTrigger,
     MatOption,
     MatIcon,
-    DecimalPipe,
   ],
 })
 export class StatisticsComponent {
