@@ -61,8 +61,8 @@
 @if (areaTooLarge()) {
   <p role="alert">Das gewählte Gebiet ist zu gross. Verkleinern Sie es auf höchstens {{ maximumAreaInSquareKilometers }} km².</p>
 } @else if (loadingState() === 'loaded') {
-  @if (generalInfoData(); as generalInfoData) {
-    <feature-info-general-information [generalInfoData]="generalInfoData" [areaInSquareMeters]="areaInSquareMeters()" />
+  @if (areaInSquareMeters(); as areaInSquareMeters) {
+    <p class="statistics__area"><b>Fläche:</b> {{ areaInSquareMeters / 1000000 | number: '1.0-3' }} km²</p>
     <mat-divider class="statistics__divider" />
   }
   @for (result of data(); track result.topic) {
