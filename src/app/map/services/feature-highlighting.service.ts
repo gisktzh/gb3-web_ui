@@ -1,5 +1,5 @@
 import {Injectable, OnDestroy, inject} from '@angular/core';
-import {distinctUntilChanged, map, of, Subscription, switchMap, tap} from 'rxjs';
+import {defaultIfEmpty, distinctUntilChanged, filter, map, of, Subscription, switchMap, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapDrawingService} from './map-drawing.service';
 import {MAP_SERVICE} from '../../app.tokens';
@@ -28,19 +28,38 @@ export class FeatureHighlightingService implements OnDestroy {
     this.subscription = this.mapReadyState$
       .pipe(
         distinctUntilChanged(),
-        switchMap((isReady) =>
-          isReady
-            ? this.featureHighlightToDraw$.pipe(
-                distinctUntilChanged((previous, current) => previous.geometry === current.geometry && previous.source === current.source),
-                switchMap(({geometry, source, ready}) =>
-                  geometry && source && ready
-                    ? this.mapService.observeFeatureInfoLayerVisibility(source).pipe(map((visible) => (visible ? geometry : undefined)))
-                    : of(undefined),
-                ),
-              )
-            : of(undefined),
-        ),
-        tap((feature) => (feature ? this.highlightFeature(feature) : this.removeHighlightedFeature())),
+        switchMap((isReady) => {
+          if (!isReady) {
+            return of(undefined);
+          }
+
+          return this.featureHighlightToDraw$.pipe(
+            distinctUntilChanged((previous, current) => previous.geometry === current.geometry && previous.source === current.source),
+            switchMap(({geometry, source, ready}) => {
+              if (!geometry || !source || !ready) {
+                return of(undefined);
+              }
+
+              return this.mapService.observeFeatureInfoLayerVisibility(source).pipe(
+                map((visible) => {
+                  if (visible) {
+                    return geometry;
+                  }
+
+                  return undefined;
+                }),
+              );
+            }),
+          );
+        }),
+        tap((feature) => {
+          if (feature) {
+            this.highlightFeature(feature);
+            return;
+          }
+
+          this.removeHighlightedFeature();
+        }),
       )
       .subscribe();
   }

@@ -2,7 +2,7 @@ import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
-import {catchError, distinctUntilChanged, filter, map, of, skip, switchMap, takeUntil, tap} from 'rxjs';
+import {catchError, defaultIfEmpty, distinctUntilChanged, filter, map, of, skip, switchMap, takeUntil, tap} from 'rxjs';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {ToolActions} from '../actions/tool.actions';
@@ -66,16 +66,34 @@ export class StatisticsEffects {
   public highlightResults$ = createEffect(
     () => {
       return this.store.select(selectStatisticsHighlights).pipe(
-        switchMap(({geometries, queryMode, source, ready}) =>
-          ready && geometries && queryMode === 'statistics' && source
-            ? this.mapService
-                .observeFeatureInfoLayerVisibility({mapItemId: source.topic, layerName: source.layer})
-                .pipe(map((visible) => (visible ? geometries : undefined)))
-            : of(undefined),
-        ),
-        tap((geometries) =>
-          geometries ? this.mapDrawingService.drawStatisticsHighlights(geometries) : this.mapDrawingService.clearStatisticsHighlights(),
-        ),
+        switchMap(({geometries, queryMode, source, ready}) => {
+          if (!ready || !geometries || queryMode !== 'statistics' || !source) {
+            return of(undefined);
+          }
+
+          return this.mapService
+            .observeFeatureInfoLayerVisibility({
+              mapItemId: source.topic,
+              layerName: source.layer,
+            })
+            .pipe(
+              map((visible) => {
+                if (visible) {
+                  return geometries;
+                }
+
+                return undefined;
+              }),
+            );
+        }),
+        tap((geometries) => {
+          if (geometries) {
+            this.mapDrawingService.drawStatisticsHighlights(geometries);
+            return;
+          }
+
+          this.mapDrawingService.clearStatisticsHighlights();
+        }),
       );
     },
     {dispatch: false},
