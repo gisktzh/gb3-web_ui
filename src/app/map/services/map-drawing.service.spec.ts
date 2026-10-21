@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 
-import {ELEVATION_PROFILE_LOCATION_IDENTIFIER, MapDrawingService} from './map-drawing.service';
+import {ELEVATION_PROFILE_LOCATION_IDENTIFIER, MapDrawingService, STATISTICS_SELECTION_IDENTIFIER} from './map-drawing.service';
 import {provideMockStore} from '@ngrx/store/testing';
 import {MapService} from '../interfaces/map.service';
 import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
@@ -133,6 +133,23 @@ describe('MapDrawingService', () => {
       service.clearStatisticsHighlights();
 
       expect(clear).toHaveBeenCalledExactlyOnceWith(InternalDrawingLayer.StatisticsHighlight);
+    });
+  });
+
+  describe('drawStatisticsArea', () => {
+    it('should remove existing geometries and add the new one', () => {
+      const addGeometrySpy = vi.spyOn(mapService, 'addGeometryToInternalDrawingLayer');
+      const clearSpy = vi.spyOn(mapService, 'clearInternalDrawingLayer');
+      const mockGeometry = MinimalGeometriesUtils.getMinimalLineString(2056);
+
+      service.drawStatisticsArea(mockGeometry);
+
+      expect(clearSpy).toHaveBeenCalledExactlyOnceWith(InternalDrawingLayer.StatisticsArea);
+      expect(addGeometrySpy).toHaveBeenCalledExactlyOnceWith(
+        mockGeometry,
+        InternalDrawingLayer.StatisticsArea,
+        STATISTICS_SELECTION_IDENTIFIER,
+      );
     });
   });
 

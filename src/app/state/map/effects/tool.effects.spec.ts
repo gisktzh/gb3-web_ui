@@ -13,12 +13,16 @@ import {DrawingTool} from '../../../shared/types/drawing-tool.type';
 import {DataDownloadSelectionTool} from '../../../shared/types/data-download-selection-tool.type';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {MapService} from 'src/app/map/interfaces/map.service';
+import {ToolType} from 'src/app/shared/types/tool.type';
+import {StatisticsActions} from '../actions/statistics.actions';
 
 describe('ToolEffects', () => {
-  let actions$: Observable<Action>;
+  let actions$: Observable<Action | Action[]>;
   let store: MockStore;
   let effects: ToolEffects;
   let toolService: ToolService;
+  let mapService: MapService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -35,7 +39,7 @@ describe('ToolEffects', () => {
       ],
     });
     effects = TestBed.inject(ToolEffects);
-    const mapService = TestBed.inject(MAP_SERVICE);
+    mapService = TestBed.inject(MAP_SERVICE);
     toolService = mapService.getToolService();
 
     store = TestBed.inject(MockStore);
@@ -157,5 +161,21 @@ describe('ToolEffects', () => {
         expect(action).toEqual(expectedAction);
       });
     });
+  });
+
+  describe('switchTool$', () => {
+    it.each(['select-statistics-circle', 'select-statistics-polygon'] as ToolType[])(
+      'cancels edit mode, dispatches `StatisticsActions.clearContent` and activates the %s tool',
+      (tool) => {
+        const mapServiceCancelSpy = vi.spyOn(mapService, 'cancelEditMode');
+        const expectedActions = [StatisticsActions.clearContent(), ToolActions.activateTool({tool})];
+        actions$ = of(ToolActions.switchTool({tool}));
+        const actualActions: Action[] = [];
+        effects.switchTool$.subscribe((action) => actualActions.push(action));
+
+        expect(mapServiceCancelSpy).toHaveBeenCalledOnce();
+        expect(actualActions).toEqual(expectedActions);
+      },
+    );
   });
 });
