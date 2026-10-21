@@ -60,6 +60,14 @@ export const faqData: FaqCollection[] = [
           ' GeoJSON- oder KML-Datei gespeichert und wieder importiert werden (Funktionen Zeichnung herunter-/hochladen).',
       },
       {
+        uuid: '32c754de-c81a-45b7-862e-cc371a3e3f08',
+        question: 'Wie verwende ich das Statistiktool?',
+        answer:
+          'Sobald mindestens eine der Statistikkarten (Bevölkerung, Gebäude oder Beschäftigte) aktiviert ist, kannst du in der' +
+          ' Werkzeugleiste das Statistik-Tool auswählen. Du kannst nun entweder einen Kreis ziehen oder eine eigene Fläche (Polygon) zeichnen.' +
+          ' Das System berechnet automatisch die Gesamtsummen aller aktiven Kennzahlen für den markierten Bereich und zeigt diese im Infofenster an.',
+      },
+      {
         uuid: 'd1177871-e8c8-49e2-b3f0-4ec7b45986a5',
         question: 'Wo kann ich ein Höhenprofil zeichnen?',
         answer:
