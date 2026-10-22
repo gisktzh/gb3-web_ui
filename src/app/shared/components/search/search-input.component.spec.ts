@@ -5,14 +5,15 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {provideUiTour} from 'ngx-ui-tour-md-menu';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {SearchMode} from '../../types/search-mode.type';
-import {SearchInputComponent} from './search-input.component';
 import {SearchInputHarness} from './search-input.harness';
+import {SearchInputComponent} from './search-input.component';
 
 describe('SearchInputComponent', () => {
   let component: SearchInputComponent;
   let fixture: ComponentFixture<SearchInputComponent>;
   let harness: SearchInputHarness;
   let store: MockStore;
+  let changeTerm: ReturnType<typeof vi.fn<(term: string) => void>>;
 
   const placeholderText = signal('Search maps');
   const showFilterButton = signal(true);
@@ -23,7 +24,8 @@ describe('SearchInputComponent', () => {
   const isAnyFilterActive = signal(false);
 
   beforeEach(async () => {
-    placeholderText.set('Search maps');
+    vi.useFakeTimers();
+    placeholderText.set('Search');
     showFilterButton.set(true);
     alwaysEnableClearButton.set(false);
     clearButtonLabel.set(undefined);
@@ -52,10 +54,15 @@ describe('SearchInputComponent', () => {
     });
     fixture.detectChanges();
     component = fixture.componentInstance;
+    changeTerm = vi.fn<(term: string) => void>();
+    component.changeSearchTermEvent.subscribe(changeTerm);
     harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, SearchInputHarness);
   });
 
-  afterEach(() => vi.useRealTimers());
+  afterEach(() => {
+    fixture.destroy();
+    vi.useRealTimers();
+  });
 
   it('debounces emitted search terms', async () => {
     vi.useFakeTimers();
@@ -133,5 +140,66 @@ describe('SearchInputComponent', () => {
     expect(document.activeElement).toBe(component.inputRef().nativeElement);
     expect(focus).toHaveBeenCalledOnce();
     await expect(harness.getValue()).resolves.toBe('');
+  });
+
+  it('restores a term without emitting a search', () => {
+    component.setTerm('hanglagen', false);
+    fixture.detectChanges();
+    vi.advanceTimersByTime(300);
+
+    expect(component.searchTerm()).toBe('hanglagen');
+    expect(changeTerm).not.toHaveBeenCalled();
+  });
+
+  it('emits an edit made immediately after restoring a term', () => {
+    component.setTerm('hanglagen', false);
+    fixture.detectChanges();
+    component.searchTerm.set('hanglagen BLW');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(299);
+    expect(changeTerm).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
+
+    expect(changeTerm).toHaveBeenCalledExactlyOnceWith('hanglagen BLW');
+  });
+
+  it('debounces successive edits to the latest term', () => {
+    component.searchTerm.set('hang');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(200);
+    component.searchTerm.set('hanglagen');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(300);
+
+    expect(changeTerm).toHaveBeenCalledExactlyOnceWith('hanglagen');
+  });
+
+  it('clears once and allows the previous search term to be entered again', () => {
+    const clearTerm = vi.fn();
+    component.clearSearchTermEvent.subscribe(clearTerm);
+    component.setTerm('hanglagen', true);
+    fixture.detectChanges();
+    vi.advanceTimersByTime(300);
+    changeTerm.mockClear();
+
+    component.clearInput();
+    fixture.detectChanges();
+    vi.advanceTimersByTime(300);
+    expect(clearTerm).toHaveBeenCalledOnce();
+    expect(changeTerm).not.toHaveBeenCalled();
+
+    component.searchTerm.set('hanglagen');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(300);
+    expect(changeTerm).toHaveBeenCalledExactlyOnceWith('hanglagen');
+  });
+
+  it('cancels a pending search when destroyed', () => {
+    component.searchTerm.set('hanglagen');
+    fixture.detectChanges();
+    fixture.destroy();
+    vi.advanceTimersByTime(300);
+
+    expect(changeTerm).not.toHaveBeenCalled();
   });
 });

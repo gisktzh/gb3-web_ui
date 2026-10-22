@@ -63,8 +63,8 @@
 } @else if (loadingState() === 'loaded') {
   @if (areaInSquareMeters(); as areaInSquareMeters) {
     <p class="statistics__area"><b>Fläche:</b> {{ areaInSquareMeters / 1000000 | number: '1.0-3' }} km²</p>
+    <mat-divider class="statistics__divider" />
   }
-  <mat-divider class="statistics__divider" />
   @for (result of data(); track result.topic) {
     <statistics-item
       [attr.data-test-id]="'statistics-result-' + result.topic"
