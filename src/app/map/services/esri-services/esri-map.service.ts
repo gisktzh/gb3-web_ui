@@ -140,7 +140,9 @@ export class EsriMapService implements MapService {
   private readonly printPreviewHandle = signal<ResourceHandle | null>(null);
   private readonly previousPrintPreviewHandle = signal<ResourceHandle | null>(null);
   public readonly mapContainerElement = signal<HTMLDivElement | null>(null);
-  private readonly viewPadding = signal<MapViewPadding | undefined>(undefined);
+  private readonly viewPadding = signal<MapViewPadding | undefined>(undefined, {
+    equal: (a, b) => a?.top === b?.top && a?.left === b?.left && a?.bottom === b?.bottom && a?.right === b?.right,
+  });
 
   constructor() {
     /**
