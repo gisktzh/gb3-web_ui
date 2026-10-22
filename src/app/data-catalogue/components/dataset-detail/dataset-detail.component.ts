@@ -102,6 +102,14 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     };
   });
 
+  public buildMapsUrl(map: MetadataLinkWithTopicId): string {
+    if (map.linkTargetEnv === 'intranet') {
+      return `${this.configService.intranetBaseUrl}/${this.mainPageEnum.Maps}?topics=${map.topic}`;
+    }
+
+    return `${this.configService.internetBaseUrl}/${this.mainPageEnum.Maps}?topics=${map.topic}`;
+  }
+
   protected loadMetadata(id: string) {
     return this.gb3MetadataService.loadDatasetDetail(id);
   }
@@ -113,14 +121,6 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
       category: 'Geodatensatz',
       imageUrl: null,
     };
-  }
-
-  protected buildMapsUrl(map: MetadataLinkWithTopicId): string {
-    if (map.linkTargetEnv === 'intranet') {
-      return `${this.configService.intranetBaseUrl}/${this.mainPageEnum.Maps}?topics=${map.topic}`;
-    }
-
-    return `${this.configService.internetBaseUrl}/${this.mainPageEnum.Maps}?topics=${map.topic}`;
   }
 
   protected extractInformationElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
