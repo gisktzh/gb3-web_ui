@@ -2,7 +2,7 @@ import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
-import {catchError, defaultIfEmpty, distinctUntilChanged, filter, map, of, skip, switchMap, takeUntil, tap} from 'rxjs';
+import {catchError, distinctUntilChanged, filter, map, Observable, of, skip, switchMap, takeUntil, tap} from 'rxjs';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {ToolActions} from '../actions/tool.actions';
@@ -32,6 +32,7 @@ import {selectStatisticsAreaToDraw} from '../selectors/query-graphics.selector';
 import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
 import type {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapService} from 'src/app/map/interfaces/map.service';
+import {FeatureHighlightSource} from 'src/app/shared/interfaces/feature-highlight.interface';
 
 @Injectable()
 export class StatisticsEffects {
@@ -67,33 +68,20 @@ export class StatisticsEffects {
     () => {
       return this.store.select(selectStatisticsHighlights).pipe(
         switchMap(({geometries, queryMode, source, ready}) => {
-          if (!ready || !geometries || queryMode !== 'statistics' || !source) {
+          if (queryMode !== 'statistics' || !source) {
             return of(undefined);
           }
 
-          return this.mapService
-            .observeFeatureInfoLayerVisibility({
+          return this.observeVisibleGeometry(
+            {
               mapItemId: source.topic,
               layerName: source.layer,
-            })
-            .pipe(
-              map((visible) => {
-                if (visible) {
-                  return geometries;
-                }
-
-                return undefined;
-              }),
-            );
+            },
+            geometries,
+            ready,
+          );
         }),
-        tap((geometries) => {
-          if (geometries) {
-            this.mapDrawingService.drawStatisticsHighlights(geometries);
-            return;
-          }
-
-          this.mapDrawingService.clearStatisticsHighlights();
-        }),
+        tap((geometries) => this.updateStatisticsHighlights(geometries)),
       );
     },
     {dispatch: false},
@@ -310,4 +298,33 @@ export class StatisticsEffects {
       }),
     );
   });
+
+  private observeVisibleGeometry<T>(
+    source: FeatureHighlightSource | undefined,
+    geometry: T | undefined,
+    ready: boolean,
+  ): Observable<T | undefined> {
+    if (!ready || !geometry || !source) {
+      return of(undefined);
+    }
+
+    return this.mapService.observeFeatureInfoLayerVisibility(source).pipe(
+      map((visible) => {
+        if (visible) {
+          return geometry;
+        }
+
+        return undefined;
+      }),
+    );
+  }
+
+  private updateStatisticsHighlights(geometries: GeometryWithSrs[] | undefined) {
+    if (geometries) {
+      this.mapDrawingService.drawStatisticsHighlights(geometries);
+      return;
+    }
+
+    this.mapDrawingService.clearStatisticsHighlights();
+  }
 }
