@@ -9,6 +9,8 @@ import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
 import {DatasetDetailComponent} from './dataset-detail.component';
 
 describe('DatasetDetailComponent', () => {
+  const intranetBaseUrl = 'https://intranet.example.com/';
+  const internetBaseUrl = 'https://www.example.com/';
   const contact: DepartmentalContact = {
     department: 'Office',
     division: 'Data',
@@ -54,7 +56,10 @@ describe('DatasetDetailComponent', () => {
     lyr: [{href: 'https://example.com/map.lyr'}],
     pdf: {href: 'https://example.com/doc.pdf'},
     contact: {geodata: contact, metadata: contact},
-    maps: [{uuid: 'map-1', topic: 'terrain', name: 'Terrain map'}],
+    maps: [
+      {uuid: 'map-1-inter', topic: 'terrain-inter', name: 'Terrain map internet', linkTargetEnv: 'internet'},
+      {uuid: 'map-1-intra', topic: 'terrain-intra', name: 'Terrain map intranet', linkTargetEnv: 'intranet'},
+    ],
     services: [{uuid: 'service-1', serviceType: 'WMS', name: 'Terrain WMS'}],
     products: [{uuid: 'product-1', name: 'Terrain package'}],
     layers: [
@@ -81,7 +86,16 @@ describe('DatasetDetailComponent', () => {
         provideRouter([]),
         provideMockStore({selectors: [{selector: selectScreenMode, value: 'regular'}]}),
         {provide: ActivatedRoute, useValue: {paramMap: of(paramMap), snapshot: {paramMap}}},
-        {provide: ConfigService, useValue: {apiConfig: {gb2StaticFiles: {baseUrl: 'https://static.example.com'}}}},
+        {
+          provide: ConfigService,
+          useValue: {
+            apiConfig: {
+              gb2StaticFiles: {baseUrl: 'https://static.example.com'},
+            },
+            intranetBaseUrl,
+            internetBaseUrl,
+          },
+        },
         {provide: Gb3MetadataService, useValue: {loadDatasetDetail}},
       ],
     })
@@ -119,5 +133,17 @@ describe('DatasetDetailComponent', () => {
     expect(component.datasetLayers()).toEqual(metadata.layers);
     expect(component.linkedData()).toEqual({maps: metadata.maps, services: metadata.services, products: metadata.products});
     expect(component.geodataContactElements()).toContainEqual({title: 'Kontaktperson', value: 'Dorothy Vaughan', type: 'text'});
+  });
+
+  it('builds URLs correctly for internet and intranet maps', async () => {
+    const fixture = TestBed.createComponent(DatasetDetailComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const component = fixture.componentInstance;
+    const linkedMaps = component.linkedData().maps;
+
+    expect(component.buildMapsUrl(linkedMaps[0])).toBe(`${internetBaseUrl}/maps?topics=terrain-inter`);
+    expect(component.buildMapsUrl(linkedMaps[1])).toBe(`${intranetBaseUrl}/maps?topics=terrain-intra`);
   });
 });
