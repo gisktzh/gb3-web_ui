@@ -110,6 +110,11 @@ describe('OerebExtractEffects', () => {
         completeness: 'vollständig',
         area: 12,
         statusOfficialSurvey: '1970-01-01 00:00:00',
+        parcel: {
+          type: 'Point',
+          coordinates: [1, 2],
+          srs: 2056,
+        },
       };
 
       oerebExtractService.loadOerebExtract.mockReturnValue(of(oerebExtract));

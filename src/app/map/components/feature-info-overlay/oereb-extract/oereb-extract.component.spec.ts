@@ -5,6 +5,8 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {selectScrollbarWidth} from 'src/app/state/app/reducers/app-layout.reducer';
 import {OerebExtractResponse} from 'src/app/shared/interfaces/oereb-extract.interface';
 import {OerebExtractComponent} from './oereb-extract.component';
+import {MapServiceStub} from '../../../../testing/map-testing/map.service.stub';
+import {MAP_SERVICE} from 'src/app/app.tokens';
 
 describe('OerebExtractComponent', () => {
   let fixture: ComponentFixture<OerebExtractComponent>;
@@ -42,6 +44,11 @@ describe('OerebExtractComponent', () => {
     completeness: '',
     area: 0,
     statusOfficialSurvey: '',
+    parcel: {
+      type: 'Point',
+      coordinates: [1, 2],
+      srs: 2056,
+    },
   });
 
   class MockResizeObserver implements ResizeObserver {
@@ -55,7 +62,11 @@ describe('OerebExtractComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [OerebExtractComponent],
-      providers: [provideRouter([]), provideMockStore({selectors: [{selector: selectScrollbarWidth, value: 17}]})],
+      providers: [
+        provideRouter([]),
+        provideMockStore({selectors: [{selector: selectScrollbarWidth, value: 17}]}),
+        {provide: MAP_SERVICE, useClass: MapServiceStub},
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OerebExtractComponent, {bindings: [inputBinding('data', data)]});

@@ -26,6 +26,7 @@ describe('FeatureHighlightingService', () => {
   };
 
   const source = {
+    sourceType: 'feature_info' as const,
     mapItemId: 'map_layer',
     layerName: 'layer',
   };

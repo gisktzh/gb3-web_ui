@@ -119,6 +119,11 @@ describe('shared feature/statistics query location', () => {
     concernedThemes: [],
     notConcernedThemes: [],
     notAvailableThemes: [],
+    parcel: {
+      type: 'Point',
+      coordinates: [1, 2],
+      srs: 2056,
+    },
   };
   const oerebItem = () => {
     const item = createGb2WmsMapItemMock('KatOerebRaumplanungZH', 1);
@@ -318,7 +323,7 @@ describe('shared feature/statistics query location', () => {
       FeatureInfoActions.highlightFeature({
         feature: point,
         pinnedFeatureId: 'topic_layer_1',
-        source: {mapItemId: 'layer', layerName: 'layer'},
+        source: {sourceType: 'feature_info' as const, mapItemId: 'layer', layerName: 'layer'},
       }),
     );
     expect(drawing.drawFeatureInfoHighlight).toHaveBeenLastCalledWith(point);
@@ -547,7 +552,7 @@ describe('shared feature/statistics query location', () => {
           FeatureInfoActions.highlightFeature({
             feature: point,
             pinnedFeatureId: 'topic_layer_1',
-            source: {mapItemId: 'layer', layerName: 'layer'},
+            source: {sourceType: 'feature_info' as const, mapItemId: 'layer', layerName: 'layer'},
           }),
         );
         store.dispatch(QueryModeActions.setQueryMode({queryMode}));
@@ -734,7 +739,7 @@ describe('shared feature/statistics query location', () => {
         FeatureInfoActions.highlightFeature({
           feature: point,
           pinnedFeatureId: 'topic_layer_1',
-          source: {mapItemId: 'layer', layerName: 'layer'},
+          source: {sourceType: 'feature_info' as const, mapItemId: 'layer', layerName: 'layer'},
         }),
       );
       store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());

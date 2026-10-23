@@ -595,6 +595,10 @@ export class EsriMapService implements MapService {
           new Observable<boolean>((subscriber) => {
             const handle = reactiveUtils.watch(
               () => {
+                // Highlight from the oereb extract is always visible.
+                if (source.sourceType === 'oereb_extract') {
+                  return true;
+                }
                 const resolved = this.resolveFeatureInfoLayer(source, items);
                 const view = this.esriMapViewService.mapView();
                 if (!resolved || !view) {
@@ -622,6 +626,10 @@ export class EsriMapService implements MapService {
   }
 
   private resolveFeatureInfoLayer(source: FeatureHighlightSource, items: ActiveMapItem[] = this.activeMapItems()) {
+    if (source.sourceType === 'oereb_extract') {
+      return undefined;
+    }
+
     const mapItem = items.find((item) => item.id === source.mapItemId);
     if (!(mapItem instanceof Gb2WmsActiveMapItem)) {
       return undefined;

@@ -764,7 +764,7 @@ describe('EsriMapService', () => {
     let mapItem: Gb2WmsActiveMapItem;
     let wmsLayer: WMSLayer;
     let sublayer: WMSSublayer;
-    const source = {mapItemId: 'topic', layerName: 'layer0_topic'};
+    const source = {sourceType: 'feature_info' as const, mapItemId: 'topic', layerName: 'layer0_topic'};
 
     beforeEach(() => {
       mapItem = createGb2WmsMapItemMock(source.mapItemId, 1);
@@ -813,10 +813,12 @@ describe('EsriMapService', () => {
       mapMock.add(singleWmsLayer);
       store.overrideSelector(selectAllItems, [singleItem]);
       store.refreshState();
-      expect(service.getFeatureInfoScaleRange({mapItemId: singleItem.id, layerName: source.layerName})).toEqual({
-        minScale: 10000,
-        maxScale: 50000,
-      });
+      expect(service.getFeatureInfoScaleRange({sourceType: 'feature_info', mapItemId: singleItem.id, layerName: source.layerName})).toEqual(
+        {
+          minScale: 10000,
+          maxScale: 50000,
+        },
+      );
     });
 
     it('returns no range for missing, loading or contradictory sources', () => {

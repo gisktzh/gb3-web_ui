@@ -156,6 +156,16 @@ describe('Gb3OerebExtractService', () => {
           ],
           not_concerned_themes: [notConcernedTheme],
           not_available_themes: [notAvailableTheme],
+          parcel: {
+            type: 'Point',
+            coordinates: [1, 2],
+            crs: {
+              type: 'name',
+              properties: {
+                name: 'EPSG:2056',
+              },
+            },
+          },
         },
       } as OerebAPIFeature;
 
@@ -266,6 +276,11 @@ describe('Gb3OerebExtractService', () => {
             ...notAvailableTheme,
           },
         ],
+        parcel: {
+          type: 'Point',
+          coordinates: [1, 2],
+          srs: 2056,
+        },
       };
 
       service.loadOerebExtract(x, y).subscribe((actual) => {
@@ -299,6 +314,10 @@ describe('Gb3OerebExtractService', () => {
           concerned_themes: [],
           not_concerned_themes: [],
           not_available_themes: [],
+          parcel: {
+            type: 'Point',
+            coordinates: [1, 2],
+          },
         },
       };
 
@@ -337,6 +356,10 @@ describe('Gb3OerebExtractService', () => {
           concerned_themes: [],
           not_concerned_themes: [],
           not_available_themes: [],
+          parcel: {
+            type: 'Point',
+            coordinates: [1, 2],
+          },
         },
       } as OerebAPIFeature;
 
