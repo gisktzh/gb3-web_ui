@@ -147,7 +147,7 @@ describe('StatisticsEffects', () => {
       store.overrideSelector(selectIsMapServiceInitialized, false);
       const subscription = effects.highlightResults$.subscribe();
       expect(draw).not.toHaveBeenCalled();
-      expect(clear).not.toHaveBeenCalled();
+      expect(clear).toHaveBeenCalledExactlyOnceWith();
 
       store.overrideSelector(selectReady, true);
       store.refreshState();
@@ -181,7 +181,7 @@ describe('StatisticsEffects', () => {
       store.overrideSelector(selectData, []);
       store.refreshState();
       expect(draw).not.toHaveBeenCalled();
-      expect(clear).not.toHaveBeenCalled();
+      expect(clear).toHaveBeenCalledTimes(2);
       store.overrideSelector(selectData, results);
       store.refreshState();
       store.overrideSelector(selectIsMapServiceInitialized, true);

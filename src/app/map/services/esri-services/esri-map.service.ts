@@ -79,6 +79,13 @@ import {RequestInterceptor} from '@arcgis/core/request/types';
 import {ResourceHandle} from '@arcgis/core/core/Handles';
 import {ClickEvent, LayerViewCreateEvent} from '@arcgis/core/views/input/types';
 import {MapViewPadding} from '../../../shared/interfaces/map-view-padding.interface';
+import {FeatureHighlightSource, FeatureInfoScaleRange} from '../../../shared/interfaces/feature-highlight.interface';
+import {
+  getVisibleFeatureInfoScale,
+  intersectFeatureInfoScaleRanges,
+  isInFeatureInfoScaleRange,
+} from '../../../shared/utils/feature-info-scale.utils';
+import {distinctUntilChanged, Observable, switchMap} from 'rxjs';
 import {calculateBoundingBox} from '../../../shared/utils/geojson-bounds.utils';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -502,18 +509,29 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public zoomToPoint(point: PointWithSrs, scale: number): Promise<never> {
+  public zoomToPoint(point: PointWithSrs, scale: number): Promise<void> {
     return this.getMapView().goTo({
       center: this.createGeoReferencedPoint(point),
       scale: scale,
-    }) as never;
+    });
   }
 
-  public zoomToExtent(geometry: GeometryWithSrs, expandFactor: number = 1.075, duration?: number): Promise<never> {
+  public zoomToExtent(
+    geometry: GeometryWithSrs,
+    expandFactor: number = 1.075,
+    duration?: number,
+    scaleRange?: FeatureInfoScaleRange,
+  ): Promise<void> {
+    if (scaleRange && scaleRange.minScale > scaleRange.maxScale) {
+      return Promise.resolve();
+    }
+
     const bounds = calculateBoundingBox(geometry);
     if (!bounds) {
-      return Promise.resolve() as Promise<never>;
+      return Promise.resolve();
     }
+
+    const view = this.getMapView();
 
     if (geometry.type === 'GeometryCollection') {
       const {minX, maxX, minY, maxY} = bounds;
@@ -521,26 +539,129 @@ export class EsriMapService implements MapService {
         return this.zoomToExtent({type: 'Point', coordinates: [minX, minY], srs: geometry.srs}, expandFactor, duration);
       }
       const extent = new Extent({xmin: minX, xmax: maxX, ymin: minY, ymax: maxY, spatialReference: {wkid: geometry.srs}});
-      return this.getMapView().goTo(extent.expand(expandFactor), {duration}) as never;
+      return view.goTo(extent.expand(expandFactor), {duration}) as never;
     }
 
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
 
     if (esriGeometry instanceof Point) {
-      return this.getMapView().goTo(
+      return view.goTo(
         {
           center: esriGeometry,
-          scale: DEFAULT_POINT_ZOOM_EXTENT_SCALE,
+          scale: getVisibleFeatureInfoScale(DEFAULT_POINT_ZOOM_EXTENT_SCALE, scaleRange),
         },
         {duration},
-      ) as never;
+      );
     }
 
     if (hasNonNullishProperty(esriGeometry, 'extent')) {
-      return this.getMapView().goTo(esriGeometry.extent.clone().expand(expandFactor), {duration}) as never;
+      const extent = esriGeometry.extent.clone().expand(expandFactor);
+
+      if (!scaleRange) {
+        return view.goTo(extent, {duration});
+      }
+
+      const projectedExtent = extent.spatialReference.equals(view.spatialReference) ? extent : this.transformationService.transform(extent);
+      const padding = view.padding ?? NO_VIEW_PADDING;
+      const width = Math.max(1, view.width - padding.left - padding.right);
+      const height = Math.max(1, view.height - padding.top - padding.bottom);
+      const angle = (view.rotation * Math.PI) / 180;
+      const cos = Math.abs(Math.cos(angle));
+      const sin = Math.abs(Math.sin(angle));
+      const resolution = Math.max(
+        (projectedExtent.width * cos + projectedExtent.height * sin) / width,
+        (projectedExtent.width * sin + projectedExtent.height * cos) / height,
+      );
+      const targetScale = resolution * (view.scale / view.resolution);
+
+      if (!isInFeatureInfoScaleRange(targetScale, scaleRange)) {
+        return view.goTo({center: projectedExtent.center, scale: getVisibleFeatureInfoScale(targetScale, scaleRange)}, {duration});
+      }
+
+      return view.goTo(extent, {duration});
     }
 
     throw new ZoomExtentMissing();
+  }
+
+  public getFeatureInfoScaleRange(source: FeatureHighlightSource): FeatureInfoScaleRange | undefined {
+    return this.resolveFeatureInfoLayer(source)?.scaleRange;
+  }
+
+  public observeFeatureInfoLayerVisibility(source: FeatureHighlightSource): Observable<boolean> {
+    return this.store.select(selectAllItems).pipe(
+      switchMap(
+        (items) =>
+          new Observable<boolean>((subscriber) => {
+            const handle = reactiveUtils.watch(
+              () => {
+                const resolved = this.resolveFeatureInfoLayer(source, items);
+                const view = this.esriMapViewService.mapView();
+                if (!resolved || !view) {
+                  return false;
+                }
+                const {mapItem, mapLayer, wmsLayer, ancestors, scaleRange} = resolved;
+                return (
+                  mapItem.visible &&
+                  mapItem.opacity > 0 &&
+                  mapLayer.visible &&
+                  wmsLayer.visible &&
+                  wmsLayer.opacity > 0 &&
+                  ancestors.every((layer) => layer.visible) &&
+                  isInFeatureInfoScaleRange(view.scale, scaleRange)
+                );
+              },
+              (visible) => subscriber.next(visible),
+              {initial: true, sync: true},
+            );
+            return () => handle.remove();
+          }),
+      ),
+      distinctUntilChanged(),
+    );
+  }
+
+  private resolveFeatureInfoLayer(source: FeatureHighlightSource, items: ActiveMapItem[] = this.activeMapItems()) {
+    const mapItem = items.find((item) => item.id === source.mapItemId);
+    if (!(mapItem instanceof Gb2WmsActiveMapItem)) {
+      return undefined;
+    }
+    const mapLayer = mapItem.settings.layers.find((layer) => layer.layer === source.layerName);
+    const wmsLayer = this.esriMapViewService.findEsriLayer(source.mapItemId);
+    if (!mapLayer || !(wmsLayer instanceof WMSLayer) || wmsLayer.loadStatus !== 'loaded') {
+      return undefined;
+    }
+    const findAncestors = (
+      parent: WMSSublayer | WMSLayer,
+      ancestors: (WMSSublayer | WMSLayer)[],
+    ): (WMSSublayer | WMSLayer)[] | undefined => {
+      // Traverse the displayed tree; parent references may lag behind collection changes.
+      for (const child of parent.sublayers ?? []) {
+        const path = [...ancestors, child];
+        if (child.name === source.layerName) {
+          return path;
+        }
+        const match = findAncestors(child, path);
+        if (match) {
+          return match;
+        }
+      }
+      return undefined;
+    };
+    const ancestors = findAncestors(wmsLayer, [wmsLayer]);
+    if (!ancestors) {
+      return undefined;
+    }
+    // Explicitly configured WMS sublayers can retain zero limits. The API layer range
+    // also reflects the server's rendering limits. Catalog topic.minScale does not govern rendering.
+    const scaleRange = intersectFeatureInfoScaleRanges([
+      {minScale: mapLayer.minScale, maxScale: mapLayer.maxScale},
+      ...ancestors.map((layer) => ({minScale: layer.maxScale, maxScale: layer.minScale})),
+    ]);
+    if (scaleRange.minScale > scaleRange.maxScale) {
+      return undefined;
+    }
+    return {mapItem, mapLayer, wmsLayer, ancestors, scaleRange};
   }
 
   public addGeometryToInternalDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer, id?: string) {

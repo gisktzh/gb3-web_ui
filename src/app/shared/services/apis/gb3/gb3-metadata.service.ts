@@ -150,7 +150,7 @@ export class Gb3MetadataService extends Gb3ApiService {
   private transformDatasetsDetailDataToDatasetMetadata(dataset: Dataset): DatasetMetadata {
     return {
       name: dataset.name,
-      maps: dataset.maps.map(({uuid, name, topic}) => ({uuid, name, topic})),
+      maps: dataset.maps.map(({uuid, name, topic, link_target_env}) => ({uuid, name, topic, linkTargetEnv: link_target_env})),
       uuid: dataset.uuid,
       gisZHNr: dataset.giszhnr,
       keywords: dataset.keywords,

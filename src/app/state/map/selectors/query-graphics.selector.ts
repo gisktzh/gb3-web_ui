@@ -2,7 +2,7 @@ import {createSelector} from '@ngrx/store';
 import {selectIsMapServiceInitialized, selectReady} from '../reducers/map-config.reducer';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {selectGeometry} from '../reducers/statistics.reducer';
-import {selectHighlightedFeature} from '../reducers/feature-info.reducer';
+import {selectHighlightedFeature, selectHighlightedFeatureSource} from '../reducers/feature-info.reducer';
 
 export const selectMapGraphicsReady = createSelector(
   selectReady,
@@ -19,7 +19,8 @@ export const selectStatisticsAreaToDraw = createSelector(
 
 export const selectFeatureHighlightToDraw = createSelector(
   selectHighlightedFeature,
+  selectHighlightedFeatureSource,
   selectQueryMode,
   selectMapGraphicsReady,
-  (geometry, queryMode, ready) => ({ready, geometry: queryMode === 'feature' ? geometry : undefined}),
+  (geometry, source, queryMode, ready) => ({ready, geometry: queryMode === 'feature' ? geometry : undefined, source}),
 );

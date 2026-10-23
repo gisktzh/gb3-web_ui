@@ -32,6 +32,7 @@ import {defaultFeatureFlags} from '../configs/feature-flags.config';
 import {FeatureFlags} from '../interfaces/feature-flags.interface';
 import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {OerebMaps} from '../configs/oereb-maps.config';
+import {AccessMode} from '../types/access-mode.type';
 
 @Injectable({
   providedIn: 'root',
@@ -69,6 +70,8 @@ export class ConfigService {
   public readonly apiConfig: ApiConfig;
   public readonly overridesConfig: OverrideSettings;
   public readonly authConfig: AuthSettings;
+  public readonly gb3BaseUrlsByAccessmode: Map<AccessMode, string>;
+  public readonly currentBaseUrl: string;
   public readonly embeddedMapConfig = {
     title: EmbeddedMapConstants.DEFAULT_TITLE,
     width: EmbeddedMapConstants.DEFAULT_WIDTH,
@@ -99,6 +102,12 @@ export class ConfigService {
     this.overridesConfig = runtimeConfig.overrides;
     this.authConfig = runtimeConfig.authSettings;
     this.featureFlags = {...defaultFeatureFlags, ...runtimeConfig.featureFlags};
+
+    this.gb3BaseUrlsByAccessmode = new Map();
+    defaultRuntimeConfig.forEach((config) => {
+      this.gb3BaseUrlsByAccessmode.set(config.accessMode, config.gb3BaseUrl);
+    });
+    this.currentBaseUrl = runtimeConfig.gb3BaseUrl;
 
     this.store.dispatch(AppActions.setAccessMode({accessMode: runtimeConfig.accessMode}));
     this.initializeDynamicInternalUrlsState();
@@ -133,6 +142,14 @@ export class ConfigService {
 
   public get dataDownloadConfig(): DataDownloadConfig {
     return dataDownloadConfig;
+  }
+
+  public get internetBaseUrl(): string {
+    return this.gb3BaseUrlsByAccessmode.get('internet') || this.currentBaseUrl;
+  }
+
+  public get intranetBaseUrl(): string {
+    return this.gb3BaseUrlsByAccessmode.get('intranet') || this.currentBaseUrl;
   }
 
   /**

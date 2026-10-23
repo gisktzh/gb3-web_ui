@@ -50,6 +50,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     },
     overrides: {},
     accessMode: 'intranet',
+    gb3BaseUrl: '//geo.ktzh.ch',
   },
   {
     hostMatch: 'geo.zh.ch',
@@ -95,5 +96,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     featureFlags: {},
     overrides: {},
     accessMode: 'internet',
+    gb3BaseUrl: '//geo.zh.ch',
   },
 ];
