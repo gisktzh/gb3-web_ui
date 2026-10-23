@@ -9,7 +9,7 @@ import {SupportedSrs} from '../../../../../../shared/types/supported-srs.type';
 import Graphic from '@arcgis/core/Graphic';
 import {SupportedEsriPolygonTool, SupportedEsriTool} from '../supported-esri-tool.type';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {CreateEvent} from '@arcgis/core/widgets/Sketch/types';
+import {CreateEvent, UpdateEvent} from '@arcgis/core/widgets/Sketch/types';
 
 export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy<DrawingCallbackHandlerArgsGeometrySelection> {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
@@ -27,7 +27,6 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
   ) {
     super(layer, mapView, completeCallbackHandler);
 
-    layer.removeAll();
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.tool = polygonType;
     this.srs = srs;
@@ -43,8 +42,6 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
       ({state, graphic}: CreateEvent) => {
         switch (state) {
           case 'start':
-            this.layer.removeAll();
-            break;
           case 'active':
           case 'cancel':
             break; // currently, these events do not trigger any action
@@ -58,8 +55,23 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     );
   }
 
-  public edit(_: Graphic) {
-    // currently, editing is not supported for selection strategies
+  public edit(graphic: Graphic) {
+    this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
+
+    reactiveUtils.on(
+      () => this.sketchViewModel,
+      'update',
+      ({state}: UpdateEvent) => {
+        switch (state) {
+          case 'active':
+          case 'start':
+            break;
+          case 'complete':
+            this.complete(graphic);
+            break;
+        }
+      },
+    );
   }
 
   private complete(graphic: Graphic) {

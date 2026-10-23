@@ -123,7 +123,6 @@ export class EsriMapService implements MapService {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
-  private readonly isEditModeActive = signal(false);
   private readonly isToolActive = computed(() => !!this.activeTool());
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
@@ -140,6 +139,7 @@ export class EsriMapService implements MapService {
   private readonly printPreviewHandle = signal<ResourceHandle | null>(null);
   private readonly previousPrintPreviewHandle = signal<ResourceHandle | null>(null);
   public readonly mapContainerElement = signal<HTMLDivElement | null>(null);
+  public readonly isEditModeActive = signal(false);
   private readonly viewPadding = signal<MapViewPadding | undefined>(undefined, {
     equal: (a, b) => a?.top === b?.top && a?.left === b?.left && a?.bottom === b?.bottom && a?.right === b?.right,
   });
@@ -730,8 +730,10 @@ export class EsriMapService implements MapService {
   }
 
   public cancelEditMode() {
-    this.isEditModeActive.set(false);
-    this.esriToolService.cancelTool();
+    if (this.isEditModeActive()) {
+      this.isEditModeActive.set(false);
+      this.esriToolService.cancelTool();
+    }
   }
 
   private createWmsLayer(

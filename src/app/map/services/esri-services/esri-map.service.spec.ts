@@ -122,6 +122,7 @@ describe('EsriMapService', () => {
     initialMapExtentService = TestBed.inject(InitialMapExtentService);
     vi.spyOn(toolServiceSpy, 'initializeMeasurement').mockImplementation(vi.fn());
     vi.spyOn(toolServiceSpy, 'addExistingDrawingsToLayer').mockImplementation(vi.fn());
+    vi.spyOn(toolServiceSpy, 'cancelTool').mockImplementation(vi.fn());
   });
 
   it('should be created', () => {
@@ -757,6 +758,36 @@ describe('EsriMapService', () => {
       expect(mapViewMock.center.x).toBe(32);
       expect(mapViewMock.center.y).toBe(33);
       expect(mapViewMock.scale).toBe(34);
+    });
+  });
+
+  describe('cancelEditMode', () => {
+    it('should cancel the edit mode and tool if it was active', () => {
+      service.isEditModeActive.set(true);
+
+      service.cancelEditMode();
+
+      expect(toolServiceSpy.cancelTool).toHaveBeenCalled();
+      expect(service.isEditModeActive()).toBe(false);
+    });
+
+    it('should not cancel edit mode and tool if edit mode was not active', () => {
+      service.isEditModeActive.set(false);
+
+      service.cancelEditMode();
+
+      expect(toolServiceSpy.cancelTool).not.toHaveBeenCalled();
+      expect(service.isEditModeActive()).toBe(false);
+    });
+
+    it('should not attempt to double-cancel the tool', () => {
+      service.isEditModeActive.set(true);
+
+      service.cancelEditMode();
+      service.cancelEditMode();
+
+      expect(toolServiceSpy.cancelTool).toHaveBeenCalledOnce();
+      expect(service.isEditModeActive()).toBe(false);
     });
   });
 
