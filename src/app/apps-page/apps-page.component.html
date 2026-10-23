@@ -10,9 +10,9 @@
     <page-section>
       <link-grid-list>
         @for (externalApp of externalApps(); track $index) {
-          <link-grid-list-item [title]="externalApp.title" [url]="externalApp.appUrl">
+          <li link-grid-list-item [title]="externalApp.title" [url]="externalApp.appUrl">
             <img class="app-image" [src]="externalApp.image.url" [alt]="externalApp.image.altText" />
-          </link-grid-list-item>
+          </li>
         }
       </link-grid-list>
     </page-section>

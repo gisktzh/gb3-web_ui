@@ -28,6 +28,7 @@ export interface OerebExtractValue {
 export interface OerebExtractRestriction {
   id: number;
   name: string;
+  legalStatus: string;
   illustration?: Image;
   measurement: OerebExtractMeasurement;
 }
@@ -52,6 +53,9 @@ export interface OerebExtractResponse {
   municipalityName: string;
   municipalityCode: number;
   parcelNumber: string;
+  completeness: string;
+  area: number;
+  statusOfficialSurvey: string;
   egrid: string;
   kbo: OerebExtractValue;
   surveyor: OerebExtractValue;

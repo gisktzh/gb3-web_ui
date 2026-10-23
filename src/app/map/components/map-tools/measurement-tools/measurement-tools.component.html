@@ -12,6 +12,7 @@
   </button>
   <button
     (click)="toggleLineMeasurement()"
+    data-test-id="measurement-select-line"
     [class.measurement-tools__button--active]="activeTool() === 'measure-line'"
     class="measurement-tools__button"
     color="accent"

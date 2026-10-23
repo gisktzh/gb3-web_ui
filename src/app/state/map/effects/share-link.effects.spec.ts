@@ -68,6 +68,7 @@ describe('ShareLinkEffects', () => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [
+        Gb3ShareLinkService,
         ShareLinkEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
@@ -536,6 +537,18 @@ describe('ShareLinkEffects', () => {
       });
 
       describe('completeInitialization$', () => {
+        it('completes each restoration in the same application session', () => {
+          store.overrideSelector(selectItems, expectedCompleteItem.activeMapItems);
+          store.overrideSelector(selectDrawings, expectedCompleteItem.drawings);
+          actions$ = of(
+            ShareLinkActions.completeValidation({mapRestoreItem: expectedCompleteItem}),
+            ShareLinkActions.completeValidation({mapRestoreItem: expectedCompleteItem}),
+          );
+          const completed = vi.fn();
+          effects.completeInitialization$.subscribe(completed);
+          expect(completed).toHaveBeenCalledTimes(2);
+        });
+
         it('dispatches ShareLinkActions.completeApplicationInitialization() after the ActiveMapItems and drawings have been set', () => {
           store.overrideSelector(selectItems, expectedCompleteItem.activeMapItems);
           store.overrideSelector(selectDrawings, expectedCompleteItem.drawings);

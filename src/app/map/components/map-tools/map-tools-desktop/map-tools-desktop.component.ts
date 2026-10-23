@@ -14,9 +14,15 @@ import {MatDivider} from '@angular/material/divider';
 import {MeasurementToolsComponent} from '../measurement-tools/measurement-tools.component';
 import {DrawingToolsComponent} from '../drawing-tools/drawing-tools.component';
 import {DataDownloadSelectionToolsComponent} from '../data-download-selection-tools/data-download-selection-tools.component';
+import {StatisticsToolsComponent} from '../statistics-tools/statistics-tools.component';
+import {selectIsStatisticsAvailable} from '../../../../state/map/selectors/statistics-availability.selector';
 import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
+import {QueryModeActions} from '../../../../state/map/actions/query-mode.actions';
 
 const TOOLTIP_TEXT = {
+  selectFeature: 'Objekt-Abfrage',
+  selectStatistic: 'Statistik-Abfrage',
+  statisticsUnavailable: 'Für die aktiven Kartenebenen sind keine Statistiken verfügbar.',
   measurement: 'Messen',
   drawing: 'Zeichnen',
   dataDownload: 'Daten beziehen',
@@ -38,6 +44,7 @@ const TOOLTIP_TEXT = {
     MeasurementToolsComponent,
     DrawingToolsComponent,
     DataDownloadSelectionToolsComponent,
+    StatisticsToolsComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   host: {
@@ -47,16 +54,24 @@ const TOOLTIP_TEXT = {
 export class MapToolsDesktopComponent {
   private readonly store = inject(Store);
 
-  // public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
   public readonly toolMenuVisibility = this.store.selectSignal(selectToolMenuVisibility);
   public readonly isMapReady = this.store.selectSignal(selectReady);
+  public readonly isStatisticsAvailable = this.store.selectSignal(selectIsStatisticsAvailable);
   public readonly activeTool = this.store.selectSignal(selectActiveTool);
 
   public tooltipText = TOOLTIP_TEXT;
 
+  /**
+   * Closing a tool menu does not leave the map without an active tool; it falls back to the plain object query, which keeps exactly one
+   * button of the tool bar highlighted at all times.
+   */
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
-    const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility() === toolToToggle ? undefined : toolToToggle;
-    this.store.dispatch(MapUiActions.toggleToolMenu({tool: tool}));
+    const tool: ToolMenuVisibility = this.toolMenuVisibility() === toolToToggle ? 'feature' : toolToToggle;
+    this.store.dispatch(
+      tool === 'feature' || tool === 'statistics'
+        ? QueryModeActions.selectQueryMode({queryMode: tool})
+        : MapUiActions.toggleToolMenu({tool}),
+    );
   }
 
   public showPrintDialog(event?: KeyboardEvent | null) {

@@ -22,20 +22,53 @@ const REDACTABLE_KEYS = new Set([
   'User-Agent',
   'set-cookie',
   'auth_state',
+  'nonce',
+  'sub',
+  'preferred_username',
+  'email',
 ]);
+
+/**
+ * Special cases: The value has to match a pattern, so that the specified keys get redacted as well.
+ */
+const SPECIAL_REDACTION_CASES: {
+  valueMatchPattern: RegExp;
+  extraKeysToRedact: Set<string>;
+}[] = [
+  {
+    valueMatchPattern: /^http:\/\/localhost:4200\/auth\/login-redirect\?code=/,
+    extraKeysToRedact: new Set(['state']),
+  },
+  {
+    valueMatchPattern: /^https:\/\/maps\.zh\.ch\/gb3\/v4\/auth\/authorize/,
+    extraKeysToRedact: new Set(['state']),
+  },
+];
 
 /**
  * Value to replace the actual values with.
  */
 const REDACTED_VALUE = '**redacted**';
 
+function redactValueIfRulesMatch(v: string): string {
+  const keysToRedact = SPECIAL_REDACTION_CASES.filter(({valueMatchPattern}) => valueMatchPattern.test(v))
+    .map(({extraKeysToRedact}) => extraKeysToRedact)
+    .reduce((p, c) => new Set([...p, ...c]), new Set());
+
+  if (keysToRedact.size === 0) {
+    return v;
+  }
+
+  return redactAny(v, keysToRedact);
+}
+
 /**
  * Redacts an HTTP search string as `URLSearchParams`.
  */
-function redactSearchParams(params: URLSearchParams): URLSearchParams {
+function redactSearchParams(params: URLSearchParams, keysToRedact: Set<string> = REDACTABLE_KEYS): URLSearchParams {
   const redacted = new URLSearchParams();
 
-  Object.entries(redactAny(Object.fromEntries(params.entries()))).forEach(([name, value]) => {
+  Object.entries(redactAny(Object.fromEntries(params.entries()), keysToRedact)).forEach(([name, value]) => {
     redacted.set(name, value as string);
   });
 
@@ -45,9 +78,9 @@ function redactSearchParams(params: URLSearchParams): URLSearchParams {
 /**
  * Redacts a URL by redacting the query string.
  */
-function redactUrl(url: string) {
+function redactUrl(url: string, keysToRedact: Set<string> = REDACTABLE_KEYS) {
   const parsed = new URL(url);
-  redactSearchParams(parsed.searchParams).forEach((value, key) => {
+  redactSearchParams(parsed.searchParams, keysToRedact).forEach((value, key) => {
     parsed.searchParams.set(key, value);
   });
 
@@ -117,29 +150,37 @@ function isHeadersList(value: unknown): value is Header[] {
  * Redacts a given object, string, number, etc. Differentiates between several different data types and structures.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- This is indeed `any`. `unknown` causes more issues than it fixes, actually.
-export function redactAny(v: any): any {
+export function redactAny(v: any, keysToRedact: Set<string> = REDACTABLE_KEYS): any {
   if (v === true || v === false || v === null || v === undefined) {
     return v;
   }
 
   if (typeof v === 'string') {
+    let redactedValue = v;
+
     if (v.includes('Bearer')) {
-      return `Bearer ${REDACTED_VALUE}`;
+      redactedValue = `Bearer ${REDACTED_VALUE}`;
     }
 
     if (v.startsWith('https://') || v.startsWith('http://')) {
-      return redactUrl(v);
+      redactedValue = redactUrl(v, keysToRedact);
     }
 
     if (isSearchParamsString(v)) {
-      return redactSearchParams(new URLSearchParams(v)).toString();
+      redactedValue = redactSearchParams(new URLSearchParams(v), keysToRedact).toString();
     }
 
     if (isJsonString(v)) {
-      return JSON.stringify(redactAny(JSON.parse(v)));
+      redactedValue = JSON.stringify(redactAny(JSON.parse(v), keysToRedact));
     }
 
-    return v;
+    // If the keys we're trying to redact are not the general ones, we're likely in the rule matching case already.
+    // In that case, we simply return to not run into an endless loop.
+    if (keysToRedact !== REDACTABLE_KEYS) {
+      return redactedValue;
+    }
+
+    return redactValueIfRulesMatch(redactedValue);
   }
 
   if (typeof v === 'number') {
@@ -149,22 +190,22 @@ export function redactAny(v: any): any {
   if (isHeadersList(v)) {
     return v.map(({name, value}) => ({
       name,
-      value: REDACTABLE_KEYS.has(name) ? REDACTED_VALUE : redactAny(value),
+      value: keysToRedact.has(name.toLocaleLowerCase()) ? REDACTED_VALUE : redactAny(value, keysToRedact),
     }));
   }
 
   if (Array.isArray(v)) {
-    return v.map((value) => redactAny(value));
+    return v.map((value) => redactAny(value), keysToRedact);
   }
 
   // It's not an array, number, string, true, false, null, undefined, so it _has_ to be an object.
   return Object.fromEntries(
     Object.entries(v).map(([key, value]) => {
-      if (REDACTABLE_KEYS.has(key)) {
+      if (keysToRedact.has(key.toLocaleLowerCase())) {
         return [key, REDACTED_VALUE];
       }
 
-      return [key, redactAny(value)];
+      return [key, redactAny(value, keysToRedact)];
     }),
   );
 }

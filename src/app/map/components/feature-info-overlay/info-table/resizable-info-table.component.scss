@@ -1,0 +1,95 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
+
+resizable-info-table {
+  display: block;
+  width: 100%;
+  min-width: 0;
+
+  .info-table {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+
+    &__scroll-container {
+      width: 100%;
+      overflow: auto;
+    }
+
+    &__table {
+      width: 100%;
+      text-align: left;
+      border-collapse: collapse;
+      font-size: 14px;
+
+      tbody .info-table__row:nth-child(odd) .info-table__cell,
+      &--has-headers thead .info-table__cell,
+      &--has-headers tbody .info-table__row:nth-child(even) .info-table__cell {
+        background-color: ktzh-variables.$zh-light-grey;
+      }
+
+      &--has-headers tbody .info-table__row:nth-child(odd) .info-table__cell,
+      &--has-headers thead .info-table__cell--header:first-child {
+        background-color: ktzh-variables.$zh-white;
+      }
+    }
+
+    &__row {
+      vertical-align: top;
+    }
+
+    &__cell {
+      background-color: ktzh-variables.$zh-white;
+      padding: 6px 8px;
+      word-break: normal;
+      hyphens: auto;
+
+      &--header {
+        font-size: 12px;
+        font-family: ktzh-variables.$zh-font-family-bold;
+
+        &:first-child {
+          position: sticky;
+          left: 0;
+          color: ktzh-variables.$zh-black60;
+          box-sizing: border-box;
+          z-index: z-index-variables.$info-table-sticky-header;
+
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -6px;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+          }
+        }
+
+        &:not(:first-child) {
+          min-width: 200px;
+          width: 100%;
+        }
+      }
+    }
+
+    &__cell-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 20px;
+      position: relative;
+    }
+
+    &__row-label {
+      max-width: 100%;
+    }
+
+    &__resize {
+      top: 0;
+      left: 0;
+      z-index: 10;
+      height: calc(100% - var(--calculated-scrollbar-height));
+    }
+  }
+}

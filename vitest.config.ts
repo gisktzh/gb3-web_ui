@@ -8,7 +8,15 @@ export default defineConfig({
     clearMocks: true,
     mockReset: true,
     isolate: true,
-    environment: 'jsdom',
+    environment: 'happy-dom',
+    environmentOptions: {
+      happyDOM: {
+        settings: {
+          disableCSSFileLoading: true,
+          handleDisabledFileLoadingAsSuccess: true,
+        },
+      },
+    },
     setupFiles: ['./src/test-setup.ts'],
     reporters: ['default'],
     server: {
@@ -27,7 +35,6 @@ export default defineConfig({
         '**/*.mock.ts',
         '**/*.stub.ts',
         '**/app/testing/**',
-        '**/*.component.ts',
         '**/environments/environment*.ts',
       ],
     },

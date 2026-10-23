@@ -65,6 +65,7 @@ describe('FavouritesService', () => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [
+        FavouritesService,
         provideMockStore({}),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),

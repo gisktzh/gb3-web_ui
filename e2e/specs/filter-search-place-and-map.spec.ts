@@ -22,8 +22,15 @@ test.describe('Test filter search for maps and places', () => {
     await expect.poll(async () => Number(await zoomInput.inputValue())).toBeLessThanOrEqual(24_000);
 
     await search('Amtliche Vermessung in Farbe');
+
     const activeMapItem = page.locator('active-map-item').filter({hasText: 'Amtliche Vermessung in Farbe'}).first();
     await expect(activeMapItem).toBeVisible({timeout: 30_000});
+
+    // The map notice dialog opens asynchronously after the map is added; it must appear.
+    const closeNoticesButton = page.getByTestId('close-map-notices-button');
+    await expect(closeNoticesButton).toBeVisible({timeout: 10_000});
+    await closeNoticesButton.click();
+    await expect(closeNoticesButton).toBeHidden();
 
     await zoom(3000);
     await expect(activeMapItem.locator('mat-progress-bar')).toHaveCount(0, {timeout: 30_000});

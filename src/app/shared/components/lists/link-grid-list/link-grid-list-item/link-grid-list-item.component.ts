@@ -14,11 +14,18 @@ import {NgTemplateOutlet} from '@angular/common';
  *
  */
 @Component({
-  selector: 'link-grid-list-item',
+  // Attribute selector on `li` (instead of a `link-grid-list-item` element selector) so the component's host is the
+  // actual <li> required by <ul>/<li> semantics - using an element selector here would insert an extra, non-`li`
+  // wrapper element between <ul> and <li>, which axe-core (and screen readers) flag as an invalid list structure.
+  selector: 'li[link-grid-list-item]',
   templateUrl: './link-grid-list-item.component.html',
   styleUrls: ['./link-grid-list-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, NgTemplateOutlet],
+  host: {
+    class: 'link-grid-list-item',
+    '[class.link-grid-list-item--large]': "size() === 'large'",
+  },
 })
 export class LinkGridListItemComponent {
   public readonly title = input.required<string>();

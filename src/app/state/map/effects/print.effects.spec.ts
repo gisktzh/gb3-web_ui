@@ -68,6 +68,7 @@ describe('PrintEffects', () => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [
+        Gb3PrintService,
         PrintEffects,
         provideMockActions(() => actions$),
         provideMockStore(),

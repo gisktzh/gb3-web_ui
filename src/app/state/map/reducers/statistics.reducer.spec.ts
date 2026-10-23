@@ -1,0 +1,168 @@
+import {initialState, reducer} from './statistics.reducer';
+import {StatisticsActions} from '../actions/statistics.actions';
+import {StatisticsState} from '../states/statistics.state';
+import {PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {StatisticsResult} from '../../../shared/interfaces/statistics.interface';
+import {QueryModeActions} from '../actions/query-mode.actions';
+
+describe('statistics reducer', () => {
+  const geometry: PolygonWithSrs = {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [0, 0],
+        [1, 0],
+        [1, 1],
+        [0, 0],
+      ],
+    ],
+    srs: 2056,
+  };
+  const results: StatisticsResult[] = [{topic: 'topic', title: 'Topic', layers: []}];
+
+  describe('setSelection', () => {
+    it('stores the area and invalidates results loaded for the previous one', () => {
+      const state: StatisticsState = {...initialState, loadingState: 'loaded', data: results};
+
+      const result = reducer(state, StatisticsActions.setSelection({geometry, radiusInMeters: undefined}));
+
+      expect(result.geometry).toEqual(geometry);
+      expect(result.loadingState).toBeUndefined();
+      expect(result.data).toEqual([]);
+    });
+
+    it('keeps the current radius if the selection does not dictate one', () => {
+      const state: StatisticsState = {...initialState, radiusInMeters: 750};
+
+      const result = reducer(state, StatisticsActions.setSelection({geometry, radiusInMeters: undefined}));
+
+      expect(result.radiusInMeters).toBe(750);
+    });
+
+    it('takes over the radius of a drawn circle', () => {
+      const result = reducer(initialState, StatisticsActions.setSelection({geometry, radiusInMeters: 1200}));
+
+      expect(result.radiusInMeters).toBe(1200);
+    });
+  });
+
+  describe('setRadius', () => {
+    it('stores the radius', () => {
+      const result = reducer(initialState, StatisticsActions.setRadius({radiusInMeters: 250}));
+
+      expect(result.radiusInMeters).toBe(250);
+    });
+  });
+
+  describe('clearContent', () => {
+    it('resets the results but keeps the mode and the radius as user settings', () => {
+      const state: StatisticsState = {
+        ...initialState,
+        mode: 'polygon',
+        radiusInMeters: 900,
+        geometry,
+        loadingState: 'loaded',
+        data: results,
+      };
+
+      const result = reducer(state, StatisticsActions.clearContent());
+
+      expect(result.mode).toBe('polygon');
+      expect(result.radiusInMeters).toBe(900);
+      expect(result.geometry).toBeUndefined();
+      expect(result.data).toEqual([]);
+      expect(result.loadingState).toBeUndefined();
+    });
+  });
+
+  describe('updateContent', () => {
+    it('stores the results', () => {
+      const result = reducer({...initialState, loadingState: 'loading'}, StatisticsActions.updateContent({results}));
+
+      expect(result.loadingState).toBe('loaded');
+      expect(result.data).toEqual(results);
+    });
+  });
+
+  describe('setError', () => {
+    it('discards stale results', () => {
+      const state: StatisticsState = {...initialState, loadingState: 'loading', data: results};
+
+      const result = reducer(state, StatisticsActions.setError({}));
+
+      expect(result.loadingState).toBe('error');
+      expect(result.data).toEqual([]);
+    });
+
+    it('stores one highlighted layer and can clear it without discarding results or the selection', () => {
+      const state: StatisticsState = {...initialState, geometry, data: results, loadingState: 'loaded'};
+      const marked = reducer(state, StatisticsActions.highlightLayer({topic: 'topic', layer: 'layer'}));
+      expect(marked.highlightedLayer).toEqual({topic: 'topic', layer: 'layer'});
+      expect(marked.pinnedLayer).toEqual(marked.highlightedLayer);
+      const switched = reducer(marked, StatisticsActions.highlightLayer({topic: 'other-topic', layer: 'other-layer'}));
+      expect(switched.highlightedLayer).toEqual({topic: 'other-topic', layer: 'other-layer'});
+      expect(reducer(switched, StatisticsActions.clearHighlight())).toEqual(state);
+    });
+
+    it.each([
+      StatisticsActions.setSelection({geometry, radiusInMeters: undefined}),
+      StatisticsActions.sendRequest(),
+      StatisticsActions.invalidateContent(),
+      StatisticsActions.updateContent({results}),
+      StatisticsActions.clearContent(),
+      StatisticsActions.setError({}),
+    ])('clears a previous marking after $type', (action) => {
+      const state: StatisticsState = {
+        ...initialState,
+        highlightedLayer: {topic: 'topic', layer: 'layer'},
+        pinnedLayer: {topic: 'topic', layer: 'layer'},
+      };
+      const cleared = reducer(state, action);
+      expect(cleared.highlightedLayer).toBeUndefined();
+      expect(cleared.pinnedLayer).toBeUndefined();
+    });
+  });
+
+  describe('hover previews', () => {
+    const layer = {topic: 'topic', layer: 'layer'};
+    const otherLayer = {topic: 'other-topic', layer: 'other-layer'};
+
+    it('highlights a hovered layer without pinning it and clears only the preview on mouse leave', () => {
+      const state: StatisticsState = {...initialState, geometry, data: results, loadingState: 'loaded'};
+      const hovered = reducer(state, StatisticsActions.hoverLayer(layer));
+      expect(hovered.highlightedLayer).toEqual(layer);
+      expect(hovered.pinnedLayer).toBeUndefined();
+      expect(reducer(hovered, StatisticsActions.clearHover())).toEqual(state);
+    });
+
+    it('pins the hovered layer on click and preserves it through subsequent hover events', () => {
+      const hovered = reducer(initialState, StatisticsActions.hoverLayer(layer));
+      const pinned = reducer(hovered, StatisticsActions.highlightLayer(layer));
+      expect(pinned.pinnedLayer).toEqual(layer);
+      expect(reducer(pinned, StatisticsActions.hoverLayer(otherLayer))).toBe(pinned);
+      expect(reducer(pinned, StatisticsActions.clearHover())).toBe(pinned);
+      expect(reducer(pinned, StatisticsActions.clearHighlight())).toEqual(initialState);
+    });
+
+    it('discards previews when leaving statistics but preserves pinned markings for restoration', () => {
+      const hovered = reducer(initialState, StatisticsActions.hoverLayer(layer));
+      const featureTab = QueryModeActions.setQueryMode({queryMode: 'feature'});
+      const statisticsTab = QueryModeActions.setQueryMode({queryMode: 'statistics'});
+      expect(reducer(reducer(hovered, featureTab), statisticsTab)).toEqual(initialState);
+      const pinned = reducer(hovered, StatisticsActions.highlightLayer(layer));
+      expect(reducer(reducer(pinned, featureTab), statisticsTab)).toEqual(pinned);
+    });
+
+    it.each([
+      StatisticsActions.setSelection({geometry, radiusInMeters: undefined}),
+      StatisticsActions.sendRequest(),
+      StatisticsActions.invalidateContent(),
+      StatisticsActions.updateContent({results}),
+      StatisticsActions.clearContent(),
+      StatisticsActions.setError({}),
+    ])('discards a transient preview after $type', (action) => {
+      const hovered = reducer(initialState, StatisticsActions.hoverLayer(layer));
+      expect(reducer(hovered, action).highlightedLayer).toBeUndefined();
+    });
+  });
+});

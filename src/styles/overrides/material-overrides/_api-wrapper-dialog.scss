@@ -28,6 +28,13 @@
     display: flex;
   }
 
+  &--with-closing-target {
+    .mdc-dialog--closing .mdc-dialog__surface {
+      transform: translate(var(--dialog-closing-target-x, 0), var(--dialog-closing-target-y, 0))
+        scale(var(--dialog-closing-target-scale, 0));
+    }
+  }
+
   & .mdc-dialog__actions {
     min-height: 49px;
     max-height: 49px;
@@ -41,6 +48,10 @@
       margin: 0 !important;
       width: 137px;
       padding: 12px 24px 12px 24px;
+
+      &.mdc-button--auto-width {
+        width: auto;
+      }
 
       &:last-of-type {
         background-color: functions.get-color-from-palette('accent');

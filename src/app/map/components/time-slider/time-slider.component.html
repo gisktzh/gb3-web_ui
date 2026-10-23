@@ -10,10 +10,20 @@
   <ng-container content>
     <mat-slider [min]="minimumDateIndex()" [max]="maximumDateIndex()" [step]="1" color="primary" class="time-slider__slider">
       @if (timeSliderConfiguration().range) {
-        <input matSliderThumb (valueChange)="setValidTimeExtent(true)" [(ngModel)]="firstSliderPosition" />
+        <input matSliderThumb aria-label="Zeitpunkt" (valueChange)="setValidTimeExtent(true)" [(ngModel)]="firstSliderPosition" />
       } @else {
-        <input matSliderStartThumb (valueChange)="setValidTimeExtent(true)" [(ngModel)]="firstSliderPosition" />
-        <input matSliderEndThumb (valueChange)="setValidTimeExtent(false)" [(ngModel)]="secondSliderPosition" />
+        <input
+          matSliderStartThumb
+          aria-label="Beginn des Zeitraums"
+          (valueChange)="setValidTimeExtent(true)"
+          [(ngModel)]="firstSliderPosition"
+        />
+        <input
+          matSliderEndThumb
+          aria-label="Ende des Zeitraums"
+          (valueChange)="setValidTimeExtent(false)"
+          [(ngModel)]="secondSliderPosition"
+        />
       }
     </mat-slider>
   </ng-container>

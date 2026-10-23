@@ -1,4 +1,4 @@
-import {test, expect} from '../fixtures';
+import {test, expect, describeA11y} from '../fixtures';
 
 const favouriteApiUrl = 'https://maps.zh.ch/gb3/v4/user/favorites';
 const initialCenter = {x: 2_682_260, y: 1_248_390};
@@ -57,8 +57,7 @@ test.describe('Favorites layers', () => {
   } of favouriteExtentCases) {
     test(`adds, restores, and removes a favorite with ${description}`, async ({
       page,
-      openUrlWithCoordinates,
-      login,
+      openFavouriteCreationDialog,
       selectTopic,
       clickMapInTheList,
       clickByDataTestId,
@@ -71,30 +70,9 @@ test.describe('Favorites layers', () => {
       captureConsole();
       await useHar(harPostFix);
 
-      await openUrlWithCoordinates(initialCenter.x.toString(), initialCenter.y.toString());
-
-      await login();
-
-      const gisBrowser = page.locator('span', {hasText: 'GIS-Browser'}).last();
-      await gisBrowser.scrollIntoViewIfNeeded();
-      await gisBrowser.click();
-
-      await page.waitForLoadState('networkidle');
-
-      await selectTopic('Bauten');
-      await clickMapInTheList('AWA-Standorte');
-
-      // Add favorite
-      const favouriteButton = page.locator('active-map-items button:has(mat-icon[svgicon="ktzh_star"])');
-      await favouriteButton.scrollIntoViewIfNeeded();
-      // The button is only enabled once the authentication state and the active map items have been propagated.
-      await expect(favouriteButton).toBeEnabled();
-      await favouriteButton.click();
+      const favouriteDialog = await openFavouriteCreationDialog();
 
       const favoriteTitle = 'MyTestFavorite';
-
-      const favouriteDialog = page.locator('favourite-creation-dialog');
-      await expect(favouriteDialog).toBeVisible();
 
       const nameInput = favouriteDialog.locator('[data-test-id="input-favourite-title"]');
       await expect(nameInput).toBeVisible();
@@ -173,4 +151,22 @@ test.describe('Favorites layers', () => {
       await expect(page.locator('p', {hasText: favoriteTitle})).toHaveCount(0);
     });
   }
+
+  describeA11y(() => {
+    test('has no detectable accessibility violations while showing the favourite creation dialog', async ({
+      openFavouriteCreationDialog,
+      useHar,
+      captureConsole,
+      checkA11y,
+    }) => {
+      test.slow();
+
+      captureConsole();
+      await useHar();
+
+      await openFavouriteCreationDialog();
+
+      await checkA11y({include: ['favourite-creation-dialog']});
+    });
+  });
 });

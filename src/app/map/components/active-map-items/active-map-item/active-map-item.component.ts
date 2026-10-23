@@ -2,7 +2,7 @@ import {Component, effect, inject, input, signal, ChangeDetectionStrategy} from 
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
-import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelContent} from '@angular/material/expansion';
+import {MatExpansionPanel, MatExpansionPanelContent} from '@angular/material/expansion';
 import {ActiveMapItemHeaderComponent} from '../active-map-item-header/active-map-item-header.component';
 import {MatButton} from '@angular/material/button';
 import {ActiveMapItemLayersComponent} from '../active-map-item-layers/active-map-item-layers.component';
@@ -17,7 +17,6 @@ type TabType = 'layers' | 'settings';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatExpansionPanel,
-    MatExpansionPanelHeader,
     ActiveMapItemHeaderComponent,
     MatExpansionPanelContent,
     MatButton,

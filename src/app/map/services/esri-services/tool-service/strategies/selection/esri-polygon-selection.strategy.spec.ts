@@ -6,7 +6,7 @@ import Graphic from '@arcgis/core/Graphic';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriPolygonSelectionStrategy} from './esri-polygon-selection.strategy';
-import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
+import {GeometrySelection} from '../../../../../../shared/interfaces/geometry-selection.interface';
 import {TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/esri-graphic-to-internal-drawing-representation.utils';
@@ -29,7 +29,7 @@ const mockResourceHandle = {
  */
 describe('EsriPolygonSelectionStrategy', () => {
   const callbackHandler = {
-    handle: (selection: DataDownloadSelection | undefined) => {
+    handle: (selection: GeometrySelection | undefined) => {
       return selection;
     },
   };
@@ -143,7 +143,7 @@ describe('EsriPolygonSelectionStrategy', () => {
 
         callback({state: 'complete', graphic});
 
-        expect(callbackSpy).toHaveBeenCalledWith(expect.objectContaining({type: 'polygon'}));
+        expect(callbackSpy).toHaveBeenCalledWith({drawingRepresentation: converterSpy.mock.results[0].value});
         expect(converterSpy).toHaveBeenCalledWith(graphic, 2056, InternalDrawingLayer.Selection);
 
         return mockResourceHandle;

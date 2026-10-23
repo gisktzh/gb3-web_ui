@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
-import {EMPTY, Observable, of, throwError} from 'rxjs';
+import {EMPTY, Observable, of, Subject, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -25,11 +25,17 @@ import {
 import {catchError} from 'rxjs';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {MapSearchEffects} from '../../map/effects/map-search.effects';
+import {selectAvailableSpecialSearchIndexes} from '../../map/selectors/available-search-index.selector';
+import {selectTerm} from '../reducers/search.reducer';
+import {searchConfig} from '../../../shared/configs/search.config';
+import {ConfigService} from '../../../shared/services/config.service';
 
 describe('SearchEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: SearchEffects;
+  let mapEffects: MapSearchEffects;
   let searchService: SearchService;
 
   beforeEach(() => {
@@ -39,6 +45,8 @@ describe('SearchEffects', () => {
       imports: [],
       providers: [
         SearchEffects,
+        MapSearchEffects,
+        MapDrawingService,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
@@ -47,12 +55,81 @@ describe('SearchEffects', () => {
       ],
     });
     effects = TestBed.inject(SearchEffects);
+    mapEffects = TestBed.inject(MapSearchEffects);
     store = TestBed.inject(MockStore);
     searchService = TestBed.inject(SearchService);
   });
 
   afterEach(() => {
     store.resetSelectors();
+  });
+
+  describe('searchResultsFromSearchApi$', () => {
+    it('uses the new search indexes when the same term is searched on a different page', () => {
+      store.overrideSelector(selectTerm, 'hanglagen');
+      store.overrideSelector(selectAvailableSpecialSearchIndexes, []);
+      const searchIndexes = vi.spyOn(searchService, 'searchIndexes').mockReturnValue(of([]));
+      const configService = TestBed.inject(ConfigService);
+      const searchActions = new Subject<Action>();
+      actions$ = searchActions;
+
+      const subscription = effects.searchResultsFromSearchApi$.subscribe();
+      searchActions.next(SearchActions.searchForTerm({term: 'hanglagen', options: searchConfig.mapPage.searchOptions}));
+      searchActions.next(SearchActions.searchForTerm({term: 'hanglagen', options: searchConfig.dataCatalogPage.searchOptions}));
+
+      expect(searchIndexes).toHaveBeenCalledTimes(2);
+      expect(searchIndexes).toHaveBeenLastCalledWith(
+        'hanglagen',
+        configService.filterSearchIndexes(searchConfig.dataCatalogPage.searchOptions.searchIndexTypes),
+      );
+      subscription.unsubscribe();
+    });
+
+    it('ignores duplicate terms with equivalent search options', () => {
+      store.overrideSelector(selectTerm, 'hanglagen');
+      store.overrideSelector(selectAvailableSpecialSearchIndexes, []);
+      const searchIndexes = vi.spyOn(searchService, 'searchIndexes').mockReturnValue(of([]));
+      const options = searchConfig.dataCatalogPage.searchOptions;
+      const searchActions = new Subject<Action>();
+      actions$ = searchActions;
+
+      const subscription = effects.searchResultsFromSearchApi$.subscribe();
+      searchActions.next(SearchActions.searchForTerm({term: 'hanglagen', options}));
+      searchActions.next(
+        SearchActions.searchForTerm({term: ' hanglagen ', options: {...options, searchIndexTypes: [...options.searchIndexTypes]}}),
+      );
+
+      expect(searchIndexes).toHaveBeenCalledOnce();
+      subscription.unsubscribe();
+    });
+
+    it('searches the same term again after clearing it and cancels an outstanding request', () => {
+      const term = store.overrideSelector(selectTerm, 'hanglagen');
+      store.overrideSelector(selectAvailableSpecialSearchIndexes, []);
+      const pendingResults = new Subject<GeometryWithSrsSearchApiResultMatch[]>();
+      const searchIndexes = vi.spyOn(searchService, 'searchIndexes').mockReturnValue(pendingResults);
+      const searchActions = new Subject<Action>();
+      actions$ = searchActions;
+      const results: Action[] = [];
+      const subscription = effects.searchResultsFromSearchApi$.subscribe((action) => results.push(action));
+      const action = SearchActions.searchForTerm({term: 'hanglagen', options: searchConfig.dataCatalogPage.searchOptions});
+      searchActions.next(action);
+
+      searchIndexes.mockReturnValue(of([]));
+      term.setResult('');
+      store.refreshState();
+      pendingResults.next([
+        {indexType: 'places', displayString: 'Late result', score: 1, geometry: {type: 'Point', srs: 2056, coordinates: [1, 2]}},
+      ]);
+      expect(results).toEqual([SearchActions.setSearchApiResults({results: []})]);
+
+      term.setResult('hanglagen');
+      store.refreshState();
+      searchActions.next(action);
+      expect(searchIndexes).toHaveBeenLastCalledWith('hanglagen', expect.any(Array));
+      expect(searchIndexes).toHaveBeenCalledTimes(3);
+      subscription.unsubscribe();
+    });
   });
 
   describe('throwSearchApiError$', () => {
@@ -91,7 +168,7 @@ describe('SearchEffects', () => {
         searchResult: searchResultsMock,
       });
       actions$ = of(expectedAction);
-      effects.zoomToAndHighlightSelectedSearchResult$.subscribe(([action]) => {
+      mapEffects.zoomToAndHighlightSelectedSearchResult$.subscribe(([action]) => {
         expect(mapServiceSpy).toHaveBeenCalledTimes(1);
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(expectedAction);
@@ -102,7 +179,7 @@ describe('SearchEffects', () => {
   describe('clearSearchTermAfterFeatureInfoOpened$', () => {
     it('dispatches SearchActions.clearSearchTerm() if FeatureInfo is opened', () => {
       actions$ = of(MapUiActions.setFeatureInfoVisibility({isVisible: true}));
-      effects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => {
+      mapEffects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => {
         expect(action).toEqual(SearchActions.clearSearchTerm());
       });
     });
@@ -113,7 +190,7 @@ describe('SearchEffects', () => {
       let newAction;
 
       actions$ = of(MapUiActions.setFeatureInfoVisibility({isVisible: false}));
-      effects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
+      mapEffects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
       await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();
@@ -136,7 +213,7 @@ describe('SearchEffects', () => {
       const mapDrawingServiceSpy = vi.spyOn(mapDrawingService, 'clearSearchResultHighlight');
 
       actions$ = of(SearchActions.clearSearchTerm());
-      effects.removeHighlightAfterChangingSearchTermOrClearingSearchResult$.subscribe(() => {
+      mapEffects.removeHighlightAfterChangingSearchTermOrClearingSearchResult$.subscribe(() => {
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
       });
     });
@@ -154,7 +231,7 @@ describe('SearchEffects', () => {
 
       let newAction;
       actions$ = of(MapUiActions.setFeatureInfoVisibility({isVisible: false}));
-      effects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
+      mapEffects.clearSearchTermAfterFeatureInfoOpened$.subscribe((action) => (newAction = action));
       await vi.runAllTimersAsync();
 
       expect(newAction).toBeUndefined();

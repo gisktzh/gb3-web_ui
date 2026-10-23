@@ -1,14 +1,12 @@
-<li class="link-grid-list-item" [class.link-grid-list-item--large]="size() === 'large'">
-  @if (internalLink()) {
-    <a [routerLink]="internalLink()" [queryParams]="internalQueryParams()" [title]="title()" class="link-grid-list-item__wrapper">
-      <ng-container [ngTemplateOutlet]="content" />
-    </a>
-  } @else {
-    <a [href]="url()" [title]="title()" rel="noopener noreferrer" target="_blank" class="link-grid-list-item__wrapper">
-      <ng-container [ngTemplateOutlet]="content" />
-    </a>
-  }
-</li>
+@if (internalLink()) {
+  <a [routerLink]="internalLink()" [queryParams]="internalQueryParams()" [title]="title()" class="link-grid-list-item__wrapper">
+    <ng-container [ngTemplateOutlet]="content" />
+  </a>
+} @else {
+  <a [href]="url()" [title]="title()" rel="noopener noreferrer" target="_blank" class="link-grid-list-item__wrapper">
+    <ng-container [ngTemplateOutlet]="content" />
+  </a>
+}
 
 <ng-template #content>
   @if (imageUrl() && size() === 'large') {

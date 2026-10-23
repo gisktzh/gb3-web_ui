@@ -40,8 +40,8 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> {
   protected readonly gb3MetadataService: Gb3MetadataService = inject(Gb3MetadataService);
   protected readonly mainPageEnum = MainPage;
   protected readonly dataCataloguePageEnum = DataCataloguePage;
+  protected readonly configService: ConfigService = inject(ConfigService);
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
-  private readonly configService: ConfigService = inject(ConfigService);
   private readonly router: Router = inject(Router);
   private readonly errorHandler: ErrorHandler = inject(ErrorHandler);
 

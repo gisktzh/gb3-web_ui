@@ -3,20 +3,20 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-:host ::ng-deep .base-map-data-item {
+:host ::ng-deep .base-map-data-item__panel {
   @include mat-mixins.mat-expansion-panel-remove-content-indent;
 
-  .base-map-data-item__header.mat-expansion-panel-header .mat-content.mat-content-hide-toggle {
-    align-items: center;
+  &.mat-expansion-panel {
+    @include mixins.no-box-shadow;
+    border-radius: ktzh-variables.$zh-border-radius !important;
+    width: 100%;
   }
 }
 
 .base-map-data-item {
-  @include mixins.no-box-shadow;
   width: 100%;
   padding-top: 12px;
   padding-bottom: 12px;
-  border-radius: ktzh-variables.$zh-border-radius !important;
 
   .base-map-data-item__header {
     display: flex;
@@ -25,7 +25,6 @@
     width: 100%;
     height: 44px;
     padding: 0;
-    // overwrite the 'pointer' cursor from the expansion panel
     cursor: default;
 
     &:hover {

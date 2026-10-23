@@ -1,6 +1,6 @@
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {AbstractGb3Layer} from './abstract-gb3-layer.interface';
-import {SupportedEsriTool} from '../../map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
+import {SupportedDrawingTool} from '../types/supported-drawing-tool.type';
 
 export interface Gb3GeoJsonFeature {
   type: 'Feature';
@@ -27,7 +27,7 @@ export interface Gb3GeoJsonFeature {
      * The tool used to draw the feature
      * @example "polygon"
      */
-    tool: SupportedEsriTool;
+    tool: SupportedDrawingTool;
   };
   geometry: SupportedGeometry;
 }

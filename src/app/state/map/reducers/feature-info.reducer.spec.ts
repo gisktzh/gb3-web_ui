@@ -3,8 +3,20 @@ import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {FeatureInfoState} from '../states/feature-info.state';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {FeatureInfoQueryLocation, FeatureInfoResponse, FeatureInfoResult} from '../../../shared/interfaces/feature-info.interface';
+import {QueryModeActions} from '../actions/query-mode.actions';
 
 describe('FeatureInfo Reducer', () => {
+  const source = {mapItemId: 'test-map', layerName: 'test-layer'};
+
+  it('discards transient previews on mode exit but retains pinned geometry', () => {
+    const preview: FeatureInfoState = {...initialState, highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]}};
+    const action = QueryModeActions.setQueryMode({queryMode: 'statistics'});
+    expect(reducer(preview, action).highlightedFeature).toBeUndefined();
+    const pinned = {...preview, pinnedFeatureId: 'topic_layer_1'};
+    expect(reducer(pinned, action)).toBe(pinned);
+    expect(reducer(preview, QueryModeActions.setQueryMode({queryMode: 'feature'}))).toBe(preview);
+  });
+
   describe('an unknown action', () => {
     it('should return the previous state', () => {
       const action = {} as never;
@@ -24,6 +36,7 @@ describe('FeatureInfo Reducer', () => {
         data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false, report: {url: null, description: null}}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
+        highlightedFeatureSource: source,
       };
 
       const result = reducer(mockCurrentState, action);
@@ -55,11 +68,13 @@ describe('FeatureInfo Reducer', () => {
         data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false, report: {url: null, description: null}}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
+        highlightedFeatureSource: source,
       };
 
       const result = reducer(mockCurrentState, action);
 
       expect(result.highlightedFeature).toEqual(initialState.highlightedFeature);
+      expect(result.highlightedFeatureSource).toBeUndefined();
       expect(result.pinnedFeatureId).toEqual(initialState.pinnedFeatureId);
       expect(result.loadingState).toEqual(mockCurrentState.loadingState);
       expect(result.data).toEqual(mockCurrentState.data);
@@ -71,18 +86,24 @@ describe('FeatureInfo Reducer', () => {
     it('adds the new highlight only, but leaves state untouched otherwise', () => {
       const newHighlightedFeature: GeometryWithSrs = {type: 'Polygon', srs: 2056, coordinates: [[[44, 22]]]};
       const newHighlightedFeatureId = 'xyz';
-      const action = FeatureInfoActions.highlightFeature({pinnedFeatureId: newHighlightedFeatureId, feature: newHighlightedFeature});
+      const action = FeatureInfoActions.highlightFeature({
+        pinnedFeatureId: newHighlightedFeatureId,
+        feature: newHighlightedFeature,
+        source,
+      });
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loading',
         data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false, report: {url: null, description: null}}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
+        highlightedFeatureSource: source,
       };
 
       const result = reducer(mockCurrentState, action);
 
       expect(result.highlightedFeature).toEqual(newHighlightedFeature);
+      expect(result.highlightedFeatureSource).toEqual(source);
       expect(result.pinnedFeatureId).toEqual(newHighlightedFeatureId);
       expect(result.loadingState).toEqual(mockCurrentState.loadingState);
       expect(result.data).toEqual(mockCurrentState.data);
@@ -133,6 +154,7 @@ describe('FeatureInfo Reducer', () => {
         data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false, report: {url: null, description: null}}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
+        highlightedFeatureSource: source,
       };
 
       const result = reducer(mockCurrentState, action);

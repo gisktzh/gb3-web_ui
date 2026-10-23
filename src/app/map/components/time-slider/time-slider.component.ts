@@ -2,6 +2,7 @@ import {Component, computed, effect, inject, input, linkedSignal, output, signal
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration} from '../../../shared/interfaces/topic.interface';
 import {TimeSliderService} from '../../services/time-slider.service';
+import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepicker, MatDatepickerInput} from '@angular/material/datepicker';
 import {DateUnit} from '../../../shared/types/date-unit.type';
 import {TIME_SERVICE} from '../../../app.tokens';
@@ -26,6 +27,7 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
   templateUrl: './time-slider.component.html',
   styleUrls: ['./time-slider.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [provideNativeDateAdapter(), {provide: MAT_DATE_LOCALE, useValue: 'de-CH'}],
   imports: [
     SliderWrapperComponent,
     MatSlider,

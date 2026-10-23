@@ -1,6 +1,7 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {FeatureInfoState} from '../states/feature-info.state';
+import {QueryModeActions} from '../actions/query-mode.actions';
 
 export const featureInfoFeatureKey = 'featureInfo';
 
@@ -9,6 +10,7 @@ export const initialState: FeatureInfoState = {
   loadingState: undefined,
   data: [],
   highlightedFeature: undefined,
+  highlightedFeatureSource: undefined,
   pinnedFeatureId: undefined,
 };
 
@@ -26,11 +28,14 @@ export const featureInfoFeature = createFeature({
       const data = featureInfos.map((featureInfo) => featureInfo.featureInfo.results);
       return {...state, loadingState: 'loaded', data};
     }),
-    on(FeatureInfoActions.highlightFeature, (state, {feature, pinnedFeatureId}): FeatureInfoState => {
-      return {...state, highlightedFeature: feature, pinnedFeatureId};
+    on(FeatureInfoActions.highlightFeature, (state, {feature, source, pinnedFeatureId}): FeatureInfoState => {
+      return {...state, highlightedFeature: feature, highlightedFeatureSource: source, pinnedFeatureId};
     }),
     on(FeatureInfoActions.clearHighlight, (state): FeatureInfoState => {
-      return {...state, highlightedFeature: undefined, pinnedFeatureId: undefined};
+      return {...state, highlightedFeature: undefined, highlightedFeatureSource: undefined, pinnedFeatureId: undefined};
+    }),
+    on(QueryModeActions.setQueryMode, (state, {queryMode}): FeatureInfoState => {
+      return queryMode === 'statistics' && state.pinnedFeatureId === undefined ? {...state, highlightedFeature: undefined} : state;
     }),
     on(FeatureInfoActions.setError, (): FeatureInfoState => {
       return {...initialState, loadingState: 'error'};
@@ -46,5 +51,6 @@ export const {
   selectLoadingState,
   selectData,
   selectHighlightedFeature,
+  selectHighlightedFeatureSource,
   selectPinnedFeatureId,
 } = featureInfoFeature;

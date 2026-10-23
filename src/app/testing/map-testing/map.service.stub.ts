@@ -9,6 +9,7 @@ import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.mod
 import {ToolService} from '../../map/interfaces/tool.service';
 import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
 import {DataDownloadSelectionTool} from '../../shared/types/data-download-selection-tool.type';
+import {StatisticsSelectionTool} from '../../shared/types/statistics-selection-tool.type';
 import {DrawingTool} from '../../shared/types/drawing-tool.type';
 import {MeasurementTool} from '../../shared/types/measurement-tool.type';
 import {
@@ -19,10 +20,13 @@ import {ExternalWmsActiveMapItem} from '../../map/models/implementations/externa
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 import {MapViewPadding} from '../../shared/interfaces/map-view-padding.interface';
+import {FeatureHighlightSource, FeatureInfoScaleRange} from '../../shared/interfaces/feature-highlight.interface';
+import {Observable, of} from 'rxjs';
 
 export class MapServiceStub implements MapService {
   private toolService: ToolService = {
     initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {},
+    initializeStatisticsSelection(selectionTool: StatisticsSelectionTool) {},
     initializeDrawing(drawingTool: DrawingTool) {},
     initializeMeasurement(measurementTool: MeasurementTool) {},
     addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
@@ -84,7 +88,15 @@ export class MapServiceStub implements MapService {
 
   public zoomToPoint(point: PointWithSrs, number: number): void {}
 
-  public zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, duration?: number): void {}
+  public async zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, duration?: number, scaleRange?: FeatureInfoScaleRange) {}
+
+  public getFeatureInfoScaleRange(source: FeatureHighlightSource): FeatureInfoScaleRange | undefined {
+    return {minScale: 0, maxScale: Infinity};
+  }
+
+  public observeFeatureInfoLayerVisibility(source: FeatureHighlightSource): Observable<boolean> {
+    return of(true);
+  }
 
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void {}
 

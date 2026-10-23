@@ -10,6 +10,11 @@
   gap: 6px;
 }
 
+.oereb-detail-list__label {
+  display: block;
+  margin-bottom: 6px;
+}
+
 .oereb-detail-list__link {
   @include mixins.external-link-decoration;
   display: block;
@@ -18,4 +23,8 @@
 
 .oereb-detail-list__item {
   color: ktzh-variables.$zh-black60;
+}
+
+.oereb-detail-list__image {
+  object-fit: contain;
 }

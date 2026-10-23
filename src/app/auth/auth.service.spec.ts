@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {AuthService} from './auth.service';
 import {OAuthEvent, OAuthService, OAuthSuccessEvent} from 'angular-oauth2-oidc';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {SharedModule} from '../shared/shared.module';
+import {AuthModule} from './auth.module';
 import {Observable, Subject, Subscription} from 'rxjs';
 import {AuthNotificationService} from './notifications/auth-notification.service';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -74,7 +74,7 @@ describe('AuthService', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [SharedModule],
+      imports: [AuthModule],
       providers: [
         provideMockStore({}),
         {provide: AuthNotificationService, useValue: mockAuthNotificationService},
@@ -206,7 +206,6 @@ describe('AuthService', () => {
       isAuthenticated$.next(true);
 
       await Promise.resolve();
-      await Promise.resolve();
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(oauthLoadUserProfileSpy).toHaveBeenCalled();
@@ -236,7 +235,6 @@ describe('AuthService', () => {
       isAuthenticated$.next(true);
 
       await Promise.resolve();
-      await Promise.resolve();
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(oauthLoadUserProfileSpy).toHaveBeenCalled();
@@ -259,12 +257,11 @@ describe('AuthService', () => {
       const oauthGetAccessTokenSpy = mockOAuthService.getAccessToken.mockReturnValue('test-token');
 
       service = TestBed.inject(AuthService);
-      await Promise.resolve();
+      await vi.runAllTimersAsync();
 
       isAuthenticated$.next(false);
 
-      await Promise.resolve();
-      await Promise.resolve();
+      await vi.runAllTimersAsync();
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(mockOAuthService.loadUserProfile).not.toHaveBeenCalled();
@@ -286,12 +283,11 @@ describe('AuthService', () => {
 
       service = TestBed.inject(AuthService);
 
-      await Promise.resolve();
+      await vi.runAllTimersAsync();
 
       isAuthenticated$.next(false);
 
-      await Promise.resolve();
-      await Promise.resolve();
+      await vi.runAllTimersAsync();
 
       expect(storeSelectSpy).toHaveBeenCalledWith(selectIsAuthenticated);
       expect(mockOAuthService.loadUserProfile).not.toHaveBeenCalled();

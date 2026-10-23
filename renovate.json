@@ -2,6 +2,10 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "mergeConfidence:all-badges"],
   "reviewers": ["team:gb3-maintainer"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 4am on monday"]
+  },
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "bump"],
@@ -12,12 +16,6 @@
       "matchManagers": ["dockerfile", "kubernetes"],
       "automerge": false,
       "description": "Do not automerge docker or kubernetes updates as they have a great potential for breaking changes."
-    },
-    {
-      "matchManagers": ["npm"],
-      "matchUpdateTypes": ["major", "minor", "patch"],
-      "groupName": "karma",
-      "matchPackageNames": ["karma{/,}**"]
     },
     {
       "matchManagers": ["npm"],
@@ -71,6 +69,11 @@
       "groupName": "nodejs",
       "automerge": false,
       "description": "Keep Node.js runtime, engines.node, @types/node, .nvmrc and Docker base images aligned."
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["mcr.microsoft.com/playwright"],
+      "groupName": "playwright monorepo"
     }
   ]
 }

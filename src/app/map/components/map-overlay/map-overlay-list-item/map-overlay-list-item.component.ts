@@ -1,6 +1,7 @@
 import {Component, input, ChangeDetectionStrategy, computed, inject, Signal} from '@angular/core';
 import {ToggleButtonPosition} from '../../../types/toggle-button-position.type';
-import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelContent} from '@angular/material/expansion';
+import {MatExpansionPanel, MatExpansionPanelContent} from '@angular/material/expansion';
+import {MatIconButton} from '@angular/material/button';
 
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -12,15 +13,7 @@ import {RouterLink} from '@angular/router';
   templateUrl: './map-overlay-list-item.component.html',
   styleUrls: ['./map-overlay-list-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [
-    MatExpansionPanel,
-    MatExpansionPanelHeader,
-    MatIcon,
-    MatTooltip,
-    ShowTooltipIfTruncatedDirective,
-    RouterLink,
-    MatExpansionPanelContent,
-  ],
+  imports: [MatExpansionPanel, MatIconButton, MatIcon, MatTooltip, ShowTooltipIfTruncatedDirective, RouterLink, MatExpansionPanelContent],
   host: {
     '[attr.data-nesting-level]': 'nestingLevel()',
   },

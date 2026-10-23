@@ -9,7 +9,7 @@
 } @else if (localItem.itemType === 'image') {
   <a [href]="localItem.url" target="_blank" rel="noopener noreferrer" [title]="localItem.alt">
     <img
-      class="feature-info-content__table__row__column__image"
+      class="oereb-detail-list__image"
       [src]="localItem.src"
       [alt]="localItem.alt"
       [width]="localItem.width"
@@ -17,6 +17,9 @@
     />
   </a>
 } @else if (localItem.itemType === 'list') {
+  @if (showListLabel()) {
+    <span class="oereb-detail-list__label">{{ localItem.itemLabel }}</span>
+  }
   <ul class="oereb-detail-list">
     @for (item of localItem.items; track $index) {
       <li>

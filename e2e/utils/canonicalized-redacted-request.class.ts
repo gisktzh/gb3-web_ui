@@ -1,6 +1,6 @@
 import {Response, Worker, type Request} from '@playwright/test';
 import {redactAny} from 'e2e/utils/redact.utils';
-import {canonicalizeHeaders, fromHeaders, toHeaders} from './canonicalize.utils';
+import {canonicalizeHeaders, canonicalizeUrl, fromHeaders, toHeaders} from './canonicalize.utils';
 
 /**
  * Wraps a standard Playwright request but returns redacted data for matching.
@@ -105,6 +105,6 @@ export class CanonicalizedRedactedRequest implements Request {
   }
 
   public url(): string {
-    return redactAny(this.originalRequest.url());
+    return redactAny(canonicalizeUrl(this.originalRequest.url()));
   }
 }

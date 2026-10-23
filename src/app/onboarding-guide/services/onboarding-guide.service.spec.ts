@@ -112,5 +112,13 @@ describe('OnboardingGuideService', () => {
       expect(resultAsArray).toContain(mockTour.id);
       expect(resultAsArray.length).toEqual(1);
     });
+
+    it('switches the status indicator when the guide is started', () => {
+      expect(service.isGuideShown()).toBeFalsy();
+
+      service.start();
+
+      expect(service.isGuideShown()).toBeTruthy();
+    });
   });
 });
