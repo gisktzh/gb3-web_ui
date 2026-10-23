@@ -31,6 +31,9 @@ import {ActiveMapItem} from '../../models/active-map-item.model';
 import {InitialMapExtentService} from '../initial-map-extent.service';
 import EsriPoint from '@arcgis/core/geometry/Point';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
+import {Map as TopicMap} from '../../../shared/interfaces/topic.interface';
 import Extent from '@arcgis/core/geometry/Extent';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
@@ -754,6 +757,230 @@ describe('EsriMapService', () => {
       expect(mapViewMock.center.x).toBe(32);
       expect(mapViewMock.center.y).toBe(33);
       expect(mapViewMock.scale).toBe(34);
+    });
+  });
+
+  describe('feature info layer visibility', () => {
+    let mapItem: Gb2WmsActiveMapItem;
+    let wmsLayer: WMSLayer;
+    let sublayer: WMSSublayer;
+    const source = {mapItemId: 'topic', layerName: 'layer0_topic'};
+
+    beforeEach(() => {
+      mapItem = createGb2WmsMapItemMock(source.mapItemId, 1);
+      mapItem.settings.layers[0].minScale = 10000;
+      mapItem.settings.layers[0].maxScale = 50000;
+      store.overrideSelector(selectAllItems, [mapItem]);
+      store.refreshState();
+      sublayer = new WMSSublayer({name: source.layerName, visible: true});
+      wmsLayer = new WMSLayer({id: source.mapItemId, sublayers: [sublayer]});
+      vi.spyOn(wmsLayer, 'loadStatus', 'get').mockReturnValue('loaded');
+      mapMock.add(wmsLayer);
+      mapViewMock.scale = 20000;
+      service = TestBed.inject(EsriMapService);
+    });
+
+    it('uses API ranges when explicitly configured sublayers have no Esri limits', () => {
+      expect(service.getFeatureInfoScaleRange(source)).toEqual({minScale: 10000, maxScale: 50000});
+    });
+
+    it('does not apply a catalog topic minimum that does not restrict rendering', () => {
+      const item = new Gb2WmsActiveMapItem({id: source.mapItemId, minScale: 100000, layers: mapItem.settings.layers} as TopicMap);
+      store.overrideSelector(selectAllItems, [item]);
+      store.refreshState();
+      expect(service.getFeatureInfoScaleRange(source)).toEqual({minScale: 10000, maxScale: 50000});
+    });
+
+    it('intersects effective topic, sublayer and parent limits', () => {
+      const parent = new WMSSublayer({name: 'parent', maxScale: 15000, minScale: 40000, sublayers: [sublayer]});
+      wmsLayer.sublayers = [parent];
+      wmsLayer.maxScale = 12000;
+      wmsLayer.minScale = 45000;
+      sublayer.maxScale = 14000;
+      sublayer.minScale = 35000;
+      expect(service.getFeatureInfoScaleRange(source)).toEqual({minScale: 15000, maxScale: 35000});
+    });
+
+    it('does not use an unrelated topic or a layer with the same name', () => {
+      expect(service.getFeatureInfoScaleRange({...source, mapItemId: 'other-topic'})).toBeUndefined();
+      expect(service.getFeatureInfoScaleRange({...source, layerName: 'other-layer'})).toBeUndefined();
+    });
+
+    it('resolves single-layer items by the displayed item ID', () => {
+      const singleItem = new Gb2WmsActiveMapItem({id: 'topic', layers: mapItem.settings.layers} as TopicMap, mapItem.settings.layers[0]);
+      const singleWmsLayer = new WMSLayer({id: singleItem.id, sublayers: [{name: source.layerName, visible: true}]});
+      vi.spyOn(singleWmsLayer, 'loadStatus', 'get').mockReturnValue('loaded');
+      mapMock.add(singleWmsLayer);
+      store.overrideSelector(selectAllItems, [singleItem]);
+      store.refreshState();
+      expect(service.getFeatureInfoScaleRange({mapItemId: singleItem.id, layerName: source.layerName})).toEqual({
+        minScale: 10000,
+        maxScale: 50000,
+      });
+    });
+
+    it('returns no range for missing, loading or contradictory sources', () => {
+      vi.spyOn(wmsLayer, 'loadStatus', 'get').mockReturnValue('loading');
+      expect(service.getFeatureInfoScaleRange(source)).toBeUndefined();
+      vi.spyOn(wmsLayer, 'loadStatus', 'get').mockReturnValue('loaded');
+      wmsLayer.maxScale = 100000;
+      expect(service.getFeatureInfoScaleRange(source)).toBeUndefined();
+      mapMock.remove(wmsLayer);
+      expect(service.getFeatureInfoScaleRange(source)).toBeUndefined();
+    });
+
+    it('observes live scale, switches, opacity and removal, and releases its watcher', () => {
+      let evaluate = vi.fn();
+      const remove = vi.fn();
+      vi.mocked(reactiveUtils.watch).mockImplementation(((getValue: () => boolean, callback: (value: boolean) => void) => {
+        evaluate = vi.fn(() => callback(getValue()));
+        evaluate();
+        return {remove};
+      }) as typeof reactiveUtils.watch);
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+      expect(visible).toHaveBeenLastCalledWith(true);
+      // No store extent update: visibility must already follow the navigation scale.
+      mapViewMock.scale = 9999;
+      evaluate();
+      expect(visible).toHaveBeenLastCalledWith(false);
+      mapViewMock.scale = 10000;
+      evaluate();
+      expect(visible).toHaveBeenLastCalledWith(true);
+      mapViewMock.scale = 50001;
+      evaluate();
+      expect(visible).toHaveBeenLastCalledWith(false);
+      mapViewMock.scale = 20000;
+      evaluate();
+      expect(visible).toHaveBeenLastCalledWith(true);
+      sublayer.visible = false;
+      evaluate();
+      expect(visible).toHaveBeenLastCalledWith(false);
+      sublayer.visible = true;
+      wmsLayer.opacity = 0;
+      evaluate();
+      expect(visible).toHaveBeenLastCalledWith(false);
+      wmsLayer.opacity = 1;
+      evaluate();
+      expect(visible).toHaveBeenLastCalledWith(true);
+      mapMock.remove(wmsLayer);
+      evaluate();
+      expect(visible).toHaveBeenLastCalledWith(false);
+      subscription.unsubscribe();
+      expect(remove).toHaveBeenCalledOnce();
+    });
+
+    it('reacts through the real Esri watcher to live properties and map collection removal', async () => {
+      const original = await vi.importActual<typeof reactiveUtils>('@arcgis/core/core/reactiveUtils');
+      vi.mocked(reactiveUtils.watch).mockImplementation(original.watch);
+      const liveScale = new WMSSublayer({maxScale: 20000});
+      Object.defineProperty(mapViewMock, 'scale', {
+        get: () => liveScale.maxScale,
+        set: (scale: number) => (liveScale.maxScale = scale),
+        configurable: true,
+      });
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+      expect(visible).toHaveBeenLastCalledWith(true);
+      mapViewMock.scale = 5000;
+      expect(visible).toHaveBeenLastCalledWith(false);
+      mapViewMock.scale = 12000;
+      expect(visible).toHaveBeenLastCalledWith(true);
+      wmsLayer.visible = false;
+      expect(visible).toHaveBeenLastCalledWith(false);
+      wmsLayer.visible = true;
+      expect(visible).toHaveBeenLastCalledWith(true);
+      mapMock.remove(wmsLayer);
+      expect(visible).toHaveBeenLastCalledWith(false);
+      subscription.unsubscribe();
+    });
+  });
+
+  describe('feature info extent zoom', () => {
+    const scaleRange = {minScale: 10000, maxScale: 50000};
+    const polygon: GeometryWithSrs = {
+      type: 'Polygon',
+      srs: 2056,
+      coordinates: [
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+          [0, 10],
+          [0, 0],
+        ],
+      ],
+    };
+    const goTo = vi.fn().mockResolvedValue(undefined);
+
+    beforeEach(() => {
+      Object.assign(mapViewMock, {
+        goTo,
+        spatialReference: new SpatialReference({wkid: 2056}),
+        width: 1000,
+        height: 800,
+        rotation: 0,
+        resolution: 1,
+        scale: 10000,
+        padding: {top: 0, right: 0, bottom: 0, left: 0},
+      });
+      service = TestBed.inject(EsriMapService);
+    });
+
+    it('clamps a point zoom before navigation while preserving the old default without limits', () => {
+      const point: GeometryWithSrs = {type: 'Point', srs: 2056, coordinates: [1, 2]};
+      service.zoomToExtent(point, undefined, 400, scaleRange);
+      expect(goTo).toHaveBeenCalledOnce();
+      expect(goTo).toHaveBeenLastCalledWith({center: expect.any(EsriPoint), scale: 10001}, {duration: 400});
+      service.zoomToExtent(point);
+      expect(goTo).toHaveBeenLastCalledWith({center: expect.any(EsriPoint), scale: 750}, {duration: undefined});
+    });
+
+    it('clamps a small polygon without first navigating to an invisible scale', () => {
+      service.zoomToExtent(polygon, 1, undefined, scaleRange);
+      expect(goTo).toHaveBeenCalledOnce();
+      expect(goTo).toHaveBeenLastCalledWith({center: expect.any(EsriPoint), scale: 10001}, {duration: undefined});
+    });
+
+    it('preserves the native extent target when it is already in the visible range', () => {
+      const largePolygon = {
+        ...polygon,
+        coordinates: [
+          [
+            [0, 0],
+            [2000, 0],
+            [2000, 1000],
+            [0, 1000],
+            [0, 0],
+          ],
+        ],
+      } as GeometryWithSrs;
+      service.zoomToExtent(largePolygon, 1, undefined, scaleRange);
+      expect(goTo.mock.lastCall?.[0]).toMatchObject({xmin: 0, ymin: 0, xmax: 2000, ymax: 1000});
+    });
+
+    it('accounts for viewport padding and rotation before limiting the zoom-out boundary', () => {
+      const largePolygon = {
+        ...polygon,
+        coordinates: [
+          [
+            [0, 0],
+            [2000, 0],
+            [2000, 1000],
+            [0, 1000],
+            [0, 0],
+          ],
+        ],
+      } as GeometryWithSrs;
+      mapViewMock.padding = {top: 300, bottom: 300, left: 0, right: 0};
+      mapViewMock.rotation = 90;
+      service.zoomToExtent(largePolygon, 1, undefined, scaleRange);
+      expect(goTo).toHaveBeenLastCalledWith({center: expect.any(EsriPoint), scale: 50000}, {duration: undefined});
+    });
+
+    it('does not navigate when the permitted range is empty', () => {
+      service.zoomToExtent(polygon, undefined, undefined, {minScale: 50000, maxScale: 10000});
+      expect(goTo).not.toHaveBeenCalled();
     });
   });
 });

@@ -3,6 +3,7 @@ import {FeatureInfoResponse} from '../../../shared/interfaces/feature-info.inter
 import {errorProps} from '../../../shared/utils/error-props.utils';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {Coordinate} from '../../../shared/interfaces/coordinate.interface';
+import {FeatureHighlightSource} from '../../../shared/interfaces/feature-highlight.interface';
 
 export const FeatureInfoActions = createActionGroup({
   source: 'FeatureInfo',
@@ -10,7 +11,7 @@ export const FeatureInfoActions = createActionGroup({
     'Send Request': props<Coordinate & {scale: number}>(),
     'Update Content': props<{featureInfos: FeatureInfoResponse[]}>(),
     'Clear Content': emptyProps(),
-    'Highlight Feature': props<{feature: GeometryWithSrs; pinnedFeatureId: string | undefined}>(),
+    'Highlight Feature': props<{feature: GeometryWithSrs; source: FeatureHighlightSource; pinnedFeatureId: string | undefined}>(),
     'Clear Highlight': emptyProps(),
     'Set Error': errorProps(),
   },
