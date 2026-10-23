@@ -985,4 +985,59 @@ describe('EsriMapService', () => {
       expect(goTo).not.toHaveBeenCalled();
     });
   });
+
+  describe('ÖREB extract feature highlighting', () => {
+    const source = {
+      sourceType: 'oereb_extract' as const,
+      mapItemId: null,
+      layerName: null,
+    };
+
+    beforeEach(() => {
+      service = TestBed.inject(EsriMapService);
+    });
+
+    it('does not define a feature info scale range', () => {
+      expect(service.getFeatureInfoScaleRange(source)).toBeUndefined();
+    });
+
+    it('always reports the ÖREB extract as visible', () => {
+      // No active map items or corresponding WMS layer are required.
+      store.overrideSelector(selectAllItems, []);
+      store.refreshState();
+
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+
+      expect(visible).toHaveBeenCalledWith(true);
+
+      subscription.unsubscribe();
+    });
+
+    it('remains visible regardless of map scale or map layer visibility', () => {
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+
+      expect(visible).toHaveBeenLastCalledWith(true);
+
+      mapViewMock.scale = 1;
+      mapViewMock.scale = 1000000;
+
+      expect(visible).toHaveBeenLastCalledWith(true);
+      expect(visible).toHaveBeenCalledTimes(1);
+
+      subscription.unsubscribe();
+    });
+
+    it('does not require an initialized map view to report visibility', () => {
+      mapViewService.mapView.set(undefined);
+
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+
+      expect(visible).toHaveBeenCalledWith(true);
+
+      subscription.unsubscribe();
+    });
+  });
 });

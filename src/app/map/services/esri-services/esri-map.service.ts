@@ -85,7 +85,7 @@ import {
   intersectFeatureInfoScaleRanges,
   isInFeatureInfoScaleRange,
 } from '../../../shared/utils/feature-info-scale.utils';
-import {distinctUntilChanged, Observable, switchMap} from 'rxjs';
+import {distinctUntilChanged, Observable, of, switchMap} from 'rxjs';
 import {calculateBoundingBox} from '../../../shared/utils/geojson-bounds.utils';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -589,16 +589,17 @@ export class EsriMapService implements MapService {
   }
 
   public observeFeatureInfoLayerVisibility(source: FeatureHighlightSource): Observable<boolean> {
+    // Highlight from the oereb extract is always visible.
+    if (source.sourceType === 'oereb_extract') {
+      return of(true);
+    }
+
     return this.store.select(selectAllItems).pipe(
       switchMap(
         (items) =>
           new Observable<boolean>((subscriber) => {
             const handle = reactiveUtils.watch(
               () => {
-                // Highlight from the oereb extract is always visible.
-                if (source.sourceType === 'oereb_extract') {
-                  return true;
-                }
                 const resolved = this.resolveFeatureInfoLayer(source, items);
                 const view = this.esriMapViewService.mapView();
                 if (!resolved || !view) {
