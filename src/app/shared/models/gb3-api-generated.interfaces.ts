@@ -365,7 +365,6 @@ export interface Municipality {
   };
 }
 
-/** Manually added **/
 export interface OerebFeature {
   oereb_info: {
     /** name of the affected municipality */
@@ -384,7 +383,11 @@ export interface OerebFeature {
     egrid: string;
     /** state the current grade of completeness */
     completeness: string;
-    /** area of the parcel for the current restriction */
+    /**
+     * area of the parcel for the current restriction
+     * @min 0
+     * @max 999999999
+     */
     area_m2: number;
     /** date of the current state of official survey */
     status_official_survey: string;
@@ -406,10 +409,10 @@ export interface OerebFeature {
         name: string;
         /** artificial identification number of the restriction */
         id: number;
-        /** symbol image for the current restriction */
-        illustration_url?: Image;
         /** legal status text of the current restriction */
         legal_status: string;
+        /** symbol image for the current restriction */
+        illustration_url: Image;
         /** concrete measurment for this restriction */
         measurement:
           | {
@@ -448,6 +451,8 @@ export interface OerebFeature {
     not_concerned_themes: NotConcernedTheme[];
     /** list of themes which their restrictions are not affected by this parcel */
     not_available_themes: NotConcernedTheme[];
+    /** GeoJSON geometry object */
+    parcel: Geometry;
   };
 }
 

@@ -6,7 +6,7 @@ import {FeatureInfoQueryLocation, FeatureInfoResponse, FeatureInfoResult} from '
 import {QueryModeActions} from '../actions/query-mode.actions';
 
 describe('FeatureInfo Reducer', () => {
-  const source = {mapItemId: 'test-map', layerName: 'test-layer'};
+  const source = {sourceType: 'feature_info' as const, mapItemId: 'test-map', layerName: 'test-layer'};
 
   it('discards transient previews on mode exit but retains pinned geometry', () => {
     const preview: FeatureInfoState = {...initialState, highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]}};

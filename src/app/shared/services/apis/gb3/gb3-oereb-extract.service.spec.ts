@@ -156,6 +156,16 @@ describe('Gb3OerebExtractService', () => {
           ],
           not_concerned_themes: [notConcernedTheme],
           not_available_themes: [notAvailableTheme],
+          parcel: {
+            type: 'Point',
+            coordinates: [1, 2],
+            crs: {
+              type: 'name',
+              properties: {
+                name: 'EPSG:2056',
+              },
+            },
+          },
         },
       } as OerebAPIFeature;
 
@@ -266,6 +276,11 @@ describe('Gb3OerebExtractService', () => {
             ...notAvailableTheme,
           },
         ],
+        parcel: {
+          type: 'Point',
+          coordinates: [1, 2],
+          srs: 2056,
+        },
       };
 
       service.loadOerebExtract(x, y).subscribe((actual) => {
@@ -299,6 +314,10 @@ describe('Gb3OerebExtractService', () => {
           concerned_themes: [],
           not_concerned_themes: [],
           not_available_themes: [],
+          parcel: {
+            type: 'Point',
+            coordinates: [1, 2],
+          },
         },
       };
 
@@ -337,6 +356,10 @@ describe('Gb3OerebExtractService', () => {
           concerned_themes: [],
           not_concerned_themes: [],
           not_available_themes: [],
+          parcel: {
+            type: 'Point',
+            coordinates: [1, 2],
+          },
         },
       } as OerebAPIFeature;
 
@@ -351,6 +374,91 @@ describe('Gb3OerebExtractService', () => {
         expect(actual?.surveyor).toEqual({
           title: '',
           href: 'https://example.com/surveyor',
+        });
+      });
+    });
+
+    it('should map the parcel with EPSG:4326 to srs 4326', () => {
+      const coordinates = [8.5417, 47.3769];
+
+      const data: OerebAPIFeature = {
+        oereb_info: {
+          municipality_name: 'Zürich',
+          municipality_code: 261,
+          parcel_number: '1234',
+          egrid: 'CH123456789012',
+          completeness: 'vollständig',
+          area_m2: 12,
+          status_official_survey: '1970-01-01 00:00:00',
+          kbo: {title: 'KBO', href: 'https://example.com/kbo'},
+          surveyor: {title: 'Surveyor', href: 'https://example.com/surveyor'},
+          static_extract_url: 'https://example.com/extract.pdf',
+          concerned_themes: [],
+          not_concerned_themes: [],
+          not_available_themes: [],
+          parcel: {
+            type: 'Point',
+            coordinates,
+            crs: {
+              type: 'name',
+              properties: {
+                name: 'EPSG:4326',
+              },
+            },
+          },
+        },
+      } as OerebAPIFeature;
+
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(data));
+
+      service.loadOerebExtract(1, 2).subscribe((actual) => {
+        expect(actual?.parcel).toEqual({
+          type: 'Point',
+          coordinates,
+          srs: 4326,
+        });
+      });
+    });
+
+    it('should preserve the parcel geometry type and coordinates and fall back a missing srs to 2056', () => {
+      const coordinates = [
+        [
+          [2682700, 1247900],
+          [2682800, 1247900],
+          [2682800, 1248000],
+          [2682700, 1247900],
+        ],
+      ];
+
+      const data: OerebAPIFeature = {
+        oereb_info: {
+          municipality_name: 'Zürich',
+          municipality_code: 261,
+          parcel_number: '1234',
+          egrid: 'CH123456789012',
+          completeness: 'vollständig',
+          area_m2: 12,
+          status_official_survey: '1970-01-01 00:00:00',
+          kbo: {title: 'KBO', href: 'https://example.com/kbo'},
+          surveyor: {title: 'Surveyor', href: 'https://example.com/surveyor'},
+          static_extract_url: 'https://example.com/extract.pdf',
+          concerned_themes: [],
+          not_concerned_themes: [],
+          not_available_themes: [],
+          parcel: {
+            type: 'Polygon',
+            coordinates,
+          },
+        },
+      } as OerebAPIFeature;
+
+      vi.spyOn(httpClient, 'get').mockReturnValue(of(data));
+
+      service.loadOerebExtract(1, 2).subscribe((actual) => {
+        expect(actual?.parcel).toEqual({
+          type: 'Polygon',
+          coordinates,
+          srs: 2056,
         });
       });
     });

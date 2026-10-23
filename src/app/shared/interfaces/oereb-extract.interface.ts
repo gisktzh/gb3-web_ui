@@ -1,4 +1,5 @@
 import {Image} from './image.interface';
+import {GeometryWithSrs} from './geojson-types-with-srs.interface';
 
 export interface OerebExtractQueryLocation {
   x?: number;
@@ -63,4 +64,5 @@ export interface OerebExtractResponse {
   concernedThemes: OerebConcernedTheme[];
   notConcernedThemes: OerebNotConcernedTheme[];
   notAvailableThemes: OerebNotConcernedTheme[];
+  parcel: GeometryWithSrs;
 }
