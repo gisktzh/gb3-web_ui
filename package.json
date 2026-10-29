@@ -30,7 +30,7 @@
   },
   "private": true,
   "engines": {
-    "node": "24.x"
+    "node": "26.x"
   },
   "dependencies": {
     "@angular/animations": "^22.1.4",
@@ -85,7 +85,7 @@
     "@ngrx/schematics": "^22.0.0",
     "@playwright/test": "^1.63.0",
     "@types/har-format": "^1.2.16",
-    "@types/node": "^25.5.0",
+    "@types/node": "^26.0.0",
     "@vitest/coverage-v8": "^4.1.0",
     "@vitest/spy": "^4.1.0",
     "angular-eslint": "^22.1.0",
