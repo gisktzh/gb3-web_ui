@@ -87,18 +87,12 @@ import {
 } from '../../../shared/utils/feature-info-scale.utils';
 import {distinctUntilChanged, Observable, switchMap} from 'rxjs';
 import {calculateBoundingBox} from '../../../shared/utils/geojson-bounds.utils';
+import {EsriMouseButtonType} from './types/esri-mouse-button-type.type';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
 const DEFAULT_COPYRIGHT = '© Kanton Zürich and MapServer Developers';
 const NO_VIEW_PADDING: MapViewPadding = {top: 0, right: 0, bottom: 0, left: 0};
-
-// used to distinguish between info-click and drawing-edit in the click listener
-enum EsriMouseButtonType {
-  LeftClick = 0,
-  MiddleClick = 1,
-  RightClick = 2,
-}
 
 @Injectable({
   providedIn: 'root',
@@ -139,7 +133,7 @@ export class EsriMapService implements MapService {
   private readonly printPreviewHandle = signal<ResourceHandle | null>(null);
   private readonly previousPrintPreviewHandle = signal<ResourceHandle | null>(null);
   public readonly mapContainerElement = signal<HTMLDivElement | null>(null);
-  public readonly isEditModeActive = signal(false);
+  private readonly isEditModeActive = signal(false);
   private readonly viewPadding = signal<MapViewPadding | undefined>(undefined, {
     equal: (a, b) => a?.top === b?.top && a?.left === b?.left && a?.bottom === b?.bottom && a?.right === b?.right,
   });

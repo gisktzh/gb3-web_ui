@@ -483,7 +483,7 @@ describe('StatisticsEffects', () => {
     });
   });
 
-  describe('activeToolOnSoftModeUpdate$', () => {
+  describe('activateToolOnSoftModeUpdate$', () => {
     it.each([
       {mode: 'umkreis', tool: 'select-statistics-circle'},
       {mode: 'polygon', tool: 'select-statistics-polygon'},
@@ -491,7 +491,7 @@ describe('StatisticsEffects', () => {
       actions$ = of(StatisticsActions.softUpdateMode({mode}));
 
       const actualActions: Action[] = [];
-      effects.activeToolOnSoftModeUpdate$.subscribe((action) => actualActions.push(action));
+      effects.activateToolOnSoftModeUpdate$.subscribe((action) => actualActions.push(action));
 
       expect(actualActions).toEqual([ToolActions.activateTool({tool})]);
     });

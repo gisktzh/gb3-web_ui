@@ -168,7 +168,7 @@ describe('ToolEffects', () => {
       'cancels edit mode, dispatches `StatisticsActions.clearContent` and activates the %s tool',
       (tool) => {
         const mapServiceCancelSpy = vi.spyOn(mapService, 'cancelEditMode');
-        const expectedActions = [StatisticsActions.clearContent(), ToolActions.activateTool({tool})];
+        const expectedActions = [ToolActions.activateTool({tool})];
         actions$ = of(ToolActions.switchTool({tool}));
         const actualActions: Action[] = [];
         effects.switchTool$.subscribe((action) => actualActions.push(action));

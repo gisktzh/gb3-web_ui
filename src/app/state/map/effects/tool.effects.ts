@@ -20,7 +20,7 @@ export class ToolEffects {
         // In case we're editing already.
         this.mapService.cancelEditMode();
       }),
-      switchMap(({tool}) => [StatisticsActions.clearContent(), ToolActions.activateTool({tool})]),
+      switchMap(({tool}) => [ToolActions.activateTool({tool})]),
     );
   });
 

@@ -254,7 +254,7 @@ export class StatisticsEffects {
   /**
    * A soft mode update should mark the respective tool as active so a hard set after a soft update actually activates it properly.
    */
-  public activeToolOnSoftModeUpdate$ = createEffect(() => {
+  public activateToolOnSoftModeUpdate$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(StatisticsActions.softUpdateMode),
       switchMap(({mode}) => [ToolActions.activateTool({tool: statisticsSelectionToolByMode[mode]})]),
@@ -303,6 +303,13 @@ export class StatisticsEffects {
           ),
         );
       }),
+    );
+  });
+
+  public switchTool$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ToolActions.switchTool),
+      switchMap(() => [StatisticsActions.clearContent()]),
     );
   });
 
