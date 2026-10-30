@@ -1,6 +1,16 @@
 import {test, expect} from '../fixtures/statistics.fixture';
 import type {Page} from '@playwright/test';
-import {clickMapPoint, getMapPoint, mapScreenshot, setMapScale, waitForMap, type MapPoint} from '../utils/map.utils';
+import {
+  clickMapPoint,
+  getMapPoint,
+  mapScreenshot,
+  setMapScale,
+  waitForMap,
+  shiftPointByMeters,
+  drag,
+  forceMapRerender,
+  type MapPoint,
+} from '../utils/map.utils';
 import {
   resultHost,
   expectFeatureResponse,
@@ -223,6 +233,7 @@ test.describe('Statistics', () => {
     const unmarkedMap = await mapScreenshot(page);
     await header.hover();
     await expect(radio).toBeChecked();
+
     await expect.poll(async () => (await mapScreenshot(page)).equals(unmarkedMap)).toBe(false);
     await page.mouse.move(0, 0);
     await expect(radio).not.toBeChecked();
@@ -341,6 +352,130 @@ test.describe('Statistics', () => {
     await expect(host.getByTestId('statistics-radius-error')).toHaveCount(0);
     await expect(radius).not.toHaveAttribute('aria-invalid', 'true');
     expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, point.coordinates, 750);
+  });
+
+  test('edits a circle to a polygon', async ({page, statisticsSession}) => {
+    await page.getByTestId('map-select-statistic').click();
+    let point = await getMapPoint(page);
+    await clickMapPoint(page, point);
+    await expectStatisticsResult(page, statisticsSession);
+    await waitForMap(page);
+
+    const notInEditModeScreenshot = await mapScreenshot(page);
+    point = await getMapPoint(page);
+    await clickMapPoint(page, point, 'right');
+    await waitForMap(page);
+    const host = resultHost(page);
+    const mode = host.getByTestId('statistics-mode');
+
+    // Should switch from circle to polygon.
+    await expect(mode).toContainText('Polygon');
+    await forceMapRerender(page);
+    const boundingBoxScreenshot = await mapScreenshot(page);
+    expect(boundingBoxScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+
+    // Second right click changes to polygon edit
+    point = await getMapPoint(page);
+    await clickMapPoint(page, point, 'right');
+    await forceMapRerender(page);
+    const pointEditScreenshot = await mapScreenshot(page);
+    expect(pointEditScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+    expect(pointEditScreenshot.equals(boundingBoxScreenshot)).toBe(false);
+
+    // Second right click changes back to the bounding box edit
+    await clickMapPoint(page, point, 'right');
+    await forceMapRerender(page);
+    const secondBoundingBoxScreenshot = await mapScreenshot(page);
+
+    expect(secondBoundingBoxScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+    expect(secondBoundingBoxScreenshot.equals(boundingBoxScreenshot)).toBe(true);
+
+    const originalRadius = 500;
+    const dragChange = 100;
+
+    const dragPointStart = shiftPointByMeters(page, point, originalRadius, 0);
+    const dragPointEnd = shiftPointByMeters(page, dragPointStart, dragChange, 0);
+
+    await drag(page, dragPointStart, dragPointEnd);
+    await forceMapRerender(page);
+
+    const thirdBoundingBoxScreenshot = await mapScreenshot(page);
+    expect(thirdBoundingBoxScreenshot.equals(boundingBoxScreenshot)).toBe(false);
+
+    // Click-away to exit edit mode.
+    await clickMapPoint(page, shiftPointByMeters(page, point, -1500, 0));
+
+    // There's no reliable way to calculate these, so these are copy/pasted from a qorking example.
+    // Calculating always gives a somewhat unprecise set of coordinates due to mouse click positions
+    // and CSS pixel rounding within @arcgis/core.
+    const vertices: [number, number][] = [
+      [2682466.000500435, 1247142.0000000002],
+      [2682463.3761752667, 1247191.008570165],
+      [2682455.5284734475, 1247239.5451610084],
+      [2682442.532972635, 1247287.1423386275],
+      [2682424.5148266074, 1247333.341716183],
+      [2682401.64755996, 1247377.6983684131],
+      [2682374.1513969707, 1247419.78511651],
+      [2682342.291140721, 1247459.196642082],
+      [2682306.3736228948, 1247495.5533905935],
+      [2682266.744748823, 1247528.5052266817],
+      [2682223.786166227, 1247557.7348061516],
+      [2682177.9115897394, 1247582.9606321745],
+      [2682129.5628166106, 1247603.939766256],
+      [2682079.2054719552, 1247620.4701678664],
+      [2682027.324524531, 1247632.3926402018],
+      [2681974.419616223, 1247639.5923633364],
+      [2681921.0002502175, 1247642.0000000002],
+      [2681867.580884212, 1247639.5923633364],
+      [2681814.675975904, 1247632.3926402018],
+      [2681762.79502848, 1247620.4701678664],
+      [2681712.4376838244, 1247603.939766256],
+      [2681664.0889106956, 1247582.9606321745],
+      [2681618.214334208, 1247557.7348061516],
+      [2681575.255751612, 1247528.5052266817],
+      [2681535.6268775403, 1247495.5533905935],
+      [2681499.709359714, 1247459.196642082],
+      [2681467.8491034643, 1247419.78511651],
+      [2681440.352940475, 1247377.6983684131],
+      [2681417.4856738276, 1247333.341716183],
+      [2681399.4675278002, 1247287.1423386275],
+      [2681386.4720269875, 1247239.5451610084],
+      [2681378.6243251683, 1247191.008570165],
+      [2681376, 1247142.0000000002],
+      [2681378.6243251683, 1247092.9914298356],
+      [2681386.4720269875, 1247044.454838992],
+      [2681399.4675278002, 1246996.857661373],
+      [2681417.4856738276, 1246950.6582838176],
+      [2681440.352940475, 1246906.3016315873],
+      [2681467.8491034643, 1246864.2148834905],
+      [2681499.709359714, 1246824.8033579185],
+      [2681535.6268775403, 1246788.446609407],
+      [2681575.255751612, 1246755.4947733188],
+      [2681618.214334208, 1246726.2651938489],
+      [2681664.0889106956, 1246701.039367826],
+      [2681712.4376838244, 1246680.0602337446],
+      [2681762.79502848, 1246663.529832134],
+      [2681814.675975904, 1246651.6073597986],
+      [2681867.580884212, 1246644.407636664],
+      [2681921.0002502175, 1246642.0000000002],
+      [2681974.419616223, 1246644.407636664],
+      [2682027.324524531, 1246651.6073597986],
+      [2682079.2054719552, 1246663.529832134],
+      [2682129.5628166106, 1246680.0602337446],
+      [2682177.9115897394, 1246701.039367826],
+      [2682223.786166227, 1246726.2651938489],
+      [2682266.744748823, 1246755.4947733188],
+      [2682306.3736228948, 1246788.446609407],
+      [2682342.291140721, 1246824.8033579185],
+      [2682374.1513969707, 1246864.2148834905],
+      [2682401.64755996, 1246906.3016315873],
+      [2682424.5148266074, 1246950.6582838176],
+      [2682442.532972635, 1246996.857661373],
+      [2682455.5284734475, 1247044.454838992],
+      [2682463.3761752667, 1247092.9914298356],
+    ];
+
+    expectStatisticsPolygon(statisticsSession.statisticsQueries.at(-1)!, vertices);
   });
 
   test.describe('Mobile', () => {

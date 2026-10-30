@@ -109,9 +109,15 @@ export class EsriToolService implements ToolService {
 
     this.setToolStrategyForEditingFeature(graphic);
 
+    const layerId = String(graphic.layer.id);
     // Open the panel only for drawings, not measurements or elevation profile, as their style is not currently editable
-    if (String(graphic.layer.id).includes(UserDrawingLayer.Drawings)) {
+    if (layerId.includes(UserDrawingLayer.Drawings)) {
       this.store.dispatch(DrawingActions.selectDrawing({drawingId}));
+    }
+
+    // Selection mode in the statistics tool should switch to `polygon` if an edit is attempted.
+    if (layerId.includes(InternalDrawingLayer.StatisticsArea)) {
+      this.store.dispatch(StatisticsActions.softUpdateMode({mode: 'polygon'}));
     }
 
     this.toolStrategy.edit(graphic);
@@ -469,12 +475,15 @@ export class EsriToolService implements ToolService {
 
     // Since this is a private method and the caller already checks for the layer to be non-nullish, we can expect it existing.
     const layerId = String(graphic.layer!.id);
+
     if (layerId.includes(UserDrawingLayer.Drawings)) {
       this.setDrawingStrategy(drawingType, graphic.layer as GraphicsLayer);
     } else if (layerId.includes(UserDrawingLayer.Measurements)) {
       this.setMeasurementStrategy(measurementType, graphic.layer as GraphicsLayer);
     } else if (layerId.includes(InternalDrawingLayer.ElevationProfile)) {
       this.setMeasurementStrategy('measure-elevation-profile', graphic.layer as GraphicsLayer);
+    } else if (layerId.includes(InternalDrawingLayer.StatisticsArea)) {
+      this.setStatisticsSelectionStrategy('select-statistics-polygon', graphic.layer as GraphicsLayer);
     } else {
       throw new NonEditableLayerType();
     }

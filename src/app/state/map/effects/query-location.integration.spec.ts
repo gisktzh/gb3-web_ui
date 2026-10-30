@@ -185,7 +185,14 @@ describe('shared feature/statistics query location', () => {
         {provide: Gb3OerebExtractService, useValue: oerebExtract},
         {provide: STATISTICS_SERVICE, useValue: statistics},
         {provide: MapDrawingService, useValue: drawing},
-        {provide: MAP_SERVICE, useValue: {getToolService: () => tools, observeFeatureInfoLayerVisibility: vi.fn(() => of(true))}},
+        {
+          provide: MAP_SERVICE,
+          useValue: {
+            getToolService: () => tools,
+            observeFeatureInfoLayerVisibility: vi.fn(() => of(true)),
+            cancelEditMode: vi.fn(),
+          },
+        },
         {provide: MatDialog, useValue: {open: vi.fn()}},
         {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
         FeatureHighlightingService,
@@ -663,6 +670,7 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(MapConfigActions.clearFeatureInfoContent());
     expect(await firstValueFrom(store.select(selectQueryPoint))).toBeUndefined();
     expect(await firstValueFrom(store.select(selectQueryLocation))).toEqual({});
+    expect(await firstValueFrom(store.select(selectGeometry))).toBeUndefined();
   });
 
   it('cancels feature requests on point changes and closure so stale responses cannot repopulate data', async () => {
