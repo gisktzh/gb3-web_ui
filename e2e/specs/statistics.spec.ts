@@ -271,6 +271,7 @@ test.describe('Statistics', () => {
     await setMapScale(page, 1000);
     await page.mouse.move(0, 0);
     await expect(radio).not.toBeChecked();
+    await forceMapRerender(page);
     await expect.poll(async () => (await mapScreenshot(page)).equals(pinnedMap)).toBe(false);
     await waitForMap(page);
     expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
