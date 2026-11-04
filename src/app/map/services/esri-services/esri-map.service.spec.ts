@@ -764,7 +764,7 @@ describe('EsriMapService', () => {
     let mapItem: Gb2WmsActiveMapItem;
     let wmsLayer: WMSLayer;
     let sublayer: WMSSublayer;
-    const source = {mapItemId: 'topic', layerName: 'layer0_topic'};
+    const source = {sourceType: 'feature_info' as const, mapItemId: 'topic', layerName: 'layer0_topic'};
 
     beforeEach(() => {
       mapItem = createGb2WmsMapItemMock(source.mapItemId, 1);
@@ -813,10 +813,12 @@ describe('EsriMapService', () => {
       mapMock.add(singleWmsLayer);
       store.overrideSelector(selectAllItems, [singleItem]);
       store.refreshState();
-      expect(service.getFeatureInfoScaleRange({mapItemId: singleItem.id, layerName: source.layerName})).toEqual({
-        minScale: 10000,
-        maxScale: 50000,
-      });
+      expect(service.getFeatureInfoScaleRange({sourceType: 'feature_info', mapItemId: singleItem.id, layerName: source.layerName})).toEqual(
+        {
+          minScale: 10000,
+          maxScale: 50000,
+        },
+      );
     });
 
     it('returns no range for missing, loading or contradictory sources', () => {
@@ -981,6 +983,61 @@ describe('EsriMapService', () => {
     it('does not navigate when the permitted range is empty', () => {
       service.zoomToExtent(polygon, undefined, undefined, {minScale: 50000, maxScale: 10000});
       expect(goTo).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('ÖREB extract feature highlighting', () => {
+    const source = {
+      sourceType: 'oereb_extract' as const,
+      mapItemId: null,
+      layerName: null,
+    };
+
+    beforeEach(() => {
+      service = TestBed.inject(EsriMapService);
+    });
+
+    it('does not define a feature info scale range', () => {
+      expect(service.getFeatureInfoScaleRange(source)).toBeUndefined();
+    });
+
+    it('always reports the ÖREB extract as visible', () => {
+      // No active map items or corresponding WMS layer are required.
+      store.overrideSelector(selectAllItems, []);
+      store.refreshState();
+
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+
+      expect(visible).toHaveBeenCalledWith(true);
+
+      subscription.unsubscribe();
+    });
+
+    it('remains visible regardless of map scale or map layer visibility', () => {
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+
+      expect(visible).toHaveBeenLastCalledWith(true);
+
+      mapViewMock.scale = 1;
+      mapViewMock.scale = 1000000;
+
+      expect(visible).toHaveBeenLastCalledWith(true);
+      expect(visible).toHaveBeenCalledTimes(1);
+
+      subscription.unsubscribe();
+    });
+
+    it('does not require an initialized map view to report visibility', () => {
+      mapViewService.mapView.set(undefined);
+
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+
+      expect(visible).toHaveBeenCalledWith(true);
+
+      subscription.unsubscribe();
     });
   });
 });

@@ -1,3 +1,38 @@
+<ng-template #tableHeader let-tableHeader>
+  <th
+    (mouseenter)="onFeatureHoverStart()"
+    (mouseleave)="onFeatureHoverEnd()"
+    (click)="toggleHighlightForFeature()"
+    class="info-table__cell info-table__cell--header oereb-extract__table__feature-header"
+    [class.oereb-extract__table__feature-cell--highlighted]="isHighlighted()"
+    scope="col"
+  >
+    <div class="oereb-extract__table__feature-header-content">
+      {{ tableHeader.displayValue }}
+      <mat-radio-button
+        [value]="tableHeader.fid"
+        [checked]="isHighlighted()"
+        (keydown.space)="marking.toggleWithKeyboard($event, tableHeader.fid)"
+        labelPosition="before"
+      >
+        Markieren:
+      </mat-radio-button>
+    </div>
+  </th>
+</ng-template>
+
+<ng-template #tableCell let-cellValue>
+  <td
+    (mouseenter)="onFeatureHoverStart()"
+    (mouseleave)="onFeatureHoverEnd()"
+    class="info-table__cell"
+    [class.oereb-extract__table__feature-cell--highlighted]="isHighlighted()"
+    tableColumnIdentifier
+  >
+    <info-table-cell [cellValue]="cellValue" />
+  </td>
+</ng-template>
+
 <div class="oereb-extract">
   <map-overlay-list-item [forceExpanded]="true" overlayTitle="ÖREB-Kataster">
     <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
@@ -20,7 +55,14 @@
       <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
 
       <div class="oereb-extract__table">
-        <resizable-info-table [tableData]="oerebCadastreData()" tableLabel="Grundstücksinformationen" />
+        <mat-radio-group value="oereb">
+          <resizable-info-table
+            [tableData]="oerebCadastreData()"
+            tableLabel="Grundstücksinformationen"
+            [tableHeaderTemplate]="tableHeader"
+            [tableCellTemplate]="tableCell"
+          />
+        </mat-radio-group>
       </div>
     </map-overlay-list-item>
 
