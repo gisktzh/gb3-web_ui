@@ -17,6 +17,8 @@ import {
   expectStatisticsResult,
   expectStatisticsCircle,
   expectStatisticsPolygon,
+  expectStatisticsPolygonArea,
+  expectStatisticsPolygonExtent,
 } from '../utils/query-results.utils';
 
 function mapView(page: Page) {
@@ -355,12 +357,80 @@ test.describe('Statistics', () => {
     expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, point.coordinates, 750);
   });
 
+  test('edits a polygon', async ({page, statisticsSession}) => {
+    await page.getByTestId('map-select-statistic').click();
+    // Dismiss the toolbar tooltip before it can cover the polygon control.
+    await page.mouse.move(0, 0);
+    const polygonTool = page.getByTestId('statistics-select-polygon');
+    await polygonTool.click();
+    await expect(polygonTool).toHaveClass(/statistics-tools__button--active/);
+    await waitForMap(page);
+    const vertices: MapPoint[] = [];
+    const offsets = [
+      {x: -90, y: -70},
+      {x: 90, y: -70},
+      {x: 0, y: 100},
+    ];
+    for (const offset of offsets) {
+      vertices.push(await getMapPoint(page, offset));
+    }
+    for (const vertex of vertices) {
+      await clickMapPoint(page, vertex);
+    }
+    // Close the polygon by clicking its start vertex, as the tool's instructions describe.
+    await clickMapPoint(page, vertices[0]);
+    await expectStatisticsResult(page, statisticsSession);
+    expectStatisticsPolygon(
+      statisticsSession.statisticsQueries.at(-1)!,
+      vertices.map((vertex) => vertex.coordinates),
+    );
+    expectStatisticsPolygonArea(statisticsSession.statisticsQueries.at(-1)!, 240990.9, 1);
+    expectStatisticsPolygonExtent(statisticsSession.statisticsQueries.at(-1)!, 714.37, 674.68, 1);
+    const notInEditModeScreenshot = await mapScreenshot(page);
+
+    // Bounding box edit mode
+    await clickMapPoint(page, vertices[0], 'right');
+    await forceMapRerender(page);
+    const boundingBoxScreenshot = await mapScreenshot(page);
+    expect(boundingBoxScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+
+    // Point edit mode
+    await clickMapPoint(page, vertices[0], 'right');
+    await forceMapRerender(page);
+    const pointEditScreenshot = await mapScreenshot(page);
+    expect(pointEditScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+
+    const newVertices: MapPoint[] = [];
+    for (const offset of offsets) {
+      newVertices.push(await getMapPoint(page, offset));
+    }
+    const newPoint = await getMapPoint(page, {x: -150, y: -150});
+    await drag(page, newVertices[2], newPoint);
+    await forceMapRerender(page);
+    const clickAwayPoint = await getMapPoint(page);
+    await clickMapPoint(page, clickAwayPoint);
+
+    await forceMapRerender(page);
+
+    // We're testing the polygon extent because different browsers:
+    // Firefox and WebKit calculate the resulting polygon coordinates a tad ddifferently, leading to a URL
+    // mismatch in the HAR file. Hence, we test for width and height instead.
+    expectStatisticsPolygonArea(statisticsSession.statisticsQueries.at(-1)!, 77967.64, 1);
+    expectStatisticsPolygonExtent(statisticsSession.statisticsQueries.at(-1)!, 892.97, 218.28, 1);
+  });
+
   test('edits a circle to a polygon', async ({page, statisticsSession}) => {
     await page.getByTestId('map-select-statistic').click();
     let point = await getMapPoint(page);
     await clickMapPoint(page, point);
     await expectStatisticsResult(page, statisticsSession);
     await waitForMap(page);
+
+    // We're testing the polygon extent because different browsers:
+    // Firefox and WebKit calculate the resulting polygon coordinates a tad ddifferently, leading to a URL
+    // mismatch in the HAR file. Hence, we test for width and height instead.
+    expectStatisticsPolygonArea(statisticsSession.statisticsQueries.at(-1)!, 855714.28, 1);
+    expectStatisticsPolygonExtent(statisticsSession.statisticsQueries.at(-1)!, 1000, 1000, 1);
 
     const notInEditModeScreenshot = await mapScreenshot(page);
     point = await getMapPoint(page);
@@ -406,77 +476,11 @@ test.describe('Statistics', () => {
     // Click-away to exit edit mode.
     await clickMapPoint(page, shiftPointByMeters(page, point, -1500, 0));
 
-    // There's no reliable way to calculate these, so these are copy/pasted from a qorking example.
-    // Calculating always gives a somewhat unprecise set of coordinates due to mouse click positions
-    // and CSS pixel rounding within @arcgis/core.
-    const vertices: [number, number][] = [
-      [2682466.000500435, 1247142.0000000002],
-      [2682463.3761752667, 1247191.008570165],
-      [2682455.5284734475, 1247239.5451610084],
-      [2682442.532972635, 1247287.1423386275],
-      [2682424.5148266074, 1247333.341716183],
-      [2682401.64755996, 1247377.6983684131],
-      [2682374.1513969707, 1247419.78511651],
-      [2682342.291140721, 1247459.196642082],
-      [2682306.3736228948, 1247495.5533905935],
-      [2682266.744748823, 1247528.5052266817],
-      [2682223.786166227, 1247557.7348061516],
-      [2682177.9115897394, 1247582.9606321745],
-      [2682129.5628166106, 1247603.939766256],
-      [2682079.2054719552, 1247620.4701678664],
-      [2682027.324524531, 1247632.3926402018],
-      [2681974.419616223, 1247639.5923633364],
-      [2681921.0002502175, 1247642.0000000002],
-      [2681867.580884212, 1247639.5923633364],
-      [2681814.675975904, 1247632.3926402018],
-      [2681762.79502848, 1247620.4701678664],
-      [2681712.4376838244, 1247603.939766256],
-      [2681664.0889106956, 1247582.9606321745],
-      [2681618.214334208, 1247557.7348061516],
-      [2681575.255751612, 1247528.5052266817],
-      [2681535.6268775403, 1247495.5533905935],
-      [2681499.709359714, 1247459.196642082],
-      [2681467.8491034643, 1247419.78511651],
-      [2681440.352940475, 1247377.6983684131],
-      [2681417.4856738276, 1247333.341716183],
-      [2681399.4675278002, 1247287.1423386275],
-      [2681386.4720269875, 1247239.5451610084],
-      [2681378.6243251683, 1247191.008570165],
-      [2681376, 1247142.0000000002],
-      [2681378.6243251683, 1247092.9914298356],
-      [2681386.4720269875, 1247044.454838992],
-      [2681399.4675278002, 1246996.857661373],
-      [2681417.4856738276, 1246950.6582838176],
-      [2681440.352940475, 1246906.3016315873],
-      [2681467.8491034643, 1246864.2148834905],
-      [2681499.709359714, 1246824.8033579185],
-      [2681535.6268775403, 1246788.446609407],
-      [2681575.255751612, 1246755.4947733188],
-      [2681618.214334208, 1246726.2651938489],
-      [2681664.0889106956, 1246701.039367826],
-      [2681712.4376838244, 1246680.0602337446],
-      [2681762.79502848, 1246663.529832134],
-      [2681814.675975904, 1246651.6073597986],
-      [2681867.580884212, 1246644.407636664],
-      [2681921.0002502175, 1246642.0000000002],
-      [2681974.419616223, 1246644.407636664],
-      [2682027.324524531, 1246651.6073597986],
-      [2682079.2054719552, 1246663.529832134],
-      [2682129.5628166106, 1246680.0602337446],
-      [2682177.9115897394, 1246701.039367826],
-      [2682223.786166227, 1246726.2651938489],
-      [2682266.744748823, 1246755.4947733188],
-      [2682306.3736228948, 1246788.446609407],
-      [2682342.291140721, 1246824.8033579185],
-      [2682374.1513969707, 1246864.2148834905],
-      [2682401.64755996, 1246906.3016315873],
-      [2682424.5148266074, 1246950.6582838176],
-      [2682442.532972635, 1246996.857661373],
-      [2682455.5284734475, 1247044.454838992],
-      [2682463.3761752667, 1247092.9914298356],
-    ];
-
-    expectStatisticsPolygon(statisticsSession.statisticsQueries.at(-1)!, vertices);
+    // We're testing the polygon extent because different browsers:
+    // Firefox and WebKit calculate the resulting polygon coordinates a tad ddifferently, leading to a URL
+    // mismatch in the HAR file. Hence, we test for width and height instead.
+    expectStatisticsPolygonArea(statisticsSession.statisticsQueries.at(-1)!, 855714.28, 1);
+    expectStatisticsPolygonExtent(statisticsSession.statisticsQueries.at(-1)!, 1091.28, 1000, 1);
   });
 
   test.describe('Mobile', () => {
