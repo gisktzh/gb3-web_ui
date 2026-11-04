@@ -2,6 +2,7 @@ import {
   clampFeatureInfoScale,
   getVisibleFeatureInfoScale,
   intersectFeatureInfoScaleRanges,
+  isAboveMinFeatureInfoScaleRange,
   isInFeatureInfoScaleRange,
 } from './feature-info-scale.utils';
 
@@ -51,5 +52,13 @@ describe('feature info scale ranges', () => {
     expect(getVisibleFeatureInfoScale(750, range)).toBe(10001);
     expect(getVisibleFeatureInfoScale(20000, range)).toBe(20000);
     expect(getVisibleFeatureInfoScale(100000, range)).toBe(50000);
+  });
+
+  it('includes boundary scales and rejects scales smaller than given range', () => {
+    const range = {minScale: 10000, maxScale: 50000};
+    expect(isAboveMinFeatureInfoScaleRange(10000, range)).toBe(true);
+    expect(isAboveMinFeatureInfoScaleRange(50000, range)).toBe(true);
+    expect(isAboveMinFeatureInfoScaleRange(9999, range)).toBe(false);
+    expect(isAboveMinFeatureInfoScaleRange(50001, range)).toBe(true);
   });
 });
