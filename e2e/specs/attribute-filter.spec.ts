@@ -48,7 +48,6 @@ test.describe('Attribute filters', () => {
       openUrlWithCoordinates,
       selectTopic,
       clickMapInTheList,
-      checkA11y,
     }) => {
       await useHar();
       captureConsole();
@@ -63,7 +62,7 @@ test.describe('Attribute filters', () => {
       await page.getByText('Attributfilter').click();
       await expect(page.getByRole('heading', {name: 'Gebäudealter'})).toBeVisible();
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

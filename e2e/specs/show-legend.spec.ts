@@ -16,20 +16,14 @@ test.describe('Legend', () => {
   });
 
   describeA11y(() => {
-    test('has no detectable accessibility violations while showing the legend', async ({
-      page,
-      openLegend,
-      useHar,
-      captureConsole,
-      checkA11y,
-    }) => {
+    test('has no detectable accessibility violations while showing the legend', async ({page, openLegend, useHar, captureConsole}) => {
       await useHar();
       captureConsole();
 
       await openLegend('2702555', '1241686', 'Amtliche Vermessung in Farbe');
       await expect(page.locator('div.legend-item', {hasText: 'Nummern - Liegenschaften'})).toBeVisible();
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

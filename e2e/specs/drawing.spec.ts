@@ -421,17 +421,17 @@ test.describe('Drawing', () => {
 
   describeA11y(() => {
     test('has no detectable accessibility violations with the drawing tools open', async ({
+      page,
       openDrawingTools,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar('point');
       captureConsole();
 
       await openDrawingTools();
 
-      await checkA11y({include: ['drawing-tools']});
+      await expect(page).toNotHaveAccessibilityViolations({include: ['drawing-tools']});
     });
   });
 });

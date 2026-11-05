@@ -33,7 +33,6 @@ test.describe('Filter layers', () => {
       filterForLayer,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar();
       captureConsole();
@@ -43,7 +42,7 @@ test.describe('Filter layers', () => {
       await filterForLayer('Strassennetz');
       await expect(page.locator('p', {hasText: 'Integrale Strassennetzkonzeption (ISK)'})).toBeVisible();
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

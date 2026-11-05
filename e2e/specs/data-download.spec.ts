@@ -78,12 +78,12 @@ test.describe('Data download', () => {
 
   describeA11y(() => {
     test('has no detectable accessibility violations while the data download dialogs are open', async ({
+      page,
       useHar,
       openDataDownloadSelectionTools,
       openMunicipalityDownloadDialog,
       selectMunicipalityAndContinue,
       captureConsole,
-      checkA11y,
     }) => {
       // Three axe scans plus the dialog flow regularly exceed the default timeout on the slower, WebGL-software-rendered CI runners.
       test.slow();
@@ -94,19 +94,19 @@ test.describe('Data download', () => {
       const dataDownloadSelectionTools = await openDataDownloadSelectionTools('2702555', '1241686', 'Amtliche Vermessung in Farbe');
 
       // First distinct state: the selection-tool step, before any area is chosen.
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
 
       const municipalityDownloadDialog = await openMunicipalityDownloadDialog(dataDownloadSelectionTools);
 
       // Second distinct state: the municipality-picker dialog overlaying the map. It's a modal overlay on top of
       // the already-scanned page, so scope the scan to the dialog itself instead of re-scanning the page behind it.
-      await checkA11y({include: ['api-dialog-wrapper[title="Daten beziehen"]']});
+      await expect(page).toNotHaveAccessibilityViolations({include: ['api-dialog-wrapper[title="Daten beziehen"]']});
 
       await selectMunicipalityAndContinue(municipalityDownloadDialog, 'Volken');
 
       // Third distinct state: the final data-selection dialog listing available downloads. Same reasoning as
       // above: scope to the new dialog rather than re-scanning the unchanged page behind it.
-      await checkA11y({include: ['data-download-dialog']});
+      await expect(page).toNotHaveAccessibilityViolations({include: ['data-download-dialog']});
     });
   });
 });

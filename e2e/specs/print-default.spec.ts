@@ -79,17 +79,17 @@ test.describe('Printing', () => {
 
   describeA11y(() => {
     test('has no detectable accessibility violations while the print dialog is open', async ({
+      page,
       useHar,
       openPrintDialog,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar();
       captureConsole();
 
       await openPrintDialog('2702555', '1241686', 'Amtliche Vermessung in Farbe');
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

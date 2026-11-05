@@ -11,13 +11,13 @@ test.describe('Apps page', () => {
   });
 
   describeA11y(() => {
-    test('has no detectable accessibility violations', async ({useHar, captureConsole, openAppsPage, checkA11y}) => {
+    test('has no detectable accessibility violations', async ({page, useHar, captureConsole, openAppsPage}) => {
       await useHar();
       captureConsole();
 
       await openAppsPage();
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

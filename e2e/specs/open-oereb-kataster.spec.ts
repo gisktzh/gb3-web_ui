@@ -24,17 +24,17 @@ test.describe('OEREB-Kataster', () => {
 
   describeA11y(() => {
     test('has no detectable accessibility violations while showing an info request result', async ({
+      page,
       openOerebInfoRequest,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar();
       captureConsole();
 
       await openOerebInfoRequest('Weststrasse 49, 8003');
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

@@ -22,10 +22,10 @@ test.describe('OEREB Extract', () => {
 
   describeA11y(() => {
     test('has no detectable accessibility violations while showing the dynamic extract', async ({
+      page,
       openOerebDynamicExtract,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       test.setTimeout(60_000);
 
@@ -34,7 +34,7 @@ test.describe('OEREB Extract', () => {
 
       const oerebExtract = await openOerebDynamicExtract();
 
-      await checkA11y({include: ['oereb-extract']});
+      await expect(page).toNotHaveAccessibilityViolations({include: ['oereb-extract']});
       await expect(oerebExtract).toBeVisible();
     });
   });

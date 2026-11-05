@@ -7,17 +7,17 @@ test.use({viewport: {width: 390, height: 844}, hasTouch: true});
 describeA11y(() => {
   test.describe('Mobile viewport', () => {
     test('has no detectable accessibility violations on the mobile map page', async ({
+      page,
       openUrlWithCoordinates,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar('map-page');
       captureConsole();
 
       await openUrlWithCoordinates('2702555', '1241686');
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
 
     test('has no detectable accessibility violations with the mobile navigation menu open', async ({
@@ -25,7 +25,6 @@ describeA11y(() => {
       openUrlWithCoordinates,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar('navigation-menu');
       captureConsole();
@@ -34,7 +33,7 @@ describeA11y(() => {
       await page.locator('navbar-mobile button').click();
       await expect(page.locator('mat-dialog-container')).toBeVisible();
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
 
     test('has no detectable accessibility violations in the mobile map management', async ({
@@ -42,7 +41,6 @@ describeA11y(() => {
       openUrlWithCoordinates,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar('map-management');
       captureConsole();
@@ -50,11 +48,11 @@ describeA11y(() => {
       await openUrlWithCoordinates('2702555', '1241686');
       await page.getByTestId('map-management-open').tap();
       await expect(page.getByTestId('map-management-tab-active')).toBeVisible();
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
 
       await page.getByRole('button', {name: 'Kartenkatalog'}).tap();
       await expect(page.locator('map-data-catalogue')).toBeVisible();
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
 
     test('has no detectable accessibility violations in the mobile share dialog', async ({
@@ -62,7 +60,6 @@ describeA11y(() => {
       openUrlWithCoordinates,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar('share-dialog');
       captureConsole();
@@ -72,14 +69,13 @@ describeA11y(() => {
       // The input is only enabled once the share link has been created.
       await expect(page.locator('share-link-mobile input')).toBeEnabled();
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
 
     test('has no detectable accessibility violations while showing an info request in the bottom sheet', async ({
       page,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar('info-request');
       captureConsole();
@@ -101,7 +97,7 @@ describeA11y(() => {
         await expect(page.getByTestId('bottom-sheet-title')).toHaveText('Info', {timeout: 3_000});
       }).toPass({timeout: 30_000});
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

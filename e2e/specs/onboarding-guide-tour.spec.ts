@@ -47,7 +47,6 @@ test.describe('Onboarding guide tour', () => {
       useHar,
       openUrlWithCoordinates,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar();
       captureConsole();
@@ -57,7 +56,7 @@ test.describe('Onboarding guide tour', () => {
 
       // The tour is rendered by ngx-ui-tour-md-menu inside a mat-menu panel (role="menu") containing a card; that's
       // third-party markup we can't remediate.
-      await checkA11y({exclude: ['.mat-mdc-menu-panel']});
+      await expect(page).toNotHaveAccessibilityViolations({exclude: ['.mat-mdc-menu-panel']});
     });
   });
 });

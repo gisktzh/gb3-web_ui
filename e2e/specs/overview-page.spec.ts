@@ -26,13 +26,13 @@ test.describe('Overview page', () => {
   });
 
   describeA11y(() => {
-    test('has no detectable accessibility violations', async ({useHar, captureConsole, openHomePage, checkA11y}) => {
+    test('has no detectable accessibility violations', async ({page, useHar, captureConsole, openHomePage}) => {
       await useHar();
       captureConsole();
 
       await openHomePage();
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

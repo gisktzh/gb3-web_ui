@@ -29,11 +29,11 @@ test.describe('Test filter search', () => {
 
   describeA11y(() => {
     test('has no detectable accessibility violations while showing search results', async ({
+      page,
       openMapWithActiveLayer,
       searchAndShowResults,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar();
       captureConsole();
@@ -42,7 +42,7 @@ test.describe('Test filter search', () => {
 
       await searchAndShowResults('Stampfenbachstrasse 12');
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

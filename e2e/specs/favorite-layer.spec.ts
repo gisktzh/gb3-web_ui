@@ -154,10 +154,10 @@ test.describe('Favorites layers', () => {
 
   describeA11y(() => {
     test('has no detectable accessibility violations while showing the favourite creation dialog', async ({
+      page,
       openFavouriteCreationDialog,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       test.slow();
 
@@ -166,7 +166,7 @@ test.describe('Favorites layers', () => {
 
       await openFavouriteCreationDialog();
 
-      await checkA11y({include: ['favourite-creation-dialog']});
+      await expect(page).toNotHaveAccessibilityViolations({include: ['favourite-creation-dialog']});
     });
   });
 });
