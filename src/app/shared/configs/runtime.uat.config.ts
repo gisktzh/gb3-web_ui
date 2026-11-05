@@ -53,5 +53,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       overrideWmsUrl: 'http://uatwms.kt.ktzh.ch',
     },
     accessMode: 'intranet',
+    gb3BaseUrl: '//uat.geo.ktzh.ch',
   },
 ];

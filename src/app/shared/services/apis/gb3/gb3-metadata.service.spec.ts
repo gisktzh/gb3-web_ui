@@ -120,7 +120,7 @@ const mockDatasetDetailResponse = {
         attribute: [{name: 'attribut1', typ: 'attribut', einheit: 'm', beschreibung: 'keine'}],
       },
     ],
-    maps: [{name: 'test', uuid: '123', topic: 'TopicTest', gb2_id: 1}],
+    maps: [{name: 'test', uuid: '123', topic: 'TopicTest', gb2_id: 1, link_target_env: 'internet'}],
     products: [],
     services: [],
     kurzbeschreibung: 'Lorem Ipsum',
@@ -397,7 +397,12 @@ describe('Gb3MetadataService', () => {
           metadata: expectedMockDepartmentalContact,
           geodata: expectedMockDepartmentalContact,
         },
-        maps: mockDatasetDetailResponse.dataset.maps.map(({name, uuid, topic}) => ({name, uuid, topic})),
+        maps: mockDatasetDetailResponse.dataset.maps.map(({name, uuid, topic, link_target_env}) => ({
+          name,
+          uuid,
+          topic,
+          linkTargetEnv: link_target_env,
+        })),
         products: mockDatasetDetailResponse.dataset.products.map(({name, uuid}) => ({name, uuid})),
         services: mockDatasetDetailResponse.dataset.services.map(({name, uuid, servicetyp}) => ({name, uuid, serviceType: servicetyp})),
       };
@@ -471,7 +476,12 @@ describe('Gb3MetadataService', () => {
           metadata: expectedMockDepartmentalContact,
           geodata: expectedMockDepartmentalContact,
         },
-        maps: mockDatasetDetailResponse.dataset.maps.map(({name, uuid, topic}) => ({name, uuid, topic})),
+        maps: mockDatasetDetailResponse.dataset.maps.map(({name, uuid, topic, link_target_env}) => ({
+          name,
+          uuid,
+          topic,
+          linkTargetEnv: link_target_env,
+        })),
         products: mockDatasetDetailResponse.dataset.products.map(({name, uuid}) => ({name, uuid})),
         services: mockDatasetDetailResponse.dataset.services.map(({name, uuid, servicetyp}) => ({name, uuid, serviceType: servicetyp})),
       };

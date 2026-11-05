@@ -150,10 +150,14 @@ export class FeatureInfoContentComponent implements OnDestroy {
     }
 
     const pinnedFeatureId = isPinned ? this.createUniqueColumnIdentifierForFid(fid) : undefined;
-    this.store.dispatch(FeatureInfoActions.highlightFeature({feature, pinnedFeatureId}));
+    const source = {mapItemId: this.topicId(), layerName: this.layer().layer};
+    this.store.dispatch(FeatureInfoActions.highlightFeature({feature, source, pinnedFeatureId}));
 
     if (zoomToFeature) {
-      this.mapService.zoomToExtent(feature);
+      const scaleRange = this.mapService.getFeatureInfoScaleRange(source);
+      if (scaleRange) {
+        this.mapService.zoomToExtent(feature, undefined, undefined, scaleRange);
+      }
     }
   }
 

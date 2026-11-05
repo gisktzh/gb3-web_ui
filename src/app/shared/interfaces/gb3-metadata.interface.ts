@@ -61,6 +61,7 @@ export interface DatasetMetadata extends BaseMetadataInterface {
     uuid: string;
     topic: string;
     name: string;
+    linkTargetEnv: string;
   }[];
   layers: DatasetLayer[];
   services: {

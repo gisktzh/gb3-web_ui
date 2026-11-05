@@ -64,20 +64,13 @@
           <ng-template #linkedMap let-map>
             <descriptive-highlighted-link [title]="map.name" [multiLine]="screenMode() === 'mobile'">
               @if (screenMode() === 'mobile') {
-                <a [queryParams]="{topics: map.topic}" [routerLink]="['/', mainPageEnum.Maps]" class="dataset-detail__linked-data-link">
-                  Im GIS-Browser öffnen
-                </a>
+                <a [attr.href]="buildMapsUrl(map)" class="dataset-detail__linked-data-link"> Im GIS-Browser öffnen </a>
                 <span>|</span>
                 <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.uuid]" class="dataset-detail__linked-data-link">
                   Zu Metadaten springen
                 </a>
               } @else {
-                <a
-                  [queryParams]="{topics: map.topic}"
-                  [routerLink]="['/', mainPageEnum.Maps]"
-                  class="dataset-detail__linked-data-button"
-                  mat-button
-                >
+                <a [attr.href]="buildMapsUrl(map)" class="dataset-detail__linked-data-button" mat-button>
                   <mat-icon svgIcon="ktzh_arrow_right" />
                   Im GIS-Browser öffnen
                 </a>

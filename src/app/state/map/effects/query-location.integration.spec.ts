@@ -185,7 +185,7 @@ describe('shared feature/statistics query location', () => {
         {provide: Gb3OerebExtractService, useValue: oerebExtract},
         {provide: STATISTICS_SERVICE, useValue: statistics},
         {provide: MapDrawingService, useValue: drawing},
-        {provide: MAP_SERVICE, useValue: {getToolService: () => tools}},
+        {provide: MAP_SERVICE, useValue: {getToolService: () => tools, observeFeatureInfoLayerVisibility: vi.fn(() => of(true))}},
         {provide: MatDialog, useValue: {open: vi.fn()}},
         {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
         FeatureHighlightingService,
@@ -314,7 +314,13 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(MapConfigActions.markMapServiceAsInitialized());
     store.dispatch(MapConfigActions.setReady({calculatedMinScale: 1_000_000, calculatedMaxScale: 1}));
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
-    store.dispatch(FeatureInfoActions.highlightFeature({feature: point, pinnedFeatureId: 'topic_layer_1'}));
+    store.dispatch(
+      FeatureInfoActions.highlightFeature({
+        feature: point,
+        pinnedFeatureId: 'topic_layer_1',
+        source: {mapItemId: 'layer', layerName: 'layer'},
+      }),
+    );
     expect(drawing.drawFeatureInfoHighlight).toHaveBeenLastCalledWith(point);
     drawing.drawFeatureInfoHighlight.mockClear();
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
@@ -537,7 +543,13 @@ describe('shared feature/statistics query location', () => {
         generalInfo.loadGeneralInfo.mockReturnValueOnce(status === 'loaded' ? of(general) : tracked(pendingGeneral, cancelGeneral));
         oerebExtract.loadOerebExtract.mockReturnValueOnce(status === 'loaded' ? of(extract) : tracked(pendingExtract, cancelExtract));
         store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
-        store.dispatch(FeatureInfoActions.highlightFeature({feature: point, pinnedFeatureId: 'topic_layer_1'}));
+        store.dispatch(
+          FeatureInfoActions.highlightFeature({
+            feature: point,
+            pinnedFeatureId: 'topic_layer_1',
+            source: {mapItemId: 'layer', layerName: 'layer'},
+          }),
+        );
         store.dispatch(QueryModeActions.setQueryMode({queryMode}));
         const featureState = await firstValueFrom(store.select(selectFeatureInfoState));
         const generalState = await firstValueFrom(store.select(selectGeneralInfoState));
@@ -718,7 +730,13 @@ describe('shared feature/statistics query location', () => {
             }),
       );
       store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
-      store.dispatch(FeatureInfoActions.highlightFeature({feature: point, pinnedFeatureId: 'topic_layer_1'}));
+      store.dispatch(
+        FeatureInfoActions.highlightFeature({
+          feature: point,
+          pinnedFeatureId: 'topic_layer_1',
+          source: {mapItemId: 'layer', layerName: 'layer'},
+        }),
+      );
       store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
       if (status === 'pending') expect(cancel).toHaveBeenCalledOnce();
       pending.next([featureInfo('removed map')]);
@@ -763,7 +781,7 @@ describe('shared feature/statistics query location', () => {
       statistics.loadStatistics.mockReturnValueOnce(of(statisticsResults)).mockReturnValue(EMPTY);
       store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
       store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
-      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
       store.dispatch(StatisticsActions.highlightLayer({topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}));
       expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
     });
@@ -781,13 +799,22 @@ describe('shared feature/statistics query location', () => {
       store.dispatch(StatisticsActions.clearHighlight());
       store.dispatch(StatisticsActions.hoverLayer(layer));
       expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
+      drawing.drawStatisticsHighlights.mockClear();
+
       store.dispatch(StatisticsActions.clearHover());
-      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
-      store.dispatch(StatisticsActions.hoverLayer(layer));
+      expect(drawing.clearStatisticsHighlights).toHaveBeenCalled();
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
+      drawing.drawStatisticsHighlights.mockClear();
+      drawing.clearStatisticsHighlights.mockClear();
+
       store.dispatch(QueryModeActions.setQueryMode({queryMode: 'feature'}));
       expect(drawing.clearStatisticsHighlights).toHaveBeenCalled();
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
+      drawing.drawStatisticsHighlights.mockClear();
+      drawing.clearStatisticsHighlights.mockClear();
+
       store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
-      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
       expect(statistics.loadStatistics).toHaveBeenCalledOnce();
     });
 
@@ -795,8 +822,10 @@ describe('shared feature/statistics query location', () => {
       store.dispatch(StatisticsActions.hoverLayer({topic: 'StatBevoelkerungZH', layer: 'stat-bev-p'}));
       store.dispatch(StatisticsActions.clearHover());
       expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
+      drawing.drawStatisticsHighlights.mockClear();
+      drawing.clearStatisticsHighlights.mockClear();
       store.dispatch(StatisticsActions.clearHighlight());
-      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
     });
 
     it.each([
@@ -808,27 +837,40 @@ describe('shared feature/statistics query location', () => {
       {name: 'overlay closure', action: MapConfigActions.clearFeatureInfoContent()},
       {name: 'unmarking a result', action: StatisticsActions.clearHighlight()},
     ])('removes obsolete markings after $name', ({action}) => {
+      drawing.drawStatisticsHighlights.mockClear();
+      drawing.clearStatisticsHighlights.mockClear();
+
       store.dispatch(action);
-      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
+      expect(drawing.clearStatisticsHighlights).toHaveBeenCalled();
     });
 
     it('removes markings when a supported map is hidden', () => {
+      drawing.drawStatisticsHighlights.mockClear();
       store.dispatch(
         ActiveMapItemActions.setVisibility({
           activeMapItem: createGb2WmsMapItemMock('StatBeschaeftigteZH'),
           visible: false,
         }),
       );
-      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
+      expect(drawing.clearStatisticsHighlights).toHaveBeenCalled();
     });
 
     it('clears old markings during radius changes and only marks features from the new response', () => {
+      drawing.drawStatisticsHighlights.mockClear();
       const pending = new Subject<StatisticsResult[]>();
       statistics.loadStatistics.mockReturnValueOnce(pending);
       store.dispatch(StatisticsActions.setRadius({radiusInMeters: 1000}));
-      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
+      expect(drawing.clearStatisticsHighlights).toHaveBeenCalled();
+      drawing.drawStatisticsHighlights.mockClear();
+      drawing.clearStatisticsHighlights.mockClear();
       pending.next(statisticsResults);
-      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
+      expect(drawing.clearStatisticsHighlights).toHaveBeenCalled();
+      drawing.drawStatisticsHighlights.mockClear();
+      drawing.clearStatisticsHighlights.mockClear();
       store.dispatch(StatisticsActions.highlightLayer({topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}));
       expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
     });
@@ -842,7 +884,7 @@ describe('shared feature/statistics query location', () => {
       pending.next(statisticsResults);
       expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
       store.dispatch(QueryModeActions.setQueryMode({queryMode: 'statistics'}));
-      expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([]);
+      expect(drawing.drawStatisticsHighlights).not.toHaveBeenCalled();
       store.dispatch(StatisticsActions.highlightLayer({topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}));
       expect(drawing.drawStatisticsHighlights).toHaveBeenLastCalledWith([point]);
       expect(statistics.loadStatistics).toHaveBeenCalledTimes(2);

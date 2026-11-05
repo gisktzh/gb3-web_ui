@@ -28,7 +28,6 @@ export class SearchInputComponent {
   public readonly isAnyFilterActive = input(false);
   public readonly searchTerm = signal('');
   private readonly lastEmittedTerm = signal('');
-  private readonly shouldEmitNext = signal(true);
 
   public readonly focusEvent = output();
   public readonly changeSearchTermEvent = output<string>();
@@ -44,11 +43,10 @@ export class SearchInputComponent {
       const term = this.searchTerm();
 
       const timer = setTimeout(() => {
-        if (term !== untracked(() => this.lastEmittedTerm()) && untracked(() => this.shouldEmitNext())) {
+        if (term !== untracked(() => this.lastEmittedTerm())) {
           this.lastEmittedTerm.set(term);
           this.changeSearchTermEvent.emit(term);
         }
-        this.shouldEmitNext.set(true);
       }, SEARCH_TERM_INPUT_DEBOUNCE_IN_MS);
 
       onCleanup(() => clearTimeout(timer));
@@ -65,7 +63,9 @@ export class SearchInputComponent {
   }
 
   public setTerm(term: string, shouldEmit: boolean) {
-    this.shouldEmitNext.set(shouldEmit);
+    if (!shouldEmit) {
+      this.lastEmittedTerm.set(term);
+    }
     this.searchTerm.set(term);
   }
 

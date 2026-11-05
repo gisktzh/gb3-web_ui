@@ -22,6 +22,7 @@ import {mapAnimationConfig} from '../configs/map-animation.config';
 import {dataDownloadConfig} from '../configs/data-download.config';
 import {AppActions} from '../../state/app/actions/app.actions';
 import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {AccessMode} from '../types/access-mode.type';
 
 interface ConfigServiceKey {
   serviceKey: keyof ConfigService;
@@ -62,6 +63,18 @@ describe('ConfigService', () => {
       });
 
       expect(() => TestBed.inject(ConfigService)).toThrowError(HostNameResolutionMismatch);
+    });
+
+    it('creates a map with access modes and their respective base URLS', () => {
+      TestBed.configureTestingModule({
+        imports: [],
+        providers: [provideMockStore(), testingHostProvider, {provide: DOCUMENT, useFactory: documentFactory, deps: [HOST_TOKEN]}],
+      });
+
+      service = TestBed.inject(ConfigService);
+
+      const expected = new Map<AccessMode, string>([['internet', '//localhost:4200']]);
+      expect(service.gb3BaseUrlsByAccessmode).toStrictEqual(expected);
     });
 
     it('dispatches AppActions.setDynamicInternalUrlConfiguration with the correct values', () => {
@@ -107,6 +120,38 @@ describe('ConfigService', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].indexType).toEqual(searchIndexConfig.find((config) => (config.indexType = searchIndexType))!.indexType);
+    });
+
+    describe('gb3 base URLs', () => {
+      const baseUrlInternet = '//internet';
+      const baseUrlIntranet = '//intranet';
+
+      beforeEach(() => {
+        service.gb3BaseUrlsByAccessmode.delete('internet');
+        service.gb3BaseUrlsByAccessmode.delete('intranet');
+      });
+
+      it('correctly retrieves the internet and intranet base url', () => {
+        service.gb3BaseUrlsByAccessmode.set('internet', baseUrlInternet);
+        service.gb3BaseUrlsByAccessmode.set('intranet', baseUrlIntranet);
+
+        expect(service.internetBaseUrl).toBe(baseUrlInternet);
+        expect(service.intranetBaseUrl).toBe(baseUrlIntranet);
+      });
+
+      it('falls back to config base URL if intranet URL is not given', () => {
+        service.gb3BaseUrlsByAccessmode.set('intranet', baseUrlIntranet);
+
+        expect(service.internetBaseUrl).toBe('//localhost:4200');
+        expect(service.intranetBaseUrl).toBe(baseUrlIntranet);
+      });
+
+      it('falls back to config base URL if internet URL is not given', () => {
+        service.gb3BaseUrlsByAccessmode.set('internet', baseUrlInternet);
+
+        expect(service.intranetBaseUrl).toBe('//localhost:4200');
+        expect(service.internetBaseUrl).toBe(baseUrlInternet);
+      });
     });
 
     describe('configuration values', () => {

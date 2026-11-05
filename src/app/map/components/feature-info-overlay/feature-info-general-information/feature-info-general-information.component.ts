@@ -29,4 +29,6 @@ import {DecimalPipe} from '@angular/common';
 })
 export class FeatureInfoGeneralInformationComponent {
   public readonly generalInfoData = input.required<GeneralInfoResponse>();
+  /** Only the statistics tab queries an area rather than a point, so the size is shown exclusively there. */
+  public readonly areaInSquareMeters = input<number | undefined>(undefined);
 }

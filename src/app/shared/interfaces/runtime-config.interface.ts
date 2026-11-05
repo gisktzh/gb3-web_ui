@@ -53,4 +53,5 @@ export interface RuntimeConfig {
   authSettings: AuthSettings;
   featureFlags: Partial<FeatureFlags>;
   accessMode: AccessMode;
+  gb3BaseUrl: string;
 }

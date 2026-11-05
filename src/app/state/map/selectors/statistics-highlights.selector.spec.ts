@@ -27,6 +27,10 @@ describe('selectStatisticsHighlights', () => {
       ready: true,
       queryMode: 'statistics',
       geometries: [point],
+      source: {
+        layer: 'stat-bev-p',
+        topic: 'StatBevoelkerungZH',
+      },
     });
     expect(
       selectStatisticsHighlights.projector(results, {topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}, 'statistics', true).geometries,

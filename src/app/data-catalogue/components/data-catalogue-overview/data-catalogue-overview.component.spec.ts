@@ -12,6 +12,7 @@ import {selectActiveFilterValues} from '../../../state/data-catalogue/selectors/
 import {selectDataCatalogueItems} from '../../../state/data-catalogue/selectors/data-catalogue-items.selector';
 import {DataCatalogueFilterDialogComponent} from '../data-catalogue-filter-dialog/data-catalogue-filter-dialog.component';
 import {DataCatalogueOverviewComponent} from './data-catalogue-overview.component';
+import {selectTerm} from 'src/app/state/app/reducers/search.reducer';
 
 describe('DataCatalogueOverviewComponent', () => {
   let fixture: ComponentFixture<DataCatalogueOverviewComponent>;
@@ -35,13 +36,13 @@ describe('DataCatalogueOverviewComponent', () => {
             {selector: selectActiveFilterValues, value: []},
             {selector: selectDataCatalogueItems, value: []},
             {selector: selectScreenMode, value: 'regular'},
+            {selector: selectTerm, value: ''},
           ],
         }),
         {provide: ConfigService, useValue: {searchConfig: {dataCatalogPage: {searchOptions}}}},
         provideUiTour(),
       ],
-    });
-    await TestBed.compileComponents();
+    }).compileComponents();
 
     store = TestBed.inject(MockStore);
     const dispatch = vi.spyOn(store, 'dispatch');
@@ -52,7 +53,6 @@ describe('DataCatalogueOverviewComponent', () => {
     fixture.detectChanges();
 
     expect(dispatch).toHaveBeenCalledWith(DataCatalogueActions.loadCatalogue());
-    expect(dispatch).toHaveBeenCalledWith(SearchActions.clearSearchTerm());
     dispatch.mockClear();
   });
 

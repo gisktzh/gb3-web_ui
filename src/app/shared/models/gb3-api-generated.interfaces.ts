@@ -1026,6 +1026,8 @@ export interface Dataset {
     topic: string;
     /** Kartenname */
     name: string;
+    /** Where a constructed link should point to */
+    link_target_env: string;
   }[];
   layers: {
     /** Layername */

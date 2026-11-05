@@ -50,6 +50,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       overrideWmsUrl: 'http://localhost:3000/wms',
     },
     accessMode: 'internet',
+    gb3BaseUrl: '//localhost:4242',
   },
   {
     hostMatch: '127.0.0.1',
@@ -99,5 +100,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       overrideWmsUrl: 'http://127.0.0.1:3000/wms',
     },
     accessMode: 'intranet',
+    gb3BaseUrl: '//127.0.0.1:4242',
   },
 ];

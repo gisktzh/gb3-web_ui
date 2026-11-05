@@ -2,14 +2,14 @@ import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
-import {catchError, distinctUntilChanged, filter, map, of, skip, switchMap, takeUntil, tap} from 'rxjs';
+import {catchError, distinctUntilChanged, filter, map, Observable, of, skip, switchMap, takeUntil, tap} from 'rxjs';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
-import {STATISTICS_SERVICE} from '../../../app.tokens';
+import {MAP_SERVICE, STATISTICS_SERVICE} from '../../../app.tokens';
 import {selectStatisticsQueries} from '../selectors/statistics-queries.selector';
 import {selectQueryMode} from '../reducers/query-mode.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
@@ -31,6 +31,8 @@ import {selectStatisticsHighlights} from '../selectors/statistics-highlights.sel
 import {selectStatisticsAreaToDraw} from '../selectors/query-graphics.selector';
 import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
 import type {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {MapService} from 'src/app/map/interfaces/map.service';
+import {FeatureHighlightSource} from 'src/app/shared/interfaces/feature-highlight.interface';
 
 @Injectable()
 export class StatisticsEffects {
@@ -39,6 +41,7 @@ export class StatisticsEffects {
   private readonly mapDrawingService = inject(MapDrawingService);
   private readonly statisticsService = inject(STATISTICS_SERVICE);
   private readonly areaService = inject(StatisticsAreaService);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
 
   public validateSelection$ = createEffect(() => {
     return this.actions$.pipe(
@@ -64,14 +67,21 @@ export class StatisticsEffects {
   public highlightResults$ = createEffect(
     () => {
       return this.store.select(selectStatisticsHighlights).pipe(
-        filter(({ready}) => ready),
-        tap(({geometries, queryMode}) => {
-          if (queryMode === 'statistics') {
-            this.mapDrawingService.drawStatisticsHighlights(geometries);
-          } else {
-            this.mapDrawingService.clearStatisticsHighlights();
+        switchMap(({geometries, queryMode, source, ready}) => {
+          if (queryMode !== 'statistics' || !source) {
+            return of(undefined);
           }
+
+          return this.observeVisibleGeometry(
+            {
+              mapItemId: source.topic,
+              layerName: source.layer,
+            },
+            geometries,
+            ready,
+          );
         }),
+        tap((geometries) => this.updateStatisticsHighlights(geometries)),
       );
     },
     {dispatch: false},
@@ -288,4 +298,33 @@ export class StatisticsEffects {
       }),
     );
   });
+
+  private observeVisibleGeometry<T>(
+    source: FeatureHighlightSource | undefined,
+    geometry: T | undefined,
+    ready: boolean,
+  ): Observable<T | undefined> {
+    if (!ready || !geometry || !source) {
+      return of(undefined);
+    }
+
+    return this.mapService.observeFeatureInfoLayerVisibility(source).pipe(
+      map((visible) => {
+        if (visible) {
+          return geometry;
+        }
+
+        return undefined;
+      }),
+    );
+  }
+
+  private updateStatisticsHighlights(geometries: GeometryWithSrs[] | undefined) {
+    if (geometries) {
+      this.mapDrawingService.drawStatisticsHighlights(geometries);
+      return;
+    }
+
+    this.mapDrawingService.clearStatisticsHighlights();
+  }
 }

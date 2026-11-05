@@ -2,6 +2,7 @@ import {createFeature, createReducer, on} from '@ngrx/store';
 import {DataCatalogueState} from '../states/data-catalogue.state';
 import {DataCatalogueActions} from '../actions/data-catalogue.actions';
 import {produce} from 'immer';
+import {SearchActions} from '../../app/actions/search.actions';
 
 export const dataCatalogueFeatureKey = 'dataCatalogue';
 
@@ -32,6 +33,7 @@ export const dataCatalogueFeature = createFeature({
     }),
     on(
       DataCatalogueActions.resetFilters,
+      SearchActions.resetSearchAndFilters,
       produce((draft) => {
         draft.filters.forEach((filter) => filter.filterValues.forEach((f) => (f.isActive = false)));
       }),

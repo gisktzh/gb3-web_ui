@@ -33,7 +33,14 @@ export class SearchEffects {
   public searchResultsFromSearchApi$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchActions.searchForTerm),
-      distinctUntilChanged((prev, curr) => prev.term.trim() === curr.term.trim()),
+      distinctUntilChanged(
+        (prev, curr) =>
+          prev.term.trim() === curr.term.trim() &&
+          prev.options.maps === curr.options.maps &&
+          prev.options.faq === curr.options.faq &&
+          prev.options.searchIndexTypes.length === curr.options.searchIndexTypes.length &&
+          prev.options.searchIndexTypes.every((indexType, index) => indexType === curr.options.searchIndexTypes[index]),
+      ),
       filter((termAndOptions) => termAndOptions.options.searchIndexTypes.length > 0),
       combineLatestWith(
         this.store

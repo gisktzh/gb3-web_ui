@@ -25,6 +25,7 @@ type MetadataLinkWithoutDescription = Omit<MetadataLink, 'shortDescription'>;
 
 interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   topic: string;
+  linkTargetEnv: string;
 }
 
 @Component({
@@ -100,6 +101,14 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
       products: baseDetailMetaData ? [...baseDetailMetaData.products] : [],
     };
   });
+
+  public buildMapsUrl(map: MetadataLinkWithTopicId): string {
+    if (map.linkTargetEnv === 'intranet') {
+      return `${this.configService.intranetBaseUrl}/${this.mainPageEnum.Maps}?topics=${map.topic}`;
+    }
+
+    return `${this.configService.internetBaseUrl}/${this.mainPageEnum.Maps}?topics=${map.topic}`;
+  }
 
   protected loadMetadata(id: string) {
     return this.gb3MetadataService.loadDatasetDetail(id);

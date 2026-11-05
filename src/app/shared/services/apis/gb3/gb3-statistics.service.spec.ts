@@ -72,20 +72,11 @@ describe('Gb3StatisticsService', () => {
   });
 
   it('configures all three topics with the supplied fields', () => {
-    expect(Object.keys(statisticsMapQueries)).toEqual(['StatBevoelkerungZH', 'StatBeschaeftigteZH', 'StatGebaeudeZH']);
-    for (const [topic, layer] of [
-      ['StatBevoelkerungZH', 'stat-bev-p'],
-      ['StatBeschaeftigteZH', 'stat-ent-p'],
-      ['StatGebaeudeZH', 'stat-geb-p'],
-    ]) {
-      expect(statisticsMapQueries[topic]).toEqual([
-        {
-          layer,
-          statistic: 'sum',
-          field: ['ganzwhg', 'efh', 'wohn_m_n', 'geb_m_w', 'mfh', 'geb_o_w', 'prov_geb', 'andere_geb', 'anz_einw', 'anz_vzae', 'anz_besch'],
-        },
-      ]);
-    }
+    expect(statisticsMapQueries).toEqual({
+      StatBevoelkerungZH: [{layer: 'stat-bev-p', field: ['anz_einw'], statistic: 'sum'}],
+      StatBeschaeftigteZH: [{layer: 'stat-ent-p', field: ['anz_vzae', 'anz_besch'], statistic: 'sum'}],
+      StatGebaeudeZH: [{layer: 'stat-geb-p', field: ['ganzwhg', 'geb_m_w', 'geb_o_w'], statistic: 'sum'}],
+    });
   });
 
   it('sends the configured employment query with polygon WKT and the input SRID', async () => {
@@ -96,7 +87,7 @@ describe('Gb3StatisticsService', () => {
     expect(request.request.method).toBe('GET');
     expect(Object.fromEntries(url.searchParams)).toEqual({
       layer: 'stat-ent-p',
-      field: 'ganzwhg,efh,wohn_m_n,geb_m_w,mfh,geb_o_w,prov_geb,andere_geb,anz_einw,anz_vzae,anz_besch',
+      field: 'anz_vzae,anz_besch',
       statistic: 'sum',
       geometry: 'POLYGON((2680000 1254000,2680000 1255000,2681000 1255000,2680000 1254000))',
       srid: '2056',
