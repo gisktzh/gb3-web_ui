@@ -14,51 +14,15 @@ describe('selectFilteredFavouriteList', () => {
     basicMockState = mockFavourites;
   });
 
-  it('returns all favourites if filter string is empty', () => {
-    const filterString = '';
-
-    const actual = selectFilteredFavouriteList.projector(filterString, basicMockState);
-
-    expect(actual).toEqual(mockFavourites);
-  });
-
-  it('returns an empty list if no matches are found', () => {
-    const filterString = 'no match shall be found';
-
-    const actual = selectFilteredFavouriteList.projector(filterString, basicMockState);
-
-    expect(actual).toEqual([]);
-  });
-
-  it('returns partial matches from the start of the word', () => {
-    const filterString = 'fav';
-
-    const actual = selectFilteredFavouriteList.projector(filterString, basicMockState);
-
-    expect(actual).toEqual(mockFavourites);
-  });
-
-  it('returns partial matches from within of the word', () => {
-    const filterString = 'ouri';
-
-    const actual = selectFilteredFavouriteList.projector(filterString, basicMockState);
-
-    expect(actual).toEqual(mockFavourites);
-  });
-
-  it('uses case-insensitive matching', () => {
-    const filterString = 'with-capslock';
-
-    const actual = selectFilteredFavouriteList.projector(filterString, basicMockState);
-
-    expect(actual).toEqual([mockFavourites[2]]);
-  });
-
-  it('uses case-insensitive filter', () => {
-    const filterString = 'FaVoUrItE';
-
-    const actual = selectFilteredFavouriteList.projector(filterString, basicMockState);
-
-    expect(actual).toEqual(mockFavourites);
+  it.each([
+    {filter: '', expected: mockFavourites},
+    {filter: 'no match shall be found', expected: []},
+    {filter: 'fav', expected: mockFavourites},
+    {filter: 'ouri', expected: mockFavourites},
+    {filter: 'with-capslock', expected: [mockFavourites[2]]},
+    {filter: 'FaVoUrItE', expected: mockFavourites},
+  ])('returns the correct collection of favorites for filterstring "%filter"', ({filter, expected}) => {
+    const actual = selectFilteredFavouriteList.projector(filter, basicMockState);
+    expect(actual).toEqual(expected);
   });
 });

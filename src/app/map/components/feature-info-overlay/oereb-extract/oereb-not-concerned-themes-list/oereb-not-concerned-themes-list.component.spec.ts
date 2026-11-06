@@ -2,7 +2,6 @@ import {inputBinding, signal} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {describe, expect, it} from 'vitest';
-
 import {OerebNotConcernedThemesList} from './oereb-not-concerned-themes-list.component';
 import {OerebInfoValueComponent} from '../oereb-info-value/oereb-info-value.component';
 import {OerebExtractListItem} from 'src/app/map/types/oereb-extract-list-item.type';
@@ -56,9 +55,11 @@ describe('OerebNotConcernedThemesList', () => {
     const infoValueElements = fixture.debugElement.queryAll(By.directive(OerebInfoValueComponent));
 
     expect(listElements).toHaveLength(items.length);
-    expect(infoValueElements).toHaveLength(items.length);
+    expect(infoValueElements).toHaveLength(items.length + 1); // There's a nested one.
 
-    expect(infoValueElements.map((element) => element.componentInstance.item)).toEqual(items);
+    expect(infoValueElements.map((element) => element.componentInstance.item())).toEqual(
+      items.flatMap((item) => (item.itemType === 'list' ? [item, ...item.items] : [item])),
+    );
 
     expect(infoValueElements.every((element) => element.componentInstance.showListLabel)).toBe(true);
   });
@@ -74,12 +75,11 @@ describe('OerebNotConcernedThemesList', () => {
 
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelectorAll('ul > li')).toHaveLength(1);
+    expect(fixture.nativeElement.querySelectorAll('ul.oereb-not-concerned-themes-list > li')).toHaveLength(1);
 
     listItems.set(items);
 
     fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelectorAll('ul > li')).toHaveLength(4);
+    expect(fixture.nativeElement.querySelectorAll('ul.oereb-not-concerned-themes-list > li')).toHaveLength(4);
   });
 });

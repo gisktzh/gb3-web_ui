@@ -9,13 +9,7 @@ $border-width: 8px;
 :host(.link-grid-list-item) {
   --number-of-entries: 3;
   --height: 310px;
-}
-:host(.link-grid-list-item--large) {
-  --number-of-entries: 2;
-  --height: 649px;
-}
 
-:host(.link-grid-list-item) {
   @include collapsing-flexbox-list.list__item(
     $border-width: $border-width,
     $max-content-width: ktzh-variables.$zh-layout-max-content-width,
@@ -62,4 +56,9 @@ $border-width: 8px;
       }
     }
   }
+}
+
+:host(.link-grid-list-item--large) {
+  --number-of-entries: 2;
+  --height: 649px;
 }

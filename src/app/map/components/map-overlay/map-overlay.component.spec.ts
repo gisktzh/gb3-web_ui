@@ -64,11 +64,13 @@ describe('MapOverlayComponent', () => {
     expect(compiled.querySelector('.map-overlay')).toBeNull();
   });
 
-  it('should render the overlay when it is visible', () => {
+  it('should render the overlay, loading bar and resize handler when it is visible', () => {
     isVisible.set(true);
     fixture.detectChanges();
 
     expect(compiled.querySelector('.map-overlay')).toBeTruthy();
+    expect(compiled.querySelector('loading-and-process-bar')).toBeTruthy();
+    expect(compiled.querySelector('resize-handler')).toBeTruthy();
   });
 
   it('should render the overlay title', () => {
@@ -224,20 +226,6 @@ describe('MapOverlayComponent', () => {
     fixture.detectChanges();
 
     expect(compiled.querySelector('.map-overlay--right')).toBeNull();
-  });
-
-  it('should render the loading and process bar', () => {
-    isVisible.set(true);
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('loading-and-process-bar')).toBeTruthy();
-  });
-
-  it('should render the resize handler', () => {
-    isVisible.set(true);
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('resize-handler')).toBeTruthy();
   });
 
   it('should pass the location to the resize handler', () => {

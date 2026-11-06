@@ -5,9 +5,11 @@
   (dragleave)="handleDragLeave($event)"
   (drop)="handleDrop($event)"
 >
-  <input type="file" [accept]="acceptedFileTypes" #fileUploadField (change)="inputValueChange()" />
-  <p>Zum Hochladen Datei ziehen und hier ablegen</p>
-  <p>Mögliche Dateitypen: KML, JSON (max. 10MB)</p>
+  <input type="file" [accept]="acceptedFileTypes" #fileUploadField (change)="inputValueChange()" id="file-input" />
+  <label for="file-input">
+    <p>Zum Hochladen Datei ziehen und hier ablegen</p>
+    <p>Mögliche Dateitypen: KML, JSON (max. 10MB)</p>
+  </label>
   <button mat-flat-button class="drop-zone__button" color="accent" [disabled]="isHovered()" (click)="fileUploadField.click()">
     Datei auswählen
     <mat-icon svgIcon="ktzh_upload" iconPositionEnd />

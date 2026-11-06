@@ -246,75 +246,43 @@ describe('TimeSliderComponent', () => {
       expect(component.datePickerStartView()).toBe('month');
     });
 
-    it('should use month as the start view for days', () => {
-      timeSliderServiceMock.extractUniqueUnitFromDateFormat = vi.fn().mockReturnValue('days');
+    it.each([
+      {extractedUnit: 'days', dateFormat: 'yyyy-MM-dd', expected: 'month'},
+      {extractedUnit: 'months', dateFormat: 'yyyy-MM', expected: 'year'},
+      {extractedUnit: 'years', dateFormat: 'yyyy', expected: 'multi-year'},
+    ])('uses $expected as the start view for $extractedUnit', ({extractedUnit, dateFormat, expected}) => {
+      timeSliderServiceMock.extractUniqueUnitFromDateFormat = vi.fn().mockReturnValue(extractedUnit);
 
       timeSliderConfiguration.set({
         ...timeSliderConfiguration(),
         sourceType: 'parameter',
-        dateFormat: 'yyyy-MM-dd',
+        dateFormat,
       } as TimeSliderConfiguration);
 
       fixture.detectChanges();
 
-      expect(component.datePickerStartView()).toBe('month');
+      expect(component.datePickerStartView()).toBe(expected);
     });
 
-    it('should use year as the start view for months', () => {
-      timeSliderServiceMock.extractUniqueUnitFromDateFormat = vi.fn().mockReturnValue('months');
+    it.each([
+      {extractedUnit: 'hours', dateFormat: 'yyyy-MM-dd HH'},
+      {extractedUnit: undefined, dateFormat: 'unknown'},
+    ])(
+      'should fall back to months when the extract unit $extractedUnit is not supported or cannot be extracted',
+      ({extractedUnit, dateFormat}) => {
+        timeSliderServiceMock.extractUniqueUnitFromDateFormat = vi.fn().mockReturnValue(extractedUnit);
 
-      timeSliderConfiguration.set({
-        ...timeSliderConfiguration(),
-        sourceType: 'parameter',
-        dateFormat: 'yyyy-MM',
-      } as TimeSliderConfiguration);
+        timeSliderConfiguration.set({
+          ...timeSliderConfiguration(),
+          sourceType: 'parameter',
+          dateFormat,
+        } as TimeSliderConfiguration);
 
-      fixture.detectChanges();
+        fixture.detectChanges();
 
-      expect(component.datePickerStartView()).toBe('year');
-    });
-
-    it('should use multi-year as the start view for years', () => {
-      timeSliderServiceMock.extractUniqueUnitFromDateFormat = vi.fn().mockReturnValue('years');
-
-      timeSliderConfiguration.set({
-        ...timeSliderConfiguration(),
-        sourceType: 'parameter',
-        dateFormat: 'yyyy',
-      } as TimeSliderConfiguration);
-
-      fixture.detectChanges();
-
-      expect(component.datePickerStartView()).toBe('multi-year');
-    });
-
-    it('should fall back to days when the extracted unit is unsupported', () => {
-      timeSliderServiceMock.extractUniqueUnitFromDateFormat = vi.fn().mockReturnValue('hours');
-
-      timeSliderConfiguration.set({
-        ...timeSliderConfiguration(),
-        sourceType: 'parameter',
-        dateFormat: 'yyyy-MM-dd HH',
-      } as TimeSliderConfiguration);
-
-      fixture.detectChanges();
-
-      expect(component.datePickerStartView()).toBe('month');
-    });
-
-    it('should fall back to days when no unit can be extracted', () => {
-      timeSliderServiceMock.extractUniqueUnitFromDateFormat = vi.fn().mockReturnValue(undefined);
-
-      timeSliderConfiguration.set({
-        ...timeSliderConfiguration(),
-        sourceType: 'parameter',
-        dateFormat: 'unknown',
-      } as TimeSliderConfiguration);
-
-      fixture.detectChanges();
-
-      expect(component.datePickerStartView()).toBe('month');
-    });
+        expect(component.datePickerStartView()).toBe('month');
+      },
+    );
   });
 
   describe('setValidTimeExtent', () => {

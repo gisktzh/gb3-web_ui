@@ -148,6 +148,6 @@ export class UrlUtils {
    * @param param
    */
   public static extractLastOccurrenceOfParam<T>(param: T | T[]): T {
-    return Array.isArray(param) ? param[param.length - 1] : param;
+    return Array.isArray(param) ? param.at(-1)! : param;
   }
 }

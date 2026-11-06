@@ -60,7 +60,7 @@ export class ProductComponent {
     formats: this.selectableFormats(),
   });
   public readonly formatsForm = form(this.formatsFormModel, (fieldPath) => {
-    disabled(fieldPath.formats, () => this.disabled());
+    disabled(fieldPath.formats, {when: () => this.disabled()});
   });
 
   public readonly matSelectRef = viewChild<MatSelect>('formatsSelect');

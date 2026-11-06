@@ -40,7 +40,7 @@ test.describe('Printing', () => {
     await expect(layoutField).toBeVisible();
     await layoutField.click();
     const layoutOptions = await layoutField.locator('mat-option').all();
-    await expect(layoutOptions.length).toBe(5);
+    await expect(layoutOptions).toHaveLength(5);
     await layoutOptions[2].click();
     await expect(layoutField).toContainText('A2');
 
@@ -48,7 +48,7 @@ test.describe('Printing', () => {
     await expect(dpiField).toBeVisible();
     await dpiField.click();
     const dpiOptions = await dpiField.locator('mat-option').all();
-    await expect(dpiOptions.length).toBe(2);
+    await expect(dpiOptions).toHaveLength(2);
     await dpiOptions[0].click();
     await expect(dpiField).toContainText('150');
 

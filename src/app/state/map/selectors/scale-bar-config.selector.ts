@@ -24,7 +24,8 @@ export const selectScaleBarConfig = createSelector(
     if (referenceDistanceInMeters >= 1) {
       const pow10 = Math.pow(10, `${Math.floor(referenceDistanceInMeters)}`.length - 1);
       let d = referenceDistanceInMeters / pow10;
-      d = d >= 10 ? 10 : d >= 5 ? 5 : d >= 3 ? 3 : d >= 2 ? 2 : 1;
+      const thresholds = [10, 5, 3, 2, 1];
+      d = thresholds.find((threshold) => d >= threshold) ?? 1;
       const meters = pow10 * d;
       const ratio = meters / referenceDistanceInMeters;
 

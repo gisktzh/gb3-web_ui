@@ -92,7 +92,7 @@ describe('selectQueryLegends', () => {
       {topic: mockItems[1].id, layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
     ];
 
-    expect(actual.length).toEqual(2);
+    expect(actual).toHaveLength(2);
     expect(actual).toEqual(expected);
   });
 

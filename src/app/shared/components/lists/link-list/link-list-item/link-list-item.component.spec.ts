@@ -30,7 +30,7 @@ describe('LinkListItemComponent', () => {
   });
 
   it('should render no items when links are empty', () => {
-    expect(compiled.querySelectorAll('.link-list-item__item').length).toBe(0);
+    expect(compiled.querySelectorAll('.link-list-item__item')).toHaveLength(0);
   });
 
   it('should render a link item for every link', () => {
@@ -49,7 +49,7 @@ describe('LinkListItemComponent', () => {
 
     const items = compiled.querySelectorAll<HTMLLIElement>('.link-list-item__item');
 
-    expect(items.length).toBe(2);
+    expect(items).toHaveLength(2);
 
     expect(items[0]?.textContent).toContain('First link');
     expect(items[1]?.textContent).toContain('Second link');
@@ -116,7 +116,7 @@ describe('LinkListItemComponent', () => {
 
     const icons = compiled.querySelectorAll<HTMLElement>('.link-list-item__item__link__icon');
 
-    expect(icons.length).toBe(2);
+    expect(icons).toHaveLength(2);
   });
 
   it('should update rendered items when links change', () => {
@@ -128,7 +128,7 @@ describe('LinkListItemComponent', () => {
 
     fixture.detectChanges();
 
-    expect(compiled.querySelectorAll('.link-list-item__item').length).toBe(1);
+    expect(compiled.querySelectorAll('.link-list-item__item')).toHaveLength(1);
 
     links.set([
       {
@@ -144,6 +144,6 @@ describe('LinkListItemComponent', () => {
 
     fixture.detectChanges();
 
-    expect(compiled.querySelectorAll('.link-list-item__item').length).toBe(3);
+    expect(compiled.querySelectorAll('.link-list-item__item')).toHaveLength(3);
   });
 });

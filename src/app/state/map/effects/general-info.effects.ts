@@ -1,7 +1,6 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {of, switchMap, takeUntil, tap} from 'rxjs';
-import {catchError, map} from 'rxjs';
+import {of, switchMap, takeUntil, tap, catchError, map} from 'rxjs';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {Gb3GeneralInfoService} from '../../../shared/services/apis/gb3/gb3-general-info.service';
 import {GeneralInfoActions} from '../actions/general-info.actions';

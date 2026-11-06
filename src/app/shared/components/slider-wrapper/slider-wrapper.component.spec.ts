@@ -52,14 +52,14 @@ describe('SliderWrapperComponent', () => {
 
       expect(compiled.querySelector('.slider-wrapper__header__value')?.textContent).toBe(value());
       expect(compiled.querySelector('.slider-wrapper__header__title__text')?.textContent).toBe(title());
-      expect(compiled.querySelectorAll('.slider-wrapper__header__title__info')?.length).toBe(0);
+      expect(compiled.querySelectorAll('.slider-wrapper__header__title__info')).toHaveLength(0);
 
       const newDescription = 'Dolor sit amet';
       description.set(newDescription);
       fixture.detectChanges();
 
       const descriptionEls = compiled.querySelectorAll('.slider-wrapper__header__title__info');
-      expect(descriptionEls?.length).toBe(1);
+      expect(descriptionEls).toHaveLength(1);
       expect(descriptionEls[0].textContent).toBe('info');
     });
   });
@@ -106,14 +106,14 @@ describe('SliderWrapperComponent', () => {
 
     it('should overwrite the header if the appropriate flag is set', async () => {
       vi.useFakeTimers();
-      expect(compiled.querySelectorAll('.slider-wrapper__header__title').length).toBe(1);
+      expect(compiled.querySelectorAll('.slider-wrapper__header__title')).toHaveLength(1);
       expect(compiled.textContent).not.toContain('This is a replacement header');
       overwriteHeader.set(true);
       fixture.detectChanges();
 
       await vi.runAllTimersAsync();
 
-      expect(compiled.querySelectorAll('.slider-wrapper__header__title').length).toBe(0);
+      expect(compiled.querySelectorAll('.slider-wrapper__header__title')).toHaveLength(0);
       expect(compiled.textContent).toContain('This is a replacement header');
 
       // Assert that the footer hasn't been touched
@@ -166,20 +166,20 @@ describe('SliderWrapperComponent', () => {
     it('should overwrite the footer if the appropriate flag is set', async () => {
       vi.useFakeTimers();
 
-      expect(compiled.querySelectorAll('.slider-wrapper__header__title').length).toBe(1);
+      expect(compiled.querySelectorAll('.slider-wrapper__header__title')).toHaveLength(1);
       expect(compiled.textContent).not.toContain('This is a replacement footer');
       overwriteFooter.set(true);
       fixture.detectChanges();
 
       await vi.runAllTimersAsync();
 
-      expect(compiled.querySelectorAll('.slider-wrapper__header__title').length).toBe(1);
+      expect(compiled.querySelectorAll('.slider-wrapper__header__title')).toHaveLength(1);
       expect(compiled.textContent).toContain('This is a replacement footer');
       const footerContainers = compiled.querySelectorAll('.slider-wrapper__footer > *');
-      expect(footerContainers.length).toBe(0);
+      expect(footerContainers).toHaveLength(0);
 
       // Assert that the header hasn't been touched
-      expect(compiled.querySelectorAll('.slider-wrapper__header__title').length).toBe(1);
+      expect(compiled.querySelectorAll('.slider-wrapper__header__title')).toHaveLength(1);
     });
   });
 });

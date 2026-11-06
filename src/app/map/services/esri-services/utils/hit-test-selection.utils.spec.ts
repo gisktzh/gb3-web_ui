@@ -8,7 +8,7 @@ describe('HitTestSelectionUtils', () => {
     const hits: GraphicHit[] = [] as unknown as GraphicHit[];
 
     const actual = HitTestSelectionUtils.selectFeatureFromHitTestResult(hits);
-    expect(actual).toBe(undefined);
+    expect(actual).toBeUndefined();
   });
   it('should return the first point hit', () => {
     const hits: GraphicHit[] = [

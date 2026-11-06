@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {selectSrsId} from '../../../state/map/reducers/map-config.reducer';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {ConfigService} from '../../../shared/services/config.service';
-import {GeometryUnion} from '@arcgis/core/unionTypes';
+import {GeometryUnion} from '@arcgis/core/geometry/types';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,11 @@ export class TransformationService {
   constructor() {
     this.defaultSrs = new SpatialReference({wkid: this.configService.mapConfig.defaultMapConfig.srsId});
     this.srs$.subscribe((srsId) => (this.srs = new SpatialReference({wkid: srsId})));
-    projectOperator.load().then(() => {
+    this.loadProjectOperator();
+  }
+
+  private loadProjectOperator() {
+    void projectOperator.load().then(() => {
       this.projectionOperatorLoaded = true;
     });
   }

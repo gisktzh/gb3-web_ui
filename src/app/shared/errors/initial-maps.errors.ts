@@ -5,6 +5,6 @@ export class SomeTopicsCouldNotBeLoaded extends RecoverableError {
 
   constructor(topicIds: string[]) {
     super();
-    this.message = `Folgende Karten konnten nicht geladen werden: ${topicIds.map((topicId) => `"${topicId}"`).join(', ')}.`;
+    this.message = `Folgende Karten konnten nicht geladen werden: "${topicIds.join('", "')}".`;
   }
 }

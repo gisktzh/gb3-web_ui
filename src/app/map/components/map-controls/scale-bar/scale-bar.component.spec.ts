@@ -36,7 +36,7 @@ describe('ScaleBarComponent', () => {
 
     expect(label?.textContent?.trim()).toBe('');
     expect(scaleBar?.classList.contains('scale-bar--hidden')).toBe(true);
-    expect(scaleBar?.getAttribute('style')).toBe(null);
+    expect(scaleBar?.getAttribute('style')).toBeNull();
   });
 
   it('should render the scale bar label and width when config is available', () => {

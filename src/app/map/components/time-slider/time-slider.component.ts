@@ -14,11 +14,12 @@ import {MatButton} from '@angular/material/button';
 
 import {TimeExtentToStringPipe} from '../../pipes/time-extent-to-string.pipe';
 import {DateToStringPipe} from '../../pipes/date-to-string.pipe';
+import {DateTimeUnitNotSupported} from 'src/app/shared/errors/time-slider.error';
 
 // There is an array (`allowedDatePickerManipulationUnits`) and a new union type (`DatePickerManipulationUnits`) for two reasons:
 // To be able to extract a union type subset of `ManipulateType` AND to have an array used to check if a given value is in said union type.
 // => more infos: https://stackoverflow.com/questions/50085494/how-to-check-if-a-given-value-is-in-a-union-type-array
-const allowedDatePickerManipulationUnits = ['years', 'months', 'days'] as const; // TS3.4 syntax
+const allowedDatePickerManipulationUnits: DateUnit[] = ['years', 'months', 'days'] as const; // TS3.4 syntax
 type DatePickerManipulationUnits = Extract<DateUnit, (typeof allowedDatePickerManipulationUnits)[number]>;
 type DatePickerStartView = 'month' | 'year' | 'multi-year';
 
@@ -188,7 +189,7 @@ export class TimeSliderComponent {
 
   private extractUniqueDatePickerUnitFromDateFormat(dateFormat: string): DatePickerManipulationUnits | undefined {
     const unit = this.timeSliderService.extractUniqueUnitFromDateFormat(dateFormat);
-    if (unit !== undefined && allowedDatePickerManipulationUnits.some((allowedUnit) => allowedUnit === unit)) {
+    if (unit !== undefined && allowedDatePickerManipulationUnits.includes(unit)) {
       return unit as DatePickerManipulationUnits;
     }
     return undefined;
@@ -209,6 +210,11 @@ export class TimeSliderComponent {
         return 'year';
       case 'years':
         return 'multi-year';
+      case 'hours':
+      case 'milliseconds':
+      case 'minutes':
+      case 'seconds':
+        throw new DateTimeUnitNotSupported();
     }
   }
 }

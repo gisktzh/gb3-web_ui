@@ -5,16 +5,16 @@ ARG APP_VERSION
 ARG APP_RELEASE
 ENV APP_VERSION=$APP_VERSION
 ENV APP_RELEASE=$APP_RELEASE
-ENV NODE_ENV=development
 ARG TARGET_ENVIRONMENT=local-gb2
 
 # setup timezone and add proxy certificate
 RUN ln -s /usr/share/zoneinfo/Europe/Zurich /etc/localtime && \
     mkdir -p /usr/local/share/ca-certificates/
 
-COPY --chown=node:node ./dev/certificates/zscaler-root-ca.crt /usr/local/share/ca-certificates/zscaler-root-ca.crt
+COPY --chown=root:root ./dev/certificates/zscaler-root-ca.crt /usr/local/share/ca-certificates/zscaler-root-ca.crt
 
-RUN apk --no-cache add --no-check-certificate ca-certificates git && \
+RUN chmod 0444 /usr/local/share/ca-certificates/zscaler-root-ca.crt && \
+    apk --no-cache add --no-check-certificate ca-certificates git && \
     update-ca-certificates
 
 # Set the working directory

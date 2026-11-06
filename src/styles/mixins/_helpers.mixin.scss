@@ -59,12 +59,14 @@
   height: max-content;
 
   &:hover {
+    /* NOSONAR -- False positive due to this being a mixin. */
     color: $hover-color;
     opacity: $hover-opacity;
     text-decoration-color: $hover-color;
   }
 
   &:focus {
+    /* NOSONAR -- False positive due to this being a mixin. */
     outline: 2px solid $decoration-color;
     border-radius: 1px;
     text-decoration: none;
@@ -79,6 +81,7 @@
 ) {
   @include link-decoration($decoration-color, $text-color, $hover-color, $hover-opacity);
   &::after {
+    /* NOSONAR -- False positive due to this being a mixin. */
     content: '\2197';
     vertical-align: middle;
   }
@@ -111,6 +114,7 @@
   @include mat-mixins.mat-icon-button-override-container-size(44px, 44px, 10px);
 
   &--active {
+    /* NOSONAR -- False positive due to this being a mixin. */
     background-color: functions.get-color-from-palette('primary');
     color: functions.get-contrast-color-from-palette('primary');
   }
@@ -122,6 +126,7 @@
   @include mat-mixins.mat-icon-button-override-container-size(60px, 60px);
 
   &--active {
+    /* NOSONAR -- False positive due to this being a mixin. */
     background-color: functions.get-color-from-palette('primary');
     color: functions.get-contrast-color-from-palette('primary');
   }

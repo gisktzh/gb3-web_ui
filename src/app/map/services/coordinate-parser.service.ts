@@ -40,17 +40,21 @@ export class CoordinateParserService {
       coordinatePairPattern = /^(?<xCoord>\d+(?:\.\d+)?)\s+(?<yCoord>\d+(?:\.\d+)?)$/;
     } else {
       coordinatePairPattern = /^(?<xCoord>\d+(?:\.\d+)?)[,;/](?<yCoord>\d+(?:\.\d+)?)$/;
-      value = value.replace(/ /g, '');
+      value = value.replaceAll(' ', '');
     }
 
     // Create two matching groups (xCoord & yCoord) of a random amount of digits, seperated by , or ; or /; and ONLY if both groups have
     // a match. E.g. "5/456.123" will match (xCoord = 5; yCoord = 456.123), whereas "5.1234,", "1112", "5/5/4" or "5/5a" will not match.
     const match = coordinatePairPattern.exec(value);
 
-    if (match?.groups && match.groups['xCoord'] && match.groups['yCoord']) {
-      return {type: 'Point', coordinates: [Number(match.groups['xCoord']), Number(match.groups['yCoord'])], srs: 2056};
+    if (!match?.groups) {
+      return undefined;
     }
 
-    return undefined;
+    if (!match.groups['xCoord'] || !match.groups['yCoord']) {
+      return undefined;
+    }
+
+    return {type: 'Point', coordinates: [Number(match.groups['xCoord']), Number(match.groups['yCoord'])], srs: 2056};
   }
 }

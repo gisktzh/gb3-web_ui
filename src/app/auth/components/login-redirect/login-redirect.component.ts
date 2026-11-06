@@ -5,7 +5,6 @@ import {WaitingPageComponent} from '../../../shared/components/waiting-page/wait
 @Component({
   selector: 'login-redirect',
   templateUrl: './login-redirect.component.html',
-  styleUrls: ['./login-redirect.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [WaitingPageComponent],
 })

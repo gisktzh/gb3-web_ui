@@ -66,17 +66,18 @@ export class MapOerebExtractDataToView {
         }
 
         if ('areaM2' in r.measurement) {
-          items.push({
-            itemLabel: 'Fläche',
-            itemType: 'text' as const,
-            text: `${r.measurement.areaM2}m2`,
-          });
-
-          items.push({
-            itemLabel: 'Anteil',
-            itemType: 'text' as const,
-            text: `${Math.round(r.measurement.percentage * 100)}%`,
-          });
+          items.push(
+            {
+              itemLabel: 'Fläche',
+              itemType: 'text' as const,
+              text: `${r.measurement.areaM2}m2`,
+            },
+            {
+              itemLabel: 'Anteil',
+              itemType: 'text' as const,
+              text: `${Math.round(r.measurement.percentage * 100)}%`,
+            },
+          );
         } else if ('lineLength' in r.measurement) {
           items.push({
             itemLabel: 'Länge',

@@ -23,13 +23,18 @@ export abstract class BaseApiService {
     headers?: {
       [header: string]: string | string[];
     },
-    processAsBlob: boolean = false,
   ): Observable<R> {
-    if (processAsBlob) {
-      return this.http.post(url, body, {headers, responseType: 'blob'}) as Observable<R>;
-    } else {
-      return this.http.post<R>(url, body, {headers});
-    }
+    return this.http.post<R>(url, body, {headers});
+  }
+
+  protected postBlob<T, R>(
+    url: string,
+    body?: T,
+    headers?: {
+      [header: string]: string | string[];
+    },
+  ): Observable<R> {
+    return this.http.post(url, body, {headers, responseType: 'blob'}) as Observable<R>;
   }
 
   protected delete<T>(url: string): Observable<T> {

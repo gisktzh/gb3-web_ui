@@ -39,7 +39,7 @@ export class DataDownloadSelectMunicipalityDialogComponent {
   public readonly filterValue = signal<string | null>('');
   public municipalityForm = form(this.municipalityModel, (fieldPath) => {
     required(fieldPath.municipality);
-    disabled(fieldPath.municipality, () => this.loadingState() !== 'loaded');
+    disabled(fieldPath.municipality, {when: () => this.loadingState() !== 'loaded'});
   });
   public readonly filteredMunicipalities = computed(() => {
     const filterValue = (this.filterValue() || '').toLowerCase().trim();

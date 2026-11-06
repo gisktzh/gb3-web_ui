@@ -1,11 +1,10 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {combineLatestWith, distinctUntilChanged, filter, of, switchMap, takeWhile, tap} from 'rxjs';
+import {combineLatestWith, distinctUntilChanged, filter, of, switchMap, takeWhile, tap, catchError, map} from 'rxjs';
 import {SearchActions} from '../actions/search.actions';
 import {SearchService} from '../../../shared/services/apis/search/services/search.service';
 import {Store} from '@ngrx/store';
-import {catchError, map} from 'rxjs';
 import {
   InvalidSearchParameters,
   NoSearchResultsFoundForParameters,

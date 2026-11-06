@@ -30,7 +30,7 @@ describe('SkipLinkComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(compiled.querySelectorAll('a').length).toBe(0);
+    expect(compiled.querySelectorAll('a')).toHaveLength(0);
   });
 
   it('should render one link per given skipLink', async () => {
@@ -49,7 +49,7 @@ describe('SkipLinkComponent', () => {
     await vi.runAllTimersAsync();
 
     const links = compiled.querySelectorAll('a');
-    expect(links.length).toBe(2);
+    expect(links).toHaveLength(2);
     expect(links[0].textContent.trim()).toBe('There');
     expect(links[1].textContent.trim()).toBe('And back again');
   });

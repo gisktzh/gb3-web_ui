@@ -69,66 +69,146 @@ export class TimeSliderService {
     maximumDate: Date,
   ): TimeExtent {
     const timeExtent: TimeExtent = {
-      // ensure that the new start/end values are within the min/max limits
+      // Ensure that the new start/end values are within the min/max limits.
       start: this.validateDateWithinLimits(newValue.start, minimumDate, maximumDate),
       end: this.validateDateWithinLimits(newValue.end, minimumDate, maximumDate),
     };
 
     if (timeSliderConfig.alwaysMaxRange) {
-      /*
-          Always max range:
-            start/end date are always min/max
-        */
-      timeExtent.start = minimumDate;
-      timeExtent.end = maximumDate;
-    } else if (timeSliderConfig.range) {
-      /*
-          Fixed range
-            The start has changed as fixed ranges technically don't have an end date
-            => the end date has to be adjusted accordingly to enforce the fixed range between start and end date
-         */
-      timeExtent.end = this.timeService.addRangeToDate(timeExtent.start, timeSliderConfig.range);
-    } else if (timeSliderConfig.minimalRange) {
-      /*
-          Minimal range
-            Either the start or end date has changed;
-            1. Ensure that startDate < endDate.
-            2. ensure that the changed date is still within the valid minimum range:
-              a. in case the start date was changed: minDate <= startDate <= maxDate - range
-              b. in case the end date was changed:   maxDate >= endDate >= minDate + range
-            3. if the difference between the new start and end date is under the given minimum range then
-               adjust the value of the changed value accordingly to enforce the minimal range between them
-            4. if the previous changes are not enough (e.g. in case the min/max limits have changed) then
-               also adjust the value of the previously unchanged value.
-         */
+      return this.createMaximumTimeExtent(minimumDate, maximumDate);
+    }
 
-      if (timeExtent.start > timeExtent.end) {
-        const startDate: Date = timeExtent.start;
-        timeExtent.start = timeExtent.end;
-        timeExtent.end = startDate;
-      }
+    if (timeSliderConfig.range) {
+      return this.createFixedTimeExtent(timeExtent, timeSliderConfig.range);
+    }
 
-      const startEndDiff: number = this.timeService.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
-      const minimalRangeInMs: number = this.timeService.getISORangeInMilliseconds(timeSliderConfig.minimalRange);
-
-      if (startEndDiff < minimalRangeInMs) {
-        if (hasStartDateChanged) {
-          const newStartDate = this.timeService.subtractRangeFromDate(timeExtent.end, timeSliderConfig.minimalRange);
-          timeExtent.start = this.validateDateWithinLimits(newStartDate, minimumDate, maximumDate);
-          if (this.timeService.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRangeInMs) {
-            timeExtent.end = this.timeService.addRangeToDate(timeExtent.start, timeSliderConfig.minimalRange);
-          }
-        } else {
-          const newEndDate = this.timeService.addRangeToDate(timeExtent.start, timeSliderConfig.minimalRange);
-          timeExtent.end = this.validateDateWithinLimits(newEndDate, minimumDate, maximumDate);
-          if (this.timeService.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRangeInMs) {
-            timeExtent.start = this.timeService.subtractRangeFromDate(timeExtent.end, timeSliderConfig.minimalRange);
-          }
-        }
-      }
+    if (timeSliderConfig.minimalRange) {
+      return this.createMinimalTimeExtent(timeExtent, timeSliderConfig.minimalRange, hasStartDateChanged, minimumDate, maximumDate);
     }
 
     return timeExtent;
+  }
+
+  /**
+   * Always max range:
+   * Start/end dates are always min/max.
+   */
+  private createMaximumTimeExtent(minimumDate: Date, maximumDate: Date): TimeExtent {
+    return {
+      start: minimumDate,
+      end: maximumDate,
+    };
+  }
+
+  /**
+   * Fixed range:
+   * The start date has changed, as fixed ranges technically don't have an end date.
+   * Therefore, the end date has to be adjusted accordingly to enforce the fixed range
+   * between start and end date.
+   */
+  private createFixedTimeExtent(timeExtent: TimeExtent, range: string): TimeExtent {
+    return {
+      ...timeExtent,
+      end: this.timeService.addRangeToDate(timeExtent.start, range),
+    };
+  }
+
+  /**
+   * Minimal range:
+   * Either the start or end date has changed.
+   *
+   * 1. Ensure that startDate < endDate.
+   * 2. Ensure that the changed date is still within the valid minimum range:
+   *    a. In case the start date was changed: minDate <= startDate <= maxDate - range
+   *    b. In case the end date was changed:   maxDate >= endDate >= minDate + range
+   * 3. If the difference between the new start and end date is under the given
+   *    minimum range, adjust the changed value accordingly to enforce the minimal
+   *    range between them.
+   * 4. If the previous changes are not enough (e.g. in case the min/max limits
+   *    have changed), also adjust the previously unchanged value.
+   */
+  private createMinimalTimeExtent(
+    timeExtent: TimeExtent,
+    minimalRange: string,
+    hasStartDateChanged: boolean,
+    minimumDate: Date,
+    maximumDate: Date,
+  ): TimeExtent {
+    this.ensureStartBeforeEnd(timeExtent);
+
+    const minimalRangeInMs = this.timeService.getISORangeInMilliseconds(minimalRange);
+
+    // No adjustment necessary if the minimal range is already satisfied.
+    if (this.hasMinimalRange(timeExtent, minimalRangeInMs)) {
+      return timeExtent;
+    }
+
+    // Adjust the changed date to enforce the minimal range.
+    if (hasStartDateChanged) {
+      this.adjustStartDate(timeExtent, minimalRange, minimumDate, maximumDate);
+    } else {
+      this.adjustEndDate(timeExtent, minimalRange, minimumDate, maximumDate);
+    }
+
+    return timeExtent;
+  }
+
+  /**
+   * Ensure that the start date is before the end date.
+   * Swap both dates if the start date is later than the end date.
+   */
+  private ensureStartBeforeEnd(timeExtent: TimeExtent): void {
+    if (timeExtent.start > timeExtent.end) {
+      [timeExtent.start, timeExtent.end] = [timeExtent.end, timeExtent.start];
+    }
+  }
+
+  /**
+   * Check whether the difference between the start and end dates
+   * satisfies the configured minimal range.
+   */
+  private hasMinimalRange(timeExtent: TimeExtent, minimalRangeInMs: number): boolean {
+    return this.timeService.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) >= minimalRangeInMs;
+  }
+
+  /**
+   * Start date changed:
+   *
+   * 1. Calculate the new start date by subtracting the minimal range from the end date.
+   * 2. Ensure that the new start date is within the min/max limits.
+   * 3. If the minimal range is still not satisfied (e.g. because the minimum date
+   *    has changed), adjust the end date as well.
+   */
+  private adjustStartDate(timeExtent: TimeExtent, minimalRange: string, minimumDate: Date, maximumDate: Date): void {
+    const newStartDate = this.timeService.subtractRangeFromDate(timeExtent.end, minimalRange);
+
+    timeExtent.start = this.validateDateWithinLimits(newStartDate, minimumDate, maximumDate);
+
+    const minimalRangeInMs = this.timeService.getISORangeInMilliseconds(minimalRange);
+
+    if (!this.hasMinimalRange(timeExtent, minimalRangeInMs)) {
+      timeExtent.end = this.timeService.addRangeToDate(timeExtent.start, minimalRange);
+    }
+  }
+
+  /**
+   * End date changed:
+   *
+   * 1. Calculate the new end date by adding the minimal range to the start date.
+   * 2. Ensure that the new end date is within the min/max limits.
+   * 3. If the minimal range is still not satisfied (e.g. because the maximum date
+   *    has changed), adjust the start date as well.
+   */
+  private adjustEndDate(timeExtent: TimeExtent, minimalRange: string, minimumDate: Date, maximumDate: Date): void {
+    const newEndDate = this.timeService.addRangeToDate(timeExtent.start, minimalRange);
+
+    timeExtent.end = this.validateDateWithinLimits(newEndDate, minimumDate, maximumDate);
+
+    const minimalRangeInMs = this.timeService.getISORangeInMilliseconds(minimalRange);
+
+    if (!this.hasMinimalRange(timeExtent, minimalRangeInMs)) {
+      timeExtent.start = this.timeService.subtractRangeFromDate(timeExtent.end, minimalRange);
+    }
   }
 
   public isTimeExtentValid(timeSliderConfig: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
@@ -156,13 +236,13 @@ export class TimeSliderService {
    *   returns 'undefined'
    * */
   public extractUniqueUnitFromDateFormat(dateFormat: string): DateUnit | undefined {
-    if (dateFormat.replace(/S/g, '').trim() === '') return 'milliseconds';
-    if (dateFormat.replace(/s/g, '').trim() === '') return 'seconds';
-    if (dateFormat.replace(/m/g, '').trim() === '') return 'minutes';
+    if (dateFormat.replaceAll('S', '').trim() === '') return 'milliseconds';
+    if (dateFormat.replaceAll('s', '').trim() === '') return 'seconds';
+    if (dateFormat.replaceAll('m', '').trim() === '') return 'minutes';
     if (dateFormat.replace(/[hH]/g, '').trim() === '') return 'hours';
     if (dateFormat.replace(/[dD]/g, '').trim() === '') return 'days';
-    if (dateFormat.replace(/M/g, '').trim() === '') return 'months';
-    if (dateFormat.replace(/Y/g, '').trim() === '') return 'years';
+    if (dateFormat.replaceAll('M', '').trim() === '') return 'months';
+    if (dateFormat.replaceAll('Y', '').trim() === '') return 'years';
     return undefined;
   }
 

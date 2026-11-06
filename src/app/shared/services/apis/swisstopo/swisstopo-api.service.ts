@@ -6,8 +6,7 @@ import {
   ElevationProfileSearchParams,
   SupportedSrs as SwisstopoSupportedSrs,
 } from '../../../models/swisstopo-api-generated.interface';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs';
+import {Observable, map} from 'rxjs';
 import {ElevationProfileData} from '../../../interfaces/elevation-profile.interface';
 import {Geometry} from 'geojson';
 import {SupportedSrs} from '../../../types/supported-srs.type';
@@ -60,10 +59,7 @@ export class SwisstopoApiService extends BaseApiService {
     return response.reduce<ElevationProfileData>(
       (acc, currentPoint, idx, data) => {
         acc.statistics.linearDistance = currentPoint.dist;
-        acc.statistics.highestPoint =
-          currentPoint.alts[ELEVATION_MODEL] > acc.statistics.highestPoint
-            ? currentPoint.alts[ELEVATION_MODEL]
-            : acc.statistics.highestPoint;
+        acc.statistics.highestPoint = Math.max(currentPoint.alts[ELEVATION_MODEL], acc.statistics.highestPoint);
         acc.statistics.lowestPoint =
           currentPoint.alts[ELEVATION_MODEL] < acc.statistics.lowestPoint || idx === 0
             ? currentPoint.alts[ELEVATION_MODEL]

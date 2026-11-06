@@ -73,7 +73,7 @@ test.describe('Data download', () => {
 
     const downloadButton = page.locator('a[title="Download: Amtliche Vermessung - Datenmodell CH (OGD)"]');
     await downloadButton.waitFor({timeout: 120_000});
-    await expect(await downloadButton.getAttribute('href')).toContain('https://geoservices.zh.ch/geoshopapi/v1/orders/asdf1234/download');
+    expect(await downloadButton.getAttribute('href')).toContain('https://geoservices.zh.ch/geoshopapi/v1/orders/asdf1234/download');
   });
 
   describeA11y(() => {

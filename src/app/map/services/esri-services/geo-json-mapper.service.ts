@@ -9,11 +9,11 @@ import {
   PolygonWithSrs,
 } from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {UnsupportedGeometryType} from './errors/esri.errors';
-import {GeometryUnion} from '@arcgis/core/unionTypes';
 import Point from '@arcgis/core/geometry/Point';
 import Multipoint from '@arcgis/core/geometry/Multipoint';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import Polyline from '@arcgis/core/geometry/Polyline';
+import {GeometryUnion} from '@arcgis/core/geometry/types';
 
 @Injectable({
   providedIn: 'root',

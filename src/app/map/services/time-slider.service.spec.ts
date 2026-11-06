@@ -317,7 +317,7 @@ describe('TimeSliderService', () => {
 
       it('should create the correct stops', () => {
         const stops = service.createStops(timeSliderConfig);
-        expect(stops.length).toBe(3);
+        expect(stops).toHaveLength(3);
         expect(timeService.calculateDifferenceBetweenDates(stops[0], timeService.createUTCDateFromString(firstStop, dateFormat))).toBe(0);
         expect(timeService.calculateDifferenceBetweenDates(stops[1], timeService.createUTCDateFromString(secondStop, dateFormat))).toBe(0);
         expect(timeService.calculateDifferenceBetweenDates(stops[2], timeService.createUTCDateFromString(thirdStop, dateFormat))).toBe(0);
@@ -351,7 +351,7 @@ describe('TimeSliderService', () => {
             },
           };
           const stops = service.createStops(timeSliderConfig);
-          expect(stops.length).toBe(15);
+          expect(stops).toHaveLength(15);
           expect(timeService.calculateDifferenceBetweenDates(stops[0], timeService.createUTCDateFromString('2000-01', dateFormat))).toBe(0);
           expect(timeService.calculateDifferenceBetweenDates(stops[1], timeService.createUTCDateFromString('2000-02', dateFormat))).toBe(0);
           expect(
@@ -404,7 +404,7 @@ describe('TimeSliderService', () => {
              10 stops + starting point + end point = 12 stops
             */
             const expectedNumberOfStops = 12;
-            expect(stops.length).toBe(expectedNumberOfStops);
+            expect(stops).toHaveLength(expectedNumberOfStops);
             expect(timeService.calculateDifferenceBetweenDates(stops[0], minimumDate)).toBe(0);
             expect(timeService.calculateDifferenceBetweenDates(stops[1], timeService.addRangeToDate(minimumDate, range))).toBe(0);
             expect(timeService.calculateDifferenceBetweenDates(stops[stops.length - 1], maximumDate)).toBe(0);
@@ -435,7 +435,7 @@ describe('TimeSliderService', () => {
                           => 15 stops
                          */
             const expectedNumberOfStops = 15;
-            expect(stops.length).toBe(expectedNumberOfStops);
+            expect(stops).toHaveLength(expectedNumberOfStops);
 
             expect(timeService.calculateDifferenceBetweenDates(stops[0], timeService.createUTCDateFromString('2000-01', dateFormat))).toBe(
               0,

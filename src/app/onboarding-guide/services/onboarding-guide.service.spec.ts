@@ -85,7 +85,7 @@ describe('OnboardingGuideService', () => {
       const resultAsArray = JSON.parse(result);
 
       expect(resultAsArray).toContain(mockTour.id);
-      expect(resultAsArray.length).toEqual(existingTours.length + 1);
+      expect(resultAsArray).toHaveLength(existingTours.length + 1);
     });
 
     it('does not append the tour id if it has already been viewed', () => {
@@ -97,8 +97,8 @@ describe('OnboardingGuideService', () => {
       const resultAsArray = JSON.parse(result);
 
       expect(resultAsArray).toContain(mockTour.id);
-      expect(resultAsArray.length).toEqual(existingTours.length);
-      expect(resultAsArray.filter((v: string) => v === mockTour.id).length).toEqual(1);
+      expect(resultAsArray).toHaveLength(existingTours.length);
+      expect(resultAsArray.filter((v: string) => v === mockTour.id)).toHaveLength(1);
     });
 
     it('works if the local storage contains invalid data for parsing by overiding it with current id', () => {
@@ -110,7 +110,7 @@ describe('OnboardingGuideService', () => {
       const resultAsArray = JSON.parse(result);
 
       expect(resultAsArray).toContain(mockTour.id);
-      expect(resultAsArray.length).toEqual(1);
+      expect(resultAsArray).toHaveLength(1);
     });
 
     it('switches the status indicator when the guide is started', () => {

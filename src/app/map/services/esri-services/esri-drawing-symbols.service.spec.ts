@@ -157,7 +157,7 @@ describe('EsriDrawingSymbolsService', () => {
     const httpClient = TestBed.inject(HttpClient);
     const getCallSpy = vi.spyOn(httpClient, 'get').mockReturnValue(of(testData));
     service.getCollection('806df898e9c04516a704a9f93e2a0a5e').subscribe((actual) => {
-      expect(actual.length).toBe(2);
+      expect(actual).toHaveLength(2);
       expect(actual[0].thumbnail).toEqual('https://www.example.com/thumbnail_A.png');
       expect(actual[1].thumbnail).toEqual(
         'https://cdn.arcgis.com/sharing/rest/content/items/806df898e9c04516a704a9f93e2a0a5e/./thumbnail_C.png',
@@ -165,7 +165,7 @@ describe('EsriDrawingSymbolsService', () => {
     });
 
     service.getCollection('806df898e9c04516a704a9f93e2a0a5e').subscribe((actual) => {
-      expect(actual.length).toBe(2);
+      expect(actual).toHaveLength(2);
     });
 
     expect(getCallSpy).toHaveBeenCalledWith('https://cdn.arcgis.com/sharing/rest/content/items/806df898e9c04516a704a9f93e2a0a5e/data');

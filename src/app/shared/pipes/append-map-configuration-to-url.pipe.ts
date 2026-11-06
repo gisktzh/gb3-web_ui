@@ -18,7 +18,7 @@ export class AppendMapConfigurationToUrlPipe implements PipeTransform {
       url.searchParams.append('scale', mapConfigState.scale.toString());
 
       return url.toString();
-    } catch (e) {
+    } catch {
       return value;
     }
   }

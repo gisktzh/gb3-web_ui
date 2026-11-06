@@ -16,9 +16,7 @@
 
   &--mobile {
     @include mixins.tool-button;
-    & {
-      padding: 0;
-    }
+    padding: 0;
 
     .mat-icon {
       height: 24px;

@@ -8,7 +8,7 @@ import {AnimatedDialogService} from 'src/app/shared/services/animated-dialog.ser
 export class AnimationTargetForDialogDirective {
   public readonly animationTargetForDialog = input.required<Type<unknown>>();
   private readonly elementRef = inject(ElementRef<HTMLElement>);
-  private animatedDialogService = inject(AnimatedDialogService);
+  private readonly animatedDialogService = inject(AnimatedDialogService);
 
   constructor() {
     effect((onCleanup) => {

@@ -128,7 +128,7 @@ describe('OverviewSearchResultItemComponent', () => {
 
     const fieldTitles = compiled.querySelectorAll<HTMLElement>('.overview-search-result-item__content__details__item__title');
 
-    expect(fieldTitles.length).toBe(2);
+    expect(fieldTitles).toHaveLength(2);
 
     const truncatedField = Array.from(compiled.querySelectorAll<HTMLElement>('.overview-search-result-item__content__details__item'))[1];
 

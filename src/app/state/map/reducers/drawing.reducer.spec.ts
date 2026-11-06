@@ -63,7 +63,7 @@ describe('Drawing Reducer', () => {
 
       const result = reducer(currentState, action);
 
-      expect(result.drawings.length).toEqual(1);
+      expect(result.drawings).toHaveLength(1);
       expect(result.drawings).toEqual([currentState.drawings[1]]);
     });
   });
@@ -85,7 +85,7 @@ describe('Drawing Reducer', () => {
 
       const result = reducer(currentState, action);
 
-      expect(result.drawings.length).toEqual(3);
+      expect(result.drawings).toHaveLength(3);
       expect(result.drawings[2]).toEqual(newDrawing);
     });
     it('replaces a drawing if it already exists in the state', () => {
@@ -104,7 +104,7 @@ describe('Drawing Reducer', () => {
 
       const result = reducer(currentState, action);
 
-      expect(result.drawings.length).toEqual(2);
+      expect(result.drawings).toHaveLength(2);
       expect(result.drawings[1]).toEqual(newDrawing);
     });
   });
@@ -133,7 +133,7 @@ describe('Drawing Reducer', () => {
 
       const result = reducer(currentState, action);
 
-      expect(result.drawings.length).toEqual(4);
+      expect(result.drawings).toHaveLength(4);
       expect(result.drawings[2]).toEqual(newDrawings[0]);
       expect(result.drawings[3]).toEqual(newDrawings[1]);
     });
@@ -159,7 +159,7 @@ describe('Drawing Reducer', () => {
       const action = DrawingActions.addDrawings({drawings: newDrawings});
       const result = reducer(currentState, action);
 
-      expect(result.drawings.length).toEqual(2);
+      expect(result.drawings).toHaveLength(2);
       expect(result.drawings[0]).toEqual(newDrawings[0]);
     });
   });
@@ -184,7 +184,7 @@ describe('Drawing Reducer', () => {
 
       const result = reducer(currentState, action);
 
-      expect(result.drawings.length).toEqual(2);
+      expect(result.drawings).toHaveLength(2);
       expect(result.drawings[0].id).toEqual('measurementLayer1');
       expect(result.drawings[1].id).toEqual('measurementLayer2');
     });
@@ -194,7 +194,7 @@ describe('Drawing Reducer', () => {
 
       const result = reducer(currentState, action);
 
-      expect(result.drawings.length).toEqual(2);
+      expect(result.drawings).toHaveLength(2);
       expect(result.drawings[0].id).toEqual('drawingLayer1');
       expect(result.drawings[1].id).toEqual('drawingLayer2');
     });

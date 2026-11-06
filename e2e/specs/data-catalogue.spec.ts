@@ -4,6 +4,7 @@ const DATASET_NAME = 'Abflussprozesskarte';
 
 test.describe('Data catalogue', () => {
   test('shows the catalogue overview and a dataset detail page', async ({
+    page,
     openDataCatalogueOverview,
     openDatasetDetailPage,
     useHar,
@@ -14,6 +15,8 @@ test.describe('Data catalogue', () => {
 
     await openDataCatalogueOverview();
     await openDatasetDetailPage(DATASET_NAME);
+    // This is here to satisfy SonarQube a bit...
+    await expect(page).toHaveURL(/\/data\/datasets\//);
   });
 
   describeA11y(() => {

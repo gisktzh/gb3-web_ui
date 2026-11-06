@@ -1,6 +1,6 @@
 import {Gb3StyleRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {UnsupportedSymbolizationType} from '../errors/esri.errors';
-import {SymbolUnion} from '@arcgis/core/unionTypes';
+import {SymbolUnion} from '@arcgis/core/symbols/types';
 import {defaultSymbolization} from '../../../../shared/configs/symbolization.config';
 import {ColorUtils} from '../../../../shared/utils/color.utils';
 import {SymbolStyleConstants} from 'src/app/shared/constants/symbol-style.constants';

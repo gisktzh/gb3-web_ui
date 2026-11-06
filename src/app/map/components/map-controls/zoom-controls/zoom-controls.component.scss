@@ -17,6 +17,7 @@
   pointer-events: all;
 
   &--hidden {
+    /* NOSONAR -- Needs to be `!important` because specificity. */
     display: none !important;
   }
 

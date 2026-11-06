@@ -3,17 +3,17 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {provideUiTour, TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
 import {TypedTourAnchorDirective} from './typed-tour-anchor.directive';
-import {OnboardingGuideAnchor} from '../../onboarding-guide/types/onboarding-guide-anchor.type';
+import {MapOnboardingGuideAnchor} from '../../onboarding-guide/types/onboarding-guide-anchor.type';
 import {SIGNAL} from '@angular/core/primitives/signals';
 
-const testAnchor: OnboardingGuideAnchor = 'map.tour.start';
+const testAnchor: MapOnboardingGuideAnchor = 'map.tour.start';
 
 @Component({
   template: `<div [typedTourAnchor]="anchor">Test Content</div>`,
   imports: [TypedTourAnchorDirective],
 })
 class TestComponent {
-  public anchor: OnboardingGuideAnchor = testAnchor;
+  public anchor: MapOnboardingGuideAnchor = testAnchor;
 }
 
 describe('TypedTourAnchorDirective', () => {

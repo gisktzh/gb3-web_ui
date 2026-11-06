@@ -7,6 +7,7 @@ import type {Entry} from 'har-format';
 import {type Locator, type Page} from '@playwright/test';
 import {canonicalizeUrl} from './utils/canonicalize.utils';
 import {expect} from './matchers/a11y.matcher';
+import {type Request} from 'playwright';
 
 // URL pattern. If pattern matches,
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
@@ -145,7 +146,7 @@ export const test = base.extend<Gb3Fixtures>({
         updateMode: 'minimal',
         updateContent: 'embed',
         matcher: {
-          async findEntry(har, request, matcher) {
+          async findEntry(har, request, matcher): Promise<Entry> {
             // Prefer completed responses; status -1 entries cannot be fulfilled as HTTP responses.
             const replayableHar = {
               ...har,
@@ -176,6 +177,8 @@ export const test = base.extend<Gb3Fixtures>({
             // Some catalogue icons were only recorded as cancelled. Replay that cancellation instead of reporting a missing entry.
             const recordedEntry = await defaultFindEntry(har, redactedRequest, matcher);
             if (recordedEntry && recordedEntry.response.status <= 0) cancelledRequests.add(request);
+
+            // @ts-expect-error -- The interface of advacned HAR is wrong here.
             return null;
           },
           matchFunction: customMatcher({
@@ -474,7 +477,6 @@ export const test = base.extend<Gb3Fixtures>({
     await use(async (x: string, y: string) => {
       await openUrlWithCoordinates(x, y);
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(200);
     });
   },
 
@@ -484,7 +486,6 @@ export const test = base.extend<Gb3Fixtures>({
       await page.waitForLoadState('networkidle');
 
       await search(address);
-      await page.waitForTimeout(5000); // Until the zoom is done
       const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
       await expect(zoomInput).toHaveValue('750', {timeout: 30_000});
 
@@ -506,14 +507,12 @@ export const test = base.extend<Gb3Fixtures>({
     await use(async (x: string, y: string, layerName: string) => {
       await openMapWithActiveLayer(x, y, layerName);
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(200);
 
       const printDialogButton = page.locator('[data-test-id="map-print"]');
       await expect(printDialogButton).toBeVisible();
 
       await printDialogButton.click();
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(500);
 
       await expect(page.locator('.print-dialog')).toBeVisible();
     });
@@ -523,14 +522,12 @@ export const test = base.extend<Gb3Fixtures>({
     await use(async (x: string, y: string, layerName: string) => {
       await openMapWithActiveLayer(x, y, layerName);
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(200);
 
       const dataDownloadDialogButton = page.locator('[data-test-id="map-data-download"]');
       await expect(dataDownloadDialogButton).toBeVisible();
 
       await dataDownloadDialogButton.click();
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(500);
 
       const dataDownloadSelectionTools = page.locator('data-download-selection-tools');
       await expect(dataDownloadSelectionTools).toBeVisible();
@@ -567,7 +564,6 @@ export const test = base.extend<Gb3Fixtures>({
       await expect(continueButton).toBeVisible();
       await continueButton.click();
 
-      await page.waitForTimeout(200);
       await expect(municipalityDownloadDialog).not.toBeVisible();
       await page.waitForLoadState('networkidle');
 
@@ -662,7 +658,9 @@ export const test = base.extend<Gb3Fixtures>({
  */
 export function describeA11y(fn: () => void): void {
   test.describe('accessibility', () => {
+    // eslint-disable-next-line prettier/prettier -- So the NOSONAR comment actually works.
     test.skip(
+      //NOSONAR -- SonarQube says we need to describe why this is skipped not skip. Since it's an actual functional thing, we ignore.
       ({browserName}) => browserName !== 'chromium',
       'Accessibility checks only need to run once; chromium is used as the reference renderer.',
     );

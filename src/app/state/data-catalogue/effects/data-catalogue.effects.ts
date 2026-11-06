@@ -46,7 +46,7 @@ export class DataCatalogueEffects {
                 uniqueValues.set(dataCatalogueFilter, new Set());
               }
               let values: string[];
-              if (item[dataCatalogueFilter.key] instanceof Array) {
+              if (Array.isArray(item[dataCatalogueFilter.key])) {
                 values = item[dataCatalogueFilter.key];
               } else {
                 values = [item[dataCatalogueFilter.key]]; // We treat all values as Arrays and unpack them later to account for the arrays provided in the output format

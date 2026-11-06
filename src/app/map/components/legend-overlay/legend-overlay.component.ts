@@ -13,7 +13,6 @@ import {LegendComponent} from './legend/legend.component';
 @Component({
   selector: 'legend-overlay',
   templateUrl: './legend-overlay.component.html',
-  styleUrls: ['./legend-overlay.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapOverlayComponent, LegendComponent],
 })

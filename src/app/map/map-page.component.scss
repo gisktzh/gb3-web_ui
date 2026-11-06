@@ -35,6 +35,7 @@
   }
 
   .map-container__map-element--hidden {
+    /* NOSONAR -- Needs to be `!important` because specificity. */
     display: none !important;
   }
 
@@ -103,14 +104,12 @@
     @include mixins.hide-on-small-screens;
     @include material-mixins.mat-icon-custom-svg-size(16px);
 
-    & {
-      position: absolute;
-      top: 12px;
-      left: calc(24px + #{map-layout-variables.$map-overlay-width});
-      height: 48px;
-      width: map-layout-variables.$legend-button-width;
-      background-color: ktzh-variables.$zh-background-color;
-    }
+    position: absolute;
+    top: 12px;
+    left: calc(24px + #{map-layout-variables.$map-overlay-width});
+    height: 48px;
+    width: map-layout-variables.$legend-button-width;
+    background-color: ktzh-variables.$zh-background-color;
   }
 
   .map-container__map-attribute-filter {

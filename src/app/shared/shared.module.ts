@@ -1,7 +1,7 @@
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
-import {ResizableModule} from 'angular-resizable-element';
+import {ResizableDirective, ResizeHandleDirective} from 'angular-resizable-element';
 import {AccordionItemComponent} from './components/accordion-item/accordion-item.component';
 import {ContactDetailComponent} from './components/contact-details/contact-detail/contact-detail.component';
 import {ContactDetailsComponent} from './components/contact-details/contact-details.component';
@@ -42,7 +42,8 @@ import {FeatureFlagDirective} from './directives/feature-flag.directive';
     MaterialModule,
     RouterModule,
     CommonModule,
-    ResizableModule,
+    ResizableDirective,
+    ResizeHandleDirective,
     ClickOnSpaceBarDirective,
     NgOptimizedImage,
     FeatureFlagDirective,
@@ -80,7 +81,8 @@ import {FeatureFlagDirective} from './directives/feature-flag.directive';
   ],
   exports: [
     MaterialModule,
-    ResizableModule,
+    ResizableDirective,
+    ResizeHandleDirective,
     BasemapImageLinkPipe,
     NavbarComponent,
     LoadingAndProcessBarComponent,

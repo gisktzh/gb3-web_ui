@@ -20,7 +20,6 @@ import {effectErrorHandler} from './app/state/app/effects/effects-error-handler.
 import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {APP_ROUTES} from './app/app.routes';
 import {Gb3StatisticsService} from './app/shared/services/apis/gb3/gb3-statistics.service';
-import {provideAnimations} from '@angular/platform-browser/animations';
 import {bootstrapApplication} from '@angular/platform-browser';
 import {provideStore} from '@ngrx/store';
 import {metaReducers, reducers, rootEffects} from './app/state';
@@ -58,7 +57,6 @@ bootstrapApplication(AppComponent, {
     provideEffects(rootEffects),
     provideRouterStore(),
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
-    provideAnimations(),
     provideUiTour(),
   ],
 }).catch((err) => console.error(err));
