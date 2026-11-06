@@ -62,6 +62,34 @@ describe('TimeSliderService', () => {
           timeService.createDateFromString(minimumDate),
           timeService.createDateFromString(maximumDate),
         );
+
+        expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString(minimumDate))).toBe(
+          0,
+        );
+        expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.end, timeService.createDateFromString(maximumDate))).toBe(
+          0,
+        );
+      });
+
+      it('should take precedence over range and minimalRange', () => {
+        const configWithMultipleRanges: TimeSliderConfiguration = {
+          ...timeSliderConfig,
+          range: 'P1M',
+          minimalRange: 'P2M',
+        };
+        const newValue: TimeExtent = {
+          start: timeService.createDateFromString('2000-02', dateFormat),
+          end: timeService.createDateFromString('2000-03', dateFormat),
+        };
+
+        const calculatedTimeExtent = service.createValidTimeExtent(
+          configWithMultipleRanges,
+          newValue,
+          true,
+          timeService.createDateFromString(minimumDate),
+          timeService.createDateFromString(maximumDate),
+        );
+
         expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString(minimumDate))).toBe(
           0,
         );
@@ -109,6 +137,7 @@ describe('TimeSliderService', () => {
           start: timeService.createDateFromString('2000-02', dateFormat),
           end: timeService.createDateFromString('2000-03', dateFormat),
         };
+
         const calculatedTimeExtent = service.createValidTimeExtent(
           timeSliderConfig,
           newValue,
@@ -116,13 +145,19 @@ describe('TimeSliderService', () => {
           timeService.createDateFromString(minimumDateString),
           timeService.createDateFromString(maximumDateString),
         );
+
         expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, newValue.start)).toBe(0);
         expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.end, newValue.end)).toBe(0);
       });
 
       it('should create a new end date if it is valid', () => {
-        const newValue: TimeExtent = {start: maximumDate, end: minimumDate};
+        const newValue: TimeExtent = {
+          start: maximumDate,
+          end: minimumDate,
+        };
+
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
         expect(
           timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString('2001-03', dateFormat)),
         ).toBe(0);
@@ -132,8 +167,13 @@ describe('TimeSliderService', () => {
       });
 
       it('should create a new start date if it is smaller than the minimum date', () => {
-        const newValue: TimeExtent = {start: timeService.subtractRangeFromDate(minimumDate, 'P1M'), end: minimumDate};
+        const newValue: TimeExtent = {
+          start: timeService.subtractRangeFromDate(minimumDate, 'P1M'),
+          end: minimumDate,
+        };
+
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
         expect(
           timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString('2000-01', dateFormat)),
         ).toBe(0);
@@ -143,8 +183,13 @@ describe('TimeSliderService', () => {
       });
 
       it('should create a new start date if it is bigger than the maximum date', () => {
-        const newValue: TimeExtent = {start: timeService.addRangeToDate(maximumDate, 'P1M'), end: minimumDate};
+        const newValue: TimeExtent = {
+          start: timeService.addRangeToDate(maximumDate, 'P1M'),
+          end: minimumDate,
+        };
+
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
         expect(
           timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString('2001-03', dateFormat)),
         ).toBe(0);
@@ -192,7 +237,9 @@ describe('TimeSliderService', () => {
           start: timeService.createDateFromString('2000-02', dateFormat),
           end: timeService.createDateFromString('2000-05', dateFormat),
         };
+
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
         expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, newValue.start)).toBe(0);
         expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.end, newValue.end)).toBe(0);
       });
@@ -202,7 +249,9 @@ describe('TimeSliderService', () => {
           start: timeService.createDateFromString('1999-12', dateFormat),
           end: timeService.createDateFromString('2001-04', dateFormat),
         };
+
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
         expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, minimumDate)).toBe(0);
         expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.end, maximumDate)).toBe(0);
       });
@@ -212,7 +261,9 @@ describe('TimeSliderService', () => {
           start: timeService.createDateFromString('2000-03', dateFormat),
           end: timeService.createDateFromString('2000-04', dateFormat),
         };
+
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
         expect(
           timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString('2000-02', dateFormat)),
         ).toBe(0);
@@ -226,7 +277,9 @@ describe('TimeSliderService', () => {
           start: timeService.createDateFromString('2000-02', dateFormat),
           end: timeService.createDateFromString('2000-03', dateFormat),
         };
+
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, false, minimumDate, maximumDate);
+
         expect(
           timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString('2000-02', dateFormat)),
         ).toBe(0);
@@ -235,18 +288,92 @@ describe('TimeSliderService', () => {
         ).toBe(0);
       });
 
-      it('should create a new start date if if is too close to the end date and the end date is the maximum possible date', () => {
+      it('should create a new start date if it is too close to the end date and the end date is the maximum possible date', () => {
         const newValue: TimeExtent = {
           start: timeService.createDateFromString('2001-02', dateFormat),
           end: timeService.createDateFromString('2001-03', dateFormat),
         };
+
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
         expect(
           timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString('2001-01', dateFormat)),
         ).toBe(0);
         expect(
           timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.end, timeService.createDateFromString('2001-03', dateFormat)),
         ).toBe(0);
+      });
+
+      it('should create a new end date if the minimal range cannot be reached because of the maximum date', () => {
+        const newValue: TimeExtent = {
+          start: timeService.createDateFromString('2001-02', dateFormat),
+          end: timeService.createDateFromString('2001-03', dateFormat),
+        };
+
+        const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, false, minimumDate, maximumDate);
+
+        expect(
+          timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString('2001-01', dateFormat)),
+        ).toBe(0);
+        expect(
+          timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.end, timeService.createDateFromString('2001-03', dateFormat)),
+        ).toBe(0);
+      });
+
+      it('should swap start and end dates if the start date is after the end date', () => {
+        const newValue: TimeExtent = {
+          start: timeService.createDateFromString('2000-05', dateFormat),
+          end: timeService.createDateFromString('2000-02', dateFormat),
+        };
+
+        const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
+        expect(
+          timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString('2000-02', dateFormat)),
+        ).toBe(0);
+        expect(
+          timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.end, timeService.createDateFromString('2000-05', dateFormat)),
+        ).toBe(0);
+      });
+    });
+
+    describe('without a configured range', () => {
+      const dateFormat = 'YYYY-MM';
+      let timeSliderConfig: TimeSliderConfiguration;
+      let minimumDate: Date;
+      let maximumDate: Date;
+
+      beforeEach(() => {
+        minimumDate = timeService.createDateFromString('2000-01', dateFormat);
+        maximumDate = timeService.createDateFromString('2001-03', dateFormat);
+
+        timeSliderConfig = {
+          name: 'mockTimeSlider',
+          dateFormat: dateFormat,
+          minimumDate: timeService.getDateAsFormattedString(minimumDate, dateFormat),
+          maximumDate: timeService.getDateAsFormattedString(maximumDate, dateFormat),
+          alwaysMaxRange: false,
+          range: undefined,
+          minimalRange: undefined,
+          sourceType: 'parameter',
+          source: {
+            startRangeParameter: '',
+            endRangeParameter: '',
+            layerIdentifiers: [],
+          },
+        };
+      });
+
+      it('should only clamp the dates to the minimum and maximum values', () => {
+        const newValue: TimeExtent = {
+          start: timeService.createDateFromString('1999-12', dateFormat),
+          end: timeService.createDateFromString('2001-04', dateFormat),
+        };
+
+        const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
+        expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, minimumDate)).toBe(0);
+        expect(timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.end, maximumDate)).toBe(0);
       });
     });
 
@@ -281,6 +408,7 @@ describe('TimeSliderService', () => {
       };
 
       const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
+
       expect(
         timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.createDateFromString('2000', dateFormat)),
       ).toBe(0);
@@ -323,6 +451,7 @@ describe('TimeSliderService', () => {
         expect(timeService.calculateDifferenceBetweenDates(stops[2], timeService.createUTCDateFromString(thirdStop, dateFormat))).toBe(0);
       });
     });
+
     describe('using a parameter source', () => {
       describe('with a single time unit and a range', () => {
         it('should create the correct stops', () => {
@@ -362,6 +491,7 @@ describe('TimeSliderService', () => {
           ).toBe(0);
         });
       });
+
       describe('with mixed time units', () => {
         const dateFormat = 'YYYY-MM';
         let minimumDate: Date;
