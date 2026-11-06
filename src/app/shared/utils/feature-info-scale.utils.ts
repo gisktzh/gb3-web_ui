@@ -11,6 +11,10 @@ export function isInFeatureInfoScaleRange(scale: number, range: FeatureInfoScale
   return scale >= range.minScale && scale <= range.maxScale;
 }
 
+export function isAboveMinFeatureInfoScaleRange(scale: number, range: FeatureInfoScaleRange): boolean {
+  return scale >= range.minScale;
+}
+
 export function clampFeatureInfoScale(scale: number, range: FeatureInfoScaleRange): number {
   return Math.max(range.minScale, Math.min(range.maxScale, scale));
 }
