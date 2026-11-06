@@ -29,7 +29,7 @@ describe('CoordinateParserService', () => {
 
         const result = service.parse(testString);
 
-        expect(result).toEqual(undefined);
+        expect(result).toBeUndefined();
       });
     });
   });
@@ -49,7 +49,7 @@ describe('CoordinateParserService', () => {
 
       const result = service.parse(testString);
 
-      expect(result).toEqual(undefined);
+      expect(result).toBeUndefined();
     });
   });
 
@@ -68,7 +68,7 @@ describe('CoordinateParserService', () => {
 
       const result = service.parse(testString);
 
-      expect(result).toEqual(undefined);
+      expect(result).toBeUndefined();
     });
   });
 
@@ -78,7 +78,7 @@ describe('CoordinateParserService', () => {
 
       const result = service.parse(testString);
 
-      expect(result).toEqual(undefined);
+      expect(result).toBeUndefined();
     });
 
     it('returns undefined if one input is alphanumeric', () => {
@@ -86,7 +86,7 @@ describe('CoordinateParserService', () => {
 
       const result = service.parse(testString);
 
-      expect(result).toEqual(undefined);
+      expect(result).toBeUndefined();
     });
   });
 });

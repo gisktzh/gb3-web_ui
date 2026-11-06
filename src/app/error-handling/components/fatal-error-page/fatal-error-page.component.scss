@@ -30,6 +30,7 @@
       }
 
       .fatal-error-page__content__text__home-link {
+        /* NOSONAR -- Needs to be `!important` because specificity. */
         color: ktzh-variables.$zh-white !important;
         width: fit-content;
         align-self: center;

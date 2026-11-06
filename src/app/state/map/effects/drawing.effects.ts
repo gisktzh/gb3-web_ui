@@ -1,8 +1,7 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {filter, tap} from 'rxjs';
+import {filter, tap, map} from 'rxjs';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {map} from 'rxjs';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {DrawingActions} from '../actions/drawing.actions';
@@ -68,7 +67,7 @@ export class DrawingEffects {
       return this.actions$.pipe(
         ofType(DrawingActions.updateDrawingStyles),
         tap(({drawing, style, labelText, mapDrawingSymbol}) => {
-          this.toolService.updateDrawingStyles(drawing, style, labelText, mapDrawingSymbol);
+          void this.toolService.updateDrawingStyles(drawing, style, labelText, mapDrawingSymbol);
         }),
       );
     },

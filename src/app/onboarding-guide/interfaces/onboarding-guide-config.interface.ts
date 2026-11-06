@@ -1,12 +1,12 @@
-import {OnboardingGuideAnchor} from '../types/onboarding-guide-anchor.type';
+import {MapOnboardingGuideAnchor} from '../types/onboarding-guide-anchor.type';
 import {IStepOption} from 'ngx-ui-tour-md-menu';
 
 /**
- * Ovveride of the default IMdStepOption to force the usage of the OnboardingGuideAnchor types, which are also used in the TypedTourAnchor
+ * Ovveride of the default IMdStepOption to force the usage of the MapOnboardingGuideAnchor types, which are also used in the TypedTourAnchor
  * directive.
  */
 interface OnboardingStep extends IStepOption {
-  anchorId: OnboardingGuideAnchor;
+  anchorId: MapOnboardingGuideAnchor;
   image?: string;
 }
 

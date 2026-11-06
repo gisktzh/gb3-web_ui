@@ -22,6 +22,7 @@
   width: 100%;
   padding-top: 12px;
   margin-bottom: 12px;
+  /* NOSONAR -- Needs to be `!important` because specificity. */
   border-radius: ktzh-variables.$zh-border-radius !important;
 
   &--expanded {
@@ -37,6 +38,7 @@
     cursor: default;
 
     &:hover {
+      /* NOSONAR -- Needs to be `!important` because specificity. */
       background-color: transparent !important;
     }
 
@@ -78,6 +80,7 @@
       color: ktzh-variables.$zh-foreground-color;
       background-color: ktzh-variables.$zh-background-color;
       border-color: ktzh-variables.$zh-background-color;
+      /* NOSONAR -- Needs to be `!important` because specificity. */
       border-radius: 1px !important;
       border-width: 0 2px 2px 2px;
       border-style: solid;

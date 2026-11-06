@@ -36,7 +36,6 @@ test.describe('Map operation', () => {
       openUrlWithCoordinates,
       useHar,
       captureConsole,
-      checkA11y,
     }) => {
       await useHar();
       captureConsole();
@@ -45,7 +44,7 @@ test.describe('Map operation', () => {
       await page.locator('basemap-selector button').click();
       await expect(page.locator('button', {hasText: 'Historische Karte J. Wild (~1850)'})).toBeVisible();
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

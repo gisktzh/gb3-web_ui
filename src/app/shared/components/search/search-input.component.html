@@ -7,6 +7,7 @@
 >
   <div class="search__bar">
     <mat-icon class="search__bar__icon" svgIcon="ktzh_search" />
+    <label for="search-input" class="sr-only">Sucheingabe</label>
     <input
       #searchInput
       data-test-id="search-input"
@@ -16,8 +17,8 @@
       [class.search__bar__input--mobile]="screenMode() === 'mobile'"
       [placeholder]="placeholderText()"
       (focus)="focusEvent.emit()"
-      [autofocus]="focusOnInit()"
       [disabled]="disabled()"
+      id="search-input"
     />
     @if (showFilterButton() && (mode() === 'compact' || mode() === 'mobile')) {
       <button
@@ -40,7 +41,8 @@
         (click)="clearInput()"
         class="search__bar__close-button"
         [disabled]="(!alwaysEnableClearButton() && searchTerm().length === 0) || disabled()"
-        aria-label="Sucheingabe löschen"
+        [aria-label]="clearButtonLabel()"
+        data-test-id="clearBtn"
       >
         {{ clearButtonLabel() }}
         <mat-icon>close</mat-icon>
@@ -51,7 +53,8 @@
         (click)="clearInput()"
         class="search__bar__close-icon-button"
         [disabled]="(!alwaysEnableClearButton() && searchTerm().length === 0) || disabled()"
-        aria-label="Sucheingabe löschen"
+        [aria-label]="clearButtonLabel()"
+        data-test-id="clearBtn"
       >
         @if (screenMode() === 'mobile') {
           <mat-icon>cancel</mat-icon>

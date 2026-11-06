@@ -11,7 +11,6 @@ import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-at
   imports: [MapAttributeFilterComponent, MapOverlayComponent],
   templateUrl: './map-attribute-filter-overlay.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './map-attribute-filter-overlay.component.scss',
 })
 export class MapAttributeFilterOverlayComponent {
   private readonly store = inject(Store);

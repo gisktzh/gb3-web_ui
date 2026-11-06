@@ -15,6 +15,7 @@
   gap: 12px;
 
   .map-controls__map-element--hidden {
+    /* NOSONAR -- Needs to be `!important` because specificity. */
     display: none !important;
   }
 

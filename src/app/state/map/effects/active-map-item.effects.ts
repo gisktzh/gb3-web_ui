@@ -338,7 +338,7 @@ export class ActiveMapItemEffects {
               srs: this.configService.mapConfig.defaultMapConfig.srsId,
               coordinates: [x, y],
             };
-            this.mapService.zoomToPoint(targetCenter, targetScale);
+            void this.mapService.zoomToPoint(targetCenter, targetScale);
           },
         ),
       );
@@ -356,7 +356,7 @@ export class ActiveMapItemEffects {
           activeMapItem.addToMap(this.mapService, idx);
 
           if (activeMapItem instanceof DrawingActiveMapItem) {
-            this.mapService.getToolService().addExistingDrawingsToLayer(
+            void this.mapService.getToolService().addExistingDrawingsToLayer(
               drawingsToAdd.filter((drawing) => drawing.source === activeMapItem.settings.drawingLayer),
               activeMapItem.settings.drawingLayer,
             );

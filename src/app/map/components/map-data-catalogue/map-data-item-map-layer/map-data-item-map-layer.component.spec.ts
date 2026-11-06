@@ -116,7 +116,7 @@ describe('MapDataItemMapLayerComponent', () => {
       const checkbox = compiled.querySelector('mat-checkbox') as HTMLElement & {checked?: boolean};
 
       expect(checkbox).not.toBeNull();
-      expect(checkbox.checked).toBe(undefined);
+      expect(checkbox.checked).toBeUndefined();
     });
 
     it('should render the layer title with the filter string', () => {
@@ -137,44 +137,18 @@ describe('MapDataItemMapLayerComponent', () => {
   });
 
   describe('visibleAtCurrentScale', () => {
-    it('should return true when there is no scale', () => {
-      store.overrideSelector(selectScale, 0);
+    it.each([
+      {visible: true, scale: 0},
+      {visible: true, scale: 500},
+      {visible: false, scale: 100},
+      {visible: true, scale: 1000},
+      {visible: false, scale: 1001},
+    ])('should return %s when scale is %s', ({visible, scale}) => {
+      store.overrideSelector(selectScale, scale);
       store.refreshState();
       fixture.detectChanges();
 
-      expect(component.visibleAtCurrentScale()).toBe(true);
-    });
-
-    it('should return true when the scale is inside the layer scale range', () => {
-      store.overrideSelector(selectScale, 500);
-      store.refreshState();
-      fixture.detectChanges();
-
-      expect(component.visibleAtCurrentScale()).toBe(true);
-    });
-
-    it('should return false when the scale is below the minimum scale', () => {
-      store.overrideSelector(selectScale, 100);
-      store.refreshState();
-      fixture.detectChanges();
-
-      expect(component.visibleAtCurrentScale()).toBe(false);
-    });
-
-    it('should return true when the scale equals the maximum scale', () => {
-      store.overrideSelector(selectScale, 1000);
-      store.refreshState();
-      fixture.detectChanges();
-
-      expect(component.visibleAtCurrentScale()).toBe(true);
-    });
-
-    it('should return false when the scale is above the maximum scale', () => {
-      store.overrideSelector(selectScale, 1001);
-      store.refreshState();
-      fixture.detectChanges();
-
-      expect(component.visibleAtCurrentScale()).toBe(false);
+      expect(component.visibleAtCurrentScale()).toBe(visible);
     });
   });
 

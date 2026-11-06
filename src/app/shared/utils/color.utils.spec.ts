@@ -4,8 +4,7 @@ import {InvalidHexFormat, InvalidRGBFormat} from '../errors/color-format-convers
 
 describe('ColorUtils', () => {
   describe('convertHexToSymbolizationColor', () => {
-    it('converts a Hex value to RGBA correctly', () => {
-      const hexColor = '#006699';
+    it.each(['#006699', '006699', '#6699'])('converts RGBA value %s correctly', (hexColor) => {
       const alpha = 0.6;
 
       const actual = ColorUtils.convertHexToSymbolizationColor(hexColor, alpha);
@@ -17,48 +16,16 @@ describe('ColorUtils', () => {
       };
       expect(actual).toEqual(expected);
     });
-    it('converts a Hex value to RGBA correctly when leading # is missing', () => {
-      const hexColor = '006699';
-      const alpha = 0.6;
 
-      const actual = ColorUtils.convertHexToSymbolizationColor(hexColor, alpha);
-      const expected: SymbolizationColor = {
-        r: 0,
-        g: 102,
-        b: 153,
-        a: alpha,
-      };
-      expect(actual).toEqual(expected);
-    });
-    it('converts a Hex value to RGBA correctly when format is short', () => {
-      const hexColor = '#6699';
-      const alpha = 0.6;
-
-      const actual = ColorUtils.convertHexToSymbolizationColor(hexColor, alpha);
-      const expected: SymbolizationColor = {
-        r: 0,
-        g: 102,
-        b: 153,
-        a: alpha,
-      };
-      expect(actual).toEqual(expected);
-    });
-    it('throws an error for invalid alpha value', () => {
-      const hexColor = '#006699';
-      const alpha = 1.6;
-
+    it.each([
+      {hexColor: '#006699', alpha: 1.6},
+      {hexColor: '#00669999', alpha: undefined},
+      {hexColor: '#QQ6699', alpha: undefined},
+    ])('throws an error for hexColor %s and alpha value %s', ({hexColor, alpha}) => {
       expect(() => ColorUtils.convertHexToSymbolizationColor(hexColor, alpha)).toThrow(new InvalidHexFormat());
     });
-    it('throws an error when input is too long', () => {
-      const hexColor = '#00669999';
-
-      expect(() => ColorUtils.convertHexToSymbolizationColor(hexColor)).toThrow(new InvalidHexFormat());
-    });
-    it('throws an error for invalid Hex values', () => {
-      const hexColor = '#QQ6699';
-      expect(() => ColorUtils.convertHexToSymbolizationColor(hexColor)).toThrow(new InvalidHexFormat());
-    });
   });
+
   describe('convertSymbolizationColorToHex', () => {
     it('converts a RGBA value to HEX correctly', () => {
       const rgba: SymbolizationColor = {r: 0, g: 102, b: 153, a: 0.6};

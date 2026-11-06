@@ -19,7 +19,6 @@ import {MatIcon} from '@angular/material/icon';
 @Component({
   selector: 'product-detail',
   templateUrl: './product-detail.component.html',
-  styleUrls: ['./product-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     LoadingAndProcessBarComponent,

@@ -58,7 +58,7 @@ describe('OverlayPrint Reducer', () => {
 
       const result = reducer(initialState, action);
 
-      expect(result.legendPrintState).toEqual(undefined);
+      expect(result.legendPrintState).toBeUndefined();
       expect(result.featureInfoPrintState).toEqual(initialState.featureInfoPrintState);
     });
 
@@ -68,7 +68,7 @@ describe('OverlayPrint Reducer', () => {
       const result = reducer(initialState, action);
 
       expect(result.legendPrintState).toEqual(initialState.legendPrintState);
-      expect(result.featureInfoPrintState).toEqual(undefined);
+      expect(result.featureInfoPrintState).toBeUndefined();
     });
   });
 });

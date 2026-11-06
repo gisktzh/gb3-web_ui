@@ -214,7 +214,7 @@ export class EsriToolService implements ToolService {
 
         // Gently poke the map view into rerendering itself, thus also reliably render the new text graphic.
         const mapView = this.esriMapViewService.getMapView();
-        mapView.goTo(mapView.extent);
+        void mapView.goTo(mapView.extent);
 
         this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
         break;
@@ -249,7 +249,7 @@ export class EsriToolService implements ToolService {
 
         // Gently poke the map view into rerendering itself, thus also reliably render the new symbol graphic.
         const mapView = this.esriMapViewService.getMapView();
-        mapView.goTo(mapView.extent);
+        void mapView.goTo(mapView.extent);
 
         this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
         break;
@@ -371,7 +371,7 @@ export class EsriToolService implements ToolService {
        * listener to this layer in order to then start the drawing functionality when the layer is effectively added. Starting the drawing
        * immediately after dispatching the layer addition will yield undefined errors.
        */
-      reactiveUtils
+      void reactiveUtils
         .once(() => this.esriMapViewService.findEsriLayer(fullLayerIdentifier))
         .then((layer) => {
           this.initializeTool(layer! as GraphicsLayer, strategySetter);

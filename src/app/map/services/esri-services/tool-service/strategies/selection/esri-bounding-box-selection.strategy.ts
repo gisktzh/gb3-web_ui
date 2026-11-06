@@ -2,10 +2,9 @@ import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer
 import {DataDownloadSelection, GeometryDataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {AbstractEsriSelectionStrategy} from '../abstract-esri-selection.strategy';
-import {Observable} from 'rxjs';
+import {Observable, map} from 'rxjs';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {map} from 'rxjs';
 import {SupportedGeometry} from '../../../../../../shared/types/SupportedGeometry.type';
 import {ConfigService} from '../../../../../../shared/services/config.service';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';

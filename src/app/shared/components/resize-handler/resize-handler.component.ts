@@ -1,5 +1,5 @@
 import {Component, input, output, signal, ChangeDetectionStrategy} from '@angular/core';
-import {ResizeEvent, ResizableModule} from 'angular-resizable-element';
+import {ResizeEvent, ResizableDirective, ResizeHandleDirective} from 'angular-resizable-element';
 import {ResizeHandlerLocation} from '../../types/resize-handler-location.type';
 import {StyleExpression} from '../../types/style-expression.type';
 
@@ -19,7 +19,7 @@ const MAX_DIMENSION_PERCENTAGE = 0.85;
   templateUrl: './resize-handler.component.html',
   styleUrls: ['./resize-handler.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [ResizableModule],
+  imports: [ResizableDirective, ResizeHandleDirective],
 })
 export class ResizeHandlerComponent {
   public readonly minWidth = input(MIN_DIMENSIONS_WIDTH__PX);

@@ -20,10 +20,10 @@ export const selectLegendItemsForDisplay = createSelector(
       }
 
       // Also abort if the legend isn't part of the active map items anymore
-      const activeMapItem = activeMapItems
+      const hasActiveMapItem = activeMapItems
         .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
-        .find((item) => item.settings.mapId === legendItem.topic);
-      if (!activeMapItem) {
+        .some((item) => item.settings.mapId === legendItem.topic);
+      if (!hasActiveMapItem) {
         return;
       }
 

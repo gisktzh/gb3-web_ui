@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
-import {Observable} from 'rxjs';
+import {Observable, map} from 'rxjs';
 import {BboxGeoshop} from '../../../models/gb3-api-generated.interfaces';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
-import {map} from 'rxjs';
 import {HasBoundingBox} from '../../../interfaces/has-bounding-box.interface';
 
 type GeoshopBbox = 'ZH' | 'CH';

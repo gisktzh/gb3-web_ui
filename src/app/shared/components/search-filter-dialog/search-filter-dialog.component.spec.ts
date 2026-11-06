@@ -86,10 +86,10 @@ describe('SearchFilterDialogComponent', () => {
     const inputs = compiled.querySelectorAll('input');
     const groups = compiled.querySelectorAll('accordion-item');
 
-    expect(inputs.length).toBe(5);
-    expect(Array.from(inputs).filter((i) => i.checked).length).toBe(1);
+    expect(inputs).toHaveLength(5);
+    expect(Array.from(inputs).filter((i) => i.checked)).toHaveLength(1);
 
-    expect(groups.length).toBe(2);
+    expect(groups).toHaveLength(2);
     expect(groups[0].textContent).toContain(defaultFilters[0].label);
     expect(groups[1].textContent).toContain(defaultFilters[1].label);
   });

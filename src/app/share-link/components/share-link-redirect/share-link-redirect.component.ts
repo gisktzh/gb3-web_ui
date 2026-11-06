@@ -28,6 +28,10 @@ export class ShareLinkRedirectComponent {
     }
 
     this.sessionStorageService.set(RouteParamConstants.SHARE_LINK_ID_SESSION_STORAGE_KEY, id);
+    this.navigateToMap();
+  }
+
+  private navigateToMap() {
     void this.router.navigate([MainPage.Maps], {replaceUrl: true});
   }
 }

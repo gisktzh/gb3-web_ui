@@ -4,22 +4,10 @@ import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
 import path from 'node:path';
 import type {Entry} from 'har-format';
-import {expect, type Locator, type Page, type TestInfo} from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import {type Locator, type Page} from '@playwright/test';
 import {canonicalizeUrl} from './utils/canonicalize.utils';
-// WCAG 2.2 AA is a superset of the 2.0/2.1 A+AA success criteria, so all of these tags need to be
-// requested to get the full rule set axe-core ships for that conformance target.
-const WCAG_22_AA_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
-
-export type CheckA11yOptions = {
-  /** CSS selector(s) to scope the scan to. Useful for widgets rendered outside the main page flow, e.g. dialogs/overlays. */
-  include?: string[];
-  /**
-   * CSS selector(s) to exclude from the scan, e.g. known third-party widgets (ArcGIS canvas/WebGL controls) that
-   * can't be remediated by us. Use sparingly and document why in the call site.
-   */
-  exclude?: string[];
-};
+import {expect} from './matchers/a11y.matcher';
+import {type Request} from 'playwright';
 
 // URL pattern. If pattern matches,
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
@@ -33,7 +21,6 @@ type Gb3Fixtures = {
   useHar: (postFix?: string) => Promise<void>;
   /** @param expectedErrors Console messages that a test provokes on purpose and that should therefore not be reported. */
   captureConsole: (expectedErrors?: (string | RegExp)[]) => void;
-  checkA11y: (options?: CheckA11yOptions) => Promise<void>;
   filterForLayer: (searchTerm: string) => Promise<void>;
   clickMapInTheList: (nameOfTheMap: string, expectedActiveMapName?: string) => Promise<void>;
   clickByDataTestId: (testId: string) => Promise<void>;
@@ -100,21 +87,6 @@ function postDataEquals(left: string, right: string): boolean {
   }
 }
 
-/**
- * Renders a compact, actionable summary of axe-core violations so that failures are understandable directly from
- * the CI log/assertion message, without needing to dig into the attached JSON report.
- */
-function formatViolations(violations: Awaited<ReturnType<AxeBuilder['analyze']>>['violations']): string {
-  return violations
-    .map((violation) => {
-      const nodes = violation.nodes
-        .map((node) => `      - ${node.target.join(' ')}\n        ${node.failureSummary?.replace(/\n/g, '\n        ')}`)
-        .join('\n');
-      return `  [${violation.impact ?? 'unknown'}] ${violation.id}: ${violation.help}\n    ${violation.helpUrl}\n${nodes}`;
-    })
-    .join('\n\n');
-}
-
 async function selectHarEntry(request: Request, candidates: Entry[]): Promise<Entry | undefined> {
   const first = candidates[0];
   if (!first || candidates.length === 1) return first;
@@ -174,7 +146,7 @@ export const test = base.extend<Gb3Fixtures>({
         updateMode: 'minimal',
         updateContent: 'embed',
         matcher: {
-          async findEntry(har, request, matcher) {
+          async findEntry(har, request, matcher): Promise<Entry> {
             // Prefer completed responses; status -1 entries cannot be fulfilled as HTTP responses.
             const replayableHar = {
               ...har,
@@ -205,6 +177,8 @@ export const test = base.extend<Gb3Fixtures>({
             // Some catalogue icons were only recorded as cancelled. Replay that cancellation instead of reporting a missing entry.
             const recordedEntry = await defaultFindEntry(har, redactedRequest, matcher);
             if (recordedEntry && recordedEntry.response.status <= 0) cancelledRequests.add(request);
+
+            // @ts-expect-error -- The interface of advacned HAR is wrong here.
             return null;
           },
           matchFunction: customMatcher({
@@ -256,36 +230,6 @@ export const test = base.extend<Gb3Fixtures>({
           console.error(`[browser requestfailed] ${request.method()} ${request.url()}: ${errorText}`);
         }
       });
-    });
-  },
-
-  checkA11y: async ({page}, use, testInfo: TestInfo) => {
-    await use(async (options?: CheckA11yOptions) => {
-      let builder = new AxeBuilder({page}).withTags(WCAG_22_AA_TAGS);
-
-      for (const selector of options?.include ?? []) {
-        builder = builder.include(selector);
-      }
-      for (const selector of options?.exclude ?? []) {
-        builder = builder.exclude(selector);
-      }
-
-      const results = await builder.analyze();
-
-      if (results.violations.length > 0) {
-        // Only attached when there's something to debug: lets us see "incomplete" (needs manual review) results
-        // and the full node list in the HTML report without re-running the scan, without paying the
-        // serialization/IO cost of a full axe report (which can be sizeable) on every passing run.
-        await testInfo.attach(`axe-results-${testInfo.titlePath.join('-')}`, {
-          body: JSON.stringify(results, null, 2),
-          contentType: 'application/json',
-        });
-      }
-
-      // Assert on the count rather than the raw `violations` array: comparing the full array makes Playwright's
-      // default toEqual() diff dump every axe node/object (hundreds of lines) into the console/error output on
-      // top of the compact, actionable summary below, which is the only part actually needed to fix a failure.
-      expect(results.violations.length, `Accessibility violations found:\n\n${formatViolations(results.violations)}`).toBe(0);
     });
   },
 
@@ -533,7 +477,6 @@ export const test = base.extend<Gb3Fixtures>({
     await use(async (x: string, y: string) => {
       await openUrlWithCoordinates(x, y);
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(200);
     });
   },
 
@@ -543,7 +486,6 @@ export const test = base.extend<Gb3Fixtures>({
       await page.waitForLoadState('networkidle');
 
       await search(address);
-      await page.waitForTimeout(5000); // Until the zoom is done
       const zoomInput = page.locator('input.coordinate-scale-inputs__input[aria-label="Massstab anpassen"]');
       await expect(zoomInput).toHaveValue('750', {timeout: 30_000});
 
@@ -565,14 +507,12 @@ export const test = base.extend<Gb3Fixtures>({
     await use(async (x: string, y: string, layerName: string) => {
       await openMapWithActiveLayer(x, y, layerName);
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(200);
 
       const printDialogButton = page.locator('[data-test-id="map-print"]');
       await expect(printDialogButton).toBeVisible();
 
       await printDialogButton.click();
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(500);
 
       await expect(page.locator('.print-dialog')).toBeVisible();
     });
@@ -582,14 +522,12 @@ export const test = base.extend<Gb3Fixtures>({
     await use(async (x: string, y: string, layerName: string) => {
       await openMapWithActiveLayer(x, y, layerName);
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(200);
 
       const dataDownloadDialogButton = page.locator('[data-test-id="map-data-download"]');
       await expect(dataDownloadDialogButton).toBeVisible();
 
       await dataDownloadDialogButton.click();
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(500);
 
       const dataDownloadSelectionTools = page.locator('data-download-selection-tools');
       await expect(dataDownloadSelectionTools).toBeVisible();
@@ -626,7 +564,6 @@ export const test = base.extend<Gb3Fixtures>({
       await expect(continueButton).toBeVisible();
       await continueButton.click();
 
-      await page.waitForTimeout(200);
       await expect(municipalityDownloadDialog).not.toBeVisible();
       await page.waitForLoadState('networkidle');
 
@@ -721,7 +658,9 @@ export const test = base.extend<Gb3Fixtures>({
  */
 export function describeA11y(fn: () => void): void {
   test.describe('accessibility', () => {
+    // eslint-disable-next-line prettier/prettier -- So the NOSONAR comment actually works.
     test.skip(
+      //NOSONAR -- SonarQube says we need to describe why this is skipped not skip. Since it's an actual functional thing, we ignore.
       ({browserName}) => browserName !== 'chromium',
       'Accessibility checks only need to run once; chromium is used as the reference renderer.',
     );
@@ -729,4 +668,4 @@ export function describeA11y(fn: () => void): void {
   });
 }
 
-export {expect} from '@playwright/test';
+export {expect};

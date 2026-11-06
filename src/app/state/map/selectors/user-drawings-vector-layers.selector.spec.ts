@@ -45,7 +45,7 @@ describe('selectUserDrawingsVectorLayers', () => {
 
     const actual = selectUserDrawingsVectorLayers.projector(drawingsMock, visibleLayersMock);
 
-    expect(actual.drawings.length).toEqual(1);
-    expect(actual.measurements.length).toEqual(0);
+    expect(actual.drawings).toHaveLength(1);
+    expect(actual.measurements).toHaveLength(0);
   });
 });

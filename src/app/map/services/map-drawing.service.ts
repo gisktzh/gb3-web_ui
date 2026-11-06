@@ -24,7 +24,7 @@ export class MapDrawingService {
   constructor() {
     effect(() => {
       if (this.isMapReady()) {
-        this.handleGpsLocation(this.currentGpsLocation());
+        void this.handleGpsLocation(this.currentGpsLocation());
       }
     });
   }
@@ -110,7 +110,7 @@ export class MapDrawingService {
     return geometry.coordinates.length > 0 ? [geometry] : [];
   }
 
-  private handleGpsLocation(location: PointWithSrs | undefined): Promise<never> | void {
+  private async handleGpsLocation(location: PointWithSrs | undefined): Promise<void> {
     this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.LocatePosition);
     if (location) {
       this.mapService.addGeometryToInternalDrawingLayer(location, InternalDrawingLayer.LocatePosition);

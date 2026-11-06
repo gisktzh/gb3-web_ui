@@ -14,7 +14,7 @@ export class Gb3ExportService extends Gb3ApiService {
   protected readonly endpoint = 'export';
 
   public exportDrawing(exportFormat: ExportFormat, drawings: Gb3VectorLayer) {
-    return this.post<Gb3VectorLayer, Blob>(this.getFullEndpointUrlForExportFormat(exportFormat), drawings, undefined, true).pipe(
+    return this.postBlob<Gb3VectorLayer, Blob>(this.getFullEndpointUrlForExportFormat(exportFormat), drawings).pipe(
       map((blob) => {
         this.fileDownloadService.downloadFileFromBlob(blob, `drawings.${exportFormat}`);
         return blob;

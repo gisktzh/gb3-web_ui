@@ -19,11 +19,11 @@ test.describe('FAQ', () => {
 
   describeA11y(() => {
     test('has no detectable accessibility violations on the overview and with a question expanded', async ({
+      page,
       useHar,
       captureConsole,
       openFaqPage,
       toggleFaqQuestion,
-      checkA11y,
     }) => {
       await useHar();
       captureConsole();
@@ -31,14 +31,14 @@ test.describe('FAQ', () => {
       await openFaqPage();
 
       // First distinct state: the collapsed FAQ overview.
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
 
       await toggleFaqQuestion(QUESTION);
 
       // Second distinct state: a single expanded question with its answer visible. Everything else on the page
       // (nav, footer, other questions) is unchanged and was already scanned above, so scope this scan to just the
       // now-expanded item.
-      await checkA11y({include: ['cdk-accordion-item[aria-expanded="true"]']});
+      await expect(page).toNotHaveAccessibilityViolations({include: ['cdk-accordion-item[aria-expanded="true"]']});
     });
   });
 });

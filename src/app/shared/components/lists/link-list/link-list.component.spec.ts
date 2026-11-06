@@ -30,7 +30,7 @@ describe('LinkListComponent', () => {
   });
 
   it('should render no link groups when linksGroups is empty', () => {
-    expect(compiled.querySelectorAll('.link-list').length).toBe(0);
+    expect(compiled.querySelectorAll('.link-list')).toHaveLength(0);
   });
 
   it('should render one link list per links group', () => {
@@ -59,7 +59,7 @@ describe('LinkListComponent', () => {
 
     const groups = compiled.querySelectorAll<HTMLDivElement>('.link-list');
 
-    expect(groups.length).toBe(2);
+    expect(groups).toHaveLength(2);
   });
 
   it('should render group labels', () => {
@@ -78,7 +78,7 @@ describe('LinkListComponent', () => {
 
     const headings = compiled.querySelectorAll<HTMLHeadingElement>('.ktzh-h3-medium');
 
-    expect(headings.length).toBe(2);
+    expect(headings).toHaveLength(2);
     expect(headings[0]?.textContent).toContain('External Links');
     expect(headings[1]?.textContent).toContain('Internal Links');
   });
@@ -114,7 +114,7 @@ describe('LinkListComponent', () => {
 
     fixture.detectChanges();
 
-    expect(compiled.querySelectorAll('.link-list').length).toBe(1);
+    expect(compiled.querySelectorAll('.link-list')).toHaveLength(1);
 
     linksGroups.set([
       {
@@ -133,6 +133,6 @@ describe('LinkListComponent', () => {
 
     fixture.detectChanges();
 
-    expect(compiled.querySelectorAll('.link-list').length).toBe(3);
+    expect(compiled.querySelectorAll('.link-list')).toHaveLength(3);
   });
 });

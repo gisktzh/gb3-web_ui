@@ -26,7 +26,7 @@ export class MapSearchEffects {
         filter(([, isMapViewReady]) => isMapViewReady),
         tap(([{searchResult}]) => {
           if (searchResult.geometry) {
-            this.mapService.zoomToExtent(searchResult.geometry);
+            void this.mapService.zoomToExtent(searchResult.geometry);
             this.mapDrawingService.drawSearchResultHighlight(searchResult.geometry);
           }
         }),

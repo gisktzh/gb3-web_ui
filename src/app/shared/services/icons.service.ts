@@ -12,7 +12,12 @@ export class IconsService {
 
   public initIcons() {
     iconsConfig.forEach((config) => {
-      this.matIconRegistry.addSvgIcon(config.id, this.domSanitizer.bypassSecurityTrustResourceUrl(config.path));
+      this.matIconRegistry.addSvgIcon(
+        config.id,
+        /* NOSONAR -- SonarQube says bypassSecurityTrustResourceUrl is sinsecure, but we're using configured/hardcoded paths only. */ this.domSanitizer.bypassSecurityTrustResourceUrl(
+          config.path,
+        ),
+      );
     });
   }
 }

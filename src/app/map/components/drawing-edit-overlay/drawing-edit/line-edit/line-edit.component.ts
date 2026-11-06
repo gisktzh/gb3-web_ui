@@ -13,7 +13,6 @@ const DEFAULT_DATA = {
 @Component({
   selector: 'line-edit',
   templateUrl: './line-edit.component.html',
-  styleUrl: './line-edit.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SliderEditComponent, ColorPickerEditComponent, FormField],
 })

@@ -34,6 +34,6 @@ export class HighlightSearchQueryPipe implements PipeTransform {
    * Copied from Stack-Overflow: https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
    */
   private escapeRegExp(regExp: string): string {
-    return regExp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+    return regExp.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`); // $& means the whole matched string
   }
 }

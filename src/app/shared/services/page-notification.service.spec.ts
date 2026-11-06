@@ -76,7 +76,7 @@ describe('PageNotificationService', () => {
     vi.useFakeTimers();
     const service = TestBed.runInInjectionContext(() => TestBed.inject(PageNotificationService));
 
-    expect(service.currentPageNotifications().length).toBe(0);
+    expect(service.currentPageNotifications()).toHaveLength(0);
 
     store.overrideSelector(selectMainPage, MainPage.Support);
     store.refreshState();

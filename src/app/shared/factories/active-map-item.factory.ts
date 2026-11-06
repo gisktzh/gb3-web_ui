@@ -29,9 +29,7 @@ export class ActiveMapItemFactory {
     attributeFilters?: FilterConfiguration[],
     isTemporary?: boolean,
   ): Gb2WmsActiveMapItem {
-    if (opacity === undefined) {
-      opacity = map.opacity;
-    }
+    opacity ??= map.opacity;
     const activeMapItem = new Gb2WmsActiveMapItem(map, layer, visible, opacity, timeExtent, attributeFilters, isTemporary);
     if (activeMapItem.isSingleLayer) {
       return produce(activeMapItem, (draft) => {

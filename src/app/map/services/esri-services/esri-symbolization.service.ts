@@ -12,9 +12,9 @@ import {DrawingStyleState} from '../../../state/map/states/drawing-style.state';
 import {Store} from '@ngrx/store';
 import {selectDrawingStyleState} from '../../../state/map/reducers/drawing-style.reducer';
 import {tap} from 'rxjs';
-import {MarkerSymbol2DUnion, SymbolUnion} from '@arcgis/core/unionTypes';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
+import {MarkerSymbolUnion, SymbolUnion} from '@arcgis/core/symbols/types';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,7 @@ export class EsriSymbolizationService {
   private readonly configService = inject(ConfigService);
   private readonly store = inject(Store);
 
-  private layerSymbolizations: LayerSymbolizations = this.configService.layerSymbolizations;
+  private readonly layerSymbolizations: LayerSymbolizations = this.configService.layerSymbolizations;
   private drawingStyleSettings?: DrawingStyleState;
 
   constructor() {
@@ -81,7 +81,7 @@ export class EsriSymbolizationService {
     });
   }
 
-  public createPointSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): MarkerSymbol2DUnion {
+  public createPointSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): MarkerSymbolUnion {
     const pointSymbology = this.layerSymbolizations[drawingLayer].point;
     switch (pointSymbology.type) {
       case 'simple':

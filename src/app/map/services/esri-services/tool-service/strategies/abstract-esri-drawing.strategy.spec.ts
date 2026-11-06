@@ -48,74 +48,31 @@ describe('AbstractEsriDrawingStrategy', () => {
   });
 
   describe('start', () => {
-    it('should call `create` on the sketchViewModel, attach an appropriate listener and not call `handleComplete` on create event with state `active`', () => {
-      const graphic = new Graphic();
+    it.each(['active', 'start', 'create'])(
+      'should call `create` on the sketchViewModel, attach an appropriate listener and not call `handleComplete` on create event with state `%s`',
+      (state: string) => {
+        const graphic = new Graphic();
 
-      const sketchViewModelSpy = vi.spyOn(SketchViewModel.prototype as any, 'create');
-      const handleCompleteSpy = vi.spyOn(AbstractEsriDrawingStrategy.prototype as any, 'handleComplete');
+        const sketchViewModelSpy = vi.spyOn(SketchViewModel.prototype as any, 'create');
+        const handleCompleteSpy = vi.spyOn(AbstractEsriDrawingStrategy.prototype as any, 'handleComplete');
 
-      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
-        expect(getTarget()).toEqual(strategy.svm);
-        expect(eventName).toEqual('create');
+        const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+          expect(getTarget()).toEqual(strategy.svm);
+          expect(eventName).toEqual('create');
 
-        callback({state: 'active', graphic});
+          callback({state, graphic});
 
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
-        expect(handleCompleteSpy).not.toHaveBeenCalled();
+          expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
+          expect(handleCompleteSpy).not.toHaveBeenCalled();
 
-        return mockResourceHandle;
-      });
+          return mockResourceHandle;
+        });
 
-      strategy.start();
+        strategy.start();
 
-      expect(reactiveSpy).toHaveBeenCalled();
-    });
-
-    it('should call `create` on the sketchViewModel, attach an appropriate listener and not call `handleComplete` on create event with state `start`', () => {
-      const graphic = new Graphic();
-
-      const sketchViewModelSpy = vi.spyOn(SketchViewModel.prototype as any, 'create');
-      const handleCompleteSpy = vi.spyOn(AbstractEsriDrawingStrategy.prototype as any, 'handleComplete');
-
-      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
-        expect(getTarget()).toEqual(strategy.svm);
-        expect(eventName).toEqual('create');
-
-        callback({state: 'start', graphic});
-
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
-        expect(handleCompleteSpy).not.toHaveBeenCalled();
-
-        return mockResourceHandle;
-      });
-
-      strategy.start();
-
-      expect(reactiveSpy).toHaveBeenCalled();
-    });
-
-    it('should call `create` on the sketchViewModel, attach an appropriate listener and not call `handleComplete` on create event with state `cancel`', () => {
-      const graphic = new Graphic();
-
-      const sketchViewModelSpy = vi.spyOn(SketchViewModel.prototype as any, 'create');
-      const handleCompleteSpy = vi.spyOn(AbstractEsriDrawingStrategy.prototype as any, 'handleComplete');
-
-      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
-        expect(getTarget()).toEqual(strategy.svm);
-        expect(eventName).toEqual('create');
-
-        callback({state: 'cancel', graphic});
-
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
-        expect(handleCompleteSpy).not.toHaveBeenCalled();
-
-        return mockResourceHandle;
-      });
-
-      strategy.start();
-
-      expect(reactiveSpy).toHaveBeenCalled();
-    });
+        expect(reactiveSpy).toHaveBeenCalled();
+      },
+    );
 
     it('should call `create` on the sketchViewModel, attach an appropriate listener and call `handleComplete` on create event with state `complete`', () => {
       const graphic = new Graphic();

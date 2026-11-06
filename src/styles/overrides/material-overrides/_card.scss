@@ -1,5 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .mat-mdc-card {
+  /* NOSONAR -- Needs to be `!important` because specificity. */
   border-radius: ktzh-variables.$zh-border-radius !important;
 }

@@ -44,7 +44,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.addActiveMapItem({activeMapItem: expectedActiveMapItem, position: expectedPosition});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(activeMapItemsMock.length + 1);
+      expect(state.items).toHaveLength(activeMapItemsMock.length + 1);
       state.items.forEach((item, index) => {
         if (index < expectedPosition) {
           expect(item).toEqual(activeMapItemsMock[index]);
@@ -63,7 +63,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.addActiveMapItem({activeMapItem: expectedActiveMapItem, position: expectedPosition});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items).toEqual(existingState.items);
     });
 
@@ -73,7 +73,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.addActiveMapItem({activeMapItem: expectedActiveMapItem, position: 0});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items[0].isTemporary).toBe(false);
     });
   });
@@ -85,7 +85,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.removeActiveMapItem({activeMapItem: expectedActiveMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length - 1);
+      expect(state.items).toHaveLength(existingState.items.length - 1);
       expect(state.items).not.toContain(expectedActiveMapItem);
     });
 
@@ -94,7 +94,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.removeActiveMapItem({activeMapItem: expectedActiveMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items).toEqual(existingState.items);
     });
   });
@@ -109,7 +109,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.removeAllTemporaryActiveMapItems();
       const state = reducer(extendedState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items).toEqual(existingState.items);
     });
   });
@@ -119,7 +119,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.removeAllActiveMapItems();
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(0);
+      expect(state.items).toHaveLength(0);
     });
   });
 
@@ -130,7 +130,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.moveToTop({activeMapItem: expectedActiveMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       state.items.forEach((item, index) => {
         if (index === 0) {
           expect(item).toEqual(expectedActiveMapItem);
@@ -145,7 +145,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.moveToTop({activeMapItem: expectedActiveMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items).toEqual(existingState.items);
     });
   });
@@ -158,7 +158,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.forceFullVisibility({activeMapItem: expectedActiveMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       state.items.forEach((item, index) => {
         if (index < expectedPosition) {
           expect(item.opacity).toBe(activeMapItemsMock[index].opacity);
@@ -179,7 +179,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.forceFullVisibility({activeMapItem: expectedActiveMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items).toEqual(existingState.items);
     });
   });
@@ -192,7 +192,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.setOpacity({opacity: expectedOpacity, activeMapItem: expectedActiveMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       state.items.forEach((item) => {
         if (item.id === expectedActiveMapItem.id) {
           expect(item.opacity).toBe(expectedOpacity);
@@ -208,7 +208,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.setOpacity({opacity: opacity, activeMapItem: activeMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items).toEqual(existingState.items);
     });
   });
@@ -221,7 +221,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.setVisibility({visible: expectedVisibility, activeMapItem: expectedActiveMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       const actualItem = state.items.find((item) => item.id === expectedActiveMapItem.id);
       expect(actualItem).toBeDefined();
       expect(actualItem!.visible).toBe(expectedVisibility);
@@ -233,7 +233,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.setVisibility({visible: visibility, activeMapItem: activeMapItem});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items).toEqual(existingState.items);
     });
   });
@@ -251,7 +251,7 @@ describe('ActiveMapItem Reducer', () => {
       });
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       const actualItem = state.items.find((item) => item.id === expectedActiveMapItem.id) as Gb2WmsActiveMapItem;
       const actualLayer = actualItem.settings.layers.find((layer) => layer.id === expectedLayerId);
       expect(actualLayer).toBeDefined();
@@ -268,7 +268,7 @@ describe('ActiveMapItem Reducer', () => {
       });
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items).toEqual(existingState.items);
     });
   });
@@ -281,7 +281,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.setLoadingState({loadingState: expectedLoadingState, id: expectedActiveMapItem.id});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       const actualItem = state.items.find((item) => item.id === expectedActiveMapItem.id);
       expect(actualItem).toBeDefined();
       expect(actualItem!.loadingState).toBe(expectedLoadingState);
@@ -296,7 +296,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.setViewProcessState({viewProcessState: expectedViewProcessState, id: expectedActiveMapItem.id});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       const actualItem = state.items.find((item) => item.id === expectedActiveMapItem.id);
       expect(actualItem).toBeDefined();
       expect(actualItem!.viewProcessState).toBe(expectedViewProcessState);
@@ -310,7 +310,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.reorderActiveMapItem({previousPosition, currentPosition});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items).toEqual(expect.arrayContaining(existingState.items));
       expect(state.items[currentPosition]).toEqual(existingState.items[previousPosition]);
     });
@@ -325,12 +325,12 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.reorderSublayer({activeMapItem, previousPosition, currentPosition});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       expect(state.items.map((item) => item.id)).toEqual(existingState.items.map((item) => item.id));
       const actualLayers = state.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).find((item) => activeMapItem.id === item.id)
         ?.settings.layers;
       expect(actualLayers).toBeDefined();
-      expect(actualLayers!.length).toBe(activeMapItem.settings.layers.length);
+      expect(actualLayers!).toHaveLength(activeMapItem.settings.layers.length);
       expect(actualLayers).toEqual(expect.arrayContaining(activeMapItem.settings.layers));
       expect(actualLayers![currentPosition]).toEqual(activeMapItem.settings.layers[previousPosition]);
     });
@@ -375,7 +375,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.setAttributeFilterValueState(filterConfig);
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toHaveLength(existingState.items.length);
       const actualMapItem = state.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).find((item) => activeMapItem.id === item.id);
       expect(actualMapItem).toBeDefined();
       expect(actualMapItem!.settings.filterConfigurations).not.toEqual(filterConfigurationsMock);
@@ -401,7 +401,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.addFavourite({activeMapItems: favouriteActiveMapItems, baseConfig, drawingsToAdd: []});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length + 1);
+      expect(state.items).toHaveLength(existingState.items.length + 1);
       expect(state.items[0]).toEqual(favouriteActiveMapItems[0]);
       expect(state.items[1]).toEqual(favouriteActiveMapItems[1]);
     });
@@ -417,7 +417,7 @@ describe('ActiveMapItem Reducer', () => {
       const action = ActiveMapItemActions.addInitialMapItems({initialMapItems});
       const state = reducer(existingState, action);
 
-      expect(state.items.length).toBe(existingState.items.length + 2);
+      expect(state.items).toHaveLength(existingState.items.length + 2);
       expect(state.items[0]).toEqual(initialMapItems[0]);
       expect(state.items[1]).toEqual(initialMapItems[1]);
       expect(state.items[2]).toEqual(initialMapItems[2]);

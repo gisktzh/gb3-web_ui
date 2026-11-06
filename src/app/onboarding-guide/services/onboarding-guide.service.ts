@@ -82,7 +82,7 @@ export class OnboardingGuideService {
         return [];
       }
       return parsedArray;
-    } catch (e) {
+    } catch {
       return [];
     }
   }

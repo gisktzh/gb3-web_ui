@@ -40,7 +40,7 @@ export class MapImportServiceAndUrlComponent {
             }
           : null;
       });
-      disabled(fieldPath.url, ({valueOf}) => !valueOf(fieldPath.serviceType));
+      disabled(fieldPath.url, {when: ({valueOf}) => !valueOf(fieldPath.serviceType)});
     },
     {
       submission: {

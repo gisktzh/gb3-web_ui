@@ -298,7 +298,7 @@ export class Gb3TopicsService extends Gb3ApiService {
    */
   private isHiddenLayer(layer: string, topicMap: Map): boolean {
     let isHidden = false;
-    if (topicMap.timeSliderConfiguration && topicMap.timeSliderConfiguration.sourceType === 'layer') {
+    if (topicMap.timeSliderConfiguration?.sourceType === 'layer') {
       const timeSliderLayerSource = topicMap.timeSliderConfiguration.source as TimeSliderLayerSource;
       isHidden = timeSliderLayerSource.layers.some((l) => l.layerName === layer);
     }
@@ -310,7 +310,9 @@ export class Gb3TopicsService extends Gb3ApiService {
     return url.toString();
   }
 
+  // eslint-disable-next-line prettier/prettier -- So the NOSONAR comment works.
   private createFeatureInfoUrl(
+    // NOSONAR -- We need to have 8 params here, refactoring it would change this tremendously.
     topicName: string,
     x: number,
     y: number,

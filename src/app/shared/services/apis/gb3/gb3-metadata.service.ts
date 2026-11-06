@@ -17,7 +17,7 @@ import {
   Product,
   Service,
 } from '../../../models/gb3-api-generated.interfaces';
-import {forkJoin, Observable} from 'rxjs';
+import {forkJoin, Observable, map} from 'rxjs';
 import {
   DatasetMetadata,
   DepartmentalContact,
@@ -26,7 +26,6 @@ import {
   ProductMetadata,
   ServiceMetadata,
 } from '../../../interfaces/gb3-metadata.interface';
-import {map} from 'rxjs';
 import {
   DatasetOverviewMetadataItem,
   MapOverviewMetadataItem,

@@ -94,7 +94,7 @@ describe('search Reducer', () => {
       const action = SearchActions.resetLoadingState();
       const state = reducer(initialState, action);
 
-      expect(state.searchApiLoadingState).toBe(undefined);
+      expect(state.searchApiLoadingState).toBeUndefined();
     });
   });
 

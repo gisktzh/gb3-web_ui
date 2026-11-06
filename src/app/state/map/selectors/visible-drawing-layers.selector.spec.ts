@@ -12,7 +12,7 @@ describe('selectVisibleDrawingLayers', () => {
 
     const actual = selectVisibleDrawingLayers.projector(layersMock);
 
-    expect(actual.length).toEqual(1);
+    expect(actual).toHaveLength(1);
     expect(actual[0]).toEqual(UserDrawingLayer.Measurements);
   });
 });

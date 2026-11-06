@@ -37,7 +37,7 @@ export const selectFilteredSearchApiResultMatches = createSelector(
               //        is actually its label)
               const specialSearchIndex = availableSpecialSearchIndexes.find(
                 (searchIndex) =>
-                  resultMatch.indexName && searchIndex.label && searchIndex.label.toLowerCase() === resultMatch.indexName.toLowerCase(),
+                  resultMatch.indexName?.toLowerCase() && searchIndex.label.toLowerCase() === resultMatch.indexName.toLowerCase(),
               );
               // secondly: now find the corresponding filter and use its 'isActive' value
               return (

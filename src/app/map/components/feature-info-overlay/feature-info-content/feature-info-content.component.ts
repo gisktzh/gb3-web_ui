@@ -156,7 +156,7 @@ export class FeatureInfoContentComponent implements OnDestroy {
     if (zoomToFeature) {
       const scaleRange = this.mapService.getFeatureInfoScaleRange(source);
       if (scaleRange) {
-        this.mapService.zoomToExtent(feature, undefined, undefined, scaleRange);
+        void this.mapService.zoomToExtent(feature, undefined, undefined, scaleRange);
       }
     }
   }

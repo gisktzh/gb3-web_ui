@@ -102,33 +102,15 @@ describe('selectAreAllLayersSelected', () => {
 });
 
 describe('selectAreSomeButNotAllLayersSelected', () => {
-  it('returns `true` if at least one layer is selected but not all', () => {
-    const areAllLayersSelected = false;
-    const isAnyLayerSelected = true;
-    const actual = selectAreSomeButNotAllLayersSelected.projector(areAllLayersSelected, isAnyLayerSelected);
-
-    const expected = true;
-
-    expect(actual).toBe(expected);
-  });
-
-  it('returns `false` if all layers are selected', () => {
-    const areAllLayersSelected = true;
-    const isAnyLayerSelected = true;
-    const actual = selectAreSomeButNotAllLayersSelected.projector(areAllLayersSelected, isAnyLayerSelected);
-
-    const expected = false;
-
-    expect(actual).toBe(expected);
-  });
-
-  it('returns `false` if no layer is selected', () => {
-    const areAllLayersSelected = false;
-    const isAnyLayerSelected = false;
-    const actual = selectAreSomeButNotAllLayersSelected.projector(areAllLayersSelected, isAnyLayerSelected);
-
-    const expected = false;
-
-    expect(actual).toBe(expected);
-  });
+  it.each([
+    {areAllLayersSelected: false, isAnyLayerSelected: true, expected: true},
+    {areAllLayersSelected: true, isAnyLayerSelected: true, expected: false},
+    {areAllLayersSelected: false, isAnyLayerSelected: false, expected: false},
+  ])(
+    'returns $expected if all layers selected is $areAllLayersSelected and is any layer selected is $isAnyLayerSelected',
+    ({areAllLayersSelected, isAnyLayerSelected, expected}) => {
+      const actual = selectAreSomeButNotAllLayersSelected.projector(areAllLayersSelected, isAnyLayerSelected);
+      expect(actual).toBe(expected);
+    },
+  );
 });

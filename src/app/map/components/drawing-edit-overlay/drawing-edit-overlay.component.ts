@@ -8,7 +8,6 @@ import {DrawingEditComponent} from './drawing-edit/drawing-edit.component';
 @Component({
   selector: 'drawing-edit-overlay',
   templateUrl: './drawing-edit-overlay.component.html',
-  styleUrl: './drawing-edit-overlay.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapOverlayComponent, DrawingEditComponent],
 })

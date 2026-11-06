@@ -1,7 +1,6 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {switchMap} from 'rxjs';
-import {catchError, map} from 'rxjs';
+import {switchMap, catchError, map} from 'rxjs';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
 import {PageNotificationActions} from '../actions/page-notification.actions';
 import {PageNotification} from '../../../shared/interfaces/page-notification.interface';

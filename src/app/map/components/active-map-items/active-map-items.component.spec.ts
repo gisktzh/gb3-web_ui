@@ -1,7 +1,6 @@
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {Component, Directive, input} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {OnboardingGuideService} from '../../../onboarding-guide/services/onboarding-guide.service';
 import {TypedTourAnchorDirective} from '../../../shared/directives/typed-tour-anchor.directive';
@@ -44,7 +43,7 @@ describe('ActiveMapItemsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ActiveMapItemsComponent],
-      providers: [provideMockStore(), provideNoopAnimations()],
+      providers: [provideMockStore()],
     })
       .overrideComponent(ActiveMapItemsComponent, {
         remove: {

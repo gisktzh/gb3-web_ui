@@ -25,10 +25,10 @@ export const selectFeatureInfosForDisplay = createSelector(
       }
 
       // Also abort if the featureInfo isn't part of the active map items anymore
-      const activeMapItem = activeMapItems
+      const hasActiveMapItem = activeMapItems
         .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
-        .find((item) => item.settings.mapId === featureInfo.topic);
-      if (!activeMapItem) {
+        .some((item) => item.settings.mapId === featureInfo.topic);
+      if (!hasActiveMapItem) {
         return;
       }
 
