@@ -977,6 +977,16 @@ describe('EsriToolService', () => {
       expect(storeSpy).toHaveBeenCalledTimes(1);
       expect(storeSpy).toHaveBeenCalledWith(expectedAction);
     });
+    it('should soft-update the statistic mode to polygon if a statistics graphic is being edited', () => {
+      (graphicMock.layer!.id as string) = 'USER_DRAWING__statistics_area';
+      const storeSpy = vi.spyOn(store, 'dispatch');
+
+      const expectedAction = StatisticsActions.softUpdateMode({mode: 'polygon'});
+      service.editDrawing(graphicMock);
+
+      expect(storeSpy).toHaveBeenCalledTimes(1);
+      expect(storeSpy).toHaveBeenCalledWith(expectedAction);
+    });
     it('should throw an error when the graphic has a nullish layer', () => {
       // We exeplicitly do not set anything here.
       const graphic = new Graphic();

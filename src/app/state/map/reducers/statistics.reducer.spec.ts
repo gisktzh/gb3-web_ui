@@ -165,4 +165,12 @@ describe('statistics reducer', () => {
       expect(reducer(hovered, action).highlightedLayer).toBeUndefined();
     });
   });
+
+  describe('softUpdateMode', () => {
+    it('should update the mode', () => {
+      const result = reducer({...initialState, mode: 'umkreis'}, StatisticsActions.softUpdateMode({mode: 'polygon'}));
+
+      expect(result.mode).toBe('polygon');
+    });
+  });
 });

@@ -9,6 +9,7 @@ import {selectReady} from '../../state/map/reducers/map-config.reducer';
 import {MAP_SERVICE} from '../../app.tokens';
 
 export const ELEVATION_PROFILE_LOCATION_IDENTIFIER = 'elevation_profile_location';
+export const STATISTICS_SELECTION_IDENTIFIER = 'statistics';
 
 @Injectable({
   providedIn: 'root',
@@ -73,7 +74,7 @@ export class MapDrawingService {
 
   public drawStatisticsArea(geometry: GeometryWithSrs) {
     this.clearStatisticsArea();
-    this.mapService.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.StatisticsArea);
+    this.mapService.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.StatisticsArea, STATISTICS_SELECTION_IDENTIFIER);
   }
 
   public clearStatisticsArea() {

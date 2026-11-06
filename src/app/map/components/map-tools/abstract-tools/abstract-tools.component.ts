@@ -16,7 +16,7 @@ export class AbstractToolsComponent {
     if (this.activeTool() === tool) {
       this.store.dispatch(ToolActions.deactivateTool());
     } else {
-      this.store.dispatch(ToolActions.activateTool({tool}));
+      this.store.dispatch(ToolActions.switchTool({tool}));
     }
   }
 }
