@@ -40,11 +40,10 @@ build:uat:
   variables:
     TARGET_ENV: uat
 
-# TODO: Comment in once config is set up
-# build:production:
-#   extends: .build
-#   variables:
-#     TARGET_ENV: production
+build:production:
+  extends: .build
+  variables:
+    TARGET_ENV: production
 
 .deploy:
   image: ubuntu:26.04
