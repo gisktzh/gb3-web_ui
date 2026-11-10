@@ -76,10 +76,9 @@ deploy:uat:
   needs:
     - build:uat
 
-# TODO: Comment in once config is set up
-# deploy:production:
-#   extends: .deploy
-#   variables:
-#     TARGET_ENV: production
-#   needs:
-#     - build:production
+deploy:production:
+  extends: .deploy
+  variables:
+    TARGET_ENV: production
+  needs:
+    - build:production
