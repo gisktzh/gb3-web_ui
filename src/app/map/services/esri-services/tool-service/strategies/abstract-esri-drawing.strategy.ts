@@ -20,44 +20,48 @@ export abstract class AbstractEsriDrawingStrategy<
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Drawings;
 
   public start(): void {
-    this.sketchViewModel.create(this.tool, {mode: 'click'});
-
-    reactiveUtils.on(
-      () => this.sketchViewModel,
-      'create',
-      ({state, graphic}: CreateEvent) => {
-        switch (state) {
-          case 'active':
-          case 'start':
-          case 'cancel':
-            break; // currently, these events do not trigger any action
-          case 'complete':
-            if (graphic) {
-              this.handleComplete(graphic, 'add');
-            }
-            break;
-        }
-      },
+    this.sketchViewModel.addHandles(
+      reactiveUtils.on(
+        () => this.sketchViewModel,
+        'create',
+        ({state, graphic}: CreateEvent) => {
+          if (this.disposed) return;
+          switch (state) {
+            case 'active':
+            case 'start':
+            case 'cancel':
+              break; // currently, these events do not trigger any action
+            case 'complete':
+              if (graphic) {
+                this.handleComplete(graphic, 'add');
+              }
+              break;
+          }
+        },
+      ),
     );
+    this.sketchViewModel.create(this.tool, {mode: 'click'});
   }
 
   public edit(graphic: Graphic) {
-    this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
-
-    reactiveUtils.on(
-      () => this.sketchViewModel,
-      'update',
-      ({state}: UpdateEvent) => {
-        switch (state) {
-          case 'active':
-          case 'start':
-            break;
-          case 'complete':
-            this.completeEditing(graphic);
-            break;
-        }
-      },
+    this.sketchViewModel.addHandles(
+      reactiveUtils.on(
+        () => this.sketchViewModel,
+        'update',
+        ({state}: UpdateEvent) => {
+          if (this.disposed) return;
+          switch (state) {
+            case 'active':
+            case 'start':
+              break;
+            case 'complete':
+              this.completeEditing(graphic);
+              break;
+          }
+        },
+      ),
     );
+    this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
   }
 
   /**

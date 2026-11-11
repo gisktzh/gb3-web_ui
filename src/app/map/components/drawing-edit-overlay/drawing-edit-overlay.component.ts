@@ -1,7 +1,7 @@
 import {Component, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
 import {selectIsDrawingEditOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Store} from '@ngrx/store';
-import {DrawingActions} from '../../../state/map/actions/drawing.actions';
+import {ToolActions} from '../../../state/map/actions/tool.actions';
 import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
 import {DrawingEditComponent} from './drawing-edit/drawing-edit.component';
 
@@ -20,6 +20,6 @@ export class DrawingEditOverlayComponent {
   public readonly resizeEvent = output<number>();
 
   public close() {
-    this.store.dispatch(DrawingActions.cancelEditMode());
+    this.store.dispatch(ToolActions.cancelInteraction());
   }
 }

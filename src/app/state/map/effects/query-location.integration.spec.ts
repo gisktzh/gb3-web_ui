@@ -79,7 +79,14 @@ describe('shared feature/statistics query location', () => {
     drawFeatureInfoHighlight: vi.fn(),
     clearFeatureInfoHighlight: vi.fn(),
   };
-  const tools = {initializeStatisticsSelection: vi.fn(), initializeMeasurement: vi.fn(), cancelTool: vi.fn()};
+  const tools = {
+    startCreation: vi.fn(),
+    startEditing: vi.fn(),
+    finishInteraction: vi.fn(),
+    initializeStatisticsSelection: vi.fn(),
+    initializeMeasurement: vi.fn(),
+    cancelTool: vi.fn(),
+  };
   const point: PointWithSrs = {type: 'Point', coordinates: [2680000, 1254000], srs: 2056};
   const polygon: PolygonWithSrs = {
     type: 'Polygon',
@@ -190,7 +197,6 @@ describe('shared feature/statistics query location', () => {
           useValue: {
             getToolService: () => tools,
             observeFeatureInfoLayerVisibility: vi.fn(() => of(true)),
-            cancelEditMode: vi.fn(),
           },
         },
         {provide: MatDialog, useValue: {open: vi.fn()}},
@@ -234,7 +240,7 @@ describe('shared feature/statistics query location', () => {
       store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
       expect(await firstValueFrom(store.select(selectLoadingState))).toBe('loaded');
       store.dispatch(StatisticsActions.highlightLayer({topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}));
-      if (tool) store.dispatch(ToolActions.activateTool({tool}));
+      if (tool) store.dispatch(ToolActions.startCreation({tool}));
       const item = (await firstValueFrom(store.select(selectItems)))[0];
       tools.cancelTool.mockClear();
       drawing.clearStatisticsArea.mockClear();
@@ -285,7 +291,7 @@ describe('shared feature/statistics query location', () => {
 
   it('preserves other tools when statistics layers disappear in feature mode', async () => {
     store.dispatch(MapUiActions.toggleToolMenu({tool: 'measurement'}));
-    store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
     store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
     expect(await firstValueFrom(store.select(selectQueryMode))).toBe('feature');
     expect(await firstValueFrom(store.select(selectToolMenuVisibility))).toBe('measurement');
@@ -299,11 +305,14 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     expect(await firstValueFrom(store.select(selectFeatureInfoQueryLoadingState))).toBe('loaded');
     store.dispatch(MapUiActions.toggleToolMenu({tool: 'measurement'}));
-    store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
     expect(await firstValueFrom(store.select(selectActiveTool))).toBeUndefined();
     expect(tools.cancelTool).toHaveBeenCalledOnce();
     expect(await firstValueFrom(store.select(selectIsFeatureInfoOverlayVisible))).toBe(true);
+    expect(await firstValueFrom(store.select(selectGeometry))).toBeUndefined();
+    // Tool switching clears the old area; a subsequent completed selection is retained across view recreation.
+    store.dispatch(StatisticsActions.setSelection({geometry: createCircle(point, 500), radiusInMeters: undefined}));
     const geometry = await firstValueFrom(store.select(selectGeometry));
     expect(drawing.drawStatisticsArea).toHaveBeenLastCalledWith(geometry);
     drawing.drawStatisticsArea.mockClear();

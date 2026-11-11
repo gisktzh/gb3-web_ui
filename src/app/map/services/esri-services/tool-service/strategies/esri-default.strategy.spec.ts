@@ -12,9 +12,9 @@ describe('EsriDefaultStrategy', () => {
     const graphic = new Graphic();
     expect(() => strategy.edit(graphic)).toThrow(new EsriDefaultStrategyNotImplementedError());
   });
-  it('cancel raises an error', () => {
+  it('cancelling idle is harmless', () => {
     const strategy = new EsriDefaultStrategy();
 
-    expect(() => strategy.cancel()).toThrow(new EsriDefaultStrategyNotImplementedError());
+    expect(() => strategy.cancel()).not.toThrow();
   });
 });

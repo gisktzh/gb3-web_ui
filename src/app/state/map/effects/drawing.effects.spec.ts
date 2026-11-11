@@ -154,16 +154,4 @@ describe('DrawingEffects', () => {
       });
     });
   });
-
-  describe('cancelEditModeAfterClosingDrawingEditOverlay', () => {
-    it('calls toolService.cancelTool', () => {
-      actions$ = of(DrawingActions.cancelEditMode());
-      const mapServiceSpy = vi.spyOn(mapService, 'cancelEditMode');
-
-      effects.cancelEditModeAfterClosingDrawingEditOverlay$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
-      });
-    });
-  });
 });

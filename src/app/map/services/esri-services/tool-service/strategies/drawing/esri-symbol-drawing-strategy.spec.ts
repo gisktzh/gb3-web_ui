@@ -24,6 +24,8 @@ vi.mock('@arcgis/core/widgets/Sketch/SketchViewModel', () => ({
     public create = vi.fn();
     public update = vi.fn();
     public cancel = vi.fn();
+    public destroy = vi.fn();
+    public addHandles = vi.fn();
   },
 }));
 
@@ -299,5 +301,26 @@ describe('EsriSymbolDrawingStrategy', () => {
     );
 
     vi.useRealTimers();
+  });
+  it('does not start drawing when a descriptor arrives after cancellation', async () => {
+    let resolveDescriptor!: (value: EsriDrawingSymbolDescriptor) => void;
+    const pending = new Promise<EsriDrawingSymbolDescriptor>((resolve) => {
+      resolveDescriptor = resolve;
+    });
+    const definition = new EsriDrawingSymbolDefinition();
+    vi.spyOn(definition, 'fetchDrawingSymbolDescriptor').mockReturnValue(pending);
+    const close = vi.fn();
+    vi.spyOn(dialog, 'open').mockReturnValue({
+      afterClosed: () => of({drawingSymbolDefinition: definition, size: 10, rotation: 0}),
+      close,
+    } as unknown as MatDialogRef<SymbolDrawingToolInputComponent, SymbolDrawingInputComponentOutput>);
+    const strategy = new EsriSymbolDrawingStrategyWrapper(layer, mapView, callbackHandler.handle, dialog);
+    strategy.start();
+    strategy.cancel();
+    resolveDescriptor({} as EsriDrawingSymbolDescriptor);
+    await pending;
+    expect(strategy.svm.create).not.toHaveBeenCalled();
+    expect(strategy.svm.destroy).toHaveBeenCalledOnce();
+    expect(close).toHaveBeenCalledOnce();
   });
 });

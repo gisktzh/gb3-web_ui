@@ -1,181 +1,145 @@
-import {provideMockActions} from '@ngrx/effects/testing';
+import {ErrorHandler} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
-import {Action} from '@ngrx/store';
-import {provideHttpClientTesting} from '@angular/common/http/testing';
-import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {ToolEffects} from './tool.effects';
-import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
-import {ToolActions} from '../actions/tool.actions';
-import {ToolService} from '../../../map/interfaces/tool.service';
-import {MeasurementTool} from '../../../shared/types/measurement-tool.type';
-import {DrawingTool} from '../../../shared/types/drawing-tool.type';
-import {DataDownloadSelectionTool} from '../../../shared/types/data-download-selection-tool.type';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideEffects} from '@ngrx/effects';
+import {provideStore, Store} from '@ngrx/store';
+import {firstValueFrom} from 'rxjs';
 import {MAP_SERVICE} from '../../../app.tokens';
-import {MapService} from 'src/app/map/interfaces/map.service';
-import {ToolType} from 'src/app/shared/types/tool.type';
+import {ToolActions} from '../actions/tool.actions';
+import {DrawingActions} from '../actions/drawing.actions';
+import {MapUiActions} from '../actions/map-ui.actions';
 import {StatisticsActions} from '../actions/statistics.actions';
+import {reducer as toolReducer, selectInteraction, selectActiveTool} from '../reducers/tool.reducer';
+import {reducer as statisticsReducer, selectStatisticsState} from '../reducers/statistics.reducer';
+import {reducer as drawingReducer, selectSelectedDrawing} from '../reducers/drawing.reducer';
+import {reducer as mapUiReducer, selectIsDrawingEditOverlayVisible} from '../reducers/map-ui.reducer';
+import {ToolEffects} from './tool.effects';
+import {PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 
-describe('ToolEffects', () => {
-  let actions$: Observable<Action | Action[]>;
-  let store: MockStore;
-  let effects: ToolEffects;
-  let toolService: ToolService;
-  let mapService: MapService;
-
+describe('tool interaction effects with real reducers', () => {
+  let store: Store;
+  const tools = {startCreation: vi.fn(), startEditing: vi.fn(), finishInteraction: vi.fn(), cancelTool: vi.fn()};
+  const errors = {handleError: vi.fn()};
+  const target = {layerId: 'INTERNAL__statistics-area', graphicId: 'statistics-selection'};
+  const geometry: PolygonWithSrs = {
+    type: 'Polygon',
+    srs: 2056,
+    coordinates: [
+      [
+        [0, 0],
+        [10, 0],
+        [0, 10],
+        [0, 0],
+      ],
+    ],
+  };
   beforeEach(() => {
-    actions$ = new Observable<Action>();
-
     TestBed.configureTestingModule({
-      imports: [],
       providers: [
-        ToolEffects,
-        provideMockActions(() => actions$),
-        provideMockStore(),
-        {provide: MAP_SERVICE, useClass: MapServiceStub},
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
+        provideStore({tool: toolReducer, statistics: statisticsReducer, drawing: drawingReducer, mapUi: mapUiReducer}),
+        provideEffects(ToolEffects),
+        {provide: MAP_SERVICE, useValue: {getToolService: () => tools}},
+        {provide: ErrorHandler, useValue: errors},
       ],
     });
-    effects = TestBed.inject(ToolEffects);
-    mapService = TestBed.inject(MAP_SERVICE);
-    toolService = mapService.getToolService();
-
-    store = TestBed.inject(MockStore);
+    store = TestBed.inject(Store);
   });
 
-  afterEach(() => {
-    store.resetSelectors();
+  it('starts exactly one creation and records ownership before initialization', async () => {
+    store.dispatch(ToolActions.startCreation({tool: 'draw-polygon'}));
+    expect(await firstValueFrom(store.select(selectInteraction))).toEqual({kind: 'create', tool: 'draw-polygon', id: 1});
+    expect(tools.startCreation).toHaveBeenCalledExactlyOnceWith('draw-polygon', 1);
+    expect(tools.startEditing).not.toHaveBeenCalled();
   });
 
-  describe('initializeTool$', () => {
-    it('initializes the measurement tool using the tool service; dispatches no further actions', async () => {
-      vi.useFakeTimers();
-
-      const expectedTools: Exclude<MeasurementTool, 'measure-elevation-profile'>[] = ['measure-area', 'measure-point', 'measure-line'];
-      const toolServiceSpy = vi.spyOn(toolService, 'initializeMeasurement');
-      await Promise.all(
-        expectedTools.map(async (expectedTool) => {
-          toolServiceSpy.mockClear();
-          const expectedAction = ToolActions.activateTool({tool: expectedTool});
-          actions$ = of(expectedAction);
-          effects.initializeTool$.subscribe((action) => {
-            expect(toolServiceSpy).toHaveBeenCalledTimes(1);
-            expect(toolServiceSpy).toHaveBeenCalledWith(expectedTool);
-            expect(action).toEqual(expectedAction);
-          });
-          await vi.runAllTimersAsync();
-        }),
-      );
-      vi.useRealTimers();
-    });
-
-    it('initializes the elevation profile measurement tool using the tool service; dispatches no further actions', async () => {
-      vi.useFakeTimers();
-
-      const tool: MeasurementTool = 'measure-elevation-profile';
-      const toolServiceSpy = vi.spyOn(toolService, 'initializeElevationProfileMeasurement');
-      toolServiceSpy.mockClear();
-      const expectedAction = ToolActions.activateTool({tool: tool});
-      actions$ = of(expectedAction);
-      effects.initializeTool$.subscribe((action) => {
-        expect(toolServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(expectedAction);
-      });
-      await vi.runAllTimersAsync();
-      vi.useRealTimers();
-    });
-
-    it('initializes the drawing tool using the tool service; dispatches no further actions', async () => {
-      vi.useFakeTimers();
-
-      const expectedTools: DrawingTool[] = ['draw-circle', 'draw-polygon', 'draw-line', 'draw-point', 'draw-rectangle'];
-      const toolServiceSpy = vi.spyOn(toolService, 'initializeDrawing');
-      await Promise.all(
-        expectedTools.map(async (expectedTool) => {
-          toolServiceSpy.mockClear();
-          const expectedAction = ToolActions.activateTool({tool: expectedTool});
-          actions$ = of(expectedAction);
-          effects.initializeTool$.subscribe((action) => {
-            expect(toolServiceSpy).toHaveBeenCalledTimes(1);
-            expect(toolServiceSpy).toHaveBeenCalledWith(expectedTool);
-            expect(action).toEqual(expectedAction);
-          });
-          await vi.runAllTimersAsync();
-        }),
-      );
-
-      vi.useRealTimers();
-    });
-
-    it('initializes the selection tool using the tool service; dispatches no further actions', async () => {
-      vi.useFakeTimers();
-
-      const expectedTools: DataDownloadSelectionTool[] = [
-        'select-polygon',
-        'select-circle',
-        'select-rectangle',
-        'select-municipality',
-        'select-canton',
-        'select-section',
-      ];
-      const toolServiceSpy = vi.spyOn(toolService, 'initializeDataDownloadSelection');
-      await Promise.all(
-        expectedTools.map(async (expectedTool) => {
-          toolServiceSpy.mockClear();
-          const expectedAction = ToolActions.activateTool({tool: expectedTool});
-          actions$ = of(expectedAction);
-          effects.initializeTool$.subscribe((action) => {
-            expect(toolServiceSpy).toHaveBeenCalledTimes(1);
-            expect(toolServiceSpy).toHaveBeenCalledWith(expectedTool);
-            expect(action).toEqual(expectedAction);
-          });
-          await vi.runAllTimersAsync();
-        }),
-      );
-
-      vi.useRealTimers();
-    });
+  it('edits statistics without starting creation or clearing selection and loaded results', async () => {
+    store.dispatch(StatisticsActions.setSelection({geometry, radiusInMeters: undefined}));
+    store.dispatch(StatisticsActions.updateContent({results: []}));
+    const before = await firstValueFrom(store.select(selectStatisticsState));
+    store.dispatch(ToolActions.startEditing({tool: 'select-statistics-polygon', target}));
+    expect(tools.startEditing).toHaveBeenCalledExactlyOnceWith('select-statistics-polygon', target, 1);
+    expect(tools.startCreation).not.toHaveBeenCalled();
+    expect(await firstValueFrom(store.select(selectStatisticsState))).toEqual({...before, mode: 'polygon'});
+    expect(await firstValueFrom(store.select(selectActiveTool))).toBe('select-statistics-polygon');
+    store.dispatch(ToolActions.completeInteraction({interactionId: 1}));
+    expect(await firstValueFrom(store.select(selectInteraction))).toEqual({kind: 'idle'});
+    expect(tools.finishInteraction).toHaveBeenCalledExactlyOnceWith(1);
   });
 
-  describe('cancelOrDeactivateTool$', () => {
-    it('cancels the tool service after deactivating the active tool; dispatches no further actions', () => {
-      const toolServiceSpy = vi.spyOn(toolService, 'cancelTool');
-      const expectedAction = ToolActions.deactivateTool();
-      actions$ = of(expectedAction);
-      effects.cancelOrDeactivateTool$.subscribe((action) => {
-        expect(toolServiceSpy).toHaveBeenCalledTimes(1);
-        expect(toolServiceSpy).toHaveBeenCalledWith();
-        expect(action).toEqual(expectedAction);
-      });
-    });
-
-    it('cancels the tool service after cancelling the active tool; dispatches no further actions', () => {
-      const toolServiceSpy = vi.spyOn(toolService, 'cancelTool');
-      const expectedAction = ToolActions.cancelTool();
-      actions$ = of(expectedAction);
-      effects.cancelOrDeactivateTool$.subscribe((action) => {
-        expect(toolServiceSpy).toHaveBeenCalledTimes(1);
-        expect(toolServiceSpy).toHaveBeenCalledWith();
-        expect(action).toEqual(expectedAction);
-      });
-    });
+  it('retains completed download ownership and runtime until cancellation', async () => {
+    store.dispatch(ToolActions.startCreation({tool: 'select-canton'}));
+    store.dispatch(ToolActions.completeInteraction({interactionId: 1}));
+    store.dispatch(ToolActions.completeInteraction({interactionId: 1}));
+    expect(await firstValueFrom(store.select(selectInteraction))).toEqual({kind: 'selected', id: 1, tool: 'select-canton'});
+    expect(tools.finishInteraction).not.toHaveBeenCalled();
+    store.dispatch(ToolActions.cancelInteraction());
+    expect(tools.cancelTool).toHaveBeenCalledOnce();
+    expect(await firstValueFrom(store.select(selectInteraction))).toEqual({kind: 'idle'});
   });
 
-  describe('switchTool$', () => {
-    it.each(['select-statistics-circle', 'select-statistics-polygon'] as ToolType[])(
-      'cancels edit mode, dispatches `StatisticsActions.clearContent` and activates the %s tool',
-      (tool) => {
-        const mapServiceCancelSpy = vi.spyOn(mapService, 'cancelEditMode');
-        const expectedActions = [ToolActions.activateTool({tool})];
-        actions$ = of(ToolActions.switchTool({tool}));
-        const actualActions: Action[] = [];
-        effects.switchTool$.subscribe((action) => actualActions.push(action));
+  it('clears the statistics area only when creation is requested', async () => {
+    store.dispatch(StatisticsActions.setSelection({geometry, radiusInMeters: undefined}));
+    store.dispatch(ToolActions.startCreation({tool: 'select-statistics-polygon'}));
+    const state = await firstValueFrom(store.select(selectStatisticsState));
+    expect(state.mode).toBe('polygon');
+    expect(state.geometry).toBeUndefined();
+  });
 
-        expect(mapServiceCancelSpy).toHaveBeenCalledOnce();
-        expect(actualActions).toEqual(expectedActions);
-      },
-    );
+  it('returns to idle and reports initialization failure while keeping effects available', async () => {
+    const error = new Error('missing target');
+    tools.startEditing.mockImplementationOnce(() => {
+      throw error;
+    });
+    store.dispatch(ToolActions.startEditing({tool: 'select-statistics-polygon', target}));
+    expect(await firstValueFrom(store.select(selectInteraction))).toEqual({kind: 'idle'});
+    expect(tools.finishInteraction).toHaveBeenCalledWith(1);
+    expect(errors.handleError).toHaveBeenCalledWith(error);
+    store.dispatch(ToolActions.startCreation({tool: 'draw-point'}));
+    expect(tools.startCreation).toHaveBeenCalledWith('draw-point', 2);
+  });
+
+  it('ignores late completion while a replacement edit is active', async () => {
+    store.dispatch(ToolActions.startCreation({tool: 'draw-point'}));
+    store.dispatch(ToolActions.startEditing({tool: 'select-statistics-polygon', target}));
+    store.dispatch(ToolActions.completeInteraction({interactionId: 1}));
+    expect(await firstValueFrom(store.select(selectInteraction))).toEqual({kind: 'edit', id: 2, tool: 'select-statistics-polygon', target});
+    expect(tools.finishInteraction).not.toHaveBeenCalled();
+  });
+
+  it('opens a new drawing edit overlay after closing the previous one, then clears it on replacement', async () => {
+    const drawing = {properties: {['__id']: 'drawing-id'}} as Gb3StyledInternalDrawingRepresentation;
+    store.dispatch(DrawingActions.addDrawing({drawing}));
+    tools.startEditing.mockImplementation(() => {
+      store.dispatch(DrawingActions.selectDrawing({drawingId: 'drawing-id'}));
+      store.dispatch(MapUiActions.setDrawingEditOverlayVisibility({isVisible: true}));
+    });
+    store.dispatch(ToolActions.startEditing({tool: 'draw-polygon', target: {...target, graphicId: 'drawing-id'}}));
+    expect(await firstValueFrom(store.select(selectIsDrawingEditOverlayVisible))).toBe(true);
+    expect(await firstValueFrom(store.select(selectSelectedDrawing))).toEqual(drawing);
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
+    expect(await firstValueFrom(store.select(selectIsDrawingEditOverlayVisible))).toBe(false);
+    expect(await firstValueFrom(store.select(selectSelectedDrawing))).toBeUndefined();
+  });
+
+  it.each(['select-statistics-circle', 'select-statistics-polygon'] as const)(
+    'replaces editing with one %s creation and resets the previous area',
+    async (tool) => {
+      store.dispatch(StatisticsActions.setSelection({geometry, radiusInMeters: undefined}));
+      store.dispatch(ToolActions.startEditing({tool: 'select-statistics-polygon', target}));
+      store.dispatch(ToolActions.startCreation({tool}));
+      expect(tools.startEditing).toHaveBeenCalledExactlyOnceWith('select-statistics-polygon', target, 1);
+      expect(tools.startCreation).toHaveBeenCalledExactlyOnceWith(tool, 2);
+      expect((await firstValueFrom(store.select(selectStatisticsState))).geometry).toBeUndefined();
+    },
+  );
+
+  it('preserves the feature branch reset policy when switching to another tool family', async () => {
+    store.dispatch(StatisticsActions.setSelection({geometry, radiusInMeters: 750}));
+    store.dispatch(StatisticsActions.updateContent({results: []}));
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
+    const state = await firstValueFrom(store.select(selectStatisticsState));
+    expect(state.geometry).toBeUndefined();
+    expect(state.loadingState).toBeUndefined();
+    expect(state.radiusInMeters).toBe(750);
   });
 });

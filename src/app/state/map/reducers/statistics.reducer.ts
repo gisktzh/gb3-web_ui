@@ -1,3 +1,5 @@
+import {ToolActions} from '../actions/tool.actions';
+import {findStatisticsModeForTool} from '../../../shared/types/statistics-selection-tool.type';
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {StatisticsState} from '../states/statistics.state';
@@ -21,6 +23,14 @@ export const statisticsFeature = createFeature({
   name: statisticsFeatureKey,
   reducer: createReducer(
     initialState,
+    on(ToolActions.startCreation, (state, {tool}): StatisticsState => {
+      const mode = findStatisticsModeForTool(tool);
+      // A new tool session replaces the previous statistics selection, matching the toolbar's existing reset policy.
+      return {...initialState, mode: mode ?? state.mode, radiusInMeters: state.radiusInMeters};
+    }),
+    on(ToolActions.startEditing, (state, {tool}): StatisticsState =>
+      tool === 'select-statistics-polygon' ? {...state, mode: 'polygon'} : state,
+    ),
     on(StatisticsActions.setSelection, (state, {geometry, radiusInMeters}): StatisticsState => {
       // A new area invalidates the results loaded for the previous one, which is what lets the statistics tab detect on opening that
       // it has to load them for an area that was derived while the feature tab was active.
@@ -36,9 +46,6 @@ export const statisticsFeature = createFeature({
       };
     }),
     on(StatisticsActions.setMode, (state, {mode}): StatisticsState => {
-      return {...state, mode};
-    }),
-    on(StatisticsActions.softUpdateMode, (state, {mode}): StatisticsState => {
       return {...state, mode};
     }),
     on(StatisticsActions.setRadius, (state, {radiusInMeters}): StatisticsState => {

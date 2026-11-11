@@ -333,6 +333,9 @@ describe('AuthStatusEffects', () => {
       const mapService = TestBed.inject(MAP_SERVICE);
       const mapToolServiceMock = vi.fn(
         class implements ToolService {
+          public startCreation = vi.fn();
+          public startEditing = vi.fn();
+          public finishInteraction = vi.fn();
           public initializeMeasurement = vi.fn();
           public initializeElevationProfileMeasurement = vi.fn();
           public initializeDrawing = vi.fn();
