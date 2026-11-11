@@ -58,7 +58,7 @@ describe('ToolEffects', () => {
       await Promise.all(
         expectedTools.map(async (expectedTool) => {
           toolServiceSpy.mockClear();
-          const expectedAction = ToolActions.activateTool({tool: expectedTool});
+          const expectedAction = ToolActions.startCreation({tool: expectedTool});
           actions$ = of(expectedAction);
           effects.initializeTool$.subscribe((action) => {
             expect(toolServiceSpy).toHaveBeenCalledTimes(1);
@@ -77,7 +77,7 @@ describe('ToolEffects', () => {
       const tool: MeasurementTool = 'measure-elevation-profile';
       const toolServiceSpy = vi.spyOn(toolService, 'initializeElevationProfileMeasurement');
       toolServiceSpy.mockClear();
-      const expectedAction = ToolActions.activateTool({tool: tool});
+      const expectedAction = ToolActions.startCreation({tool: tool});
       actions$ = of(expectedAction);
       effects.initializeTool$.subscribe((action) => {
         expect(toolServiceSpy).toHaveBeenCalledTimes(1);
@@ -95,7 +95,7 @@ describe('ToolEffects', () => {
       await Promise.all(
         expectedTools.map(async (expectedTool) => {
           toolServiceSpy.mockClear();
-          const expectedAction = ToolActions.activateTool({tool: expectedTool});
+          const expectedAction = ToolActions.startCreation({tool: expectedTool});
           actions$ = of(expectedAction);
           effects.initializeTool$.subscribe((action) => {
             expect(toolServiceSpy).toHaveBeenCalledTimes(1);
@@ -124,7 +124,7 @@ describe('ToolEffects', () => {
       await Promise.all(
         expectedTools.map(async (expectedTool) => {
           toolServiceSpy.mockClear();
-          const expectedAction = ToolActions.activateTool({tool: expectedTool});
+          const expectedAction = ToolActions.startCreation({tool: expectedTool});
           actions$ = of(expectedAction);
           effects.initializeTool$.subscribe((action) => {
             expect(toolServiceSpy).toHaveBeenCalledTimes(1);
@@ -142,7 +142,7 @@ describe('ToolEffects', () => {
   describe('cancelOrDeactivateTool$', () => {
     it('cancels the tool service after deactivating the active tool; dispatches no further actions', () => {
       const toolServiceSpy = vi.spyOn(toolService, 'cancelTool');
-      const expectedAction = ToolActions.deactivateTool();
+      const expectedAction = ToolActions.cancelInteraction();
       actions$ = of(expectedAction);
       effects.cancelOrDeactivateTool$.subscribe((action) => {
         expect(toolServiceSpy).toHaveBeenCalledTimes(1);
@@ -153,7 +153,7 @@ describe('ToolEffects', () => {
 
     it('cancels the tool service after cancelling the active tool; dispatches no further actions', () => {
       const toolServiceSpy = vi.spyOn(toolService, 'cancelTool');
-      const expectedAction = ToolActions.cancelTool();
+      const expectedAction = ToolActions.cancelInteraction();
       actions$ = of(expectedAction);
       effects.cancelOrDeactivateTool$.subscribe((action) => {
         expect(toolServiceSpy).toHaveBeenCalledTimes(1);

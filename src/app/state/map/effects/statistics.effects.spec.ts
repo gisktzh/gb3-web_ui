@@ -348,7 +348,7 @@ describe('StatisticsEffects', () => {
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
-      expect(actualActions).toEqual([ToolActions.switchTool({tool: 'select-statistics-circle'})]);
+      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.startCreation({tool: 'select-statistics-circle'})]);
     });
 
     it('clears the area and hands over the polygon tool for the polygon mode', () => {
@@ -358,7 +358,7 @@ describe('StatisticsEffects', () => {
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
-      expect(actualActions).toEqual([ToolActions.switchTool({tool: 'select-statistics-polygon'})]);
+      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.startCreation({tool: 'select-statistics-polygon'})]);
     });
 
     /** Re-activating the running tool would restart it, and the mode sync would answer with another mode change. */
@@ -376,7 +376,7 @@ describe('StatisticsEffects', () => {
   describe('syncModeWithSelectionTool$', () => {
     it('follows a selection tool started from the tool bar into its mode', () => {
       store.overrideSelector(selectMode, 'umkreis');
-      actions$ = of(ToolActions.activateTool({tool: 'select-statistics-polygon'}));
+      actions$ = of(ToolActions.startCreation({tool: 'select-statistics-polygon'}));
 
       let actualAction;
       effects.syncModeWithSelectionTool$.subscribe((action) => (actualAction = action));
@@ -386,7 +386,7 @@ describe('StatisticsEffects', () => {
 
     it('stays quiet for the mode that is already selected', async () => {
       store.overrideSelector(selectMode, 'polygon');
-      actions$ = of(ToolActions.activateTool({tool: 'select-statistics-polygon'}));
+      actions$ = of(ToolActions.startCreation({tool: 'select-statistics-polygon'}));
 
       vi.useFakeTimers();
       let actualAction;
@@ -399,7 +399,7 @@ describe('StatisticsEffects', () => {
 
     it('ignores tools that have nothing to do with statistics', async () => {
       store.overrideSelector(selectMode, 'umkreis');
-      actions$ = of(ToolActions.activateTool({tool: 'measure-line'}));
+      actions$ = of(ToolActions.startCreation({tool: 'measure-line'}));
 
       vi.useFakeTimers();
       let actualAction;

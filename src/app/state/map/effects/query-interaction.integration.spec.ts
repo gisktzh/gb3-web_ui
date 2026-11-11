@@ -52,7 +52,7 @@ describe('query interaction ownership', () => {
     for (const tool of ['measure-line', 'draw-polygon', 'select-polygon'] as const) {
       it(`releases ${tool} when explicitly selecting ${queryMode}`, async () => {
         store.dispatch(MapUiActions.toggleToolMenu({tool: 'measurement'}));
-        store.dispatch(ToolActions.activateTool({tool}));
+        store.dispatch(ToolActions.startCreation({tool}));
         store.dispatch(QueryModeActions.selectQueryMode({queryMode}));
 
         await expectOwnership(queryMode, queryMode);
@@ -62,7 +62,7 @@ describe('query interaction ownership', () => {
   }
 
   it('releases a tool when reselecting the already active feature mode', async () => {
-    store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'feature'}));
 
     await expectOwnership('feature', 'feature');
@@ -71,7 +71,7 @@ describe('query interaction ownership', () => {
 
   it('keeps a compatible statistics tool when reselecting statistics', async () => {
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
-    store.dispatch(ToolActions.activateTool({tool: 'select-statistics-polygon'}));
+    store.dispatch(ToolActions.startCreation({tool: 'select-statistics-polygon'}));
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
 
     await expectOwnership('statistics', 'statistics', 'select-statistics-polygon');
@@ -81,7 +81,7 @@ describe('query interaction ownership', () => {
 
   it('releases statistics selection when explicitly returning to features', async () => {
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
-    store.dispatch(ToolActions.activateTool({tool: 'select-statistics-circle'}));
+    store.dispatch(ToolActions.startCreation({tool: 'select-statistics-circle'}));
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'feature'}));
 
     await expectOwnership('feature', 'feature');
@@ -90,7 +90,7 @@ describe('query interaction ownership', () => {
 
   it('does not cancel a newly activated measurement tool during menu synchronization', async () => {
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
-    store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
     store.dispatch(MapUiActions.toggleToolMenu({tool: 'measurement'}));
 
     await expectOwnership('feature', 'measurement', 'measure-line');
@@ -100,7 +100,7 @@ describe('query interaction ownership', () => {
 
   it('cancels an old statistics tool when opening another menu', async () => {
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
-    store.dispatch(ToolActions.activateTool({tool: 'select-statistics-circle'}));
+    store.dispatch(ToolActions.startCreation({tool: 'select-statistics-circle'}));
     store.dispatch(MapUiActions.toggleToolMenu({tool: 'drawing'}));
 
     await expectOwnership('feature', 'drawing');
@@ -109,7 +109,7 @@ describe('query interaction ownership', () => {
 
   it('normalizes unavailable statistics before changing tool ownership', async () => {
     store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
-    store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
 
     await expectOwnership('feature', 'feature');

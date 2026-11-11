@@ -65,18 +65,18 @@ describe('ElevationProfileEffects', () => {
     it('does nothing for other tools', async () => {
       vi.useFakeTimers();
 
-      actions$ = of(ToolActions.activateTool({tool: 'measure-line'}));
+      actions$ = of(ToolActions.startCreation({tool: 'measure-line'}));
 
       effects.clearExistingElevationProfilesOnNew$.subscribe();
       await vi.runAllTimersAsync();
 
-      actions$.subscribe((action) => expect(action).toEqual(ToolActions.activateTool({tool: 'measure-line'})));
+      actions$.subscribe((action) => expect(action).toEqual(ToolActions.startCreation({tool: 'measure-line'})));
 
       vi.useRealTimers();
     });
 
     it('dispatches ElevationProfileActions.clearProfile', () => {
-      actions$ = of(ToolActions.activateTool({tool: 'measure-elevation-profile'}));
+      actions$ = of(ToolActions.startCreation({tool: 'measure-elevation-profile'}));
 
       effects.clearExistingElevationProfilesOnNew$.subscribe((action) => {
         expect(action).toEqual(ElevationProfileActions.clearProfile());

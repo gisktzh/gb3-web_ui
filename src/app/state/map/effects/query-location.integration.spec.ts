@@ -234,7 +234,7 @@ describe('shared feature/statistics query location', () => {
       store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
       expect(await firstValueFrom(store.select(selectLoadingState))).toBe('loaded');
       store.dispatch(StatisticsActions.highlightLayer({topic: 'StatBeschaeftigteZH', layer: 'stat-ent-p'}));
-      if (tool) store.dispatch(ToolActions.activateTool({tool}));
+      if (tool) store.dispatch(ToolActions.startCreation({tool}));
       const item = (await firstValueFrom(store.select(selectItems)))[0];
       tools.cancelTool.mockClear();
       drawing.clearStatisticsArea.mockClear();
@@ -285,7 +285,7 @@ describe('shared feature/statistics query location', () => {
 
   it('preserves other tools when statistics layers disappear in feature mode', async () => {
     store.dispatch(MapUiActions.toggleToolMenu({tool: 'measurement'}));
-    store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
     store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
     expect(await firstValueFrom(store.select(selectQueryMode))).toBe('feature');
     expect(await firstValueFrom(store.select(selectToolMenuVisibility))).toBe('measurement');
@@ -299,7 +299,7 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(QueryLocationActions.setPoint({point, scale: 1000}));
     expect(await firstValueFrom(store.select(selectFeatureInfoQueryLoadingState))).toBe('loaded');
     store.dispatch(MapUiActions.toggleToolMenu({tool: 'measurement'}));
-    store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
     expect(await firstValueFrom(store.select(selectActiveTool))).toBeUndefined();
     expect(tools.cancelTool).toHaveBeenCalledOnce();

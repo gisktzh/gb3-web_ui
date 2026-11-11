@@ -401,7 +401,7 @@ describe('EsriToolService', () => {
       );
 
       const expectedAddDrawingAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -431,7 +431,7 @@ describe('EsriToolService', () => {
       );
 
       const expectedAddDrawingAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -456,7 +456,7 @@ describe('EsriToolService', () => {
       const drawingId = graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER];
 
       const expectedDeleteDrawingAction = DrawingActions.deleteDrawing({drawingId});
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -514,7 +514,7 @@ describe('EsriToolService', () => {
       const expectedAddDrawingAction = DrawingActions.addDrawings({
         drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel],
       });
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -572,7 +572,7 @@ describe('EsriToolService', () => {
       const expectedAddDrawingAction = DrawingActions.addDrawings({
         drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel],
       });
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -618,7 +618,7 @@ describe('EsriToolService', () => {
       const drawingId = graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER];
 
       const expectedDeleteDrawingAction = DrawingActions.deleteDrawing({drawingId});
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -691,10 +691,10 @@ describe('EsriToolService', () => {
       expect(dispatch).toHaveBeenCalledWith(
         StatisticsActions.setSelection({geometry: drawingRepresentation.geometry, radiusInMeters: undefined}),
       );
-      expect(dispatch).toHaveBeenLastCalledWith(ToolActions.deactivateTool());
+      expect(dispatch).toHaveBeenLastCalledWith(ToolActions.cancelInteraction());
     });
 
-    it('completes selections by dispatching ToolActions.cancelTool if the selection is `undefined`', () => {
+    it('completes selections by dispatching ToolActions.cancelInteraction if the selection is `undefined`', () => {
       const storeSpy = vi.spyOn(store, 'dispatch');
       const mapView = mapViewService.mapView();
       if (!mapView) {
@@ -703,7 +703,7 @@ describe('EsriToolService', () => {
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
 
-      const expectedAction = ToolActions.cancelTool();
+      const expectedAction = ToolActions.cancelInteraction();
 
       service.completeSelection(undefined);
 
@@ -747,7 +747,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
 
       service.completeDrawing(graphic, 'add');
 
@@ -783,7 +783,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
 
       service.completeDrawing(graphic, 'edit');
 
@@ -811,7 +811,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
 
       service.completeDrawing(graphic, 'delete');
 
@@ -851,7 +851,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
 
       const mapViewGoToSpy = vi.spyOn(mapView, 'goTo').mockImplementation(vi.fn());
       service.completeMapSymbolDrawing(graphic, 'edit', mockMapDrawingSymbol, mockSize, mockRotation);
@@ -894,7 +894,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
 
       const mapViewGoToSpy = vi.spyOn(mapView, 'goTo').mockImplementation(vi.fn());
 
@@ -925,7 +925,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.deactivateTool();
+      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
 
       service.completeMapSymbolDrawing(graphic, 'delete', {}, 10, 11);
 

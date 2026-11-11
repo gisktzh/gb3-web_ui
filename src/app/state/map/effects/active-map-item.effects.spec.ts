@@ -230,7 +230,7 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('cancelToolAfterRemovingAllCorrespondingMapItems$', () => {
-    it('dispatches ToolActions.cancelTool() if removeAllActiveMapItems action is executed', () => {
+    it('dispatches ToolActions.cancelInteraction() if removeAllActiveMapItems action is executed', () => {
       const activeMapItems: ActiveMapItem[] = [
         createDrawingMapItemMock(UserDrawingLayer.Measurements),
         createDrawingMapItemMock(UserDrawingLayer.Drawings),
@@ -241,11 +241,11 @@ describe('ActiveMapItemEffects', () => {
 
       actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
       effects.cancelToolAfterRemovingAllCorrespondingMapItems$.subscribe((action) => {
-        expect(action).toEqual(ToolActions.cancelTool());
+        expect(action).toEqual(ToolActions.cancelInteraction());
       });
     });
 
-    it('dispatches ToolActions.cancelTool() if removeActiveMapItem action is executed and there are no more items of that type', () => {
+    it('dispatches ToolActions.cancelInteraction() if removeActiveMapItem action is executed and there are no more items of that type', () => {
       // note that the measurement item is not in the state
       const activeMapItems: ActiveMapItem[] = [createDrawingMapItemMock(UserDrawingLayer.Drawings), createGb2WmsMapItemMock('mapMock')];
       store.overrideSelector(selectItems, activeMapItems);
@@ -254,7 +254,7 @@ describe('ActiveMapItemEffects', () => {
       const measurementActiveMapItem = createDrawingMapItemMock(UserDrawingLayer.Measurements);
       actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem: measurementActiveMapItem}));
       effects.cancelToolAfterRemovingAllCorrespondingMapItems$.subscribe((action) => {
-        expect(action).toEqual(ToolActions.cancelTool());
+        expect(action).toEqual(ToolActions.cancelInteraction());
       });
     });
 

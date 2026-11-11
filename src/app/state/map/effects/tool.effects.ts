@@ -27,7 +27,7 @@ export class ToolEffects {
   public initializeTool$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ToolActions.activateTool),
+        ofType(ToolActions.startCreation),
         tap(({tool}) => {
           switch (tool) {
             case 'measure-line':
@@ -71,7 +71,7 @@ export class ToolEffects {
   public cancelOrDeactivateTool$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ToolActions.cancelTool, ToolActions.deactivateTool),
+        ofType(ToolActions.cancelInteraction, ToolActions.cancelInteraction),
         tap(() => this.toolService.cancelTool()),
       );
     },

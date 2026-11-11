@@ -301,7 +301,7 @@ export class EsriToolService implements ToolService {
     if (selection) {
       this.store.dispatch(DataDownloadOrderActions.setSelection({selection}));
     } else {
-      this.store.dispatch(ToolActions.cancelTool());
+      this.store.dispatch(ToolActions.cancelInteraction());
     }
     this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
   }
@@ -398,7 +398,7 @@ export class EsriToolService implements ToolService {
 
   private endDrawing() {
     this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
-    this.store.dispatch(ToolActions.deactivateTool());
+    this.store.dispatch(ToolActions.cancelInteraction());
   }
 
   /**

@@ -35,7 +35,7 @@ export class ElevationProfileEffects {
 
   public clearExistingElevationProfilesOnNew$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ToolActions.activateTool),
+      ofType(ToolActions.startCreation),
       filter(({tool}) => tool === 'measure-elevation-profile'),
       map(() => ElevationProfileActions.clearProfile()),
     );

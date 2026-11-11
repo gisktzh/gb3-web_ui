@@ -246,7 +246,10 @@ export class StatisticsEffects {
       concatLatestFrom(() => this.store.select(selectActiveTool)),
       switchMap(([{mode}, activeTool]) => {
         const tool = statisticsSelectionToolByMode[mode];
-        return activeTool === tool ? [StatisticsActions.clearContent()] : [ToolActions.switchTool({tool})];
+
+        return activeTool === tool
+          ? [StatisticsActions.clearContent()]
+          : [StatisticsActions.clearContent(), ToolActions.startCreation({tool})];
       }),
     );
   });
@@ -267,7 +270,7 @@ export class StatisticsEffects {
    */
   public syncModeWithSelectionTool$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ToolActions.activateTool),
+      ofType(ToolActions.startCreation),
       map(({tool}) => findStatisticsModeForTool(tool)),
       filter((mode) => mode !== undefined),
       concatLatestFrom(() => this.store.select(selectMode)),
