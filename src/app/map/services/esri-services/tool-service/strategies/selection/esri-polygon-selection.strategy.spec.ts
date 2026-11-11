@@ -81,7 +81,7 @@ describe('EsriPolygonSelectionStrategy', () => {
   });
 
   describe('start', () => {
-    it('removes all existing layers on start', () => {
+    it('does not remove all existing layers on start (handled elsewhere)', () => {
       const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const layerRemoveAllSpy = vi.spyOn(layer, 'removeAll');
       const strategy = new EsriPolygonSelectionStrategyWrapper(
@@ -99,7 +99,7 @@ describe('EsriPolygonSelectionStrategy', () => {
 
         callback({state: 'start'});
 
-        expect(layerRemoveAllSpy).toHaveBeenCalledTimes(2);
+        expect(layerRemoveAllSpy).not.toHaveBeenCalled();
         expect(callbackSpy).not.toHaveBeenCalled();
 
         return mockResourceHandle;
@@ -111,8 +111,50 @@ describe('EsriPolygonSelectionStrategy', () => {
     });
   });
 
+  describe('edit', () => {
+    it('correctly starts the edit mode', () => {
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
+      const strategy = new EsriPolygonSelectionStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        'polygon',
+        2056,
+      );
+
+      const graphic = new Graphic({
+        symbol: fillSymbol,
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [12, 0],
+              [0, 12],
+            ],
+          ],
+        }),
+      });
+
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('update');
+
+        callback({state: 'start'});
+        expect(callbackSpy).not.toHaveBeenCalled();
+
+        return mockResourceHandle;
+      });
+
+      strategy.edit(graphic);
+
+      expect(reactiveSpy).toHaveBeenCalled();
+    });
+  });
+
   describe('completion', () => {
-    it('fires the callback handler on completion', () => {
+    it('fires the callback handler on create completion', () => {
       const callbackSpy = vi.spyOn(callbackHandler, 'handle');
       const converterSpy = vi.spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convert');
       const strategy = new EsriPolygonSelectionStrategyWrapper(
@@ -150,6 +192,48 @@ describe('EsriPolygonSelectionStrategy', () => {
       });
 
       strategy.start();
+
+      expect(reactiveSpy).toHaveBeenCalled();
+    });
+
+    it('fires the callback handler on edit completion', () => {
+      const callbackSpy = vi.spyOn(callbackHandler, 'handle');
+      const converterSpy = vi.spyOn(EsriGraphicToInternalDrawingRepresentationUtils, 'convert');
+      const strategy = new EsriPolygonSelectionStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        'polygon',
+        2056,
+      );
+      const graphic = new Graphic({
+        symbol: fillSymbol,
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [12, 0],
+              [0, 12],
+            ],
+          ],
+        }),
+      });
+
+      const reactiveSpy = vi.spyOn(reactiveUtils, 'on').mockImplementation((getTarget, eventName, callback) => {
+        expect(getTarget()).toEqual(strategy.svm);
+        expect(eventName).toEqual('update');
+
+        callback({state: 'complete', graphic});
+
+        expect(callbackSpy).toHaveBeenCalledWith({drawingRepresentation: converterSpy.mock.results[0].value});
+        expect(converterSpy).toHaveBeenCalledWith(graphic, 2056, InternalDrawingLayer.Selection);
+
+        return mockResourceHandle;
+      });
+
+      strategy.edit(graphic);
 
       expect(reactiveSpy).toHaveBeenCalled();
     });

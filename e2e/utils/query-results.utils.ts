@@ -124,3 +124,31 @@ export function expectStatisticsPolygon(query: URL, vertices: MapCoordinates[]) 
     expect(ring.some(([actualX, actualY]) => Math.hypot(actualX - x, actualY - y) < 1)).toBe(true);
   }
 }
+
+function calculatePolygonArea(polygon: MapCoordinates[]): number {
+  let area = 0;
+
+  for (let i = 0; i < polygon.length; i++) {
+    const [x1, y1] = polygon[i];
+    const [x2, y2] = polygon[(i + 1) % polygon.length];
+
+    area += x1 * y2 - x2 * y1;
+  }
+
+  return Math.abs(area) / 2;
+}
+
+export function expectStatisticsPolygonArea(query: URL, area: number, allowedDelta: number) {
+  const ring = statisticsRing(query).slice(0, -1);
+  expect(calculatePolygonArea(ring) - area).toBeLessThan(allowedDelta);
+}
+
+export function expectStatisticsPolygonExtent(query: URL, width: number, height: number, allowedDelta: number) {
+  const ring = statisticsRing(query).slice(0, -1);
+
+  const xs = ring.map((p) => p[0]);
+  expect(Math.max(...xs) - Math.min(...xs) - width).toBeLessThan(allowedDelta);
+
+  const ys = ring.map((p) => p[1]);
+  expect(Math.max(...ys) - Math.min(...ys) - height).toBeLessThan(allowedDelta);
+}
