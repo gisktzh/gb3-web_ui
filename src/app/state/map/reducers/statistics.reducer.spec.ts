@@ -1,3 +1,4 @@
+import {ToolActions} from '../actions/tool.actions';
 import {initialState, reducer} from './statistics.reducer';
 import {StatisticsActions} from '../actions/statistics.actions';
 import {StatisticsState} from '../states/statistics.state';
@@ -166,11 +167,17 @@ describe('statistics reducer', () => {
     });
   });
 
-  describe('softUpdateMode', () => {
-    it('should update the mode', () => {
-      const result = reducer({...initialState, mode: 'umkreis'}, StatisticsActions.softUpdateMode({mode: 'polygon'}));
-
-      expect(result.mode).toBe('polygon');
+  describe('editing mode synchronization', () => {
+    it('changes to polygon mode while preserving the selected area and loaded results', () => {
+      const state: StatisticsState = {...initialState, mode: 'umkreis', geometry, loadingState: 'loaded', data: results};
+      const result = reducer(
+        state,
+        ToolActions.startEditing({
+          tool: 'select-statistics-polygon',
+          target: {layerId: 'INTERNAL__statistics_area', graphicId: 'statistics'},
+        }),
+      );
+      expect(result).toEqual({...state, mode: 'polygon'});
     });
   });
 });

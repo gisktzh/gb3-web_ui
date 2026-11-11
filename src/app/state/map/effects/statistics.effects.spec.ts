@@ -1,3 +1,4 @@
+import {StatisticsAreaService} from '../../../shared/services/statistics-area.service';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
 import {Observable, of, Subject, throwError} from 'rxjs';
@@ -33,8 +34,6 @@ import {selectIsMapServiceInitialized, selectReady} from '../reducers/map-config
 import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {selectLoadingState} from '../reducers/statistics.reducer';
-import {StatisticsMode} from 'src/app/shared/types/statistics-mode.type';
-import {ToolType} from 'src/app/shared/types/tool.type';
 
 describe('StatisticsEffects', () => {
   let actions$: Observable<Action>;
@@ -445,17 +444,36 @@ describe('StatisticsEffects', () => {
     });
   });
 
-  describe('activateToolOnSoftModeUpdate$', () => {
-    it.each([
-      {mode: 'umkreis', tool: 'select-statistics-circle'},
-      {mode: 'polygon', tool: 'select-statistics-polygon'},
-    ] as {mode: StatisticsMode; tool: ToolType}[])('should dispatch `ToolActions.activateTool` with %s tool', ({mode, tool}) => {
-      actions$ = of(StatisticsActions.softUpdateMode({mode}));
+  it('cancels a pending statistics request when another tool family replaces the selection', () => {
+    const requests = new Subject<Action>();
+    const pending = new Subject<StatisticsResult[]>();
+    actions$ = requests;
+    store.overrideSelector(selectGeometry, square);
+    statisticsService.loadStatistics.mockReturnValue(pending);
+    const emitted: Action[] = [];
+    const subscription = effects.loadStatistics$.subscribe((action) => emitted.push(action));
+    requests.next(StatisticsActions.sendRequest());
+    expect(pending.observed).toBe(true);
+    requests.next(ToolActions.startCreation({tool: 'measure-line'}));
+    expect(pending.observed).toBe(false);
+    pending.next([]);
+    expect(emitted).toEqual([]);
+    subscription.unsubscribe();
+  });
 
-      const actualActions: Action[] = [];
-      effects.activateToolOnSoftModeUpdate$.subscribe((action) => actualActions.push(action));
-
-      expect(actualActions).toEqual([ToolActions.activateTool({tool})]);
-    });
+  it('cancels pending area validation when another tool family replaces the selection', () => {
+    const requests = new Subject<Action>();
+    const pending = new Subject<number>();
+    actions$ = requests;
+    vi.spyOn(TestBed.inject(StatisticsAreaService), 'calculateArea').mockReturnValue(pending);
+    const emitted: Action[] = [];
+    const subscription = effects.validateSelection$.subscribe((action) => emitted.push(action));
+    requests.next(StatisticsActions.setSelection({geometry: square, radiusInMeters: undefined}));
+    expect(pending.observed).toBe(true);
+    requests.next(ToolActions.startCreation({tool: 'draw-polygon'}));
+    expect(pending.observed).toBe(false);
+    pending.next(100);
+    expect(emitted).toEqual([]);
+    subscription.unsubscribe();
   });
 });

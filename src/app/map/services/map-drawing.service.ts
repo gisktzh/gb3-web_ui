@@ -1,4 +1,3 @@
-import {STATISTICS_SELECTION_IDENTIFIER} from '../../shared/configs/statistics.config';
 import {Injectable, effect, inject} from '@angular/core';
 import {MapService} from '../interfaces/map.service';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';

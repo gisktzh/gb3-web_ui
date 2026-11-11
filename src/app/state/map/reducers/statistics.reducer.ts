@@ -25,7 +25,8 @@ export const statisticsFeature = createFeature({
     initialState,
     on(ToolActions.startCreation, (state, {tool}): StatisticsState => {
       const mode = findStatisticsModeForTool(tool);
-      return mode ? {...initialState, mode, radiusInMeters: state.radiusInMeters} : state;
+      // A new tool session replaces the previous statistics selection, matching the toolbar's existing reset policy.
+      return {...initialState, mode: mode ?? state.mode, radiusInMeters: state.radiusInMeters};
     }),
     on(ToolActions.startEditing, (state, {tool}): StatisticsState =>
       tool === 'select-statistics-polygon' ? {...state, mode: 'polygon'} : state,
@@ -45,9 +46,6 @@ export const statisticsFeature = createFeature({
       };
     }),
     on(StatisticsActions.setMode, (state, {mode}): StatisticsState => {
-      return {...state, mode};
-    }),
-    on(StatisticsActions.softUpdateMode, (state, {mode}): StatisticsState => {
       return {...state, mode};
     }),
     on(StatisticsActions.setRadius, (state, {radiusInMeters}): StatisticsState => {

@@ -197,7 +197,6 @@ describe('shared feature/statistics query location', () => {
           useValue: {
             getToolService: () => tools,
             observeFeatureInfoLayerVisibility: vi.fn(() => of(true)),
-            cancelEditMode: vi.fn(),
           },
         },
         {provide: MatDialog, useValue: {open: vi.fn()}},
@@ -311,6 +310,9 @@ describe('shared feature/statistics query location', () => {
     expect(await firstValueFrom(store.select(selectActiveTool))).toBeUndefined();
     expect(tools.cancelTool).toHaveBeenCalledOnce();
     expect(await firstValueFrom(store.select(selectIsFeatureInfoOverlayVisible))).toBe(true);
+    expect(await firstValueFrom(store.select(selectGeometry))).toBeUndefined();
+    // Tool switching clears the old area; a subsequent completed selection is retained across view recreation.
+    store.dispatch(StatisticsActions.setSelection({geometry: createCircle(point, 500), radiusInMeters: undefined}));
     const geometry = await firstValueFrom(store.select(selectGeometry));
     expect(drawing.drawStatisticsArea).toHaveBeenLastCalledWith(geometry);
     drawing.drawStatisticsArea.mockClear();

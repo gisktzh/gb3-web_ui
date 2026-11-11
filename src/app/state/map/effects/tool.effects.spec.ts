@@ -121,19 +121,25 @@ describe('tool interaction effects with real reducers', () => {
     expect(await firstValueFrom(store.select(selectSelectedDrawing))).toBeUndefined();
   });
 
-  describe('switchTool$', () => {
-    it.each(['select-statistics-circle', 'select-statistics-polygon'] as ToolType[])(
-      'cancels edit mode, dispatches `StatisticsActions.clearContent` and activates the %s tool',
-      (tool) => {
-        const mapServiceCancelSpy = vi.spyOn(mapService, 'cancelEditMode');
-        const expectedActions = [ToolActions.activateTool({tool})];
-        actions$ = of(ToolActions.switchTool({tool}));
-        const actualActions: Action[] = [];
-        effects.switchTool$.subscribe((action) => actualActions.push(action));
+  it.each(['select-statistics-circle', 'select-statistics-polygon'] as const)(
+    'replaces editing with one %s creation and resets the previous area',
+    async (tool) => {
+      store.dispatch(StatisticsActions.setSelection({geometry, radiusInMeters: undefined}));
+      store.dispatch(ToolActions.startEditing({tool: 'select-statistics-polygon', target}));
+      store.dispatch(ToolActions.startCreation({tool}));
+      expect(tools.startEditing).toHaveBeenCalledExactlyOnceWith('select-statistics-polygon', target, 1);
+      expect(tools.startCreation).toHaveBeenCalledExactlyOnceWith(tool, 2);
+      expect((await firstValueFrom(store.select(selectStatisticsState))).geometry).toBeUndefined();
+    },
+  );
 
-        expect(mapServiceCancelSpy).toHaveBeenCalledOnce();
-        expect(actualActions).toEqual(expectedActions);
-      },
-    );
+  it('preserves the feature branch reset policy when switching to another tool family', async () => {
+    store.dispatch(StatisticsActions.setSelection({geometry, radiusInMeters: 750}));
+    store.dispatch(StatisticsActions.updateContent({results: []}));
+    store.dispatch(ToolActions.startCreation({tool: 'measure-line'}));
+    const state = await firstValueFrom(store.select(selectStatisticsState));
+    expect(state.geometry).toBeUndefined();
+    expect(state.loadingState).toBeUndefined();
+    expect(state.radiusInMeters).toBe(750);
   });
 });

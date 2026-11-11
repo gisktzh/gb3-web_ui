@@ -7,7 +7,6 @@ import {ToolActions} from '../actions/tool.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {selectInteraction, selectSequence} from '../reducers/tool.reducer';
 import {MAP_SERVICE} from '../../../app.tokens';
-import {StatisticsActions} from '../actions/statistics.actions';
 
 @Injectable()
 export class ToolEffects {

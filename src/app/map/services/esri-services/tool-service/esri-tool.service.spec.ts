@@ -975,15 +975,15 @@ describe('EsriToolService', () => {
       expect(storeSpy).toHaveBeenCalledTimes(1);
       expect(storeSpy).toHaveBeenCalledWith(expectedAction);
     });
-    it('should soft-update the statistic mode to polygon if a statistics graphic is being edited', () => {
-      (graphicMock.layer!.id as string) = 'USER_DRAWING__statistics_area';
-      const storeSpy = vi.spyOn(store, 'dispatch');
-
-      const expectedAction = StatisticsActions.softUpdateMode({mode: 'polygon'});
-      service.editDrawing(graphicMock);
-
-      expect(storeSpy).toHaveBeenCalledTimes(1);
-      expect(storeSpy).toHaveBeenCalledWith(expectedAction);
+    it('edits an existing statistics graphic without dispatching a mode or creation command', () => {
+      (graphicMock.layer!.id as string) = 'INTERNAL__statistics_area';
+      const dispatch = vi.spyOn(store, 'dispatch');
+      const edit = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'edit').mockImplementation(vi.fn());
+      const start = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start').mockImplementation(vi.fn());
+      startEditingGraphic(graphicMock);
+      expect(edit).toHaveBeenCalledExactlyOnceWith(graphicMock);
+      expect(start).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalled();
     });
     it('should throw an error when the graphic has a nullish layer', () => {
       // We exeplicitly do not set anything here.
@@ -1522,5 +1522,16 @@ describe('EsriToolService', () => {
       escape({key: 'Escape'});
       expect(dispatch).toHaveBeenCalledWith(ToolActions.cancelInteraction());
     });
+  });
+  it('does not cancel a replaced strategy twice when common cancellation is repeated', () => {
+    const layer = new GraphicsLayer({id: DrawingLayerPrefix.Internal + InternalDrawingLayer.StatisticsArea});
+    mapViewService.getMapView().map!.layers.add(layer);
+    vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start').mockImplementation(vi.fn());
+    service.startCreation('select-statistics-polygon', 1);
+    const cancel = vi.spyOn(service.getToolStrategy(), 'cancel');
+    service.cancelTool();
+    service.cancelTool();
+    expect(cancel).toHaveBeenCalledOnce();
+    expect(service.getToolStrategy()).toBeInstanceOf(EsriDefaultStrategy);
   });
 });

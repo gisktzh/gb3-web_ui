@@ -26,5 +26,3 @@ export const statisticsMapQueries: Record<string, readonly Omit<StatisticInfoQue
   StatBeschaeftigteZH: [{layer: 'stat-ent-p', field: ['anz_vzae', 'anz_besch'], statistic: 'sum'}],
   StatGebaeudeZH: [{layer: 'stat-geb-p', field: ['ganzwhg', 'geb_m_w', 'geb_o_w'], statistic: 'sum'}],
 };
-
-export const STATISTICS_SELECTION_IDENTIFIER = 'statistics-selection';

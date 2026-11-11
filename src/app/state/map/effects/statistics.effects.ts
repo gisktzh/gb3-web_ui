@@ -50,14 +50,7 @@ export class StatisticsEffects {
         this.areaService.calculateArea(geometry).pipe(
           map((areaInSquareMeters) => StatisticsActions.setArea({areaInSquareMeters})),
           catchError((error: unknown) => of(StatisticsActions.setError({error}))),
-          takeUntil(
-            this.actions$.pipe(
-              ofType(StatisticsActions.clearContent, ToolActions.startCreation),
-              filter(
-                (action) => action.type === StatisticsActions.clearContent.type || findStatisticsModeForTool(action.tool) !== undefined,
-              ),
-            ),
-          ),
+          takeUntil(this.actions$.pipe(ofType(StatisticsActions.clearContent, ToolActions.startCreation))),
         ),
       ),
     );
@@ -289,18 +282,10 @@ export class StatisticsEffects {
                 StatisticsActions.invalidateContent,
                 ToolActions.startCreation,
               ),
-              filter((action) => action.type !== ToolActions.startCreation.type || findStatisticsModeForTool(action.tool) !== undefined),
             ),
           ),
         );
       }),
-    );
-  });
-
-  public switchTool$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ToolActions.switchTool),
-      switchMap(() => [StatisticsActions.clearContent()]),
     );
   });
 

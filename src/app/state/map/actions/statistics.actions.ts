@@ -14,7 +14,6 @@ export const StatisticsActions = createActionGroup({
       radiusInMeters: number | undefined;
     }>(),
     'Set Mode': props<{mode: StatisticsMode}>(),
-    'Soft Update Mode': props<{mode: StatisticsMode}>(),
     'Set Radius': props<{radiusInMeters: number}>(),
     'Set Area': props<{areaInSquareMeters: number}>(),
     'Send Request': emptyProps(),
