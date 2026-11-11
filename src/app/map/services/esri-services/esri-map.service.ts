@@ -1034,6 +1034,37 @@ export class EsriMapService implements MapService {
     this.store.dispatch(MapConfigActions.setReferenceDistance({referenceDistanceInMeters}));
   }
 
+  private async handleMapClick(event: ClickEvent) {
+    // Tool handles all clicks, and as long as a tool is active, but hasn't fully initialized yet, we don't want any interaction on the map.
+    if (this.isToolActive() || this.esriToolService.shouldSuppressMapClick()) {
+      return;
+    }
+
+    if (event.button === EsriMouseButtonType.LeftClick) {
+      const {x, y} = this.transformationService.transform(event.mapPoint);
+      this.dispatchFeatureInfoRequest(x, y, Math.round(this.getMapView().scale));
+    } else if (event.button === EsriMouseButtonType.RightClick) {
+      const view = this.getMapView();
+      const map = view.map;
+      if (!map) {
+        return;
+      }
+      const layersToTest = map.layers.filter((layer) => this.configService.mapConfig.editableLayerIds.includes(layer.id)).toArray();
+      const sequence = this.interactionSequence();
+      const {results} = await this.getMapView().hitTest(event, {include: layersToTest});
+      if (this.esriMapViewService.mapView() !== view || this.interaction().kind !== 'idle' || this.interactionSequence() !== sequence)
+        return;
+      const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[]);
+      if (selectedFeature) {
+        const graphicId = selectedFeature.getAttribute(MapConstants.DRAWING_IDENTIFIER) as string | undefined;
+        if (graphicId && selectedFeature.layer) {
+          const tool = this.esriToolService.getEditingTool(selectedFeature);
+          this.store.dispatch(ToolActions.startEditing({tool, target: {layerId: String(selectedFeature.layer.id), graphicId}}));
+        }
+      }
+    }
+  }
+
   private attachMapViewListeners() {
     reactiveUtils.when(
       () => this.getMapView().stationary,
@@ -1050,34 +1081,7 @@ export class EsriMapService implements MapService {
     reactiveUtils.on(
       () => this.esriMapViewService.mapView(),
       'click',
-      async (event: ClickEvent) => {
-        // Tool handles all clicks, and as long as a tool is active, but hasn't fully initialized yet, we don't want any interaction on the map.
-        if (this.isToolActive() || this.esriToolService.shouldSuppressMapClick()) {
-          return;
-        }
-
-        if (event.button === EsriMouseButtonType.LeftClick) {
-          const {x, y} = this.transformationService.transform(event.mapPoint);
-          this.dispatchFeatureInfoRequest(x, y, Math.round(this.getMapView().scale));
-        } else if (event.button === EsriMouseButtonType.RightClick) {
-          const map = this.getMapView().map;
-          if (!map) {
-            return;
-          }
-          const layersToTest = map.layers.filter((layer) => this.configService.mapConfig.editableLayerIds.includes(layer.id)).toArray();
-          const sequence = this.interactionSequence();
-          const {results} = await this.getMapView().hitTest(event, {include: layersToTest});
-          if (this.interaction().kind !== 'idle' || this.interactionSequence() !== sequence) return;
-          const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[]);
-          if (selectedFeature) {
-            const graphicId = selectedFeature.getAttribute(MapConstants.DRAWING_IDENTIFIER) as string | undefined;
-            if (graphicId && selectedFeature.layer) {
-              const tool = this.esriToolService.getEditingTool(selectedFeature);
-              this.store.dispatch(ToolActions.startEditing({tool, target: {layerId: String(selectedFeature.layer.id), graphicId}}));
-            }
-          }
-        }
-      },
+      (event: ClickEvent) => this.handleMapClick(event),
     );
 
     reactiveUtils.watch(

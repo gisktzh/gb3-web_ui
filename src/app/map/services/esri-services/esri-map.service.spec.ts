@@ -1,3 +1,6 @@
+import {selectInteraction, selectSequence} from '../../../state/map/reducers/tool.reducer';
+import {ToolActions} from '../../../state/map/actions/tool.actions';
+import {ClickEvent} from '@arcgis/core/views/input/types';
 import {ErrorHandler} from '@angular/core';
 import {EsriStylesLoaderService} from './esri-styles-loader.service';
 import {TestBed} from '@angular/core/testing';
@@ -1061,6 +1064,40 @@ describe('EsriMapService', () => {
     it('does not navigate when the permitted range is empty', () => {
       service.zoomToExtent(polygon, undefined, undefined, {minScale: 50000, maxScale: 10000});
       expect(goTo).not.toHaveBeenCalled();
+    });
+  });
+  describe('map click ownership', () => {
+    beforeEach(() => {
+      store.overrideSelector(selectActiveTool, undefined);
+      store.overrideSelector(selectInteraction, {kind: 'idle'});
+      store.overrideSelector(selectSequence, 0);
+      service = TestBed.inject(EsriMapService);
+    });
+
+    it('does not query when the completing edit has consumed the event turn', async () => {
+      vi.spyOn(TestBed.inject(EsriToolService), 'shouldSuppressMapClick').mockReturnValue(true);
+      const dispatch = vi.spyOn(store, 'dispatch');
+      const clicks = service as unknown as {handleMapClick(event: ClickEvent): Promise<void>};
+      await clicks.handleMapClick({button: 0} as ClickEvent);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
+    it('ignores a delayed hit test after another interaction started and finished', async () => {
+      let resolveHit!: (value: Awaited<ReturnType<MapView['hitTest']>>) => void;
+      const pending = new Promise<Awaited<ReturnType<MapView['hitTest']>>>((resolve) => {
+        resolveHit = resolve;
+      });
+      mapViewMock.hitTest = vi.fn().mockReturnValue(pending);
+      const classify = vi.spyOn(TestBed.inject(EsriToolService), 'getEditingTool');
+      const dispatch = vi.spyOn(store, 'dispatch');
+      const clicks = service as unknown as {handleMapClick(event: ClickEvent): Promise<void>};
+      const click = clicks.handleMapClick({button: 2} as ClickEvent);
+      store.overrideSelector(selectSequence, 1);
+      store.refreshState();
+      resolveHit({results: []} as unknown as Awaited<ReturnType<MapView['hitTest']>>);
+      await click;
+      expect(classify).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({type: ToolActions.startEditing.type}));
     });
   });
 });

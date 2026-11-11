@@ -14,7 +14,6 @@ export const DrawingActions = createActionGroup({
     'Clear Drawings': emptyProps(),
     'Clear Drawing Layer': props<{layer: DrawingLayer}>(),
     'Select Drawing': props<{drawingId: string}>(),
-    'Cancel Edit Mode': emptyProps(),
     'Delete Drawing': props<{drawingId: string}>(),
     'Update Drawing Styles': props<{
       drawing: Gb3StyledInternalDrawingRepresentation;

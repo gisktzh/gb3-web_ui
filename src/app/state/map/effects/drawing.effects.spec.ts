@@ -1,4 +1,3 @@
-import {ToolActions} from '../actions/tool.actions';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of} from 'rxjs';
@@ -152,16 +151,6 @@ describe('DrawingEffects', () => {
 
       effects.passStylingToToolService$.subscribe(() => {
         expect(toolServiceSpy).toHaveBeenCalledTimes(1);
-      });
-    });
-  });
-
-  describe('cancelEditModeAfterClosingDrawingEditOverlay', () => {
-    it('calls toolService.cancelTool', () => {
-      actions$ = of(DrawingActions.cancelEditMode());
-
-      effects.cancelEditModeAfterClosingDrawingEditOverlay$.subscribe((action) => {
-        expect(action).toEqual(ToolActions.cancelInteraction());
       });
     });
   });

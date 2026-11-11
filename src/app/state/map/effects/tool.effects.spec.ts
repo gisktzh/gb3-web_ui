@@ -45,11 +45,9 @@ describe('tool interaction effects with real reducers', () => {
     store = TestBed.inject(Store);
   });
 
-  it('starts exactly one creation and records ownership before initialization', () => {
-    tools.startCreation.mockImplementation(() => {
-      expect(firstValueFrom(store.select(selectInteraction))).resolves.toEqual({kind: 'create', tool: 'draw-polygon', id: 1});
-    });
+  it('starts exactly one creation and records ownership before initialization', async () => {
     store.dispatch(ToolActions.startCreation({tool: 'draw-polygon'}));
+    expect(await firstValueFrom(store.select(selectInteraction))).toEqual({kind: 'create', tool: 'draw-polygon', id: 1});
     expect(tools.startCreation).toHaveBeenCalledExactlyOnceWith('draw-polygon', 1);
     expect(tools.startEditing).not.toHaveBeenCalled();
   });

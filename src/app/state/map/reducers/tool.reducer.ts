@@ -1,3 +1,4 @@
+import {MapConfigActions} from '../actions/map-config.actions';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {createFeature, createReducer, createSelector, on} from '@ngrx/store';
 import {ToolState} from '../states/tool.state';
@@ -25,7 +26,10 @@ export const toolFeature = createFeature({
       sequence: state.sequence + 1,
       interaction: {kind: 'edit', id: state.sequence + 1, tool, target},
     })),
-    on(ToolActions.cancelInteraction, (state): ToolState => ({...state, interaction: {kind: 'idle'}})),
+    on(ToolActions.cancelInteraction, MapConfigActions.markMapServiceAsDeinitialized, (state): ToolState => ({
+      ...state,
+      interaction: {kind: 'idle'},
+    })),
     on(ToolActions.interactionFailed, (state, {interactionId}): ToolState =>
       state.interaction.kind !== 'idle' && state.interaction.id === interactionId ? {...state, interaction: {kind: 'idle'}} : state,
     ),
@@ -45,6 +49,6 @@ export const toolFeature = createFeature({
 
 export const {name, reducer, selectToolState, selectInteraction, selectSequence} = toolFeature;
 export const selectActiveTool = createSelector(selectInteraction, (interaction) =>
-  interaction.kind === 'idle' ? undefined : interaction.tool,
+  interaction?.kind === 'idle' ? undefined : interaction?.tool,
 );
-export const selectIsEditing = createSelector(selectInteraction, (interaction) => interaction.kind === 'edit');
+export const selectIsEditing = createSelector(selectInteraction, (interaction) => interaction?.kind === 'edit');

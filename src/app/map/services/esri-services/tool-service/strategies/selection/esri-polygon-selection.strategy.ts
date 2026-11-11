@@ -41,6 +41,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
         () => this.sketchViewModel,
         'create',
         ({state, graphic}: CreateEvent) => {
+          if (this.disposed) return;
           switch (state) {
             case 'start':
               this.layer.removeAll();
@@ -66,6 +67,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
         () => this.sketchViewModel,
         'update',
         ({state}: UpdateEvent) => {
+          if (this.disposed) return;
           if (state === 'complete') this.complete(graphic);
         },
       ),

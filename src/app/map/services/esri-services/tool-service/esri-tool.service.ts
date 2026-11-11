@@ -102,7 +102,7 @@ export class EsriToolService implements ToolService {
     this.interactionId = 0;
     this.pendingInitialization?.abort();
     this.pendingInitialization = undefined;
-    this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
+    this.esriMapViewService.mapView()?.removeHandles(HANDLE_GROUP_KEY);
     const previous = this.toolStrategy;
     this.toolStrategy = new EsriDefaultStrategy();
     previous.cancel();
@@ -351,7 +351,6 @@ export class EsriToolService implements ToolService {
     } else {
       this.store.dispatch(ToolActions.cancelInteraction());
     }
-    this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
   }
 
   public completeStatisticsSelection(selection: GeometrySelection | undefined, isCircle: boolean) {
@@ -457,7 +456,6 @@ export class EsriToolService implements ToolService {
   }
 
   private endDrawing() {
-    this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
     const interaction = this.interaction();
     if (interaction?.kind === 'edit') {
       // Suppress only the event turn that completes editing, without retaining edit state after completion.

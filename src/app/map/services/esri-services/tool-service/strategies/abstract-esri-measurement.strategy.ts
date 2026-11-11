@@ -38,6 +38,7 @@ export abstract class AbstractEsriMeasurementStrategy<
         () => this.sketchViewModel,
         'create',
         ({state, graphic}: CreateEvent) => {
+          if (this.disposed) return;
           switch (state) {
             case 'active':
             case 'start':
@@ -68,6 +69,7 @@ export abstract class AbstractEsriMeasurementStrategy<
         () => this.sketchViewModel,
         'update',
         ({state}: UpdateEvent) => {
+          if (this.disposed) return;
           switch (state) {
             case 'start':
               this.removeLabelOnEdit(graphic);

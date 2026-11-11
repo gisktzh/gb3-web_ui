@@ -1,6 +1,6 @@
 import {selectInteraction} from '../../../../state/map/reducers/tool.reducer';
 import {TestBed} from '@angular/core/testing';
-import {EsriToolService, HANDLE_GROUP_KEY} from './esri-tool.service';
+import {EsriToolService} from './esri-tool.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layers.selector';
 import {EsriMapMock} from '../../../../testing/map-testing/esri-map.mock';
@@ -428,8 +428,7 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenNthCalledWith(1, expectedAddDrawingAction);
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing for drawingMode = "edit"', () => {
@@ -458,8 +457,7 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenNthCalledWith(1, expectedAddDrawingAction);
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('completes drawings by dispatching DrawingActions.deleteDrawing and calling endDrawing', () => {
@@ -483,8 +481,7 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenNthCalledWith(1, expectedDeleteDrawingAction);
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('completes measurements by dispatching DrawingActions.addDrawings and calling endDrawing for drawingMode = "add"', () => {
@@ -541,8 +538,7 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenNthCalledWith(1, expectedAddDrawingAction);
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('completes measurements by dispatching DrawingActions.addDrawings and calling endDrawing for drawingMode = "edit"', () => {
@@ -599,8 +595,7 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenNthCalledWith(1, expectedAddDrawingAction);
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('completes measurements by dispatching DrawingActions.deleteDrawing and calling endDrawing for drawingMode = "delete"', () => {
@@ -645,8 +640,7 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenNthCalledWith(1, expectedDeleteDrawingAction);
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('completes selections by dispatching DataDownloadOrderActions.setSelection if the selection is not `undefined`', () => {
@@ -673,8 +667,7 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenCalledTimes(1);
       expect(storeSpy).toHaveBeenCalledWith(expectedAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith('EsriToolService');
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('completes statistics with a neutral geometry payload and releases map ownership', () => {
@@ -722,8 +715,7 @@ describe('EsriToolService', () => {
       expect(storeSpy).toHaveBeenCalledTimes(1);
 
       expect(storeSpy).toHaveBeenCalledWith(expectedAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith('EsriToolService');
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('should cancel the tool strategy when being cancelled from outside', () => {
@@ -766,8 +758,7 @@ describe('EsriToolService', () => {
       expect(convertSpy).toHaveBeenCalledWith(graphic, 2056, UserDrawingLayer.Drawings);
       expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('should convert and dispatch an internal drawing representation on completion for edit from outside', () => {
@@ -802,8 +793,7 @@ describe('EsriToolService', () => {
       expect(convertSpy).toHaveBeenCalledWith(graphic, 2056, UserDrawingLayer.Drawings);
       expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('should dispatch a delete drawing action when deleting from outside', () => {
@@ -829,8 +819,7 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.deleteDrawing({drawingId: mockDrawingId}));
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('should convert and dispatch an internal representation of a map drawing symbol for add from outside', () => {
@@ -872,8 +861,7 @@ describe('EsriToolService', () => {
       expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
       expect(mapViewGoToSpy).toHaveBeenCalled();
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('should convert and dispatch an internal representation of a map drawing symbol for ediit from outside', () => {
@@ -916,8 +904,7 @@ describe('EsriToolService', () => {
       expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.addDrawing({drawing: mockInternalDrawingRepresentation}));
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
       expect(mapViewGoToSpy).toHaveBeenCalled();
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
 
     it('should dispatch a delete drawing action when deleting a symbol from outside', () => {
@@ -943,8 +930,7 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenNthCalledWith(1, DrawingActions.deleteDrawing({drawingId: mockDrawingId}));
       expect(storeSpy).toHaveBeenNthCalledWith(2, expectedDeactivateToolAction);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
-      expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith(HANDLE_GROUP_KEY);
+      expect(mapViewRemoveHandlesSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -1438,6 +1424,103 @@ describe('EsriToolService', () => {
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
 
       expect(() => service.setToolStrategyForEditingFeature(mockGraphic)).toThrow(new NonEditableLayerType());
+    });
+  });
+  describe('interaction lifecycle regressions', () => {
+    it('constructs one statistics strategy for editing and never starts creation or clears the graphic', () => {
+      const layer = new GraphicsLayer({id: DrawingLayerPrefix.Internal + InternalDrawingLayer.StatisticsArea});
+      const graphic = new Graphic({
+        attributes: {['__id']: 'statistics-selection'},
+        geometry: new Polygon({
+          rings: [
+            [
+              [0, 0],
+              [10, 0],
+              [0, 10],
+              [0, 0],
+            ],
+          ],
+          spatialReference: {wkid: 2056},
+        }),
+      });
+      layer.add(graphic);
+      mapViewService.getMapView().map!.layers.add(layer);
+      const create = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start').mockImplementation(vi.fn());
+      const update = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'edit').mockImplementation(vi.fn());
+      const setStrategy = vi.spyOn(service, 'setToolStrategyForEditingFeature');
+      service.startEditing('select-statistics-polygon', {layerId: String(layer.id), graphicId: 'statistics-selection'}, 7);
+      expect(setStrategy).toHaveBeenCalledExactlyOnceWith(graphic);
+      expect(update).toHaveBeenCalledExactlyOnceWith(graphic);
+      expect(create).not.toHaveBeenCalled();
+      expect(layer.graphics.toArray()).toEqual([graphic]);
+    });
+
+    it('does not initialize an old layer after a replacement starts', async () => {
+      let resolveLayer!: (layer: GraphicsLayer) => void;
+      const pending = new Promise<GraphicsLayer>((resolve) => {
+        resolveLayer = resolve;
+      });
+      vi.spyOn(reactiveUtils, 'whenOnce').mockReturnValue(pending);
+      const line = vi.spyOn(EsriLineDrawingStrategy.prototype, 'start').mockImplementation(vi.fn());
+      const polygon = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start').mockImplementation(vi.fn());
+      service.startCreation('draw-line', 1);
+      const statistics = new GraphicsLayer({id: DrawingLayerPrefix.Internal + InternalDrawingLayer.StatisticsArea});
+      mapViewService.getMapView().map!.layers.add(statistics);
+      service.startCreation('select-statistics-polygon', 2);
+      resolveLayer(new GraphicsLayer({id: DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings}));
+      await pending;
+      expect(line).not.toHaveBeenCalled();
+      expect(polygon).toHaveBeenCalledOnce();
+      expect(service.getToolStrategy()).toBeInstanceOf(EsriPolygonSelectionStrategy);
+    });
+
+    it('ignores a stale completion when cleaning up a replacement strategy', () => {
+      const layer = new GraphicsLayer({id: DrawingLayerPrefix.Internal + InternalDrawingLayer.StatisticsArea});
+      mapViewService.getMapView().map!.layers.add(layer);
+      vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start').mockImplementation(vi.fn());
+      service.startCreation('select-statistics-circle', 2);
+      const strategy = service.getToolStrategy();
+      const cancel = vi.spyOn(strategy, 'cancel');
+      service.finishInteraction(1);
+      expect(cancel).not.toHaveBeenCalled();
+      service.finishInteraction(2);
+      expect(cancel).toHaveBeenCalledOnce();
+      expect(service.getToolStrategy()).toBeInstanceOf(EsriDefaultStrategy);
+    });
+
+    it('registers Escape for editing and suppresses only the completion event turn', () => {
+      vi.useFakeTimers();
+      try {
+        store.overrideSelector(selectInteraction, {
+          kind: 'edit',
+          id: 7,
+          tool: 'select-statistics-polygon',
+          target: {layerId: 'layer', graphicId: 'area'},
+        });
+        service.completeStatisticsSelection(undefined, false);
+        expect(service.shouldSuppressMapClick()).toBe(true);
+        vi.runOnlyPendingTimers();
+        expect(service.shouldSuppressMapClick()).toBe(false);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('leaves Escape wired to common cancellation rather than completion', () => {
+      let escape!: (event: {key: string}) => void;
+      vi.spyOn(reactiveUtils, 'on').mockImplementation((_target, event, callback) => {
+        if (event === 'key-down') escape = callback;
+        return {remove: vi.fn()};
+      });
+      const layer = new GraphicsLayer({id: DrawingLayerPrefix.Internal + InternalDrawingLayer.StatisticsArea});
+      const graphic = new Graphic({attributes: {['__id']: 'area'}, geometry: new Polygon()});
+      layer.add(graphic);
+      mapViewService.getMapView().map!.layers.add(layer);
+      vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'edit').mockImplementation(vi.fn());
+      const dispatch = vi.spyOn(store, 'dispatch');
+      service.startEditing('select-statistics-polygon', {layerId: String(layer.id), graphicId: 'area'}, 3);
+      escape({key: 'Escape'});
+      expect(dispatch).toHaveBeenCalledWith(ToolActions.cancelInteraction());
     });
   });
 });

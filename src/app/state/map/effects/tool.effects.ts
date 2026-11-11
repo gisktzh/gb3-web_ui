@@ -1,3 +1,4 @@
+import {MapConfigActions} from '../actions/map-config.actions';
 import {ErrorHandler, Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
@@ -23,6 +24,7 @@ export class ToolEffects {
         ToolActions.startCreation,
         ToolActions.startEditing,
         ToolActions.cancelInteraction,
+        MapConfigActions.markMapServiceAsDeinitialized,
         ToolActions.completeInteraction,
         ToolActions.interactionFailed,
       ),
@@ -51,9 +53,14 @@ export class ToolEffects {
   public endInteraction$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ToolActions.cancelInteraction, ToolActions.completeInteraction, ToolActions.interactionFailed),
+        ofType(
+          ToolActions.cancelInteraction,
+          MapConfigActions.markMapServiceAsDeinitialized,
+          ToolActions.completeInteraction,
+          ToolActions.interactionFailed,
+        ),
         tap((action) => {
-          if (action.type === ToolActions.cancelInteraction.type) this.toolService.cancelTool();
+          if (!('interactionId' in action)) this.toolService.cancelTool();
           else if (this.interaction().kind === 'idle') this.toolService.finishInteraction(action.interactionId);
         }),
       );
