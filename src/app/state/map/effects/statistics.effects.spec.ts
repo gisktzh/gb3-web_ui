@@ -348,7 +348,7 @@ describe('StatisticsEffects', () => {
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
-      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.startCreation({tool: 'select-statistics-circle'})]);
+      expect(actualActions).toEqual([ToolActions.startCreation({tool: 'select-statistics-circle'})]);
     });
 
     it('clears the area and hands over the polygon tool for the polygon mode', () => {
@@ -358,56 +358,18 @@ describe('StatisticsEffects', () => {
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
-      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.startCreation({tool: 'select-statistics-polygon'})]);
+      expect(actualActions).toEqual([ToolActions.startCreation({tool: 'select-statistics-polygon'})]);
     });
 
     /** Re-activating the running tool would restart it, and the mode sync would answer with another mode change. */
-    it('does not hand over the tool that is already drawing', () => {
+    it('restarts creation when explicitly requested even for the same tool', () => {
       store.overrideSelector(selectActiveTool, 'select-statistics-polygon');
       actions$ = of(StatisticsActions.setMode({mode: 'polygon'}));
 
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
-      expect(actualActions).toEqual([StatisticsActions.clearContent()]);
-    });
-  });
-
-  describe('syncModeWithSelectionTool$', () => {
-    it('follows a selection tool started from the tool bar into its mode', () => {
-      store.overrideSelector(selectMode, 'umkreis');
-      actions$ = of(ToolActions.startCreation({tool: 'select-statistics-polygon'}));
-
-      let actualAction;
-      effects.syncModeWithSelectionTool$.subscribe((action) => (actualAction = action));
-
-      expect(actualAction).toEqual(StatisticsActions.setMode({mode: 'polygon'}));
-    });
-
-    it('stays quiet for the mode that is already selected', async () => {
-      store.overrideSelector(selectMode, 'polygon');
-      actions$ = of(ToolActions.startCreation({tool: 'select-statistics-polygon'}));
-
-      vi.useFakeTimers();
-      let actualAction;
-      effects.syncModeWithSelectionTool$.subscribe((action) => (actualAction = action));
-      await vi.runAllTimersAsync();
-      vi.useRealTimers();
-
-      expect(actualAction).toBeUndefined();
-    });
-
-    it('ignores tools that have nothing to do with statistics', async () => {
-      store.overrideSelector(selectMode, 'umkreis');
-      actions$ = of(ToolActions.startCreation({tool: 'measure-line'}));
-
-      vi.useFakeTimers();
-      let actualAction;
-      effects.syncModeWithSelectionTool$.subscribe((action) => (actualAction = action));
-      await vi.runAllTimersAsync();
-      vi.useRealTimers();
-
-      expect(actualAction).toBeUndefined();
+      expect(actualActions).toEqual([ToolActions.startCreation({tool: 'select-statistics-polygon'})]);
     });
   });
 

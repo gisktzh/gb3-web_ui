@@ -79,7 +79,14 @@ describe('shared feature/statistics query location', () => {
     drawFeatureInfoHighlight: vi.fn(),
     clearFeatureInfoHighlight: vi.fn(),
   };
-  const tools = {initializeStatisticsSelection: vi.fn(), initializeMeasurement: vi.fn(), cancelTool: vi.fn()};
+  const tools = {
+    startCreation: vi.fn(),
+    startEditing: vi.fn(),
+    finishInteraction: vi.fn(),
+    initializeStatisticsSelection: vi.fn(),
+    initializeMeasurement: vi.fn(),
+    cancelTool: vi.fn(),
+  };
   const point: PointWithSrs = {type: 'Point', coordinates: [2680000, 1254000], srs: 2056};
   const polygon: PolygonWithSrs = {
     type: 'Polygon',

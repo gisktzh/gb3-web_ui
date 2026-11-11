@@ -67,7 +67,8 @@ import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import {EsriLoadStatus} from './types/esri-load-status.type';
 import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOperator.js';
 import {TIME_SERVICE} from '../../../app.tokens';
-import {selectActiveTool} from 'src/app/state/map/reducers/tool.reducer';
+import {selectActiveTool, selectInteraction, selectSequence} from 'src/app/state/map/reducers/tool.reducer';
+import {ToolActions} from 'src/app/state/map/actions/tool.actions';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from './utils/esri-graphic-to-internal-drawing-representation.utils';
 import {Gb3StyledInternalDrawingRepresentation} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 import Layer from '@arcgis/core/layers/Layer';
@@ -117,6 +118,8 @@ export class EsriMapService implements MapService {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
+  private readonly interaction = this.store.selectSignal(selectInteraction);
+  private readonly interactionSequence = this.store.selectSignal(selectSequence);
   private readonly isToolActive = computed(() => !!this.activeTool());
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
@@ -723,13 +726,6 @@ export class EsriMapService implements MapService {
     this.getMapView().rotation = rotation;
   }
 
-  public cancelEditMode() {
-    if (this.isEditModeActive()) {
-      this.isEditModeActive.set(false);
-      this.esriToolService.cancelTool();
-    }
-  }
-
   private createWmsLayer(
     id: string,
     title: string,
@@ -1056,28 +1052,29 @@ export class EsriMapService implements MapService {
       'click',
       async (event: ClickEvent) => {
         // Tool handles all clicks, and as long as a tool is active, but hasn't fully initialized yet, we don't want any interaction on the map.
-        if (this.isToolActive()) {
+        if (this.isToolActive() || this.esriToolService.shouldSuppressMapClick()) {
           return;
         }
 
         if (event.button === EsriMouseButtonType.LeftClick) {
           const {x, y} = this.transformationService.transform(event.mapPoint);
-          if (this.isEditModeActive()) {
-            this.isEditModeActive.set(false);
-          } else {
-            this.dispatchFeatureInfoRequest(x, y, Math.round(this.getMapView().scale));
-          }
+          this.dispatchFeatureInfoRequest(x, y, Math.round(this.getMapView().scale));
         } else if (event.button === EsriMouseButtonType.RightClick) {
           const map = this.getMapView().map;
           if (!map) {
             return;
           }
           const layersToTest = map.layers.filter((layer) => this.configService.mapConfig.editableLayerIds.includes(layer.id)).toArray();
+          const sequence = this.interactionSequence();
           const {results} = await this.getMapView().hitTest(event, {include: layersToTest});
+          if (this.interaction().kind !== 'idle' || this.interactionSequence() !== sequence) return;
           const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[]);
           if (selectedFeature) {
-            this.isEditModeActive.set(true);
-            this.esriToolService.editDrawing(selectedFeature);
+            const graphicId = selectedFeature.getAttribute(MapConstants.DRAWING_IDENTIFIER) as string | undefined;
+            if (graphicId && selectedFeature.layer) {
+              const tool = this.esriToolService.getEditingTool(selectedFeature);
+              this.store.dispatch(ToolActions.startEditing({tool, target: {layerId: String(selectedFeature.layer.id), graphicId}}));
+            }
           }
         }
       },

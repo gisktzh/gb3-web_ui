@@ -1,3 +1,4 @@
+import {ToolActions} from '../actions/tool.actions';
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {filter, tap} from 'rxjs';
@@ -78,10 +79,7 @@ export class DrawingEffects {
   public cancelEditModeAfterClosingDrawingEditOverlay$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DrawingActions.cancelEditMode),
-      map(() => {
-        this.mapService.cancelEditMode();
-        return MapUiActions.setDrawingEditOverlayVisibility({isVisible: false});
-      }),
+      map(() => ToolActions.cancelInteraction()),
     );
   });
 }

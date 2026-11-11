@@ -34,44 +34,43 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
   }
 
   public start(): void {
-    this.sketchViewModel.create(this.tool, {mode: 'click'});
+    this.layer.removeAll();
 
-    reactiveUtils.on(
-      () => this.sketchViewModel,
-      'create',
-      ({state, graphic}: CreateEvent) => {
-        switch (state) {
-          case 'start':
-          case 'active':
-          case 'cancel':
-            break; // currently, these events do not trigger any action
-          case 'complete':
-            if (graphic) {
-              this.complete(graphic);
-            }
-            break;
-        }
-      },
+    this.sketchViewModel.addHandles(
+      reactiveUtils.on(
+        () => this.sketchViewModel,
+        'create',
+        ({state, graphic}: CreateEvent) => {
+          switch (state) {
+            case 'start':
+              this.layer.removeAll();
+              break;
+            case 'active':
+            case 'cancel':
+              break; // currently, these events do not trigger any action
+            case 'complete':
+              if (graphic) {
+                this.complete(graphic);
+              }
+              break;
+          }
+        },
+      ),
     );
+    this.sketchViewModel.create(this.tool, {mode: 'click'});
   }
 
   public edit(graphic: Graphic) {
-    this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
-
-    reactiveUtils.on(
-      () => this.sketchViewModel,
-      'update',
-      ({state}: UpdateEvent) => {
-        switch (state) {
-          case 'active':
-          case 'start':
-            break;
-          case 'complete':
-            this.complete(graphic);
-            break;
-        }
-      },
+    this.sketchViewModel.addHandles(
+      reactiveUtils.on(
+        () => this.sketchViewModel,
+        'update',
+        ({state}: UpdateEvent) => {
+          if (state === 'complete') this.complete(graphic);
+        },
+      ),
     );
+    this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
   }
 
   private complete(graphic: Graphic) {

@@ -1,3 +1,4 @@
+import {selectInteraction} from '../../../../state/map/reducers/tool.reducer';
 import {TestBed} from '@angular/core/testing';
 import {EsriToolService, HANDLE_GROUP_KEY} from './esri-tool.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -65,6 +66,13 @@ describe('EsriToolService', () => {
   let mapViewService: EsriMapViewService = new EsriMapViewService();
   let store: MockStore;
 
+  function startEditingGraphic(graphic: Graphic) {
+    const tool = service.getEditingTool(graphic);
+    const target = {layerId: String(graphic.layer!.id), graphicId: graphic.getAttribute(MapConstants.DRAWING_IDENTIFIER) as string};
+    vi.spyOn(mapViewService, 'findEsriLayer').mockReturnValue({graphics: {find: () => graphic}} as unknown as GraphicsLayer);
+    service.startEditing(tool, target, 1);
+  }
+
   // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
   class EsriMapViewMock extends MapView {
     constructor(map: Partial<EsriMap>, container: HTMLDivElement) {
@@ -83,7 +91,12 @@ describe('EsriToolService', () => {
       imports: [MatDialogModule],
       providers: [
         EsriToolService,
-        provideMockStore({selectors: [{selector: selectDrawingLayers, value: []}]}),
+        provideMockStore({
+          selectors: [
+            {selector: selectDrawingLayers, value: []},
+            {selector: selectInteraction, value: {kind: 'idle'}},
+          ],
+        }),
         {
           provide: EsriMapViewService,
           useValue: mapViewService,
@@ -401,7 +414,7 @@ describe('EsriToolService', () => {
       );
 
       const expectedAddDrawingAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -431,7 +444,7 @@ describe('EsriToolService', () => {
       );
 
       const expectedAddDrawingAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -456,7 +469,7 @@ describe('EsriToolService', () => {
       const drawingId = graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER];
 
       const expectedDeleteDrawingAction = DrawingActions.deleteDrawing({drawingId});
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -514,7 +527,7 @@ describe('EsriToolService', () => {
       const expectedAddDrawingAction = DrawingActions.addDrawings({
         drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel],
       });
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -572,7 +585,7 @@ describe('EsriToolService', () => {
       const expectedAddDrawingAction = DrawingActions.addDrawings({
         drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel],
       });
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -618,7 +631,7 @@ describe('EsriToolService', () => {
       const drawingId = graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER];
 
       const expectedDeleteDrawingAction = DrawingActions.deleteDrawing({drawingId});
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
       const mapView = mapViewService.mapView();
       if (!mapView) {
         expect.fail('MapView not defined');
@@ -659,7 +672,6 @@ describe('EsriToolService', () => {
       service.completeSelection(selection);
 
       expect(storeSpy).toHaveBeenCalledTimes(1);
-
       expect(storeSpy).toHaveBeenCalledWith(expectedAction);
       expect(mapViewRemoveHandlesSpy).toHaveBeenCalledTimes(1);
       expect(mapViewRemoveHandlesSpy).toHaveBeenCalledWith('EsriToolService');
@@ -691,7 +703,7 @@ describe('EsriToolService', () => {
       expect(dispatch).toHaveBeenCalledWith(
         StatisticsActions.setSelection({geometry: drawingRepresentation.geometry, radiusInMeters: undefined}),
       );
-      expect(dispatch).toHaveBeenLastCalledWith(ToolActions.cancelInteraction());
+      expect(dispatch).toHaveBeenLastCalledWith(ToolActions.completeInteraction({interactionId: 0}));
     });
 
     it('completes selections by dispatching ToolActions.cancelInteraction if the selection is `undefined`', () => {
@@ -747,7 +759,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
 
       service.completeDrawing(graphic, 'add');
 
@@ -783,7 +795,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
 
       service.completeDrawing(graphic, 'edit');
 
@@ -811,7 +823,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
 
       service.completeDrawing(graphic, 'delete');
 
@@ -851,7 +863,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
 
       const mapViewGoToSpy = vi.spyOn(mapView, 'goTo').mockImplementation(vi.fn());
       service.completeMapSymbolDrawing(graphic, 'edit', mockMapDrawingSymbol, mockSize, mockRotation);
@@ -894,7 +906,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
 
       const mapViewGoToSpy = vi.spyOn(mapView, 'goTo').mockImplementation(vi.fn());
 
@@ -925,7 +937,7 @@ describe('EsriToolService', () => {
       }
 
       const mapViewRemoveHandlesSpy = vi.spyOn(mapView, 'removeHandles').mockImplementation(vi.fn());
-      const expectedDeactivateToolAction = ToolActions.cancelInteraction();
+      const expectedDeactivateToolAction = ToolActions.completeInteraction({interactionId: 0});
 
       service.completeMapSymbolDrawing(graphic, 'delete', {}, 10, 11);
 
@@ -968,7 +980,7 @@ describe('EsriToolService', () => {
     it('should call the correct edit method on the strategy and dispatch the correct action', () => {
       const storeSpy = vi.spyOn(store, 'dispatch');
       const editSpy = vi.spyOn(EsriPointDrawingStrategy.prototype, 'edit').mockImplementation(vi.fn());
-      service.editDrawing(graphicMock);
+      startEditingGraphic(graphicMock);
       const expectedAction = DrawingActions.selectDrawing({drawingId: graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER]});
 
       expect(editSpy).toHaveBeenCalledTimes(1);
@@ -991,22 +1003,22 @@ describe('EsriToolService', () => {
       // We exeplicitly do not set anything here.
       const graphic = new Graphic();
 
-      expect(() => service.editDrawing(graphic)).toThrow(new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.'));
+      expect(() => startEditingGraphic(graphic)).toThrow(new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.'));
     });
     it('should call the correct edit method on the strategy and not dispatch an action for measurements', () => {
       (graphicMock.layer!.id as string) = 'USER_DRAWING__measurements';
       const storeSpy = vi.spyOn(store, 'dispatch');
       const editSpy = vi.spyOn(EsriPointMeasurementStrategy.prototype, 'edit').mockImplementation(vi.fn());
-      service.editDrawing(graphicMock);
+      startEditingGraphic(graphicMock);
 
       expect(editSpy).toHaveBeenCalledTimes(1);
 
       expect(editSpy).toHaveBeenCalledWith(graphicMock);
       expect(storeSpy).not.toHaveBeenCalled();
     });
-    it('should do nothing if the graphic has no id', () => {
+    it('rejects an edit target without an identifier', () => {
       graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER] = undefined;
-      service.editDrawing(graphicMock);
+      expect(() => startEditingGraphic(graphicMock)).toThrow(EditFeatureInitializationFailed);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const setToolStrategySpy = vi.spyOn(service as any, 'setToolStrategyForEditingFeature').mockImplementation(vi.fn());
       expect(setToolStrategySpy).not.toHaveBeenCalled();
@@ -1176,7 +1188,7 @@ describe('EsriToolService', () => {
       vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
       vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
 
-      service.editDrawing(graphic);
+      startEditingGraphic(graphic);
 
       service.updateDrawingStyles(drawingMock, style, labelText);
       expect(convertSpy).toHaveBeenCalledTimes(1);
@@ -1219,7 +1231,7 @@ describe('EsriToolService', () => {
       vi.spyOn(graphic, 'symbol', 'get').mockReturnValue(new TextSymbol());
       vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
 
-      expect(() => service.editDrawing(graphic)).toThrow(new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten'));
+      expect(() => startEditingGraphic(graphic)).toThrow(new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten'));
 
       expect(convertSpy).not.toHaveBeenCalledTimes(1);
 
@@ -1244,7 +1256,7 @@ describe('EsriToolService', () => {
       vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
       vi.spyOn(graphic, 'layer', 'get').mockReturnValue(null);
 
-      expect(() => service.editDrawing(graphic)).toThrow(new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.'));
+      expect(() => startEditingGraphic(graphic)).toThrow(new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.'));
 
       expect(convertSpy).not.toHaveBeenCalledTimes(1);
 
@@ -1272,7 +1284,7 @@ describe('EsriToolService', () => {
       vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
       vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
 
-      service.editDrawing(graphic);
+      startEditingGraphic(graphic);
 
       expect(polygonStratEditSpy).toHaveBeenCalled();
       expect(service.getToolStrategy()).toBeInstanceOf(EsriPolygonDrawingStrategy);
@@ -1299,7 +1311,7 @@ describe('EsriToolService', () => {
       vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
       vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
 
-      service.editDrawing(graphic);
+      startEditingGraphic(graphic);
 
       expect(polygonStratEditSpy).toHaveBeenCalled();
       expect(service.getToolStrategy()).toBeInstanceOf(EsriPolygonDrawingStrategy);
@@ -1326,7 +1338,7 @@ describe('EsriToolService', () => {
       vi.spyOn(graphic, 'layer', 'get').mockReturnValue(layer);
       vi.spyOn(graphic, 'geometry', 'get').mockReturnValue(new Point());
 
-      service.editDrawing(graphic);
+      startEditingGraphic(graphic);
 
       expect(polygonStratEditSpy).toHaveBeenCalled();
       expect(service.getToolStrategy()).toBeInstanceOf(EsriSymbolDrawingStrategy);

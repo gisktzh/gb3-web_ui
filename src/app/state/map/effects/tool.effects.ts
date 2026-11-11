@@ -1,78 +1,72 @@
-import {Injectable, inject} from '@angular/core';
+import {ErrorHandler, Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {switchMap, tap} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {EMPTY, concatMap, filter, map, of, tap} from 'rxjs';
 import {ToolActions} from '../actions/tool.actions';
-import {ToolService} from '../../../map/interfaces/tool.service';
-import {MapService} from '../../../map/interfaces/map.service';
+import {MapUiActions} from '../actions/map-ui.actions';
+import {selectInteraction, selectSequence} from '../reducers/tool.reducer';
 import {MAP_SERVICE} from '../../../app.tokens';
 import {StatisticsActions} from '../actions/statistics.actions';
 
 @Injectable()
 export class ToolEffects {
   private readonly actions$ = inject(Actions);
-  private readonly mapService = inject<MapService>(MAP_SERVICE);
-  private readonly toolService: ToolService = this.mapService.getToolService();
+  private readonly store = inject(Store);
+  private readonly toolService = inject(MAP_SERVICE).getToolService();
+  private readonly errorHandler = inject(ErrorHandler);
+  private readonly interaction = this.store.selectSignal(selectInteraction);
+  private readonly sequence = this.store.selectSignal(selectSequence);
 
-  public switchTool$ = createEffect(() => {
+  public closeEditOverlay$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ToolActions.switchTool),
-      tap(() => {
-        // In case we're editing already.
-        this.mapService.cancelEditMode();
-      }),
-      switchMap(({tool}) => [ToolActions.activateTool({tool})]),
+      ofType(
+        ToolActions.startCreation,
+        ToolActions.startEditing,
+        ToolActions.cancelInteraction,
+        ToolActions.completeInteraction,
+        ToolActions.interactionFailed,
+      ),
+      filter((action) => !('interactionId' in action) || this.interaction().kind === 'idle'),
+      map(() => MapUiActions.setDrawingEditOverlayVisibility({isVisible: false})),
     );
   });
 
-  public initializeTool$ = createEffect(
+  public startInteraction$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ToolActions.startCreation, ToolActions.startEditing),
+      concatMap((action) => {
+        const interaction = this.interaction();
+        if (interaction.kind === 'idle') return EMPTY;
+        try {
+          if (action.type === ToolActions.startEditing.type) this.toolService.startEditing(action.tool, action.target, interaction.id);
+          else this.toolService.startCreation(action.tool, interaction.id);
+          return EMPTY;
+        } catch (error) {
+          return of(ToolActions.interactionFailed({interactionId: interaction.id, error}));
+        }
+      }),
+    );
+  });
+
+  public endInteraction$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ToolActions.startCreation),
-        tap(({tool}) => {
-          switch (tool) {
-            case 'measure-line':
-            case 'measure-point':
-            case 'measure-area':
-            case 'measure-circle':
-              this.toolService.initializeMeasurement(tool);
-              break;
-            case 'measure-elevation-profile':
-              this.toolService.initializeElevationProfileMeasurement();
-              break;
-            case 'draw-point':
-            case 'draw-line':
-            case 'draw-polygon':
-            case 'draw-rectangle':
-            case 'draw-circle':
-            case 'draw-text':
-            case 'draw-symbol':
-              this.toolService.initializeDrawing(tool);
-              break;
-            case 'select-circle':
-            case 'select-polygon':
-            case 'select-rectangle':
-            case 'select-section':
-            case 'select-federation':
-            case 'select-canton':
-            case 'select-municipality':
-              this.toolService.initializeDataDownloadSelection(tool);
-              break;
-            case 'select-statistics-circle':
-            case 'select-statistics-polygon':
-              this.toolService.initializeStatisticsSelection(tool);
-              break;
-          }
+        ofType(ToolActions.cancelInteraction, ToolActions.completeInteraction, ToolActions.interactionFailed),
+        tap((action) => {
+          if (action.type === ToolActions.cancelInteraction.type) this.toolService.cancelTool();
+          else if (this.interaction().kind === 'idle') this.toolService.finishInteraction(action.interactionId);
         }),
       );
     },
     {dispatch: false},
   );
 
-  public cancelOrDeactivateTool$ = createEffect(
+  public reportFailure$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ToolActions.cancelInteraction, ToolActions.cancelInteraction),
-        tap(() => this.toolService.cancelTool()),
+        ofType(ToolActions.interactionFailed),
+        filter(({interactionId}) => interactionId === this.sequence()),
+        tap(({error}) => this.errorHandler.handleError(error)),
       );
     },
     {dispatch: false},

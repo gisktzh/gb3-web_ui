@@ -19,7 +19,7 @@ export class EsriDefaultStrategy implements EsriToolStrategy {
   }
 
   public cancel() {
-    throw new EsriDefaultStrategyNotImplementedError();
+    // Idle has nothing to release; cancellation is deliberately idempotent.
   }
 }
 

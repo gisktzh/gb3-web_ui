@@ -1,3 +1,6 @@
+import {EditableTool, EditTarget} from '../../../../state/map/states/tool.state';
+import {selectInteraction} from '../../../../state/map/reducers/tool.reducer';
+import {ToolType} from '../../../../shared/types/tool.type';
 import {Injectable, inject} from '@angular/core';
 import {ToolService} from '../../../interfaces/tool.service';
 import {EsriMapViewService} from '../esri-map-view.service';
@@ -68,14 +71,7 @@ export const HANDLE_GROUP_KEY = 'EsriToolService';
  * strategies. This service only handles the instantiation of the correct strategy and acts as a mediator for interacting with the
  * strategies.
  *
- * Due to the nature of Esri's SketchViewModel implementation, a lot is handled implicitly. There is no need to deactivate an active
- * SketchViewModel if another one becomes active (i.e. the tools are switched) since that happens automatically. Two quirks exist, however:
- * * Each strategy takes a callback for the completion - since we need to know for our state when a tool is done (and can be removed
- * from the activeTool state property), this callback is used by the SketchViewModel.on() handler upon draw completion. Other events do
- * NOT fire anything, but be careful if you're adding more logic - i.e. the `cancel` event should not fire any event that dispatches a
- * state change, because this might lead to race conditions.
- * * Because Esri cancels drawings when pressing escape, we need to intercept this in order for our state to become updated. This is
- * done via custom handles on the MapView object which manually fire the deactivation event for our state to become updated.
+ * Interaction commands own strategy replacement and cleanup; strategies report geometry changes through callbacks.
  */
 @Injectable()
 export class EsriToolService implements ToolService {
@@ -89,38 +85,88 @@ export class EsriToolService implements ToolService {
   private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
   private readonly drawingLayers = this.store.selectSignal(selectDrawingLayers);
 
-  public cancelTool() {
-    this.toolStrategy.cancel();
-  }
-
   public getToolStrategy() {
     return this.toolStrategy;
   }
 
-  public editDrawing(graphic: Graphic) {
-    if (!hasNonNullishProperty(graphic, 'layer')) {
-      throw new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.');
-    }
+  private interactionId = 0;
+  private pendingInitialization?: AbortController;
+  private readonly interaction = this.store.selectSignal(selectInteraction);
+  private suppressCompletionClick = false;
 
-    const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
-    if (!drawingId) {
-      return;
-    }
+  public shouldSuppressMapClick() {
+    return this.suppressCompletionClick;
+  }
 
+  public cancelTool() {
+    this.interactionId = 0;
+    this.pendingInitialization?.abort();
+    this.pendingInitialization = undefined;
+    this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
+    const previous = this.toolStrategy;
+    this.toolStrategy = new EsriDefaultStrategy();
+    previous.cancel();
+  }
+
+  public finishInteraction(interactionId: number) {
+    if (this.interactionId === interactionId) this.cancelTool();
+  }
+
+  public startCreation(tool: ToolType, interactionId: number) {
+    this.cancelTool();
+    this.interactionId = interactionId;
+    switch (tool) {
+      case 'measure-elevation-profile':
+        this.initializeElevationProfileMeasurement();
+        break;
+      case 'measure-line':
+      case 'measure-point':
+      case 'measure-area':
+      case 'measure-circle':
+        this.initializeMeasurement(tool);
+        break;
+      case 'draw-point':
+      case 'draw-line':
+      case 'draw-polygon':
+      case 'draw-rectangle':
+      case 'draw-circle':
+      case 'draw-text':
+      case 'draw-symbol':
+        this.initializeDrawing(tool);
+        break;
+      case 'select-statistics-circle':
+      case 'select-statistics-polygon':
+        this.initializeStatisticsSelection(tool);
+        break;
+      case 'select-circle':
+      case 'select-polygon':
+      case 'select-rectangle':
+      case 'select-section':
+      case 'select-federation':
+      case 'select-canton':
+      case 'select-municipality':
+        this.initializeDataDownloadSelection(tool);
+    }
+  }
+
+  public startEditing(tool: EditableTool, target: EditTarget, interactionId: number) {
+    this.cancelTool();
+    this.interactionId = interactionId;
+    const layer = this.esriMapViewService.findEsriLayer(target.layerId);
+    const graphic = this.isGraphicsLayer(layer)
+      ? layer.graphics.find(
+          (candidate) => candidate.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === target.graphicId,
+        )
+      : undefined;
+    if (!target.graphicId || !graphic || this.getEditingTool(graphic) !== tool) {
+      throw new EditFeatureInitializationFailed('Zeichnung wurde nicht gefunden oder kann nicht bearbeitet werden.');
+    }
     this.setToolStrategyForEditingFeature(graphic);
-
-    const layerId = String(graphic.layer.id);
-    // Open the panel only for drawings, not measurements or elevation profile, as their style is not currently editable
-    if (layerId.includes(UserDrawingLayer.Drawings)) {
-      this.store.dispatch(DrawingActions.selectDrawing({drawingId}));
-    }
-
-    // Selection mode in the statistics tool should switch to `polygon` if an edit is attempted.
-    if (layerId.includes(InternalDrawingLayer.StatisticsArea)) {
-      this.store.dispatch(StatisticsActions.softUpdateMode({mode: 'polygon'}));
-    }
-
+    this.registerEscapeEventHandler();
     this.toolStrategy.edit(graphic);
+    if (target.layerId.includes(UserDrawingLayer.Drawings)) {
+      this.store.dispatch(DrawingActions.selectDrawing({drawingId: target.graphicId}));
+    }
   }
 
   public async updateDrawingStyles(
@@ -156,7 +202,9 @@ export class EsriToolService implements ToolService {
       }
     }
 
-    graphic.symbol = await StyleRepresentationToEsriSymbolUtils.convert(style, labelText, mapDrawingSymbol);
+    const interactionId = this.interactionId;
+    const symbol = await StyleRepresentationToEsriSymbolUtils.convert(style, labelText, mapDrawingSymbol);
+    if (interactionId === this.interactionId) graphic.symbol = symbol;
   }
 
   public initializeDrawing(drawingTool: DrawingTool) {
@@ -358,6 +406,8 @@ export class EsriToolService implements ToolService {
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
     if (drawingLayer) {
       this.initializeTool(drawingLayer as GraphicsLayer, strategySetter);
+    } else {
+      throw new DrawingLayerNotInitialized();
     }
   }
 
@@ -377,10 +427,20 @@ export class EsriToolService implements ToolService {
        * listener to this layer in order to then start the drawing functionality when the layer is effectively added. Starting the drawing
        * immediately after dispatching the layer addition will yield undefined errors.
        */
+      const interactionId = this.interactionId;
+      const controller = new AbortController();
+      this.pendingInitialization = controller;
       reactiveUtils
-        .once(() => this.esriMapViewService.findEsriLayer(fullLayerIdentifier))
+        .whenOnce(() => this.esriMapViewService.findEsriLayer(fullLayerIdentifier), {signal: controller.signal})
         .then((layer) => {
-          this.initializeTool(layer! as GraphicsLayer, strategySetter);
+          if (!controller.signal.aborted && this.interactionId === interactionId) {
+            this.initializeTool(layer as GraphicsLayer, strategySetter);
+          }
+        })
+        .catch((error: unknown) => {
+          if (!controller.signal.aborted && this.interactionId === interactionId) {
+            this.store.dispatch(ToolActions.interactionFailed({interactionId, error}));
+          }
         });
 
       const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem(layerIdentifier, DrawingLayerPrefix.Drawing);
@@ -398,7 +458,15 @@ export class EsriToolService implements ToolService {
 
   private endDrawing() {
     this.esriMapViewService.getMapView().removeHandles(HANDLE_GROUP_KEY);
-    this.store.dispatch(ToolActions.cancelInteraction());
+    const interaction = this.interaction();
+    if (interaction?.kind === 'edit') {
+      // Suppress only the event turn that completes editing, without retaining edit state after completion.
+      this.suppressCompletionClick = true;
+      setTimeout(() => {
+        this.suppressCompletionClick = false;
+      }, 0);
+    }
+    this.store.dispatch(ToolActions.completeInteraction({interactionId: this.interactionId}));
   }
 
   /**
@@ -412,7 +480,7 @@ export class EsriToolService implements ToolService {
       'key-down',
       (event) => {
         if (event.key === 'Escape') {
-          this.endDrawing();
+          this.store.dispatch(ToolActions.cancelInteraction());
         }
       },
     );
@@ -432,7 +500,10 @@ export class EsriToolService implements ToolService {
     }
   }
 
-  public setToolStrategyForEditingFeature(graphic: Graphic) {
+  public getEditingTool(graphic: Graphic): EditableTool {
+    if (!hasNonNullishProperty(graphic, 'layer')) {
+      throw new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.');
+    }
     if (!hasNonNullishProperty(graphic, 'geometry')) {
       throw new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten');
     }
@@ -477,16 +548,24 @@ export class EsriToolService implements ToolService {
     const layerId = String(graphic.layer!.id);
 
     if (layerId.includes(UserDrawingLayer.Drawings)) {
-      this.setDrawingStrategy(drawingType, graphic.layer as GraphicsLayer);
+      return drawingType;
     } else if (layerId.includes(UserDrawingLayer.Measurements)) {
-      this.setMeasurementStrategy(measurementType, graphic.layer as GraphicsLayer);
+      return measurementType;
     } else if (layerId.includes(InternalDrawingLayer.ElevationProfile)) {
-      this.setMeasurementStrategy('measure-elevation-profile', graphic.layer as GraphicsLayer);
+      return 'measure-elevation-profile';
     } else if (layerId.includes(InternalDrawingLayer.StatisticsArea)) {
-      this.setStatisticsSelectionStrategy('select-statistics-polygon', graphic.layer as GraphicsLayer);
+      return 'select-statistics-polygon';
     } else {
       throw new NonEditableLayerType();
     }
+  }
+
+  public setToolStrategyForEditingFeature(graphic: Graphic) {
+    const tool = this.getEditingTool(graphic);
+    const layer = graphic.layer as GraphicsLayer;
+    if (tool === 'select-statistics-polygon') this.setStatisticsSelectionStrategy(tool, layer);
+    else if (tool.startsWith('draw-')) this.setDrawingStrategy(tool as DrawingTool, layer);
+    else this.setMeasurementStrategy(tool as MeasurementTool, layer);
   }
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {

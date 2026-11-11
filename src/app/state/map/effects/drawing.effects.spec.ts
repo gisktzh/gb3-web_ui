@@ -1,3 +1,4 @@
+import {ToolActions} from '../actions/tool.actions';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of} from 'rxjs';
@@ -158,11 +159,9 @@ describe('DrawingEffects', () => {
   describe('cancelEditModeAfterClosingDrawingEditOverlay', () => {
     it('calls toolService.cancelTool', () => {
       actions$ = of(DrawingActions.cancelEditMode());
-      const mapServiceSpy = vi.spyOn(mapService, 'cancelEditMode');
 
       effects.cancelEditModeAfterClosingDrawingEditOverlay$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
+        expect(action).toEqual(ToolActions.cancelInteraction());
       });
     });
   });

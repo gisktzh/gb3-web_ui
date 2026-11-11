@@ -1,3 +1,4 @@
+import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {createFeature, createReducer, createSelector, on} from '@ngrx/store';
 import {ToolState} from '../states/tool.state';
 import {ToolActions} from '../actions/tool.actions';
@@ -10,6 +11,12 @@ export const toolFeature = createFeature({
   name: toolFeatureKey,
   reducer: createReducer(
     initialState,
+    on(DataDownloadOrderActions.setSelection, (state): ToolState => {
+      const interaction = state.interaction;
+      return interaction.kind !== 'idle' && interaction.kind !== 'edit' && isDataDownloadSelectionTool(interaction.tool)
+        ? {...state, interaction: {...interaction, kind: 'selected', tool: interaction.tool}}
+        : state;
+    }),
     on(ToolActions.startCreation, (state, {tool}): ToolState => ({
       sequence: state.sequence + 1,
       interaction: {kind: 'create', id: state.sequence + 1, tool},
@@ -28,7 +35,7 @@ export const toolFeature = createFeature({
       return {
         ...state,
         interaction:
-          interaction.kind === 'create' && isDataDownloadSelectionTool(interaction.tool)
+          interaction.kind !== 'edit' && isDataDownloadSelectionTool(interaction.tool)
             ? {...interaction, kind: 'selected', tool: interaction.tool}
             : {kind: 'idle'},
       };

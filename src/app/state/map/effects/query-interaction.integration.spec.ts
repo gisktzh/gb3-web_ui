@@ -21,6 +21,9 @@ import {ToolEffects} from './tool.effects';
 describe('query interaction ownership', () => {
   let store: Store;
   const tools = {
+    startCreation: vi.fn(),
+    startEditing: vi.fn(),
+    finishInteraction: vi.fn(),
     initializeMeasurement: vi.fn(),
     initializeDrawing: vi.fn(),
     initializeDataDownloadSelection: vi.fn(),
@@ -75,7 +78,7 @@ describe('query interaction ownership', () => {
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
 
     await expectOwnership('statistics', 'statistics', 'select-statistics-polygon');
-    expect(tools.initializeStatisticsSelection).toHaveBeenCalledOnce();
+    expect(tools.startCreation).toHaveBeenCalledOnce();
     expect(tools.cancelTool).not.toHaveBeenCalled();
   });
 
@@ -94,7 +97,7 @@ describe('query interaction ownership', () => {
     store.dispatch(MapUiActions.toggleToolMenu({tool: 'measurement'}));
 
     await expectOwnership('feature', 'measurement', 'measure-line');
-    expect(tools.initializeMeasurement).toHaveBeenCalledOnce();
+    expect(tools.startCreation).toHaveBeenCalledOnce();
     expect(tools.cancelTool).not.toHaveBeenCalled();
   });
 
@@ -113,6 +116,7 @@ describe('query interaction ownership', () => {
     store.dispatch(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
 
     await expectOwnership('feature', 'feature');
-    expect(tools.initializeStatisticsSelection).not.toHaveBeenCalled();
+    expect(tools.startCreation).not.toHaveBeenCalledWith('select-statistics-circle', expect.any(Number));
+    expect(tools.startCreation).not.toHaveBeenCalledWith('select-statistics-polygon', expect.any(Number));
   });
 });

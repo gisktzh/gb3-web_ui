@@ -24,6 +24,8 @@ vi.mock('@arcgis/core/widgets/Sketch/SketchViewModel', () => ({
     public create = vi.fn();
     public update = vi.fn();
     public cancel = vi.fn();
+    public destroy = vi.fn();
+    public addHandles = vi.fn();
   },
 }));
 

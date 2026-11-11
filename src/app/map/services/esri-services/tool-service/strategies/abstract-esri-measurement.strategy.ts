@@ -18,6 +18,7 @@ export abstract class AbstractEsriMeasurementStrategy<
   TGeometry extends Polygon | Polyline | Point,
   TDrawingCallbackHandlerArgs extends DrawingCallbackHandlerArgsMeasurement,
 > extends AbstractEsriDrawableToolStrategy<TDrawingCallbackHandlerArgs> {
+  private removedLabel?: Graphic;
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Measurements;
 
   protected constructor(
@@ -32,53 +33,55 @@ export abstract class AbstractEsriMeasurementStrategy<
   }
 
   public start(): void {
-    this.sketchViewModel.create(this.tool, {mode: 'click'});
-
-    reactiveUtils.on(
-      () => this.sketchViewModel,
-      'create',
-      ({state, graphic}: CreateEvent) => {
-        switch (state) {
-          case 'active':
-          case 'start':
-          case 'cancel':
-            break; // currently, these events do not trigger any action
-          case 'complete': {
-            if (graphic) {
-              const graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
-              const labelConfiguration: {label: Graphic; labelText: string} = this.createLabelForGeometry(
-                graphic.geometry as TGeometry,
-                graphicIdentifier,
-              );
-              this.layer.add(labelConfiguration.label);
-              this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
+    this.sketchViewModel.addHandles(
+      reactiveUtils.on(
+        () => this.sketchViewModel,
+        'create',
+        ({state, graphic}: CreateEvent) => {
+          switch (state) {
+            case 'active':
+            case 'start':
+            case 'cancel':
+              break; // currently, these events do not trigger any action
+            case 'complete': {
+              if (graphic) {
+                const graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
+                const labelConfiguration: {label: Graphic; labelText: string} = this.createLabelForGeometry(
+                  graphic.geometry as TGeometry,
+                  graphicIdentifier,
+                );
+                this.layer.add(labelConfiguration.label);
+                this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
+              }
+              break;
             }
-            break;
           }
-        }
-      },
+        },
+      ),
     );
+    this.sketchViewModel.create(this.tool, {mode: 'click'});
   }
 
   public edit(graphic: Graphic) {
-    void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
-
-    reactiveUtils.on(
-      () => this.sketchViewModel,
-      'update',
-      ({state}: UpdateEvent) => {
-        switch (state) {
-          case 'start':
-            this.removeLabelOnEdit(graphic);
-            break;
-          case 'active':
-            break;
-          case 'complete':
-            this.completeEditing(graphic);
-            break;
-        }
-      },
+    this.sketchViewModel.addHandles(
+      reactiveUtils.on(
+        () => this.sketchViewModel,
+        'update',
+        ({state}: UpdateEvent) => {
+          switch (state) {
+            case 'start':
+              this.removeLabelOnEdit(graphic);
+              break;
+            case 'active':
+              break;
+            case 'complete':
+              this.completeEditing(graphic);
+              break;
+          }
+        },
+      ),
     );
+    void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
   }
 
   /**
@@ -89,7 +92,14 @@ export abstract class AbstractEsriMeasurementStrategy<
    */
   protected abstract createLabelConfigurationForGeometry(geometry: TGeometry): LabelConfiguration;
 
+  public override cancel() {
+    super.cancel();
+    if (this.removedLabel) this.layer.add(this.removedLabel);
+    this.removedLabel = undefined;
+  }
+
   private completeEditing(graphic: Graphic) {
+    this.removedLabel = undefined;
     const graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
     // checks if the graphic still exists in the layer, i. e if it was not deleted during edit
     const graphicExistsOnLayer = this.checkIfGraphicExistsOnLayer(graphicIdentifier);
@@ -123,6 +133,7 @@ export abstract class AbstractEsriMeasurementStrategy<
         graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName),
     );
     if (labelGraphic) {
+      this.removedLabel = labelGraphic;
       this.layer.remove(labelGraphic);
     }
   }
