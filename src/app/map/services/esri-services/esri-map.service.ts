@@ -83,6 +83,7 @@ import {FeatureHighlightSource, FeatureInfoScaleRange} from '../../../shared/int
 import {
   getVisibleFeatureInfoScale,
   intersectFeatureInfoScaleRanges,
+  isAboveMinFeatureInfoScaleRange,
   isInFeatureInfoScaleRange,
 } from '../../../shared/utils/feature-info-scale.utils';
 import {distinctUntilChanged, Observable, switchMap} from 'rxjs';
@@ -608,7 +609,7 @@ export class EsriMapService implements MapService {
                   wmsLayer.visible &&
                   wmsLayer.opacity > 0 &&
                   ancestors.every((layer) => layer.visible) &&
-                  isInFeatureInfoScaleRange(view.scale, scaleRange)
+                  isAboveMinFeatureInfoScaleRange(view.scale, scaleRange)
                 );
               },
               (visible) => subscriber.next(visible),
