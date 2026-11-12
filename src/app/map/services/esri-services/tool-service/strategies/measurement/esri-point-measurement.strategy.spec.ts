@@ -60,7 +60,7 @@ describe('EsriPointMeasurementStrategy', () => {
         callback({state: 'cancel', graphic: new Graphic()});
 
         expect(callbackSpy).not.toHaveBeenCalled();
-        expect(layer.graphics.length).toEqual(0);
+        expect(layer.graphics).toHaveLength(0);
 
         return mockResourceHandle;
       });
@@ -107,7 +107,7 @@ describe('EsriPointMeasurementStrategy', () => {
         callback({state: 'complete', graphic: graphic});
 
         expect(callbackSpy).toHaveBeenCalled();
-        expect(layer.graphics.length).toEqual(1);
+        expect(layer.graphics).toHaveLength(1);
 
         return mockResourceHandle;
       });

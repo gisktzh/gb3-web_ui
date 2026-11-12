@@ -1,5 +1,5 @@
-const fs = require('fs');
-const cp = require('child_process');
+const fs = require('node:fs');
+const cp = require('node:child_process');
 
 const PATH_TO_VERSION_FILE = './src/version.ts';
 
@@ -57,8 +57,8 @@ fs.readFile(PATH_TO_VERSION_FILE, 'utf-8', (err, data) => {
     throw err;
   }
 
-  let updatedData = data.replace(/LOCAL_DEV_VERSION/g, appVersion);
-  updatedData = updatedData.replace(/LOCAL_DEV_RELEASE/g, tag);
+  let updatedData = data.replaceAll('LOCAL_DEV_VERSION', appVersion);
+  updatedData = updatedData.replaceAll('LOCAL_DEV_RELEASE', tag);
 
   fs.writeFile(PATH_TO_VERSION_FILE, updatedData, 'utf-8', (err) => {
     if (err) {

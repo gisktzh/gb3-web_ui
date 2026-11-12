@@ -1,11 +1,10 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {catchError, map} from 'rxjs';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {MapService} from '../../../map/interfaces/map.service';
-import {filter, of, switchMap, tap} from 'rxjs';
+import {filter, of, switchMap, tap, catchError, map} from 'rxjs';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {Store} from '@ngrx/store';
@@ -76,7 +75,7 @@ export class DataDownloadOrderEffects {
         concatLatestFrom(() => this.store.select(selectSelection)),
         tap(([_, selection]) => {
           if (selection) {
-            this.mapService.zoomToExtent(
+            void this.mapService.zoomToExtent(
               selection.drawingRepresentation.geometry,
               this.configService.mapAnimationConfig.zoom.expandFactor,
               this.configService.mapAnimationConfig.zoom.duration,
@@ -149,16 +148,20 @@ export class DataDownloadOrderEffects {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setSendOrderError),
         tap(({error}) => {
-          let message = undefined;
-          if (error instanceof HttpErrorResponse && !!error.statusText) {
-            message = error.statusText;
-          }
-          throw new OrderCouldNotBeSent(error, message);
+          throw new OrderCouldNotBeSent(error, this.getHttpErrorMessage(error));
         }),
       );
     },
     {dispatch: false},
   );
+
+  private getHttpErrorMessage(error: unknown): string | undefined {
+    if (error instanceof HttpErrorResponse && typeof error.error?.message === 'string') {
+      return error.error.message;
+    }
+
+    return undefined;
+  }
 
   public closeDataDownloadDrawerAfterSendingAnOrderSuccessfully$ = createEffect(() => {
     return this.actions$.pipe(

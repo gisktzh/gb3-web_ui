@@ -49,6 +49,7 @@ $bottom-border: inset 0 calc(-1 * $border-size) 0 0 ktzh-variables.$zh-active-bl
 }
 
 .info-table__table thead .feature-info-content__feature-cell--highlighted {
+  /* NOSONAR -- Needs to be `!important` because specificity. */
   background-color: ktzh-variables.$zh-active-blue !important;
 }
 

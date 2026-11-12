@@ -1,7 +1,10 @@
 /**
  * Anchors for the map onboarding guide.
+ *
+ * All TourAnchors that are in use throughout the app. Do not use string anchors or tourAnchor directly, but add new steps and their anchors
+ * to this type.
  */
-type MapOnboardingGuideAnchor =
+export type MapOnboardingGuideAnchor =
   | 'map.tour.start'
   | 'map.tour.end'
   | 'map.search.input'
@@ -12,9 +15,3 @@ type MapOnboardingGuideAnchor =
   | 'map.navigation'
   | 'map.background'
   | 'map.info';
-
-/**
- * All TourAnchors that are in use throughout the app. Do not use string anchors or tourAnchor directly, but add new steps and their anchors
- * to this type.
- */
-export type OnboardingGuideAnchor = MapOnboardingGuideAnchor;

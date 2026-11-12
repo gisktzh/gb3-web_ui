@@ -121,7 +121,7 @@ describe('MapControlsComponent', () => {
   it('should not hide map UI elements when hideUiElements is false', () => {
     const hiddenElements = compiled.querySelectorAll('.map-controls__map-element--hidden');
 
-    expect(hiddenElements.length).toBe(0);
+    expect(hiddenElements).toHaveLength(0);
   });
 
   it('should hide the basemap selector when hideUiElements is true', () => {
@@ -263,6 +263,6 @@ describe('MapControlsComponent', () => {
     store.refreshState();
     fixture.detectChanges();
 
-    expect(compiled.querySelectorAll('.map-controls__map-element--hidden').length).toBe(0);
+    expect(compiled.querySelectorAll('.map-controls__map-element--hidden')).toHaveLength(0);
   });
 });

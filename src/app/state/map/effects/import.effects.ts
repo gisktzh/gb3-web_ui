@@ -1,7 +1,6 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {from, of, switchMap, tap} from 'rxjs';
-import {catchError, map} from 'rxjs';
+import {from, of, switchMap, tap, catchError, map} from 'rxjs';
 import {ImportActions} from '../actions/import.actions';
 import {Gb3ImportService} from '../../../shared/services/apis/gb3/gb3-import.service';
 import {FileImportError, FileValidationError} from '../../../shared/errors/file-upload.errors';
@@ -51,7 +50,7 @@ export class ImportEffects {
         const drawingLayersToOverride: DrawingLayer[] = [];
         this.mapService.removeMapItem(activeMapItem.id);
         activeMapItem.addToMap(this.mapService, 0);
-        this.mapService.getToolService().addExistingDrawingsToLayer(drawingsToAdd, UserDrawingLayer.Drawings);
+        void this.mapService.getToolService().addExistingDrawingsToLayer(drawingsToAdd, UserDrawingLayer.Drawings);
         drawingLayersToOverride.push(activeMapItem.settings.drawingLayer);
 
         return ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd});

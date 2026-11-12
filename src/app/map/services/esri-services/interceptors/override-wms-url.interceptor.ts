@@ -39,10 +39,9 @@ const callbackFactory: (overrideWmsUrl: string) => AfterInterceptorCallback = (o
         const dataString = new XMLSerializer().serializeToString(data);
         const adjustedString = dataString.replace(hardcodedWmsUrl, overrideWmsUrl);
         response.data = new DOMParser().parseFromString(adjustedString, 'text/xml');
-      } catch (e) {
+      } catch {
         // in the case of any issues, continue. This will lead to an error in the map not being loaded, but at least we did not corrupt the
         // whole app in a place that cannot be communicated to the user.
-        // todo: add logging?
       }
     }
   };

@@ -17,7 +17,7 @@
       </div>
     </ng-template>
   </mat-expansion-panel>
-  <!--
+  <!-- //NOSONAR -- False positive --><!--
     The header is a plain, non-interactive div (not a mat-expansion-panel-header, which hardcodes role="button")
     because it contains a real, focusable info-link anchor; nesting that inside another interactive element would
     violate the WAI-ARIA "no nested interactive controls" rule. Instead, the toggle button inside it is the sole
@@ -29,7 +29,8 @@
     always up to date by the time the header reads it - reading it before the panel's own `[expanded]` input is
     processed causes an ExpressionChangedAfterItHasBeenCheckedError in dev mode.
   -->
-  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus, prettier/prettier -- See above -->
+  <!-- //NOSONAR -- False positive, see above -->
   <div
     class="list-item__header"
     [id]="expansionPanel._headerId"

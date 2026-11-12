@@ -16,6 +16,7 @@
 }
 
 .info-table__table thead .statistics-item__cell--highlighted {
+  /* NOSONAR -- Needs to be `!important` because specificity. */
   background-color: ktzh-variables.$zh-active-blue !important;
 }
 

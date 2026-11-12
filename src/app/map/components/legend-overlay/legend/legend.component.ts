@@ -9,7 +9,6 @@ import {LegendItemComponent} from '../legend-item/legend-item.component';
 @Component({
   selector: 'legend',
   templateUrl: './legend.component.html',
-  styleUrls: ['./legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LoadingAndProcessBarComponent, LegendItemComponent],
 })

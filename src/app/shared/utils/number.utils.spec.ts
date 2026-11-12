@@ -72,7 +72,7 @@ describe('NumberUtils', () => {
     describe('invalid number extraction', () => {
       [{input: 'ff'}, {input: 'eins.zwei'}].forEach((testCase) => {
         it(`converts ${testCase.input} to undefined}`, () => {
-          expect(NumberUtils.parseNumberFromMixedString(testCase.input)).toBe(undefined);
+          expect(NumberUtils.parseNumberFromMixedString(testCase.input)).toBeUndefined();
         });
       });
     });

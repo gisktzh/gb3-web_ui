@@ -51,6 +51,12 @@ export class SearchInputComponent {
 
       onCleanup(() => clearTimeout(timer));
     });
+
+    effect(() => {
+      if (this.focusOnInit() && !this.disabled()) {
+        this.inputRef().nativeElement.focus();
+      }
+    });
   }
 
   public clearInput() {

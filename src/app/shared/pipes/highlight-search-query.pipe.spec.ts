@@ -6,134 +6,71 @@ describe('HighlightSearchQueryPipe', () => {
     pipe = new HighlightSearchQueryPipe();
   });
   describe('single search queries', () => {
-    it('highlights exactly one element if only one match', () => {
-      const textItem = 'abcde fghi';
-      const searchQuery = 'd';
-
+    it.each([
+      {textItem: 'abcde fghi', searchQuery: 'd', expected: 'abc<b>d</b>e fghi', matchType: 'only one'},
+      {
+        textItem: 'abcde fghi abcde dddd',
+        searchQuery: 'd',
+        expected: 'abc<b>d</b>e fghi abc<b>d</b>e <b>d</b><b>d</b><b>d</b><b>d</b>',
+        matchType: 'several',
+      },
+      {textItem: 'ab abc abcd', searchQuery: 'abc', expected: 'ab <b>abc</b> <b>abc</b>d', matchType: 'partial word'},
+      {
+        textItem: 'lorem ipsum dolor sic amet',
+        searchQuery: 'this will not be found',
+        expected: 'lorem ipsum dolor sic amet',
+        matchType: 'no',
+      },
+      {textItem: 'A a Aa', searchQuery: 'A', expected: '<b>A</b> <b>a</b> <b>A</b><b>a</b>', matchType: 'non-matching case'},
+      {
+        textItem: 'a Text consisting of this findable part, and more',
+        searchQuery: 'a Text consisting of this findable part',
+        expected: '<b>a Text consisting of this findable part</b>, and more',
+        matchType: 'multi-word',
+      },
+      {textItem: 'abcde 🤔 (fghi)', searchQuery: '🤔 (', expected: 'abcde <b>🤔 (</b>fghi)', matchType: 'special charachters'},
+    ])('highlights correctly with $matchType match(es)', ({textItem, searchQuery, expected}) => {
       const result = pipe.transform(textItem, searchQuery);
-
-      const expected = 'abc<b>d</b>e fghi';
-      expect(result).toEqual(expected);
-    });
-
-    it('highlights all elements if multiple match', () => {
-      const textItem = 'abcde fghi abcde dddd';
-      const searchQuery = 'd';
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected = 'abc<b>d</b>e fghi abc<b>d</b>e <b>d</b><b>d</b><b>d</b><b>d</b>';
-      expect(result).toEqual(expected);
-    });
-
-    it('highlights exact word and word part matches', () => {
-      const textItem = 'ab abc abcd';
-      const searchQuery = 'abc';
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected = 'ab <b>abc</b> <b>abc</b>d';
-      expect(result).toEqual(expected);
-    });
-
-    it('highlights nothing if no matches', () => {
-      const textItem = 'lorem ipsum dolor sic amet';
-      const searchQuery = 'this will not be found';
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      expect(result).toEqual(textItem);
-    });
-
-    it('ignores case', () => {
-      const textItem = 'A a Aa';
-      const searchQuery = 'A';
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected = '<b>A</b> <b>a</b> <b>A</b><b>a</b>';
-      expect(result).toEqual(expected);
-    });
-
-    it('works with multi word queries', () => {
-      const textItem = 'a Text consisting of this findable part, and more';
-      const searchQuery = 'a Text consisting of this findable part';
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected = '<b>a Text consisting of this findable part</b>, and more';
-      expect(result).toEqual(expected);
-    });
-
-    it('highlights special characters from the search query', () => {
-      const textItem = 'abcde 🤔 (fghi)';
-      const searchQuery = '🤔 (';
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected = 'abcde <b>🤔 (</b>fghi)';
       expect(result).toEqual(expected);
     });
   });
 
   describe('multiple search queries', () => {
-    it('highlights matches if only one search query is sent', () => {
-      const textItem = 'Lookup1 Lookup2';
-      const searchQuery = ['Lookup1'];
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected = '<b>Lookup1</b> Lookup2';
-      expect(result).toEqual(expected);
-    });
-
-    it('highlights all results for multiple matched queries', () => {
-      const textItem = 'DoesNotMatch Lookup1 Lookup2 DoesAlsoNotMatch PartialMatchForLookup1DoesMatch';
-      const searchQuery = ['Lookup1', 'Lookup2'];
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected = 'DoesNotMatch <b>Lookup1</b> <b>Lookup2</b> DoesAlsoNotMatch PartialMatchFor<b>Lookup1</b>DoesMatch';
-      expect(result).toEqual(expected);
-    });
-
-    it('highlights multiple multiword searchqueries', () => {
-      const textItem = 'This is findable part1, followed by findable part2, terminated by non-findable part.';
-      const searchQuery = ['findable part1', 'followed by findable part2'];
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected = 'This is <b>findable part1</b>, <b>followed by findable part2</b>, terminated by non-findable part.';
-      expect(result).toEqual(expected);
-    });
-
-    it('highlights nothing if no queries match', () => {
-      const textItem = 'This is the textitem';
-      const searchQuery = ['cannot be found 1', 'cannot be found 2'];
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      expect(result).toEqual(textItem);
-    });
-
-    it('ignores case', () => {
-      const textItem = 'A a Aa B b Bb C c Cc';
-      const searchQuery = ['A', 'b'];
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected = '<b>A</b> <b>a</b> <b>A</b><b>a</b> <b>B</b> <b>b</b> <b>B</b><b>b</b> C c Cc';
-      expect(result).toEqual(expected);
-    });
-
-    it('highlights special characters from the search query', () => {
-      const textItem = 'AbC . * + ? $ ^ } { ) ( | ] [ \\ Def \0 👌 hIj';
-      const searchQuery = ['.', '*', '+', '?', '$', '^', '}', '{', ')', '(', '|', ']', '[', '\\', '\0', '👌'];
-
-      const result = pipe.transform(textItem, searchQuery);
-
-      const expected =
-        'AbC <b>.</b> <b>*</b> <b>+</b> <b>?</b> <b>$</b> <b>^</b> <b>}</b> <b>{</b> <b>)</b> <b>(</b> <b>|</b> <b>]</b> <b>[</b> <b>\\</b> Def <b>\0</b> <b>👌</b> hIj';
+    it.each([
+      {textItem: 'Lookup1 Lookup2', searchQueries: ['Lookup1'], expected: '<b>Lookup1</b> Lookup2', queryType: 'one'},
+      {
+        textItem: 'DoesNotMatch Lookup1 Lookup2 DoesAlsoNotMatch PartialMatchForLookup1DoesMatch',
+        searchQueries: ['Lookup1', 'Lookup2'],
+        expected: 'DoesNotMatch <b>Lookup1</b> <b>Lookup2</b> DoesAlsoNotMatch PartialMatchFor<b>Lookup1</b>DoesMatch',
+        queryType: 'multiple',
+      },
+      {
+        textItem: 'This is findable part1, followed by findable part2, terminated by non-findable part.',
+        searchQueries: ['findable part1', 'followed by findable part2'],
+        expected: 'This is <b>findable part1</b>, <b>followed by findable part2</b>, terminated by non-findable part.',
+        queryType: 'multiple multiword',
+      },
+      {
+        textItem: 'This is the textitem',
+        searchQueries: ['cannot be found 1', 'cannot be found 2'],
+        expected: 'This is the textitem',
+        queryType: 'multiple non-existent multi-word',
+      },
+      {
+        textItem: 'A a Aa B b Bb C c Cc',
+        searchQueries: ['A', 'b'],
+        expected: '<b>A</b> <b>a</b> <b>A</b><b>a</b> <b>B</b> <b>b</b> <b>B</b><b>b</b> C c Cc',
+        queryType: 'multiple non-matching case',
+      },
+      {
+        textItem: 'AbC . * + ? $ ^ } { ) ( | ] [ \\ Def \0 👌 hIj',
+        searchQueries: ['.', '*', '+', '?', '$', '^', '}', '{', ')', '(', '|', ']', '[', '\\', '\0', '👌'],
+        expected:
+          'AbC <b>.</b> <b>*</b> <b>+</b> <b>?</b> <b>$</b> <b>^</b> <b>}</b> <b>{</b> <b>)</b> <b>(</b> <b>|</b> <b>]</b> <b>[</b> <b>\\</b> Def <b>\0</b> <b>👌</b> hIj',
+        queryType: 'several special character',
+      },
+    ])('highlights matches correctly with $queryType', ({textItem, searchQueries, expected}) => {
+      const result = pipe.transform(textItem, searchQueries);
       expect(result).toEqual(expected);
     });
   });

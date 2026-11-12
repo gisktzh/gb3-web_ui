@@ -21,7 +21,7 @@ export class NumberUtils {
    * @param mixedString
    */
   public static parseNumberFromMixedString(mixedString: string): number | undefined {
-    const possibleNumber = parseFloat(mixedString.replace(/[^\d.]/g, ''));
-    return isNaN(possibleNumber) ? undefined : possibleNumber;
+    const possibleNumber = Number.parseFloat(mixedString.replace(/[^\d.]/g, ''));
+    return Number.isNaN(possibleNumber) ? undefined : possibleNumber;
   }
 }

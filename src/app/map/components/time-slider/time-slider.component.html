@@ -37,6 +37,7 @@
             [matDatepicker]="minDatePicker"
             [min]="availableDates()[0]"
             [max]="availableDates()[maximumDateIndex()]"
+            [attr.id]="`${id()}-min`"
           />
           <mat-datepicker
             #minDatePicker
@@ -63,6 +64,7 @@
             [matDatepicker]="maxDatePicker"
             [min]="availableDates()[minimumDateIndex() + 1]"
             [max]="availableDates()[availableDates().length - 1]"
+            [attr.id]="`${id()}-max`"
           />
           <mat-datepicker
             #maxDatePicker

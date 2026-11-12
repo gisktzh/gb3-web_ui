@@ -24,7 +24,6 @@ interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
 @Component({
   selector: 'map-detail',
   templateUrl: './map-detail.component.html',
-  styleUrls: ['./map-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     LoadingAndProcessBarComponent,

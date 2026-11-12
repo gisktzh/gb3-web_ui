@@ -1,5 +1,5 @@
 <mat-toolbar aria-label="Hauptnavigation" class="navbar" color="primary" role="navigation">
-  <a class="navbar__item navbar__logo" role="banner" [queryParams]="{}" [routerLink]="[mainPageEnum.Start]" aria-label="Zum Geoportal">
+  <a class="navbar__item navbar__logo" [queryParams]="{}" [routerLink]="[mainPageEnum.Start]">
     <img
       [style.display]="!isSimplifiedPage() ? 'none' : 'inline'"
       alt="KTZH Logo"

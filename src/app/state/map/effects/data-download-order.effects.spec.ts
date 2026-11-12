@@ -315,7 +315,7 @@ describe('DataDownloadOrderEffects', () => {
   describe('throwSendOrderError$', () => {
     it('throws a OrderCouldNotBeSent error after setting a send order error', () => {
       const originalErrorText = 'that is no moon';
-      const originalError = new HttpErrorResponse({statusText: originalErrorText});
+      const originalError = new HttpErrorResponse({error: {message: originalErrorText}});
 
       const expectedError = new OrderCouldNotBeSent(originalError, originalErrorText);
 

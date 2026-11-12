@@ -27,10 +27,10 @@ describe('selectUsefulInformationLinksWithDynamicUrls', () => {
     ];
     const actual = selectUsefulInformationLinksWithDynamicUrls.projector(usefulInformationLinks, dynamicInternalUrlsConfiguration);
 
-    expect(actual.length).toEqual(2);
-    expect(actual[0].links.length).toEqual(2);
+    expect(actual).toHaveLength(2);
+    expect(actual[0].links).toHaveLength(2);
     expect(actual[0].label).toEqual(usefulInformationLinks[0].label);
-    expect(actual[1].links.length).toEqual(1);
+    expect(actual[1].links).toHaveLength(1);
     expect(actual[1].label).toEqual(usefulInformationLinks[1].label);
     expect(serviceSpy).toHaveBeenCalledTimes(3);
     expect(serviceSpy).toHaveBeenCalledWith(usefulInformationLinks[0].links[0], dynamicInternalUrlsConfiguration);

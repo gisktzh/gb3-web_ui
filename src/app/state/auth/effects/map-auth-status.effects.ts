@@ -72,7 +72,7 @@ export class MapAuthStatusEffects {
         take(1),
         tap(([_, activeMapItems, drawings]) => {
           activeMapItems.filter(isActiveMapItemOfType(DrawingActiveMapItem)).forEach((drawingActiveMapItem) => {
-            this.mapService.getToolService().addExistingDrawingsToLayer(
+            void this.mapService.getToolService().addExistingDrawingsToLayer(
               drawings.filter((drawing) => drawing.source === drawingActiveMapItem.settings.drawingLayer),
               drawingActiveMapItem.settings.drawingLayer,
             );

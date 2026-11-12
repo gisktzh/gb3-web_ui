@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
+import {Observable, of, map} from 'rxjs';
 import {SearchApiResultMatch} from '../interfaces/search-api-result-match.interface';
 import {BaseApiService} from '../../abstract-api.service';
 import {SearchApiResult} from '../interfaces/search-api-result.interface';
 import {SearchIndex} from '../interfaces/search-index.interface';
-import {map} from 'rxjs';
 import {
   isGeometrySearchApiResultMatch,
   isMetadataSearchApiResultMatch,

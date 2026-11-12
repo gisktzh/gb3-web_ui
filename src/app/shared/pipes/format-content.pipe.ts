@@ -13,8 +13,8 @@ export class FormatContentPipe implements PipeTransform {
      *
      * For an example on how to apply styling to the links, see faq.component.scss.
      */
-    const urlCapturingGroup = /(https?:\/\/)((www\.)?[-a-zA-Z0-9@:%._+~#?&//=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&//=]*)/gi;
-    return url.replace(urlCapturingGroup, (match, protocol, host) => {
+    const urlCapturingGroup = /(https?:\/\/)((www\.)?[-A-Z0-9@:%._+~#?&/=]{1,256}\.[A-Z0-9()]{1,6}\b[-A-Z0-9()@:%_+.~#?&/=]*)/gi;
+    return url.replace(urlCapturingGroup, (match, _, host) => {
       const hostWithoutTrailingSlashes = host.endsWith('/') ? host.slice(0, -1) : host;
       return `<a href="${match}" target="_blank" class="link-highlight">${hostWithoutTrailingSlashes}</a>`;
     });

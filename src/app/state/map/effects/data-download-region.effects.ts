@@ -1,8 +1,7 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {catchError, map} from 'rxjs';
-import {filter, of, switchMap, tap} from 'rxjs';
+import {catchError, map, filter, of, switchMap, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {selectCanton, selectFederation, selectMunicipalities} from '../reducers/data-download-region.reducer';

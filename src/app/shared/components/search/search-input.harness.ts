@@ -4,7 +4,7 @@ export class SearchInputHarness extends ComponentHarness {
   public static readonly hostSelector = 'search-input';
 
   private readonly input = this.locatorFor('.search__bar__input');
-  private readonly clearButton = this.locatorFor('[aria-label="Sucheingabe löschen"]');
+  private readonly clearButton = this.locatorFor('[data-test-id="clearBtn"]');
   private readonly optionalFilterButton = this.locatorForOptional('.search__filter-button, [aria-label="Suchresultate verfeinern"]');
 
   public async getValue(): Promise<string> {
@@ -35,7 +35,7 @@ export class SearchInputHarness extends ComponentHarness {
     const filterButton = await this.optionalFilterButton();
 
     if (filterButton === null) {
-      throw Error('Search input does not currently render a filter button.');
+      throw new Error('Search input does not currently render a filter button.');
     }
 
     await filterButton.click();

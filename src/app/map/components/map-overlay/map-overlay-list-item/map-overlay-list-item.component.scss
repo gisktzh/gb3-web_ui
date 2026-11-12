@@ -33,6 +33,7 @@
       background-color: unset;
 
       &:hover {
+        /* NOSONAR -- Needs to be `!important` because specificity. */
         background-color: transparent !important;
       }
     }

@@ -449,7 +449,7 @@ describe('SearchService', () => {
     const searchTerm = '1';
     service.searchIndexes(searchTerm, searchIndexes).subscribe((resultMatches) => {
       expect(resultMatches).toBeDefined();
-      expect(resultMatches.length).toBe(mockData.flatMap((data) => data.matches).length);
+      expect(resultMatches).toHaveLength(mockData.flatMap((data) => data.matches).length);
       resultMatches.forEach((match) => {
         expect(searchIndexes.map((index) => index.indexType)).toContain(match.indexType);
         expect(match.score).toBeGreaterThan(0);

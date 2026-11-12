@@ -8,6 +8,7 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriPolygonDrawingStrategy} from './esri-polygon-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
+import {SupportedPolygonDrawingTool} from 'src/app/shared/types/supported-drawing-tool.type';
 
 class EsriPolygonDrawingStrategyWrapper extends EsriPolygonDrawingStrategy {
   public get svm() {
@@ -132,38 +133,17 @@ describe('EsriPolygonDrawingStrategy', () => {
   });
 
   describe('polygon type and mode', () => {
-    it('sets polygon type to rectangle', () => {
-      const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'rectangle');
+    it.each(['rectangle', 'circle', 'polygon'] as SupportedPolygonDrawingTool[])('sets polygon type to %s', (tool) => {
+      const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), tool);
       const spy = vi.spyOn(strategy.svm, 'create');
 
       strategy.start();
 
       expect(spy).toHaveBeenCalledTimes(1);
 
-      expect(spy).toHaveBeenCalledWith('rectangle', {mode: 'click'});
+      expect(spy).toHaveBeenCalledWith(tool, {mode: 'click'});
     });
 
-    it('sets polygon type to circle', () => {
-      const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'circle');
-      const spy = vi.spyOn(strategy.svm, 'create');
-
-      strategy.start();
-
-      expect(spy).toHaveBeenCalledTimes(1);
-
-      expect(spy).toHaveBeenCalledWith('circle', {mode: 'click'});
-    });
-
-    it('sets polygon type to polygon', () => {
-      const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
-      const spy = vi.spyOn(strategy.svm, 'create');
-
-      strategy.start();
-
-      expect(spy).toHaveBeenCalledTimes(1);
-
-      expect(spy).toHaveBeenCalledWith('polygon', {mode: 'click'});
-    });
     it('sets mode to update', () => {
       const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
       const spy = vi.spyOn(strategy.svm, 'update');

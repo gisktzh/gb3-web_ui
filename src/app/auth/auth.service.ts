@@ -39,7 +39,16 @@ export class AuthService {
       }
     });
 
-    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(async () => {
+    this.loadDiscoveryDocumentAndTryLogin();
+  }
+
+  public login() {
+    const currentUrl = this.router.url;
+    this.oauthService.initCodeFlow(currentUrl);
+  }
+
+  private loadDiscoveryDocumentAndTryLogin() {
+    void this.oauthService.loadDiscoveryDocumentAndTryLogin().then(async () => {
       this.registerIsAuthenticatedHandler();
       this.registerImpendingLogoutHandler();
 
@@ -47,11 +56,6 @@ export class AuthService {
         await this.redirect(this.oauthService.state);
       }
     });
-  }
-
-  public login() {
-    const currentUrl = this.router.url;
-    this.oauthService.initCodeFlow(currentUrl);
   }
 
   /**

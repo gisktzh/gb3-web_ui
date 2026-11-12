@@ -9,7 +9,6 @@ import {MatIcon} from '@angular/material/icon';
 @Component({
   selector: 'not-found-error-page',
   templateUrl: './not-found-error-page.component.html',
-  styleUrls: ['./not-found-error-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PageSectionComponent, HeroHeaderComponent, DescriptiveHighlightedLinkComponent, MatIconButton, RouterLink, MatIcon],
 })

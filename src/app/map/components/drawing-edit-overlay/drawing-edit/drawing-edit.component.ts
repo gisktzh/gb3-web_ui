@@ -23,7 +23,6 @@ import {isGb3SymbolStyle} from 'src/app/shared/type-guards/gb3-symbol-style.type
 @Component({
   selector: 'drawing-edit',
   templateUrl: './drawing-edit.component.html',
-  styleUrl: './drawing-edit.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PointEditComponent, LineEditComponent, PolygonEditComponent, TextEditComponent, SymbolEditComponent],
 })
@@ -79,7 +78,7 @@ export class DrawingEditComponent {
           style,
           drawing: selectedFeature,
           labelText,
-          mapDrawingSymbol: mapDrawingSymbol === undefined ? null : mapDrawingSymbol,
+          mapDrawingSymbol: mapDrawingSymbol ?? null,
         }),
       );
     } else {

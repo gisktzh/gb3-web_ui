@@ -31,7 +31,7 @@ describe('GenericUnorderedListComponent', () => {
   });
 
   it('should render empty list when no data is provided', () => {
-    expect(compiled.querySelectorAll<HTMLLIElement>('.list__item').length).toBe(0);
+    expect(compiled.querySelectorAll<HTMLLIElement>('.list__item')).toHaveLength(0);
   });
 
   it('should apply gap class when hasGap is true', () => {
@@ -59,7 +59,7 @@ describe('GenericUnorderedListComponent', () => {
 
     fixture.detectChanges();
 
-    expect(compiled.querySelectorAll<HTMLLIElement>('.list__item').length).toBe(3);
+    expect(compiled.querySelectorAll<HTMLLIElement>('.list__item')).toHaveLength(3);
   });
 
   it('should render item template content for every item', () => {
@@ -87,7 +87,7 @@ describe('GenericUnorderedListComponent', () => {
 
     const renderedItems = hostElement.querySelectorAll<HTMLSpanElement>('.template-item');
 
-    expect(renderedItems.length).toBe(2);
+    expect(renderedItems).toHaveLength(2);
     expect(renderedItems[0]?.textContent).toContain('One');
     expect(renderedItems[1]?.textContent).toContain('Two');
   });
@@ -97,12 +97,12 @@ describe('GenericUnorderedListComponent', () => {
 
     fixture.detectChanges();
 
-    expect(compiled.querySelectorAll('.list__item').length).toBe(1);
+    expect(compiled.querySelectorAll('.list__item')).toHaveLength(1);
 
     listData.set(['First', 'Second']);
 
     fixture.detectChanges();
 
-    expect(compiled.querySelectorAll('.list__item').length).toBe(2);
+    expect(compiled.querySelectorAll('.list__item')).toHaveLength(2);
   });
 });

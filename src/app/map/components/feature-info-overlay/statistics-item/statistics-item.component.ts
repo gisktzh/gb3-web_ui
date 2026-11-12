@@ -52,7 +52,7 @@ export class StatisticsItemComponent implements OnDestroy {
         return;
       }
       this.store.dispatch(StatisticsActions.highlightLayer({topic: this.result().topic, layer: layer.layer}));
-      this.mapService.zoomToExtent(layer.featureGeometry);
+      void this.mapService.zoomToExtent(layer.featureGeometry);
     },
     unpin: () => this.store.dispatch(StatisticsActions.clearHighlight()),
   });

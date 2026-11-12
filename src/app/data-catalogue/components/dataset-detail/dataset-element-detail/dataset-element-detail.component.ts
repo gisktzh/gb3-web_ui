@@ -11,7 +11,6 @@ import {DatasetElementTableComponent} from '../dataset-element-table/dataset-ele
   imports: [DataDisplayComponent, CdkAccordionModule, SharedModule, DatasetElementTableComponent],
   templateUrl: './dataset-element-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './dataset-element-detail.component.scss',
 })
 export class DatasetElementDetailComponent {
   public readonly layer = input.required<DatasetLayer>();

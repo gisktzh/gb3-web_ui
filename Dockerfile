@@ -22,9 +22,10 @@ RUN apk --no-cache add git
 RUN npm run update-version
 
 RUN npm ci --ignore-scripts --omit=dev
-RUN npm run build-$TARGET_ENVIRONMENT
+RUN npm run build-"$TARGET_ENVIRONMENT"
 
-FROM nginx:1.31-alpine AS server
+# Unpriviledged image version
+FROM nginxinc/nginx-unprivileged:1.31-alpine AS server
 COPY ./.docker/configfile.conf /etc/nginx/conf.d/configfile.template
 COPY ./.docker/nginx.conf /etc/nginx/nginx.conf
 

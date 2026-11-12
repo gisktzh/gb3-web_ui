@@ -70,7 +70,9 @@ export class SymbolizationToGb3ConverterUtils {
     };
   }
 
-  /** Creates print symbol graphics using the map runtime's required drawing service. */
+  /**
+   * Creates print symbol graphics using the map runtime's required drawing service.
+   */
   public convertInternalToPrintableRepresentation(
     features: Gb3StyledInternalDrawingRepresentation[],
     mapScale: number,
@@ -83,13 +85,13 @@ export class SymbolizationToGb3ConverterUtils {
       return layer;
     }
 
-    features.forEach((feature, index) => {
+    for (const [index, feature] of features.entries()) {
       if (
         !feature.properties.style ||
         !isGb3SymbolStyle(feature.properties.style) ||
         feature.mapDrawingSymbol?.drawingSymbolDescriptor === undefined
       ) {
-        return;
+        continue;
       }
 
       const iconSize = this.getSvgSize(
@@ -102,7 +104,7 @@ export class SymbolizationToGb3ConverterUtils {
       const style = layer.styles![layer.geojson.features[index].properties.style];
       style.externalGraphic = this.getSVGString(feature.mapDrawingSymbol.drawingSymbolDescriptor, iconSize, drawingSymbolsService);
       style.pointRadius = iconSize / 2;
-    });
+    }
 
     return layer;
   }

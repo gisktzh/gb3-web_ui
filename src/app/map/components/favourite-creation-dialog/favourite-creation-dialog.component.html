@@ -2,7 +2,7 @@
   <ng-container content>
     <mat-form-field appearance="fill" class="favourite-dialog__form">
       <mat-label>Name des Favoriten</mat-label>
-      <input [formField]="form.title" id="title" matInput data-test-id="input-favourite-title" />
+      <!-- //NOSONAR -- False positive --><input [formField]="form.title" id="title" matInput data-test-id="input-favourite-title" />
       @if (!form().valid() && (form().dirty() || form().touched())) {
         <mat-error> Geben Sie einen gültigen, nicht leeren Namen ein. </mat-error>
       }

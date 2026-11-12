@@ -149,7 +149,7 @@ describe('selectQueryLayers', () => {
       },
     ];
 
-    expect(actual.length).toEqual(2);
+    expect(actual).toHaveLength(2);
     expect(actual).toEqual(expected);
   });
 

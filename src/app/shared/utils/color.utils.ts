@@ -8,9 +8,9 @@ export class ColorUtils {
     hex = hex.startsWith('#') ? hex.slice(1) : hex;
     hex = hex.padStart(HEX_FORMAT_LENGTH, '0');
 
-    const r = parseInt(hex.slice(0, 2), 16);
-    const g = parseInt(hex.slice(2, 4), 16);
-    const b = parseInt(hex.slice(4, 6), 16);
+    const r = Number.parseInt(hex.slice(0, 2), 16);
+    const g = Number.parseInt(hex.slice(2, 4), 16);
+    const b = Number.parseInt(hex.slice(4, 6), 16);
 
     if ([r, g, b].some((value) => Number.isNaN(value)) || hex.length > HEX_FORMAT_LENGTH || !this.isValidAlpha(a)) {
       throw new InvalidHexFormat();

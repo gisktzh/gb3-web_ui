@@ -45,6 +45,7 @@
       background-color: functions.get-color-from-palette('accent', 50);
       color: functions.get-color-from-palette('accent', 300);
       height: 48px;
+      /* NOSONAR -- Needs to be `!important` because specificity. */
       margin: 0 !important;
       width: 137px;
       padding: 12px 24px 12px 24px;

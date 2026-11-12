@@ -20,7 +20,7 @@ test.describe('Attribute filters', () => {
 
     await page.waitForLoadState('networkidle');
 
-    await page.locator('div.active-map-item-header [data-test-id="show-layers-of-the-map"] mat-icon').click({force: true});
+    await page.locator('div.active-map-item-header [data-test-id="show-layers-of-the-map"] mat-icon').click();
 
     await page.getByText('Einstellungen').click();
     await page.getByText('Attributfilter').click();
@@ -29,13 +29,13 @@ test.describe('Attribute filters', () => {
 
     const [request1] = await Promise.all([
       page.waitForRequest((req) => req.url().startsWith('https://wms.zh.ch/StatGebAlterZH')),
-      page.getByText('Gewerbe und Verwaltung').click({force: true}),
+      page.getByText('Gewerbe und Verwaltung').click(),
     ]);
     expect(request1).toBeTruthy();
 
     const [request2] = await Promise.all([
       page.waitForRequest((req) => req.url().startsWith('https://wms.zh.ch/StatGebAlterZH')),
-      page.getByText('Andere').click({force: true}),
+      page.getByText('Andere').click(),
     ]);
     expect(request2).toBeTruthy();
   });
@@ -48,7 +48,6 @@ test.describe('Attribute filters', () => {
       openUrlWithCoordinates,
       selectTopic,
       clickMapInTheList,
-      checkA11y,
     }) => {
       await useHar();
       captureConsole();
@@ -58,12 +57,12 @@ test.describe('Attribute filters', () => {
       await clickMapInTheList('Gebäudealter');
       await page.waitForLoadState('networkidle');
 
-      await page.locator('div.active-map-item-header [data-test-id="show-layers-of-the-map"] mat-icon').click({force: true});
+      await page.locator('div.active-map-item-header [data-test-id="show-layers-of-the-map"] mat-icon').click();
       await page.getByText('Einstellungen').click();
       await page.getByText('Attributfilter').click();
       await expect(page.getByRole('heading', {name: 'Gebäudealter'})).toBeVisible();
 
-      await checkA11y();
+      await expect(page).toNotHaveAccessibilityViolations();
     });
   });
 });

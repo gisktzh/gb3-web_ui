@@ -67,7 +67,7 @@ describe('EsriAreaMeasurementStrategy', () => {
         callback({state: 'cancel', graphic: new Graphic()});
 
         expect(callbackSpy).not.toHaveBeenCalled();
-        expect(layer.graphics.length).toEqual(0);
+        expect(layer.graphics).toHaveLength(0);
 
         return mockResourceHandle;
       });
@@ -150,7 +150,7 @@ describe('EsriAreaMeasurementStrategy', () => {
         callback({state: 'complete', graphic: graphic});
 
         expect(callbackSpy).toHaveBeenCalled();
-        expect(layer.graphics.length).toEqual(1);
+        expect(layer.graphics).toHaveLength(1);
 
         return mockResourceHandle;
       });
@@ -190,10 +190,9 @@ describe('EsriAreaMeasurementStrategy', () => {
         callback({state: 'complete', graphic: graphic});
 
         const addedGraphic = layer.graphics.getItemAt(0);
-        const expectedLocation = location.centroid!;
         expect(addedGraphic?.geometry?.type).toEqual('point');
-        expect((addedGraphic?.geometry as Point).x).toEqual(expectedLocation.x);
-        expect((addedGraphic?.geometry as Point).y).toEqual(expectedLocation.y);
+        expect((addedGraphic?.geometry as Point).x).toEqual(4);
+        expect((addedGraphic?.geometry as Point).y).toEqual(4);
 
         return mockResourceHandle;
       });

@@ -14,6 +14,7 @@ import {SearchWindowMobileComponent} from '../search-window-mobile/search-window
 import {MapManagementMobileComponent} from '../map-management-mobile/map-management-mobile.component';
 import {By} from '@angular/platform-browser';
 import {selectActiveMapItemState} from 'src/app/state/map/reducers/active-map-item.reducer';
+import {BottomSheetContent} from 'src/app/shared/types/bottom-sheet-content.type';
 
 @Component({
   selector: 'bottom-sheet-item',
@@ -187,23 +188,38 @@ describe('BottomSheetOverlayComponent', () => {
     expect(compiled.querySelectorAll('bottom-sheet-item')).toHaveLength(2);
   });
 
-  it('should configure the basemap bottom sheet item', () => {
-    store.overrideSelector(selectBottomSheetContent, 'basemap');
+  it.each([
+    {bottomSheet: 'basemap', title: 'Hintergrund', size: 'small'},
+    {bottomSheet: 'legend', title: 'Legende', size: 'large'},
+    {bottomSheet: 'feature-info', title: 'Info', size: 'large'},
+    {bottomSheet: 'map-attributes', title: 'Attributfilter:', size: 'medium'},
+    {bottomSheet: 'share-link', title: 'Teilen', size: 'small'},
+  ] as {bottomSheet: BottomSheetContent; title: string; size: string}[])(
+    'configures the $bottomSheet bottomsheetitem',
+    ({bottomSheet, title, size}) => {
+      store.overrideSelector(selectBottomSheetContent, bottomSheet);
+      store.refreshState();
+      fixture.detectChanges();
+
+      const instance = fixture.debugElement.query(By.directive(MockBottomSheetItemComponent)).componentInstance;
+
+      expect(instance.bottomSheetHeight()).toBe(size);
+      expect(instance.overlayTitle()).toBe(title);
+    },
+  );
+
+  it.each([
+    {bottomSheet: 'legend', selector: 'legend'},
+    {bottomSheet: 'map-attributes', selector: 'map-attribute-filter'},
+    {bottomSheet: 'feature-info', selector: 'feature-info'},
+    {bottomSheet: 'search', selector: 'search-window-mobile'},
+    {bottomSheet: 'share-link', selector: 'share-link-mobile'},
+  ] as {bottomSheet: BottomSheetContent; selector: string}[])('renders the $selector content', ({bottomSheet, selector}) => {
+    store.overrideSelector(selectBottomSheetContent, bottomSheet);
     store.refreshState();
     fixture.detectChanges();
 
-    const instance = fixture.debugElement.query(By.directive(MockBottomSheetItemComponent)).componentInstance;
-
-    expect(instance.overlayTitle()).toBe('Hintergrund');
-    expect(instance.bottomSheetHeight()).toBe('small');
-  });
-
-  it('should render the legend content', () => {
-    store.overrideSelector(selectBottomSheetContent, 'legend');
-    store.refreshState();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('legend')).toBeTruthy();
+    expect(compiled.querySelector(selector)).toBeTruthy();
     expect(compiled.querySelectorAll('bottom-sheet-item')).toHaveLength(2);
   });
 
@@ -216,86 +232,6 @@ describe('BottomSheetOverlayComponent', () => {
     const instance = fixture.debugElement.query(By.directive(MockLegendComponent)).componentInstance;
 
     expect(instance.showInteractiveElements()).toBe(false);
-  });
-
-  it('should configure the legend bottom sheet item', () => {
-    store.overrideSelector(selectBottomSheetContent, 'legend');
-    store.refreshState();
-    fixture.detectChanges();
-
-    const instance = fixture.debugElement.query(By.directive(MockBottomSheetItemComponent)).componentInstance;
-
-    expect(instance.overlayTitle()).toBe('Legende');
-    expect(instance.bottomSheetHeight()).toBe('large');
-  });
-
-  it('should render the feature info content', () => {
-    store.overrideSelector(selectBottomSheetContent, 'feature-info');
-    store.refreshState();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('feature-info')).toBeTruthy();
-    expect(compiled.querySelectorAll('bottom-sheet-item')).toHaveLength(2);
-  });
-
-  it('should configure the feature info bottom sheet item', () => {
-    store.overrideSelector(selectBottomSheetContent, 'feature-info');
-    store.refreshState();
-    fixture.detectChanges();
-
-    const instance = fixture.debugElement.query(By.directive(MockBottomSheetItemComponent)).componentInstance;
-
-    expect(instance.overlayTitle()).toBe('Info');
-    expect(instance.bottomSheetHeight()).toBe('large');
-  });
-
-  it('should render the map attribute filter content', () => {
-    store.overrideSelector(selectBottomSheetContent, 'map-attributes');
-    store.refreshState();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('map-attribute-filter')).toBeTruthy();
-    expect(compiled.querySelectorAll('bottom-sheet-item')).toHaveLength(2);
-  });
-
-  it('should configure the map attribute filter bottom sheet item', () => {
-    store.overrideSelector(selectBottomSheetContent, 'map-attributes');
-    store.refreshState();
-    fixture.detectChanges();
-
-    const instance = fixture.debugElement.query(By.directive(MockBottomSheetItemComponent)).componentInstance;
-
-    expect(instance.overlayTitle()).toBe('Attributfilter:');
-    expect(instance.bottomSheetHeight()).toBe('medium');
-  });
-
-  it('should render the share link content', () => {
-    store.overrideSelector(selectBottomSheetContent, 'share-link');
-    store.refreshState();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('share-link-mobile')).toBeTruthy();
-    expect(compiled.querySelectorAll('bottom-sheet-item')).toHaveLength(2);
-  });
-
-  it('should configure the share link bottom sheet item', () => {
-    store.overrideSelector(selectBottomSheetContent, 'share-link');
-    store.refreshState();
-    fixture.detectChanges();
-
-    const instance = fixture.debugElement.query(By.directive(MockBottomSheetItemComponent)).componentInstance;
-
-    expect(instance.overlayTitle()).toBe('Teilen');
-    expect(instance.bottomSheetHeight()).toBe('small');
-  });
-
-  it('should render the search content', () => {
-    store.overrideSelector(selectBottomSheetContent, 'search');
-    store.refreshState();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('search-window-mobile')).toBeTruthy();
-    expect(compiled.querySelectorAll('bottom-sheet-item')).toHaveLength(2);
   });
 
   it('should pass focusOnInit to the search window', () => {

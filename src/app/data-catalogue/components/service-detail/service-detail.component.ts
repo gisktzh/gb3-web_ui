@@ -19,7 +19,6 @@ import {MatIcon} from '@angular/material/icon';
 @Component({
   selector: 'service-detail',
   templateUrl: './service-detail.component.html',
-  styleUrls: ['./service-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     LoadingAndProcessBarComponent,
@@ -89,7 +88,7 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
       url.searchParams.append('request', 'GetCapabilities');
 
       return url.toString();
-    } catch (e) {
+    } catch {
       return baseUrl;
     }
   }

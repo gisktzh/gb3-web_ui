@@ -9,7 +9,7 @@ type HitWithArea = {hit: Graphic; area: number};
 
 export class HitTestSelectionUtils {
   public static selectFeatureFromHitTestResult(hits: GraphicHit[]): Graphic | undefined {
-    if (hits.length === 0 || hits.every((hit) => isNullish(hit.graphic.geometry))) {
+    if (hits.every((hit) => isNullish(hit.graphic.geometry))) {
       return undefined;
     }
 

@@ -111,7 +111,7 @@ describe('AbstractEsriMeasurementStrategy', () => {
       labelGraphic.setAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName, '123');
       layer.add(labelGraphic);
       strategy['removeLabelOnEdit'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
-      expect(layer.graphics.length).toBe(0);
+      expect(layer.graphics).toHaveLength(0);
     });
   });
 });

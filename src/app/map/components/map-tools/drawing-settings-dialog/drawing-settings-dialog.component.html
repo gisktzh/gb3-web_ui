@@ -2,8 +2,8 @@
   <ng-container content>
     <div class="drawing-settings-dialog__content">
       <slider-edit [(value)]="lineWidth" [minValue]="1" [maxValue]="12" [step]="1" title="Strichstärke" />
-      <color-picker-edit [(value)]="lineColor" title="Strichfarbe" />
-      <color-picker-edit [(value)]="fillColor" title="Füllfarbe" />
+      <color-picker-edit [(value)]="lineColor" title="Strichfarbe" [id]="'settings-stroke-color'" />
+      <color-picker-edit [(value)]="fillColor" title="Füllfarbe" [id]="'settings-fill-color'" />
     </div>
   </ng-container>
   <ng-container actions>

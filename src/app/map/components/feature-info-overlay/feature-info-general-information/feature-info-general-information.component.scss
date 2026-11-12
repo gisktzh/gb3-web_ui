@@ -33,6 +33,7 @@ span {
     height: auto;
 
     &:hover {
+      /* NOSONAR -- Needs to be `!important` because specificity. */
       background-color: transparent !important;
     }
 

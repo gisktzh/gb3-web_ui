@@ -60,7 +60,7 @@ describe('LocalStorageService', () => {
     it('returns an empty string when an empty string is stored', () => {
       localStorage.setItem('onboardingGuidesViewed', '');
 
-      expect(service.get('onboardingGuidesViewed')).toBe(null);
+      expect(service.get('onboardingGuidesViewed')).toBeNull();
     });
   });
 
@@ -106,7 +106,7 @@ describe('LocalStorageService', () => {
     it('can store an empty string', () => {
       service.set('onboardingGuidesViewed', '');
 
-      expect(service.get('onboardingGuidesViewed')).toBe(null);
+      expect(service.get('onboardingGuidesViewed')).toBeNull();
       expect(service.watch('onboardingGuidesViewed')()).toBe('');
     });
 

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {Injectable} from '@angular/core';
 import {BaseApiService} from '../../abstract-api.service';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs';
+import {Observable, map} from 'rxjs';
 import {
   Coordsys as ApiCoordsys,
   LayerName as ApiLayerName,

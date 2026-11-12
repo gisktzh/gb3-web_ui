@@ -74,7 +74,7 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> {
         if (err instanceof HttpErrorResponse && err.status === 404) {
           const notFoundError = new MetadataNotFound(err);
           this.errorHandler.handleError(notFoundError);
-          this.router.navigate([MainPage.NotFound], {skipLocationChange: true});
+          await this.router.navigate([MainPage.NotFound], {skipLocationChange: true});
 
           return;
         }

@@ -43,7 +43,7 @@ describe('Import Reducer', () => {
       const action = ImportActions.resetDrawingImportState();
       const result = reducer(initialState, action);
 
-      expect(result.loadingState).toEqual(undefined);
+      expect(result.loadingState).toBeUndefined();
     });
   });
 });

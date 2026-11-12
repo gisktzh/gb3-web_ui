@@ -1,8 +1,7 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {catchError, map, mergeMap} from 'rxjs';
-import {filter, of, switchMap, takeWhile, tap, timer} from 'rxjs';
+import {catchError, map, mergeMap, filter, of, switchMap, takeWhile, tap, timer} from 'rxjs';
 import {ConfigService} from '../../../shared/services/config.service';
 import {Store} from '@ngrx/store';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';

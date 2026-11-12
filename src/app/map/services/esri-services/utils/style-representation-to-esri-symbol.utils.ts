@@ -3,7 +3,7 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Color from '@arcgis/core/Color';
 import {ColorUtils} from '../../../../shared/utils/color.utils';
 import {SymbolizationColor} from '../../../../shared/interfaces/symbolization.interface';
-import {SymbolUnion} from '@arcgis/core/unionTypes';
+import {SymbolUnion} from '@arcgis/core/symbols/types';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';

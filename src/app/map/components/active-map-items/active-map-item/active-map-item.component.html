@@ -6,7 +6,7 @@
   ></span>
 }
 <div class="active-map-item" [class.active-map-item--expanded]="activeMapItemExpansionPanel.expanded">
-  <!--
+  <!-- //NOSONAR -- False positive --><!--
     This is a plain, non-interactive container (not `mat-expansion-panel-header`, which hardcodes
     `role="button"` and can't be overridden). The expand/collapse toggle button lives inside
     `active-map-item-header`; the other buttons/checkbox there are independent siblings, so no

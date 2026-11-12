@@ -1,5 +1,7 @@
 <ng-template #tableHeader let-tableHeader>
   <th
+    (keydown.enter)="onFeatureHoverStart(tableHeader.fid)"
+    (keydown.enter)="onFeatureHoverEnd()"
     (mouseenter)="onFeatureHoverStart(tableHeader.fid)"
     (mouseleave)="onFeatureHoverEnd()"
     (click)="toggleHighlightForFeature(tableHeader.fid, tableHeader.hasGeometry)"

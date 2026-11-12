@@ -106,10 +106,7 @@ function isJsonString(value: string): boolean {
   try {
     JSON.parse(value);
     return true;
-  } catch (error) {
-    ((_) => {
-      // noop, so SonarQube doesn't complain, we have no debug output and ESLint is happy.
-    })(error);
+  } catch {
     return false;
   }
 }
@@ -195,7 +192,7 @@ export function redactAny(v: any, keysToRedact: Set<string> = REDACTABLE_KEYS): 
   }
 
   if (Array.isArray(v)) {
-    return v.map((value) => redactAny(value), keysToRedact);
+    return v.map((value) => redactAny(value, keysToRedact));
   }
 
   // It's not an array, number, string, true, false, null, undefined, so it _has_ to be an object.

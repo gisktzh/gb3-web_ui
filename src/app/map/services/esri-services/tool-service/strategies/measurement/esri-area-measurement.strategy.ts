@@ -1,4 +1,5 @@
 import * as areaOperator from '@arcgis/core/geometry/operators/areaOperator.js';
+import * as centroidOperator from '@arcgis/core/geometry/operators/centroidOperator.js';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {NumberUtils} from '../../../../../../shared/utils/number.utils';
 import {AbstractEsriMeasurementStrategy, LabelConfiguration} from '../abstract-esri-measurement.strategy';
@@ -44,8 +45,8 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     return {location: labelPosition, symbolization: this.labelSymbolization};
   }
 
-  private getLabelPosition(geometry: Polygon): Point | null | undefined {
-    return geometry.centroid;
+  private getLabelPosition(geometry: Polygon): Point {
+    return centroidOperator.execute(geometry);
   }
 
   /**

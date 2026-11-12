@@ -8,7 +8,7 @@ type Gb3PrintErrorResponse = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is a type guard
 function isErrorFromGb3(error: any): error is Gb3PrintErrorResponse {
-  return typeof error !== 'string' && typeof error.error?.errors !== 'undefined';
+  return typeof error !== 'string' && error.error?.errors !== undefined;
 }
 
 export class PrintRequestCouldNotBeHandled extends RecoverableError {

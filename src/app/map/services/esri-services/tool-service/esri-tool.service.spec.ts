@@ -58,6 +58,11 @@ import EsriMap from '@arcgis/core/Map';
 import {GoToOptions2D, GoToTarget2D} from '@arcgis/core/views/types';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {StatisticsActions} from '../../../../state/map/actions/statistics.actions';
+import {DrawingTool} from 'src/app/shared/types/drawing-tool.type';
+import {AbstractEsriDrawingStrategy} from './strategies/abstract-esri-drawing.strategy';
+import {DrawingCallbackHandlerArgsDrawing} from './interfaces/drawing-callback-handler.interface';
+import {DataDownloadSelectionTool} from 'src/app/shared/types/data-download-selection-tool.type';
+import {MeasurementTool} from 'src/app/shared/types/measurement-tool.type';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -235,35 +240,21 @@ describe('EsriToolService', () => {
         store.overrideSelector(selectDrawingLayers, [{id: userDrawingLayerId} as DrawingActiveMapItem]);
         store.refreshState();
       });
-      it('sets the correct strategy for point drawing', () => {
-        const pointSpy = vi.spyOn(EsriPointDrawingStrategy.prototype, 'start');
-        service.initializeDrawing('draw-point');
-        expect(pointSpy).toHaveBeenCalled();
-      });
-      it('sets the correct strategy for line drawing', () => {
-        const lineSpy = vi.spyOn(EsriLineDrawingStrategy.prototype, 'start');
-        service.initializeDrawing('draw-line');
-        expect(lineSpy).toHaveBeenCalled();
-      });
-      it('sets the correct strategy for polygon drawing', () => {
-        const polygonSpy = vi.spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
-        service.initializeDrawing('draw-polygon');
-        expect(polygonSpy).toHaveBeenCalled();
-      });
-      it('sets the correct strategy for text drawing', () => {
-        const polygonSpy = vi.spyOn(EsriTextDrawingStrategy.prototype, 'start');
-        service.initializeDrawing('draw-text');
-        expect(polygonSpy).toHaveBeenCalled();
-      });
-      it('sets the correct strategy for rectangle drawing', () => {
-        const polygonSpy = vi.spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
-        service.initializeDrawing('draw-rectangle');
-        expect(polygonSpy).toHaveBeenCalled();
-      });
-      it('sets the correct strategy for circle drawing', () => {
-        const polygonSpy = vi.spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
-        service.initializeDrawing('draw-circle');
-        expect(polygonSpy).toHaveBeenCalled();
+
+      it.each([
+        {drawingTool: 'draw-point' as const, strategyPrototype: EsriPointDrawingStrategy.prototype},
+        {drawingTool: 'draw-line' as const, strategyPrototype: EsriLineDrawingStrategy.prototype},
+        {drawingTool: 'draw-polygon' as const, strategyPrototype: EsriPolygonDrawingStrategy.prototype},
+        {drawingTool: 'draw-text' as const, strategyPrototype: EsriTextDrawingStrategy.prototype},
+        {drawingTool: 'draw-rectangle' as const, strategyPrototype: EsriPolygonDrawingStrategy.prototype},
+        {drawingTool: 'draw-circle' as const, strategyPrototype: EsriPolygonDrawingStrategy.prototype},
+      ] as {
+        drawingTool: DrawingTool;
+        strategyPrototype: AbstractEsriDrawingStrategy<DrawingCallbackHandlerArgsDrawing>;
+      }[])('sets the correct strategy for $%drawingTool', ({drawingTool, strategyPrototype}) => {
+        const startSpy = vi.spyOn(strategyPrototype, 'start');
+        service.initializeDrawing(drawingTool);
+        expect(startSpy).toHaveBeenCalled();
       });
     });
 
@@ -278,21 +269,16 @@ describe('EsriToolService', () => {
         );
         store.refreshState();
       });
-      it(`sets the correct strategy for circle selection`, () => {
-        const polygonSpy = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
-        service.initializeDataDownloadSelection('select-circle');
-        expect(polygonSpy).toHaveBeenCalled();
-      });
-      it(`sets the correct strategy for polygon selection`, () => {
-        const polygonSpy = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
-        service.initializeDataDownloadSelection('select-polygon');
-        expect(polygonSpy).toHaveBeenCalled();
-      });
-      it(`sets the correct strategy for rectangle selection`, () => {
-        const polygonSpy = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
-        service.initializeDataDownloadSelection('select-rectangle');
-        expect(polygonSpy).toHaveBeenCalled();
-      });
+
+      it.each(['select-circle', 'select-polygon', 'select-rectangle'] as DataDownloadSelectionTool[])(
+        'sets the correct strategy for $selectionTool',
+        (selectionTool) => {
+          const polygonSpy = vi.spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
+          service.initializeDataDownloadSelection(selectionTool);
+          expect(polygonSpy).toHaveBeenCalled();
+        },
+      );
+
       it.each(['select-circle', 'select-polygon', 'select-rectangle'] as const)(
         'adapts the neutral result of %s to the existing polygon download payload',
         (tool) => {
@@ -1359,58 +1345,40 @@ describe('EsriToolService', () => {
         }),
       });
     });
-    it('should set the correct strategy for a point drawing', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
-      const setDrawingStrategySpy = vi.spyOn(service as any, 'setDrawingStrategy').mockImplementation(vi.fn());
+
+    it.each([
+      {method: 'setDrawingStrategy', tool: 'draw-point', attributeTool: undefined, layerId: undefined},
+      {method: 'setDrawingStrategy', tool: 'draw-polygon', attributeTool: 'polygon', layerId: undefined},
+      {method: 'setDrawingStrategy', tool: 'draw-line', attributeTool: 'polyline', layerId: undefined},
+      {method: 'setMeasurementStrategy', tool: 'measure-point', attributeTool: undefined, layerId: 'USER_DRAWING__measurements'},
+      {method: 'setMeasurementStrategy', tool: 'measure-area', attributeTool: 'polygon', layerId: 'USER_DRAWING__measurements'},
+      {method: 'setMeasurementStrategy', tool: 'measure-line', attributeTool: 'polyline', layerId: 'USER_DRAWING__measurements'},
+      {
+        method: 'setMeasurementStrategy',
+        tool: 'measure-elevation-profile',
+        attributeTool: 'polyline',
+        layerId: 'INTERNAL_DRAWING__elevation_profile',
+      },
+    ] as {
+      method: string;
+      tool: DrawingTool | MeasurementTool | DataDownloadSelectionTool;
+      attributeTool: string | undefined;
+      layerId: string | undefined;
+    }[])('should set the correct strategy for $tool drawing', ({method, tool, attributeTool, layerId}) => {
+      if (attributeTool) {
+        mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = attributeTool;
+      }
+
+      if (layerId) {
+        mockGraphic.layer = {id: layerId} as Layer;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- `any` is necessary here to not end up in type hell.
+      const startegySpy = vi.spyOn(service as any, method).mockImplementation(vi.fn());
       service.setToolStrategyForEditingFeature(mockGraphic);
-      expect(setDrawingStrategySpy).toHaveBeenCalledWith('draw-point', mockGraphic.layer);
-    });
-    it('should set the correct strategy for a polygon drawing', () => {
-      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
-      const setDrawingStrategySpy = vi.spyOn(service as any, 'setDrawingStrategy').mockImplementation(vi.fn());
-      service.setToolStrategyForEditingFeature(mockGraphic);
-      expect(setDrawingStrategySpy).toHaveBeenCalledWith('draw-polygon', mockGraphic.layer);
-    });
-    it('should set the correct strategy for a polyline drawing', () => {
-      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
-      const setDrawingStrategySpy = vi.spyOn(service as any, 'setDrawingStrategy').mockImplementation(vi.fn());
-      service.setToolStrategyForEditingFeature(mockGraphic);
-      expect(setDrawingStrategySpy).toHaveBeenCalledWith('draw-line', mockGraphic.layer);
+      expect(startegySpy).toHaveBeenCalledWith(tool, mockGraphic.layer);
     });
 
-    it('should set the correct strategy for a point measurement', () => {
-      mockGraphic.layer = {id: 'USER_DRAWING__measurements'} as Layer;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
-      const setMeasurementStrategySpy = vi.spyOn(service as any, 'setMeasurementStrategy').mockImplementation(vi.fn());
-      service.setToolStrategyForEditingFeature(mockGraphic);
-      expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-point', mockGraphic.layer);
-    });
-    it('should set the correct strategy for a polygon measurement', () => {
-      mockGraphic.layer = {id: 'USER_DRAWING__measurements'} as Layer;
-      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
-      const setMeasurementStrategySpy = vi.spyOn(service as any, 'setMeasurementStrategy').mockImplementation(vi.fn());
-      service.setToolStrategyForEditingFeature(mockGraphic);
-      expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-area', mockGraphic.layer);
-    });
-    it('should set the correct strategy for a polyline measurement', () => {
-      mockGraphic.layer = {id: 'USER_DRAWING__measurements'} as Layer;
-      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
-      const setMeasurementStrategySpy = vi.spyOn(service as any, 'setMeasurementStrategy').mockImplementation(vi.fn());
-      service.setToolStrategyForEditingFeature(mockGraphic);
-      expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-line', mockGraphic.layer);
-    });
-    it('should set the correct strategy for a elevation profile', () => {
-      mockGraphic.layer = {id: 'INTERNAL_DRAWING__elevation_profile'} as Layer;
-      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Refactor this test so it doesn't need `any`
-      const setMeasurementStrategySpy = vi.spyOn(service as any, 'setMeasurementStrategy').mockImplementation(vi.fn());
-      service.setToolStrategyForEditingFeature(mockGraphic);
-      expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-elevation-profile', mockGraphic.layer);
-    });
     it('should throw an error for nonEditableLayers', () => {
       mockGraphic.layer = {id: 'INTERNAL_DRAWING__selection'} as Layer;
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';

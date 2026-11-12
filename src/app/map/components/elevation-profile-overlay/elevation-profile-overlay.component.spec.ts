@@ -61,7 +61,7 @@ describe('ElevationProfileOverlayComponent', () => {
   });
 
   it('should not create a download URL if no elevation profile data is given', () => {
-    expect(component.downloadCsvUrl()).toBe(undefined);
+    expect(component.downloadCsvUrl()).toBeUndefined();
   });
 
   it('should create the download URL from the current elevation profile data', () => {

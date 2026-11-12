@@ -44,7 +44,7 @@ function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualE
 
   const actualEsriWmsLayer = actualEsriLayer as WMSLayer;
   expect(actualEsriWmsLayer.url).toBe(expectedMapItem.settings.url);
-  expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.settings.layers.length);
+  expect(actualEsriWmsLayer.sublayers).toHaveLength(expectedMapItem.settings.layers.length);
   expectedMapItem.settings.layers.forEach((expectedLayer) => {
     const actualEsriSublayer = actualEsriWmsLayer.sublayers.find((sl) => sl.id === expectedLayer.id);
     expect(actualEsriSublayer).toBeDefined();
@@ -302,13 +302,13 @@ describe('EsriMapService', () => {
     ];
     const mapItem3 = createGb2WmsMapItemMock('mapThree', 1, true, 1, '123', false, undefined, attributeFilters);
 
-    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
+    expect(mapMock.layers).toHaveLength(getExpectedNumberOfLayersWithInternalLayers(0));
     service = TestBed.inject(EsriMapService);
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
 
-    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
+    expect(mapMock.layers).toHaveLength(getExpectedNumberOfLayersWithInternalLayers(3));
     // index <> position; position 0 should be the highest index for Esri.
     compareMapItemToEsriLayer(mapItem1, mapMock.layers.getItemAt(2)!);
     compareMapItemToEsriLayer(mapItem2, mapMock.layers.getItemAt(1)!);
@@ -319,7 +319,7 @@ describe('EsriMapService', () => {
     service.addGb2WmsLayer(mapItem2, 0);
     service.addGb2WmsLayer(mapItem3, 0);
 
-    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
+    expect(mapMock.layers).toHaveLength(getExpectedNumberOfLayersWithInternalLayers(3));
     // index <> position; position 0 should be the highest index for Esri.
     expect(mapMock.layers.getItemAt(0)!.id).toBe(mapItem1.id);
     expect(mapMock.layers.getItemAt(1)!.id).toBe(mapItem2.id);
@@ -341,11 +341,11 @@ describe('EsriMapService', () => {
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
 
-    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
+    expect(mapMock.layers).toHaveLength(getExpectedNumberOfLayersWithInternalLayers(3));
 
     service.removeMapItem(mapItem2.id);
 
-    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(2));
+    expect(mapMock.layers).toHaveLength(getExpectedNumberOfLayersWithInternalLayers(2));
     expect(mapMock.layers.some((l) => l.id === mapItem1.id)).toBe(true);
     expect(mapMock.layers.some((l) => l.id === mapItem2.id)).toBe(false);
     expect(mapMock.layers.some((l) => l.id === mapItem3.id)).toBe(true);
@@ -367,11 +367,11 @@ describe('EsriMapService', () => {
     mapMock.layers.addMany(userDrawingLayerIds.map((id) => new GraphicsLayer({id})));
     const internalLayerSpies = internalLayers.map((internalLayer) => vi.spyOn(internalLayer, 'removeAll'));
 
-    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3 + userDrawingLayerIds.length));
+    expect(mapMock.layers).toHaveLength(getExpectedNumberOfLayersWithInternalLayers(3 + userDrawingLayerIds.length));
 
     service.removeAllMapItems();
 
-    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
+    expect(mapMock.layers).toHaveLength(getExpectedNumberOfLayersWithInternalLayers(0));
     internalLayers.forEach((internalLayer) => {
       expect(mapMock.layers.some((l) => l.id === internalLayer.id)).toBe(true);
     });

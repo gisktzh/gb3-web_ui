@@ -152,14 +152,14 @@ export const activeMapItemFeature = createFeature({
       }),
     ),
     on(ActiveMapItemActions.addFavourite, (state, {activeMapItems}): ActiveMapItemState => {
-      const favouriteIds = activeMapItems.map((activeMapItem) => activeMapItem.id);
-      const activeMapItemsToStay = state.items.filter((activeMapItem) => !favouriteIds.includes(activeMapItem.id));
+      const favouriteIds = new Set(activeMapItems.map((activeMapItem) => activeMapItem.id));
+      const activeMapItemsToStay = state.items.filter((activeMapItem) => !favouriteIds.has(activeMapItem.id));
 
       return {...state, items: [...activeMapItems, ...activeMapItemsToStay]};
     }),
     on(ActiveMapItemActions.addInitialMapItems, (state, {initialMapItems}): ActiveMapItemState => {
-      const initialMapItemIds = initialMapItems.map((initialMapItem) => initialMapItem.id);
-      const activeMapItemsToStay = state.items.filter((activeMapItem) => !initialMapItemIds.includes(activeMapItem.id));
+      const initialMapItemIds = new Set(initialMapItems.map((initialMapItem) => initialMapItem.id));
+      const activeMapItemsToStay = state.items.filter((activeMapItem) => !initialMapItemIds.has(activeMapItem.id));
 
       return {...state, items: [...initialMapItems, ...activeMapItemsToStay]};
     }),
