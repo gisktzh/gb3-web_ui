@@ -14,6 +14,8 @@ import {
   OerebFeature as OerebAPIFeature,
   LinkObject,
 } from 'src/app/shared/models/gb3-api-generated.interfaces';
+import {Position} from 'geojson';
+import {GeometryWithSrs} from 'src/app/shared/interfaces/geojson-types-with-srs.interface';
 
 type OerebAPIMeasurement = OerebAPIFeature['oereb_info']['concerned_themes'][0]['restrictions'][0]['measurement'];
 
@@ -76,6 +78,11 @@ export class Gb3OerebExtractService extends Gb3ApiService {
       notAvailableThemes: info.not_available_themes.map((t) =>
         this.mapNotConcernedThemeFromOerebfeatureTooOerebExtractResponseNotConcernedTheme(t),
       ),
+      parcel: {
+        type: info.parcel.type,
+        coordinates: info.parcel.coordinates as Position | Position[] | Position[][] | Position[][][],
+        srs: info.parcel.crs?.properties.name === 'EPSG:4326' ? 4326 : 2056,
+      } as GeometryWithSrs,
     };
   }
 

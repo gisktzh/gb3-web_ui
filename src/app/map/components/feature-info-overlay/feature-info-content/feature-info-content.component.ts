@@ -150,7 +150,7 @@ export class FeatureInfoContentComponent implements OnDestroy {
     }
 
     const pinnedFeatureId = isPinned ? this.createUniqueColumnIdentifierForFid(fid) : undefined;
-    const source = {mapItemId: this.topicId(), layerName: this.layer().layer};
+    const source = {mapItemId: this.topicId(), layerName: this.layer().layer, sourceType: 'feature_info' as const};
     this.store.dispatch(FeatureInfoActions.highlightFeature({feature, source, pinnedFeatureId}));
 
     if (zoomToFeature) {
