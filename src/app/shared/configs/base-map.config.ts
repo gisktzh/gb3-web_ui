@@ -70,6 +70,9 @@ export const defaultBasemaps: Basemap[] = [
         name: 'lk25',
       },
       {
+        name: 'up8',
+      },
+      {
         name: 'LCSF',
       },
       {
