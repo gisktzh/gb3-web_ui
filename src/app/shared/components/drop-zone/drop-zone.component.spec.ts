@@ -62,7 +62,7 @@ describe('DropZoneComponent', () => {
 
   it('emits a valid dropped file', () => {
     const addedFile = vi.spyOn(component.addedFileEvent, 'emit');
-    const file = new File(['<kml />'], 'map.kml', {type: 'application/vnd.google-earth.kml+xml'});
+    const file = new File(['{}'], 'map.geojson', {type: 'application/geo+json'});
     const drop = new DragEvent('drop', {bubbles: true, cancelable: true});
     Object.defineProperty(drop, 'dataTransfer', {value: {files: fileList(file)}});
 
