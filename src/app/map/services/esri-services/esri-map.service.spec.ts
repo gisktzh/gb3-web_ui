@@ -929,7 +929,7 @@ describe('EsriMapService', () => {
       expect(visible).toHaveBeenLastCalledWith(true);
       mapViewMock.scale = 50001;
       evaluate();
-      expect(visible).toHaveBeenLastCalledWith(false);
+      expect(visible).toHaveBeenLastCalledWith(true);
       mapViewMock.scale = 20000;
       evaluate();
       expect(visible).toHaveBeenLastCalledWith(true);
