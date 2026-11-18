@@ -86,7 +86,7 @@ import {
   isAboveMinFeatureInfoScaleRange,
   isInFeatureInfoScaleRange,
 } from '../../../shared/utils/feature-info-scale.utils';
-import {distinctUntilChanged, Observable, switchMap} from 'rxjs';
+import {distinctUntilChanged, Observable, of, switchMap} from 'rxjs';
 import {calculateBoundingBox} from '../../../shared/utils/geojson-bounds.utils';
 import {EsriMouseButtonType} from './types/esri-mouse-button-type.type';
 
@@ -584,6 +584,11 @@ export class EsriMapService implements MapService {
   }
 
   public observeFeatureInfoLayerVisibility(source: FeatureHighlightSource): Observable<boolean> {
+    // Highlight from the oereb extract is always visible.
+    if (source.sourceType === 'oereb_extract') {
+      return of(true);
+    }
+
     return this.store.select(selectAllItems).pipe(
       switchMap(
         (items) =>
@@ -617,6 +622,10 @@ export class EsriMapService implements MapService {
   }
 
   private resolveFeatureInfoLayer(source: FeatureHighlightSource, items: ActiveMapItem[] = this.activeMapItems()) {
+    if (source.sourceType === 'oereb_extract') {
+      return undefined;
+    }
+
     const mapItem = items.find((item) => item.id === source.mapItemId);
     if (!(mapItem instanceof Gb2WmsActiveMapItem)) {
       return undefined;

@@ -74,6 +74,7 @@ export class StatisticsEffects {
 
           return this.observeVisibleGeometry(
             {
+              sourceType: 'feature_info',
               mapItemId: source.topic,
               layerName: source.layer,
             },
