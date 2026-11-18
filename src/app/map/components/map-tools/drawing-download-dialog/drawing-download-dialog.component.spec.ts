@@ -24,9 +24,9 @@ describe('DrawingDownloadDialogComponent', () => {
 
   it('requests an export with the selected format', () => {
     const dispatch = vi.spyOn(store, 'dispatch');
-    fixture.componentInstance.exportFormatModel.set({exportFormat: ExportFormat.Kml});
+    fixture.componentInstance.exportFormatModel.set({exportFormat: ExportFormat.Geojson});
     fixture.componentInstance.downloadDrawings();
-    expect(dispatch).toHaveBeenCalledWith(ExportActions.requestDrawingsExport({exportFormat: ExportFormat.Kml}));
+    expect(dispatch).toHaveBeenCalledWith(ExportActions.requestDrawingsExport({exportFormat: ExportFormat.Geojson}));
   });
 
   it('closes when cancelled', () => {
