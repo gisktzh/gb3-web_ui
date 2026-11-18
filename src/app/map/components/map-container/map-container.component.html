@@ -1,1 +1,7 @@
-<div #mainMap class="map-container"></div>
+<div
+  #mainMap
+  class="map-container"
+  (drop)="handleDrop($event)"
+  (dragover)="handleDragOver($event)"
+  (dragleave)="handleDragLeave($event)"
+></div>
