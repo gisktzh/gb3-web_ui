@@ -61,6 +61,8 @@
             tableLabel="Grundstücksinformationen"
             [tableHeaderTemplate]="tableHeader"
             [tableCellTemplate]="tableCell"
+            (resizeStart)="onResizeHandlerResizeStart()"
+            (resizeEnd)="onResizeHandlerResizeEnd()"
           />
         </mat-radio-group>
       </div>
