@@ -108,7 +108,7 @@ describe('QueryModeEffects', () => {
       actions$ = of(QueryModeActions.selectQueryMode({queryMode: 'statistics'}));
       const actual: Action[] = [];
       effects.selectQueryMode$.subscribe((action) => actual.push(action));
-      expect(actual).toEqual([ToolActions.cancelTool(), MapUiActions.toggleToolMenu({tool: 'feature'})]);
+      expect(actual).toEqual([ToolActions.cancelInteraction(), MapUiActions.toggleToolMenu({tool: 'feature'})]);
     });
   });
 
@@ -243,7 +243,7 @@ describe('QueryModeEffects', () => {
         let actualAction;
         effects.cancelStatisticsToolOnLeavingMode$.subscribe((action) => (actualAction = action));
 
-        expect(actualAction).toEqual(ToolActions.cancelTool());
+        expect(actualAction).toEqual(ToolActions.cancelInteraction());
       }),
     );
 

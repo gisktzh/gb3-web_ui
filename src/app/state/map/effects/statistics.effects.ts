@@ -50,7 +50,7 @@ export class StatisticsEffects {
         this.areaService.calculateArea(geometry).pipe(
           map((areaInSquareMeters) => StatisticsActions.setArea({areaInSquareMeters})),
           catchError((error: unknown) => of(StatisticsActions.setError({error}))),
-          takeUntil(this.actions$.pipe(ofType(StatisticsActions.clearContent))),
+          takeUntil(this.actions$.pipe(ofType(StatisticsActions.clearContent, ToolActions.startCreation))),
         ),
       ),
     );
@@ -235,44 +235,20 @@ export class StatisticsEffects {
     );
   });
 
-  /**
-   * Switching between the two modes discards the area defined for the previous one, as a circle cannot be carried over into a polygon
-   * or the other way round, and hands the corresponding tool to the user so that they can draw the new area right away. The tool is
-   * only handed over if it is not the one already drawing, which is what keeps this from bouncing back and forth with the effect below.
-   */
+  /** Only an explicit dropdown request starts creation. Mode synchronization is handled by reducers. */
   public restartSelectionOnModeChange$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(StatisticsActions.setMode),
+      map(({mode}) => ToolActions.startCreation({tool: statisticsSelectionToolByMode[mode]})),
+    );
+  });
+
+  public cancelClearedStatisticsInteraction$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(StatisticsActions.clearContent),
       concatLatestFrom(() => this.store.select(selectActiveTool)),
-      switchMap(([{mode}, activeTool]) => {
-        const tool = statisticsSelectionToolByMode[mode];
-        return activeTool === tool ? [StatisticsActions.clearContent()] : [ToolActions.switchTool({tool})];
-      }),
-    );
-  });
-
-  /**
-   * A soft mode update should mark the respective tool as active so a hard set after a soft update actually activates it properly.
-   */
-  public activateToolOnSoftModeUpdate$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(StatisticsActions.softUpdateMode),
-      switchMap(({mode}) => [ToolActions.activateTool({tool: statisticsSelectionToolByMode[mode]})]),
-    );
-  });
-
-  /**
-   * The two selection tools can also be started from the tool bar, which bypasses the mode select in the panel. The mode follows the
-   * tool so that the panel does not claim to be in a mode the map is not drawing.
-   */
-  public syncModeWithSelectionTool$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ToolActions.activateTool),
-      map(({tool}) => findStatisticsModeForTool(tool)),
-      filter((mode) => mode !== undefined),
-      concatLatestFrom(() => this.store.select(selectMode)),
-      filter(([mode, currentMode]) => mode !== currentMode),
-      map(([mode]) => StatisticsActions.setMode({mode})),
+      filter(([, tool]) => findStatisticsModeForTool(tool) !== undefined),
+      map(() => ToolActions.cancelInteraction()),
     );
   });
 
@@ -299,17 +275,17 @@ export class StatisticsEffects {
           map((results) => StatisticsActions.updateContent({results})),
           catchError((error: unknown) => of(StatisticsActions.setError({error}))),
           takeUntil(
-            this.actions$.pipe(ofType(StatisticsActions.setSelection, StatisticsActions.clearContent, StatisticsActions.invalidateContent)),
+            this.actions$.pipe(
+              ofType(
+                StatisticsActions.setSelection,
+                StatisticsActions.clearContent,
+                StatisticsActions.invalidateContent,
+                ToolActions.startCreation,
+              ),
+            ),
           ),
         );
       }),
-    );
-  });
-
-  public switchTool$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ToolActions.switchTool),
-      switchMap(() => [StatisticsActions.clearContent()]),
     );
   });
 

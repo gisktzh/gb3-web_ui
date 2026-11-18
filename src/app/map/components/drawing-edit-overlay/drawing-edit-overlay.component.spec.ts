@@ -2,7 +2,7 @@ import {Component, input, output} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {DrawingActions} from '../../../state/map/actions/drawing.actions';
+import {ToolActions} from '../../../state/map/actions/tool.actions';
 import {selectIsDrawingEditOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
 import {DrawingEditComponent} from './drawing-edit/drawing-edit.component';
@@ -75,6 +75,6 @@ describe('DrawingEditOverlayComponent', () => {
 
     overlay.closeEvent.emit();
 
-    expect(dispatch).toHaveBeenCalledWith(DrawingActions.cancelEditMode());
+    expect(dispatch).toHaveBeenCalledWith(ToolActions.cancelInteraction());
   });
 });

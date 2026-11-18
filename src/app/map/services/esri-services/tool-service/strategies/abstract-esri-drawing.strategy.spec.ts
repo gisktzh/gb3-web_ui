@@ -60,13 +60,13 @@ describe('AbstractEsriDrawingStrategy', () => {
 
         callback({state: 'active', graphic});
 
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
         expect(handleCompleteSpy).not.toHaveBeenCalled();
 
         return mockResourceHandle;
       });
 
       strategy.start();
+      expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
 
       expect(reactiveSpy).toHaveBeenCalled();
     });
@@ -83,13 +83,13 @@ describe('AbstractEsriDrawingStrategy', () => {
 
         callback({state: 'start', graphic});
 
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
         expect(handleCompleteSpy).not.toHaveBeenCalled();
 
         return mockResourceHandle;
       });
 
       strategy.start();
+      expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
 
       expect(reactiveSpy).toHaveBeenCalled();
     });
@@ -106,13 +106,13 @@ describe('AbstractEsriDrawingStrategy', () => {
 
         callback({state: 'cancel', graphic});
 
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
         expect(handleCompleteSpy).not.toHaveBeenCalled();
 
         return mockResourceHandle;
       });
 
       strategy.start();
+      expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
 
       expect(reactiveSpy).toHaveBeenCalled();
     });
@@ -129,13 +129,13 @@ describe('AbstractEsriDrawingStrategy', () => {
 
         callback({state: 'complete', graphic});
 
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
         expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, 'add');
 
         return mockResourceHandle;
       });
 
       strategy.start();
+      expect(sketchViewModelSpy).toHaveBeenCalledWith(MOCK_TOOL_NAME, {mode: 'click'});
 
       expect(reactiveSpy).toHaveBeenCalled();
     });
@@ -154,13 +154,13 @@ describe('AbstractEsriDrawingStrategy', () => {
 
         callback({state: 'active'});
 
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
         expect(completeEditingSpy).not.toHaveBeenCalled();
 
         return mockResourceHandle;
       });
 
       strategy.edit(graphic);
+      expect(sketchViewModelSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
 
       expect(reactiveSpy).toHaveBeenCalled();
     });
@@ -177,13 +177,13 @@ describe('AbstractEsriDrawingStrategy', () => {
 
         callback({state: 'start'});
 
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
         expect(completeEditingSpy).not.toHaveBeenCalled();
 
         return mockResourceHandle;
       });
 
       strategy.edit(graphic);
+      expect(sketchViewModelSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
 
       expect(reactiveSpy).toHaveBeenCalled();
     });
@@ -200,13 +200,13 @@ describe('AbstractEsriDrawingStrategy', () => {
 
         callback({state: 'complete'});
 
-        expect(sketchViewModelSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
         expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
 
         return mockResourceHandle;
       });
 
       strategy.edit(graphic);
+      expect(sketchViewModelSpy).toHaveBeenCalledWith(graphic, {multipleSelectionEnabled: false});
 
       expect(reactiveSpy).toHaveBeenCalled();
     });

@@ -39,7 +39,7 @@ export class AppLayoutEffects {
       distinctUntilChanged((previous, current) => previous.screenMode === current.screenMode),
       concatLatestFrom(() => this.store.select(selectActiveTool)),
       filter(([{screenMode}, activeTool]) => screenMode === 'mobile' && activeTool !== undefined),
-      map(() => ToolActions.cancelTool()),
+      map(() => ToolActions.cancelInteraction()),
     );
   });
 }

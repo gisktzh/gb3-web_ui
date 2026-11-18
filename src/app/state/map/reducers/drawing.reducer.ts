@@ -1,3 +1,4 @@
+import {MapUiActions} from '../actions/map-ui.actions';
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {DrawingState} from '../states/drawing.state';
 import {DrawingActions} from '../actions/drawing.actions';
@@ -14,6 +15,9 @@ export const drawingFeature = createFeature({
   name: drawingFeatureKey,
   reducer: createReducer(
     initialState,
+    on(MapUiActions.setDrawingEditOverlayVisibility, (state, {isVisible}): DrawingState =>
+      isVisible ? state : {...state, selectedDrawing: undefined},
+    ),
     on(
       DrawingActions.addDrawing,
       produce((draft, {drawing}) => {

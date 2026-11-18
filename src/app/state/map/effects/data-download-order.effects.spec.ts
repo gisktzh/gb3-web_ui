@@ -206,10 +206,10 @@ describe('DataDownloadOrderEffects', () => {
   });
 
   describe('deactivateToolAfterClearingSelection$', () => {
-    it('dispatches ToolActions.deactivateTool() after clearing the selection if the currently active tool is not undefined', () => {
+    it('dispatches ToolActions.cancelInteraction() after clearing the selection if the currently active tool is not undefined', () => {
       store.overrideSelector(selectActiveTool, 'select-polygon');
 
-      const expectedAction = ToolActions.deactivateTool();
+      const expectedAction = ToolActions.cancelInteraction();
 
       actions$ = of(DataDownloadOrderActions.clearSelection());
       effects.deactivateToolAfterClearingSelection$.subscribe((action) => {

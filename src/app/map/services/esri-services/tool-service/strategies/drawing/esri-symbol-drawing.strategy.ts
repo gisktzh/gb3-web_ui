@@ -9,7 +9,7 @@ import {SupportedEsriTool} from '../supported-esri-tool.type';
 import {DrawingMode} from '../../types/drawing-mode.type';
 import {SymbolDrawingToolInputComponent} from 'src/app/map/components/symbols-drawing-tool-input/symbol-drawing-tool-input.component';
 import {PanelClass} from 'src/app/shared/enums/panel-class.enum';
-import {catchError, tap} from 'rxjs';
+import {EMPTY, catchError, switchMap} from 'rxjs';
 import Graphic from '@arcgis/core/Graphic';
 import {Gb3SymbolStyle} from 'src/app/shared/interfaces/internal-drawing-representation.interface';
 import {EsriMapDrawingSymbol} from '../../../types/esri-map-drawing-symbol.type';
@@ -34,6 +34,7 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
   protected mapDrawingSymbol: EsriMapDrawingSymbol | undefined = undefined;
   protected symbolSize: number = SymbolStyleConstants.DEFAULT_SYMBOL_SIZE;
   protected symbolRotation: number = SymbolStyleConstants.DEFAULT_SYMBOL_ROTATION;
+  private closeInputDialog?: () => void;
   private readonly dialogService: MatDialog;
 
   constructor(
@@ -47,6 +48,7 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
   }
 
   public override start() {
+    if (this.disposed) return;
     const dialog = this.dialogService.open<SymbolDrawingToolInputComponent, void, SymbolDrawingInputComponentOutput>(
       SymbolDrawingToolInputComponent,
       {
@@ -56,10 +58,12 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
       },
     );
 
+    this.closeInputDialog = () => dialog.close();
     dialog
       .afterClosed()
       .pipe(
-        tap(async (value) => {
+        switchMap(async (value) => {
+          if (this.disposed) return;
           if (!value) {
             super.handleComplete(undefined, 'add');
             return;
@@ -68,6 +72,7 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
           const {drawingSymbolDefinition, size, rotation} = value;
 
           const drawingSymbolDescriptor = await drawingSymbolDefinition.fetchDrawingSymbolDescriptor(size, rotation);
+          if (this.disposed) return;
           this.sketchViewModel.pointSymbol = drawingSymbolDescriptor;
 
           this.mapDrawingSymbol = {
@@ -81,6 +86,7 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
           super.start();
         }),
         catchError((err: unknown) => {
+          if (this.disposed) return EMPTY;
           console.warn(err);
           super.handleComplete(undefined, 'add');
           throw new EsriSymbolDescriptorFetchingFailed();
@@ -97,5 +103,10 @@ export class EsriSymbolDrawingStrategy extends AbstractEsriDrawingStrategy<
 
   protected override handleComplete(graphic: Graphic, mode: DrawingMode) {
     super.handleComplete(graphic, mode, this.mapDrawingSymbol, this.symbolSize, this.symbolRotation);
+  }
+  public override cancel() {
+    super.cancel();
+    this.closeInputDialog?.();
+    this.closeInputDialog = undefined;
   }
 }

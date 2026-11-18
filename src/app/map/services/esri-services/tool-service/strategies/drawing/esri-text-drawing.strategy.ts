@@ -13,6 +13,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandlerArgsTextDrawing> {
   protected readonly tool: SupportedEsriTool = 'point';
+  private closeInputDialog?: () => void;
   private readonly dialogService: MatDialog;
   private labelText: string | undefined;
 
@@ -36,10 +37,12 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
         restoreFocus: false,
         disableClose: true,
       });
+      this.closeInputDialog = () => dialog.close();
       return dialog
         .afterClosed()
         .pipe(
           tap((text = '') => {
+            if (this.disposed) return;
             if (!text) {
               this.layer.remove(graphic);
             }
@@ -58,5 +61,10 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
 
   public override updateInternals(_: unknown, labelText: string): void {
     this.labelText = labelText;
+  }
+  public override cancel() {
+    super.cancel();
+    this.closeInputDialog?.();
+    this.closeInputDialog = undefined;
   }
 }

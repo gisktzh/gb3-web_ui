@@ -1,4 +1,5 @@
 vi.mock('@arcgis/core/views/support/GeometryWorker.js', () => ({
+  remoteClient: undefined,
   area2D: vi.fn(),
   areaHorizontal: vi.fn(),
   autoArea2D: vi.fn(),

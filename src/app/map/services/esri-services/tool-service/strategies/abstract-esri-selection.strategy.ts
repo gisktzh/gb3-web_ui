@@ -3,7 +3,7 @@ import {InternalDrawingLayer} from '../../../../../shared/enums/drawing-layer.en
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {DataDownloadSelection} from '../../../../../shared/interfaces/data-download-selection.interface';
-import {Observable} from 'rxjs';
+import {Observable, Subject, takeUntil} from 'rxjs';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import Graphic from '@arcgis/core/Graphic';
 import {geojsonToArcGIS} from '@terraformer/arcgis';
@@ -15,6 +15,7 @@ export abstract class AbstractEsriSelectionStrategy<
 > implements EsriToolStrategy {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
 
+  private readonly cancelled$ = new Subject<void>();
   protected readonly layer: GraphicsLayer;
   protected readonly polygonSymbol: SimpleFillSymbol;
   protected readonly completeCallbackHandler: T;
@@ -28,15 +29,19 @@ export abstract class AbstractEsriSelectionStrategy<
   public start() {
     // remove all old selections before starting a new one
     this.layer.removeAll();
-    this.createSelection().subscribe((selection) => {
-      if (selection) {
-        this.drawSelection(selection.drawingRepresentation);
-      }
-      this.completeCallbackHandler(selection);
-    });
+    this.createSelection()
+      .pipe(takeUntil(this.cancelled$))
+      .subscribe((selection) => {
+        if (selection) {
+          this.drawSelection(selection.drawingRepresentation);
+        }
+        this.completeCallbackHandler(selection);
+      });
   }
 
   public cancel() {
+    this.cancelled$.next();
+    this.cancelled$.complete();
     this.layer.removeAll();
   }
 

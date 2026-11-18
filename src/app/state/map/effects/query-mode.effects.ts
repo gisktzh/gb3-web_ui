@@ -34,7 +34,7 @@ export class QueryModeEffects {
       concatLatestFrom(() => this.store.select(selectActiveTool)),
       concatMap(([queryMode, activeTool]) => [
         ...(activeTool && (queryMode === 'feature' || findStatisticsModeForTool(activeTool) === undefined)
-          ? [ToolActions.cancelTool()]
+          ? [ToolActions.cancelInteraction()]
           : []),
         MapUiActions.toggleToolMenu({tool: queryMode}),
       ]),
@@ -96,7 +96,7 @@ export class QueryModeEffects {
       filter(({queryMode}) => queryMode === 'feature'),
       concatLatestFrom(() => this.store.select(selectActiveTool)),
       filter(([, activeTool]) => activeTool !== undefined && (statisticsSelectionTools as readonly string[]).includes(activeTool)),
-      map(() => ToolActions.cancelTool()),
+      map(() => ToolActions.cancelInteraction()),
     );
   });
 }

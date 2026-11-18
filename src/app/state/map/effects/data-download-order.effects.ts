@@ -103,7 +103,7 @@ export class DataDownloadOrderEffects {
       concatLatestFrom(() => this.store.select(selectActiveTool)),
       filter(([_, activeTool]) => activeTool !== undefined),
       map(() => {
-        return ToolActions.deactivateTool();
+        return ToolActions.cancelInteraction();
       }),
     );
   });

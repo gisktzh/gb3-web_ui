@@ -25,10 +25,9 @@ import {Observable, of} from 'rxjs';
 
 export class MapServiceStub implements MapService {
   private toolService: ToolService = {
-    initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {},
-    initializeStatisticsSelection(selectionTool: StatisticsSelectionTool) {},
-    initializeDrawing(drawingTool: DrawingTool) {},
-    initializeMeasurement(measurementTool: MeasurementTool) {},
+    startCreation() {},
+    startEditing() {},
+    finishInteraction() {},
     addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
       return Promise.resolve();
     },
@@ -41,7 +40,6 @@ export class MapServiceStub implements MapService {
       return Promise.resolve();
     },
     cancelTool() {},
-    initializeElevationProfileMeasurement() {},
   };
 
   public deInit(): void {}
@@ -115,8 +113,6 @@ export class MapServiceStub implements MapService {
   public stopDrawPrintPreview() {}
 
   public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {}
-
-  public cancelEditMode(): void {}
 
   public getInternalDrawingLayerGraphics(drawingLayer: InternalDrawingLayer): Gb3StyledInternalDrawingRepresentation[] {
     return [];

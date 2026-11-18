@@ -82,7 +82,7 @@ export class MapUiEffects {
             return false;
         }
       }),
-      map(() => ToolActions.cancelTool()),
+      map(() => ToolActions.cancelInteraction()),
     );
   });
 

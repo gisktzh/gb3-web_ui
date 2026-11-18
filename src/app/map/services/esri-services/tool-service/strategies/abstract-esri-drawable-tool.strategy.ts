@@ -21,6 +21,7 @@ export abstract class AbstractEsriDrawableToolStrategy<
   public abstract readonly internalLayerType: DrawingLayer;
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
+  protected disposed = false;
   /**
    * Called when the SketchViewModel emits a 'complete' event.
    * @protected
@@ -43,11 +44,15 @@ export abstract class AbstractEsriDrawableToolStrategy<
     });
 
     this.layer = layer;
-    this.completeDrawingCallbackHandler = completeDrawingCallbackHandler;
+    this.completeDrawingCallbackHandler = ((...args: Parameters<DrawingCallbackHandler<ArgsType, SymbolType>>) => {
+      if (!this.disposed) completeDrawingCallbackHandler(...args);
+    }) as DrawingCallbackHandler<ArgsType, SymbolType>;
   }
 
   public cancel() {
+    this.disposed = true;
     this.sketchViewModel.cancel();
+    this.sketchViewModel.destroy();
   }
 
   public abstract start(): void;

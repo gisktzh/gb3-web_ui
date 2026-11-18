@@ -171,7 +171,7 @@ export class ActiveMapItemEffects {
             return true;
         }
       }),
-      map(() => ToolActions.cancelTool()),
+      map(() => ToolActions.cancelInteraction()),
     );
   });
 

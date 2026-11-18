@@ -1,3 +1,6 @@
+import {selectInteraction, selectSequence} from '../../../state/map/reducers/tool.reducer';
+import {ToolActions} from '../../../state/map/actions/tool.actions';
+import {ClickEvent} from '@arcgis/core/views/input/types';
 import {ErrorHandler} from '@angular/core';
 import {EsriStylesLoaderService} from './esri-styles-loader.service';
 import {TestBed} from '@angular/core/testing';
@@ -35,11 +38,8 @@ import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {Map as TopicMap} from '../../../shared/interfaces/topic.interface';
 import Extent from '@arcgis/core/geometry/Extent';
-import {ClickEvent} from '@arcgis/core/views/input/types';
 import {HitTestSelectionUtils} from './utils/hit-test-selection.utils';
-import {ResourceHandle} from '@arcgis/core/core/Handles';
 import {EsriMouseButtonType} from './types/esri-mouse-button-type.type';
-import {ReactiveOnCallback} from '@arcgis/core/core/reactiveUtils';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -769,77 +769,6 @@ describe('EsriMapService', () => {
     });
   });
 
-  describe('cancelEditMode', () => {
-    let reactiveUtilsOnCallback: ReactiveOnCallback<ClickEvent>;
-
-    async function enterEditMode() {
-      await reactiveUtilsOnCallback({
-        button: EsriMouseButtonType.RightClick,
-        type: 'click',
-      } as ClickEvent);
-    }
-
-    beforeEach(async () => {
-      vi.useFakeTimers();
-
-      vi.spyOn(reactiveUtils, 'on').mockImplementation((_: () => void, eventType: string, cb: ReactiveOnCallback<ClickEvent>) => {
-        if (eventType === 'click') {
-          reactiveUtilsOnCallback = cb;
-        }
-        return {} as ResourceHandle;
-      });
-
-      store.overrideSelector(selectActiveTool, undefined);
-      store.refreshState();
-
-      vi.spyOn(toolServiceSpy, 'editDrawing').mockImplementation(vi.fn());
-      vi.spyOn(HitTestSelectionUtils, 'selectFeatureFromHitTestResult').mockReturnValue(new Graphic());
-      vi.spyOn(mapViewMock, 'hitTest').mockResolvedValue({results: []});
-
-      service = TestBed.inject(EsriMapService);
-
-      // Forcefully re-attach the click listener to a newly created map.
-      // We're collecting that with the spy further up.
-      service.mapContainerElement.set(document.createElement('div'));
-      await vi.runAllTimersAsync();
-
-      // Setting the map container makes the service create a new MapView itself, so we need to overwrite that again with the mock.
-      mapViewService.mapView.set(mapViewMock);
-    });
-
-    afterEach(() => {
-      vi.useRealTimers();
-      vi.restoreAllMocks();
-    });
-
-    it('should cancel the edit mode and tool if it was active', async () => {
-      await enterEditMode();
-
-      expect(toolServiceSpy.editDrawing).toHaveBeenCalledOnce();
-
-      service.cancelEditMode();
-
-      expect(toolServiceSpy.editDrawing).toHaveBeenCalledOnce();
-
-      expect(toolServiceSpy.cancelTool).toHaveBeenCalledOnce();
-    });
-
-    it('should not cancel edit mode and tool if edit mode was not active', () => {
-      service.cancelEditMode();
-
-      expect(toolServiceSpy.cancelTool).not.toHaveBeenCalled();
-    });
-
-    it('should not attempt to double-cancel the tool', async () => {
-      await enterEditMode();
-
-      service.cancelEditMode();
-      service.cancelEditMode();
-
-      expect(toolServiceSpy.cancelTool).toHaveBeenCalledOnce();
-    });
-  });
-
   describe('feature info layer visibility', () => {
     let mapItem: Gb2WmsActiveMapItem;
     let wmsLayer: WMSLayer;
@@ -1062,5 +991,61 @@ describe('EsriMapService', () => {
       service.zoomToExtent(polygon, undefined, undefined, {minScale: 50000, maxScale: 10000});
       expect(goTo).not.toHaveBeenCalled();
     });
+  });
+  describe('map click ownership', () => {
+    beforeEach(() => {
+      store.overrideSelector(selectActiveTool, undefined);
+      store.overrideSelector(selectInteraction, {kind: 'idle'});
+      store.overrideSelector(selectSequence, 0);
+      service = TestBed.inject(EsriMapService);
+    });
+
+    it('does not query when the completing edit has consumed the event turn', async () => {
+      vi.spyOn(TestBed.inject(EsriToolService), 'shouldSuppressMapClick').mockReturnValue(true);
+      const dispatch = vi.spyOn(store, 'dispatch');
+      const clicks = service as unknown as {handleMapClick(event: ClickEvent): Promise<void>};
+      await clicks.handleMapClick({button: 0} as ClickEvent);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
+    it('ignores a delayed hit test after another interaction started and finished', async () => {
+      let resolveHit!: (value: Awaited<ReturnType<MapView['hitTest']>>) => void;
+      const pending = new Promise<Awaited<ReturnType<MapView['hitTest']>>>((resolve) => {
+        resolveHit = resolve;
+      });
+      mapViewMock.hitTest = vi.fn().mockReturnValue(pending);
+      const classify = vi.spyOn(TestBed.inject(EsriToolService), 'getEditingTool');
+      const dispatch = vi.spyOn(store, 'dispatch');
+      const clicks = service as unknown as {handleMapClick(event: ClickEvent): Promise<void>};
+      const click = clicks.handleMapClick({button: 2} as ClickEvent);
+      store.overrideSelector(selectSequence, 1);
+      store.refreshState();
+      resolveHit({results: []} as unknown as Awaited<ReturnType<MapView['hitTest']>>);
+      await click;
+      expect(classify).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({type: ToolActions.startEditing.type}));
+    });
+  });
+  it('dispatches a serializable edit request for a hit instead of entering the tool service directly', async () => {
+    store.overrideSelector(selectActiveTool, undefined);
+    store.overrideSelector(selectInteraction, {kind: 'idle'});
+    store.overrideSelector(selectSequence, 0);
+    service = TestBed.inject(EsriMapService);
+    const graphic = new Graphic({attributes: {['__id']: 'statistics'}});
+    const layer = new GraphicsLayer({id: DrawingLayerPrefix.Internal + InternalDrawingLayer.StatisticsArea});
+    layer.add(graphic);
+    vi.spyOn(HitTestSelectionUtils, 'selectFeatureFromHitTestResult').mockReturnValue(graphic);
+    const classify = vi.spyOn(TestBed.inject(EsriToolService), 'getEditingTool').mockReturnValue('select-statistics-polygon');
+    mapViewMock.hitTest = vi.fn().mockResolvedValue({results: []});
+    const dispatch = vi.spyOn(store, 'dispatch');
+    const clicks = service as unknown as {handleMapClick(event: ClickEvent): Promise<void>};
+    await clicks.handleMapClick({button: EsriMouseButtonType.RightClick} as ClickEvent);
+    expect(classify).toHaveBeenCalledExactlyOnceWith(graphic);
+    expect(dispatch).toHaveBeenCalledWith(
+      ToolActions.startEditing({
+        tool: 'select-statistics-polygon',
+        target: {layerId: String(layer.id), graphicId: 'statistics'},
+      }),
+    );
   });
 });

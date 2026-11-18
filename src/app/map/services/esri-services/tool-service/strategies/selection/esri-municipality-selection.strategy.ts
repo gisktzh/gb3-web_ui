@@ -17,6 +17,8 @@ import {DrawingCallbackHandler, DrawingCallbackHandlerArgsSelection} from '../..
 export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStrategy<
   DrawingCallbackHandler<DrawingCallbackHandlerArgsSelection>
 > {
+  private closeInputDialog?: () => void;
+
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
@@ -37,6 +39,7 @@ export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStra
         autoFocus: false,
       },
     );
+    this.closeInputDialog = () => dialog.close();
     return dialog.afterClosed().pipe(
       switchMap((municipality) => {
         if (municipality) {
@@ -65,5 +68,10 @@ export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStra
       source: InternalDrawingLayer.Selection,
       geometry: {...municipalityWithGeometry.boundingBox, srs: this.configService.mapConfig.defaultMapConfig.srsId},
     };
+  }
+  public override cancel() {
+    super.cancel();
+    this.closeInputDialog?.();
+    this.closeInputDialog = undefined;
   }
 }

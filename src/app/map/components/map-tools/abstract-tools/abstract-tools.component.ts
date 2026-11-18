@@ -14,9 +14,9 @@ export class AbstractToolsComponent {
 
   protected toggleTool(tool: ToolType) {
     if (this.activeTool() === tool) {
-      this.store.dispatch(ToolActions.deactivateTool());
+      this.store.dispatch(ToolActions.cancelInteraction());
     } else {
-      this.store.dispatch(ToolActions.switchTool({tool}));
+      this.store.dispatch(ToolActions.startCreation({tool}));
     }
   }
 }

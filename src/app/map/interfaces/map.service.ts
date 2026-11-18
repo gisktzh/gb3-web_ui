@@ -124,6 +124,4 @@ export interface MapService extends AddToMapVisitor {
    * Stops drawing a print preview
    */
   stopDrawPrintPreview(): void;
-
-  cancelEditMode(): void;
 }

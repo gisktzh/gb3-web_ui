@@ -74,14 +74,4 @@ export class DrawingEffects {
     },
     {dispatch: false},
   );
-
-  public cancelEditModeAfterClosingDrawingEditOverlay$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(DrawingActions.cancelEditMode),
-      map(() => {
-        this.mapService.cancelEditMode();
-        return MapUiActions.setDrawingEditOverlayVisibility({isVisible: false});
-      }),
-    );
-  });
 }

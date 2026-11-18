@@ -1,7 +1,5 @@
-import {MeasurementTool} from '../../shared/types/measurement-tool.type';
-import {DrawingTool} from '../../shared/types/drawing-tool.type';
-import {DataDownloadSelectionTool} from '../../shared/types/data-download-selection-tool.type';
-import {StatisticsSelectionTool} from '../../shared/types/statistics-selection-tool.type';
+import {EditableTool, EditTarget} from '../../state/map/states/tool.state';
+import {ToolType} from '../../shared/types/tool.type';
 import {
   Gb3StyledInternalDrawingRepresentation,
   Gb3StyleRepresentation,
@@ -10,15 +8,11 @@ import {DrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {MapDrawingSymbol} from 'src/app/shared/interfaces/map-drawing-symbol.interface';
 
 export interface ToolService {
-  initializeMeasurement(measurementTool: Exclude<MeasurementTool, 'measure-elevation-profile'>): void;
+  startCreation(tool: ToolType, interactionId: number): void;
 
-  initializeElevationProfileMeasurement(): void;
+  startEditing(tool: EditableTool, target: EditTarget, interactionId: number): void;
 
-  initializeDrawing(drawingTool: DrawingTool): void;
-
-  initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool): void;
-
-  initializeStatisticsSelection(selectionTool: StatisticsSelectionTool): void;
+  finishInteraction(interactionId: number): void;
 
   addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: DrawingLayer): Promise<void>;
 
