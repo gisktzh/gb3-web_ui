@@ -56,8 +56,33 @@ export async function getMapPoint(page: Page, offset?: {x: number; y: number}): 
   };
 }
 
-export async function clickMapPoint(page: Page, point: MapPoint) {
-  await page.mouse.click(point.position.x, point.position.y);
+export function shiftPointByMeters(page: Page, point: MapPoint, xM: number, yM: number): MapPoint {
+  const url = new URL(page.url());
+  const scale = Number(url.searchParams.get('scale'));
+  expect(Number.isFinite(scale) && scale > 0).toBe(true);
+
+  const metresPerPixel = (scale * 0.0254) / 96;
+
+  return {
+    position: {
+      x: point.position.x + xM / metresPerPixel,
+      y: point.position.y - yM / metresPerPixel,
+    },
+    coordinates: [point.coordinates[0] + xM, point.coordinates[1] + yM],
+  };
+}
+
+export async function clickMapPoint(page: Page, point: MapPoint, button: 'left' | 'right' | 'middle' = 'left') {
+  await page.mouse.click(point.position.x, point.position.y, {
+    button,
+  });
+}
+
+export async function drag(page: Page, from: MapPoint, to: MapPoint, button: 'left' | 'right' | 'middle' = 'left') {
+  await page.mouse.move(from.position.x, from.position.y, {steps: 10});
+  await page.mouse.down({button});
+  await page.mouse.move(to.position.x, to.position.y, {steps: 10});
+  await page.mouse.up({button});
 }
 
 /** Exclude overlays so changed table controls cannot masquerade as rendered map markings. */
@@ -94,4 +119,13 @@ export async function setMapScale(page: Page, scale: number) {
   await input.blur();
   await expect(page).toHaveURL((url) => Number(url.searchParams.get('scale')) === scale);
   await waitForMap(page);
+}
+
+export async function forceMapRerender(page: Page) {
+  const url = new URL(page.url());
+  const scale = Number(url.searchParams.get('scale'));
+  expect(Number.isFinite(scale) && scale > 0).toBe(true);
+
+  await setMapScale(page, scale + 1);
+  await setMapScale(page, scale);
 }

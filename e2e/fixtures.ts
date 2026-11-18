@@ -1,4 +1,5 @@
 import {test as base, customMatcher} from 'playwright-advanced-har';
+import {type Request} from '@playwright/test';
 import {findEntry as defaultFindEntry} from 'playwright-advanced-har/lib/utils/serveFromHar';
 import crypto from 'node:crypto';
 import {CanonicalizedRedactedRequest} from './utils/canonicalized-redacted-request.class';
@@ -21,7 +22,7 @@ export type CheckA11yOptions = {
   exclude?: string[];
 };
 
-// URL pattern. If pattern matches,
+// URL pattern. If pattern matches, the request will be done as is, not be served from HAR.
 const HAR_TARGET_PATTERN = /^https:\/\/(?!.*(?:localhost|arcgis\.com)).*$/;
 const IS_WRITING_HAR = !!process.env['WRITE_HAR'];
 const DEFAULT_DESKTOP_MAP_VIEW_PADDING = {top: 88, right: 180, bottom: 88, left: 474};
@@ -100,6 +101,15 @@ function postDataEquals(left: string, right: string): boolean {
   }
 }
 
+function isMatchingInfoRequest(a: string, b: string) {
+  const isFeatureInfo = a.includes('feature_info') && b.includes('feature_info');
+  const isGeneralInfo = a.includes('general_info') && b.includes('general_info');
+
+  // In case we're dealing with general info requests that only differ by a a few tehnths or hundreths of meters.
+  // For example, statistics general info requests with coordinates calculated by @arcgis/core after editing a polygon.
+  return (isFeatureInfo || isGeneralInfo) && canonicalizeUrl(a, 0) === canonicalizeUrl(b, 0);
+}
+
 /**
  * Renders a compact, actionable summary of axe-core violations so that failures are understandable directly from
  * the CI log/assertion message, without needing to dig into the attached JSON report.
@@ -174,7 +184,7 @@ export const test = base.extend<Gb3Fixtures>({
         updateMode: 'minimal',
         updateContent: 'embed',
         matcher: {
-          async findEntry(har, request, matcher) {
+          async findEntry(har, request, matcher): Promise<Entry> {
             // Prefer completed responses; status -1 entries cannot be fulfilled as HTTP responses.
             const replayableHar = {
               ...har,
@@ -204,12 +214,20 @@ export const test = base.extend<Gb3Fixtures>({
 
             // Some catalogue icons were only recorded as cancelled. Replay that cancellation instead of reporting a missing entry.
             const recordedEntry = await defaultFindEntry(har, redactedRequest, matcher);
-            if (recordedEntry && recordedEntry.response.status <= 0) cancelledRequests.add(request);
+            if (recordedEntry && recordedEntry.response.status <= 0) {
+              cancelledRequests.add(request);
+            }
+
+            // @ts-expect-error -- The original findEntry type expects to always return an entry - we can't guarantee that.
             return null;
           },
           matchFunction: customMatcher({
             urlComparator(a, b) {
-              return canonicalizeUrl(a) === canonicalizeUrl(b);
+              if (canonicalizeUrl(a) === canonicalizeUrl(b)) {
+                return true;
+              }
+
+              return isMatchingInfoRequest(a, b);
             },
             postDataComparator: postDataEquals,
           }),
@@ -222,7 +240,7 @@ export const test = base.extend<Gb3Fixtures>({
           }
           const postData = request.postData();
           const requestBody = postData ? `\n[har] Request body: ${postData.slice(0, 2_000)}` : '';
-          const errorMessage = `[har] No response matched ${request.method()} ${request.url()} in file ${usedFilePath}${requestBody}`;
+          const errorMessage = `[har] No response matched ${request.method()} ${canonicalizeUrl(request.url())} in file ${usedFilePath}${requestBody}`;
           if (process.env['CI']) {
             // Hard fail if a request isn't found on the CI.
             throw new Error(errorMessage);

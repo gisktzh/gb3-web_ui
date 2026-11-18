@@ -213,6 +213,7 @@ describe('ConfigService', () => {
               DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings,
               DrawingLayerPrefix.Drawing + UserDrawingLayer.Measurements,
               DrawingLayerPrefix.Internal + InternalDrawingLayer.ElevationProfile,
+              DrawingLayerPrefix.Internal + InternalDrawingLayer.StatisticsArea,
             ],
           },
         },
