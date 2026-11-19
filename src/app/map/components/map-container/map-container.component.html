@@ -1,6 +1,8 @@
 <div
   #mainMap
   class="map-container"
+  [style]="paddingCssVars()"
+  [class.map-container--is-hovered]="isHovered()"
   (drop)="handleDrop($event)"
   (dragover)="handleDragOver($event)"
   (dragleave)="handleDragLeave($event)"

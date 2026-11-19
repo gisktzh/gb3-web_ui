@@ -5,6 +5,7 @@ import {MatIcon} from '@angular/material/icon';
 import {FileUploadRestrictionsConfig} from '../../configs/file-upload-restrictions.config';
 import {FileValidationError} from '../../errors/file-upload.errors';
 import {validateUploadedFileList} from '../../utils/validate-uploaded-file-list.utils';
+import {AbstractDropzoneInteractionComponent} from '../abstract-dropzone-interaction/abstract-dropzone-interaction.component';
 
 /**
  * This component only handles the file upload into a File object; it does _NOT_ handle the actual upload to the server.
@@ -16,34 +17,11 @@ import {validateUploadedFileList} from '../../utils/validate-uploaded-file-list.
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './drop-zone.component.scss',
 })
-export class DropZoneComponent {
+export class DropZoneComponent extends AbstractDropzoneInteractionComponent {
   public readonly addedFileEvent = output<Blob | File>();
   public readonly uploadErrorEvent = output<string>();
   public readonly fileUploadField = viewChild.required<ElementRef>('fileUploadField');
   public readonly acceptedFileTypes = FileUploadRestrictionsConfig.allowedFileTypes.join(', ');
-  protected readonly isHovered = signal(false);
-
-  protected handleDragOver(e: DragEvent) {
-    e.stopPropagation();
-    this.isHovered.set(true);
-
-    if (e.dataTransfer?.items.length) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'copy';
-    }
-  }
-
-  protected handleDragLeave(e: DragEvent) {
-    e.stopPropagation();
-    this.isHovered.set(false);
-  }
-
-  protected handleDrop(e: DragEvent) {
-    e.preventDefault();
-    if (e.dataTransfer) {
-      this.handleFileUpload(e.dataTransfer.files);
-    }
-  }
 
   protected inputValueChange() {
     const files = this.fileUploadField().nativeElement.files;
@@ -52,7 +30,7 @@ export class DropZoneComponent {
     }
   }
 
-  private handleFileUpload(files: FileList) {
+  public handleFileUpload(files: FileList) {
     try {
       validateUploadedFileList(files);
       this.addedFileEvent.emit(files[0]);

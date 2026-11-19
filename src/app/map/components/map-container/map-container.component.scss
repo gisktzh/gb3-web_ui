@@ -1,7 +1,25 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
 
 .map-container {
   height: 100%;
   width: 100%;
+
+  &--is-hovered::after {
+    position: absolute;
+    content: '+';
+    display: flex;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    background-color: #fff;
+    align-items: center;
+    justify-content: center;
+    font-size: 16vh;
+    box-sizing: border-box;
+    padding-left: var(--map-padding-left);
+    padding-right: var(--map-padding-right);
+    pointer-events: none;
+  }
 }
