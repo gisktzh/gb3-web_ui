@@ -349,9 +349,6 @@ dedicated:
   src/app/share-link/components/share-link-redirect/share-link-redirect.component.ts:
     coveredBy:
       - src/app/share-link/components/share-link-redirect/share-link-redirect.component.spec.ts
-  src/app/shared/components/abstract-dropzone-interaction/abstract-dropzone-interaction.component.ts:
-    coveredBy:
-      - src/app/shared/components/abstract-dropzone-interaction/abstract-dropzone-interaction.component.spec.ts
   src/app/shared/components/accordion-item/accordion-item.component.ts:
     coveredBy:
       - src/app/shared/components/accordion-item/accordion-item.component.spec.ts

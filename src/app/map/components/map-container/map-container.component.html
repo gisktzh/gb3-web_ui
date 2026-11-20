@@ -3,7 +3,7 @@
   class="map-container"
   [style]="paddingCssVars()"
   [class.map-container--is-hovered]="isHovered()"
-  (drop)="handleDrop($event)"
-  (dragover)="handleDragOver($event)"
-  (dragleave)="handleDragLeave($event)"
+  dropZone
+  (fileUploaded)="handleFileUpload($event)"
+  (hoverStateChange)="isHovered.set($event)"
 ></div>

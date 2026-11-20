@@ -5,23 +5,24 @@ import {MatIcon} from '@angular/material/icon';
 import {FileUploadRestrictionsConfig} from '../../configs/file-upload-restrictions.config';
 import {FileValidationError} from '../../errors/file-upload.errors';
 import {validateUploadedFileList} from '../../utils/validate-uploaded-file-list.utils';
-import {AbstractDropzoneInteractionComponent} from '../abstract-dropzone-interaction/abstract-dropzone-interaction.component';
+import {DropZoneDirective} from '../../directives/drop-zone.directive';
 
 /**
  * This component only handles the file upload into a File object; it does _NOT_ handle the actual upload to the server.
  */
 @Component({
   selector: 'drop-zone',
-  imports: [MatButton, MatIcon],
+  imports: [MatButton, MatIcon, DropZoneDirective],
   templateUrl: './drop-zone.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './drop-zone.component.scss',
 })
-export class DropZoneComponent extends AbstractDropzoneInteractionComponent {
+export class DropZoneComponent {
   public readonly addedFileEvent = output<Blob | File>();
   public readonly uploadErrorEvent = output<string>();
   public readonly fileUploadField = viewChild.required<ElementRef>('fileUploadField');
   public readonly acceptedFileTypes = FileUploadRestrictionsConfig.allowedFileTypes.join(', ');
+  public readonly isHovered = signal(false);
 
   protected inputValueChange() {
     const files = this.fileUploadField().nativeElement.files;

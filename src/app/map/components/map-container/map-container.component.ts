@@ -10,6 +10,7 @@ import {
   viewChild,
   ChangeDetectionStrategy,
   computed,
+  signal,
 } from '@angular/core';
 import {FeatureHighlightingService} from '../../services/feature-highlighting.service';
 import {MapService} from '../../interfaces/map.service';
@@ -19,7 +20,7 @@ import {validateUploadedFileList} from 'src/app/shared/utils/validate-uploaded-f
 import {ImportActions} from 'src/app/state/map/actions/import.actions';
 import {Store} from '@ngrx/store';
 import {FileValidationError} from 'src/app/shared/errors/file-upload.errors';
-import {AbstractDropzoneInteractionComponent} from 'src/app/shared/components/abstract-dropzone-interaction/abstract-dropzone-interaction.component';
+import {DropZoneDirective} from 'src/app/shared/directives/drop-zone.directive';
 
 @Component({
   selector: 'map-container',
@@ -27,20 +28,21 @@ import {AbstractDropzoneInteractionComponent} from 'src/app/shared/components/ab
   styleUrls: ['./map-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   providers: [FeatureHighlightingService],
+  imports: [DropZoneDirective],
 })
-export class MapContainerComponent extends AbstractDropzoneInteractionComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MapContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly mapService = inject<MapService>(MAP_SERVICE);
   private readonly featureHighlightingService = inject(FeatureHighlightingService);
   private readonly mainMapRef = viewChild.required<ElementRef>('mainMap');
   public readonly viewPadding = input<MapViewPadding | undefined>(undefined);
   private readonly store = inject(Store);
+  public readonly isHovered = signal(false);
 
   public readonly paddingCssVars = computed(
     () => `--map-padding-left: ${this.viewPadding()?.left || 0}px; --map-padding-right: ${this.viewPadding()?.right || 0}px;`,
   );
 
   constructor() {
-    super();
     effect(() => this.mapService.setViewPadding(this.viewPadding()));
   }
 
