@@ -1,9 +1,9 @@
 <div
   class="drop-zone"
   [class.drop-zone--hovered]="isHovered()"
-  (dragover)="handleDragOver($event)"
-  (dragleave)="handleDragLeave($event)"
-  (drop)="handleDrop($event)"
+  dropZone
+  (fileUploaded)="handleFileUpload($event)"
+  (hoverStateChange)="isHovered.set($event)"
 >
   <input type="file" [accept]="acceptedFileTypes" #fileUploadField (change)="inputValueChange()" />
   <p>Zum Hochladen Datei ziehen und hier ablegen</p>

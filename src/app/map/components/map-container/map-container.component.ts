@@ -9,11 +9,18 @@ import {
   input,
   viewChild,
   ChangeDetectionStrategy,
+  computed,
+  signal,
 } from '@angular/core';
 import {FeatureHighlightingService} from '../../services/feature-highlighting.service';
 import {MapService} from '../../interfaces/map.service';
 import {MAP_SERVICE} from '../../../app.tokens';
 import {MapViewPadding} from '../../../shared/interfaces/map-view-padding.interface';
+import {validateUploadedFileList} from 'src/app/shared/utils/validate-uploaded-file-list.utils';
+import {ImportActions} from 'src/app/state/map/actions/import.actions';
+import {Store} from '@ngrx/store';
+import {FileValidationError} from 'src/app/shared/errors/file-upload.errors';
+import {DropZoneDirective} from 'src/app/shared/directives/drop-zone.directive';
 
 @Component({
   selector: 'map-container',
@@ -21,12 +28,19 @@ import {MapViewPadding} from '../../../shared/interfaces/map-view-padding.interf
   styleUrls: ['./map-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   providers: [FeatureHighlightingService],
+  imports: [DropZoneDirective],
 })
 export class MapContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly mapService = inject<MapService>(MAP_SERVICE);
   private readonly featureHighlightingService = inject(FeatureHighlightingService);
   private readonly mainMapRef = viewChild.required<ElementRef>('mainMap');
   public readonly viewPadding = input<MapViewPadding | undefined>(undefined);
+  private readonly store = inject(Store);
+  public readonly isHovered = signal(false);
+
+  public readonly paddingCssVars = computed(
+    () => `--map-padding-left: ${this.viewPadding()?.left || 0}px; --map-padding-right: ${this.viewPadding()?.right || 0}px;`,
+  );
 
   constructor() {
     effect(() => this.mapService.setViewPadding(this.viewPadding()));
@@ -44,5 +58,14 @@ export class MapContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public ngOnDestroy() {
     this.mapService.deInit();
+  }
+
+  public handleFileUpload(files: FileList) {
+    try {
+      validateUploadedFileList(files);
+      this.store.dispatch(ImportActions.requestDrawingsImport({file: files[0]}));
+    } catch (e) {
+      this.store.dispatch(ImportActions.setFileValidationError({errorMessage: (e as FileValidationError).message}));
+    }
   }
 }
