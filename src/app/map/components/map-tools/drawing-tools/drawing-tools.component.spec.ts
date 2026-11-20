@@ -35,7 +35,7 @@ describe('DrawingToolsComponent', () => {
   ] as const)('%s activates %s', (method, tool) => {
     const dispatch = vi.spyOn(store, 'dispatch');
     fixture.componentInstance[method]();
-    expect(dispatch).toHaveBeenCalledWith(ToolActions.activateTool({tool}));
+    expect(dispatch).toHaveBeenCalledWith(ToolActions.switchTool({tool}));
   });
 
   it('opens settings and import with their dialog constraints', () => {

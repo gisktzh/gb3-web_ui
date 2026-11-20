@@ -119,6 +119,11 @@ describe('shared feature/statistics query location', () => {
     concernedThemes: [],
     notConcernedThemes: [],
     notAvailableThemes: [],
+    parcel: {
+      type: 'Point',
+      coordinates: [1, 2],
+      srs: 2056,
+    },
   };
   const oerebItem = () => {
     const item = createGb2WmsMapItemMock('KatOerebRaumplanungZH', 1);
@@ -185,7 +190,14 @@ describe('shared feature/statistics query location', () => {
         {provide: Gb3OerebExtractService, useValue: oerebExtract},
         {provide: STATISTICS_SERVICE, useValue: statistics},
         {provide: MapDrawingService, useValue: drawing},
-        {provide: MAP_SERVICE, useValue: {getToolService: () => tools, observeFeatureInfoLayerVisibility: vi.fn(() => of(true))}},
+        {
+          provide: MAP_SERVICE,
+          useValue: {
+            getToolService: () => tools,
+            observeFeatureInfoLayerVisibility: vi.fn(() => of(true)),
+            cancelEditMode: vi.fn(),
+          },
+        },
         {provide: MatDialog, useValue: {open: vi.fn()}},
         {provide: DRAWING_SYMBOLS_SERVICE, useClass: DrawingSymbolServiceStub},
         FeatureHighlightingService,
@@ -318,7 +330,7 @@ describe('shared feature/statistics query location', () => {
       FeatureInfoActions.highlightFeature({
         feature: point,
         pinnedFeatureId: 'topic_layer_1',
-        source: {mapItemId: 'layer', layerName: 'layer'},
+        source: {sourceType: 'feature_info' as const, mapItemId: 'layer', layerName: 'layer'},
       }),
     );
     expect(drawing.drawFeatureInfoHighlight).toHaveBeenLastCalledWith(point);
@@ -547,7 +559,7 @@ describe('shared feature/statistics query location', () => {
           FeatureInfoActions.highlightFeature({
             feature: point,
             pinnedFeatureId: 'topic_layer_1',
-            source: {mapItemId: 'layer', layerName: 'layer'},
+            source: {sourceType: 'feature_info' as const, mapItemId: 'layer', layerName: 'layer'},
           }),
         );
         store.dispatch(QueryModeActions.setQueryMode({queryMode}));
@@ -663,6 +675,7 @@ describe('shared feature/statistics query location', () => {
     store.dispatch(MapConfigActions.clearFeatureInfoContent());
     expect(await firstValueFrom(store.select(selectQueryPoint))).toBeUndefined();
     expect(await firstValueFrom(store.select(selectQueryLocation))).toEqual({});
+    expect(await firstValueFrom(store.select(selectGeometry))).toBeUndefined();
   });
 
   it('cancels feature requests on point changes and closure so stale responses cannot repopulate data', async () => {
@@ -734,7 +747,7 @@ describe('shared feature/statistics query location', () => {
         FeatureInfoActions.highlightFeature({
           feature: point,
           pinnedFeatureId: 'topic_layer_1',
-          source: {mapItemId: 'layer', layerName: 'layer'},
+          source: {sourceType: 'feature_info' as const, mapItemId: 'layer', layerName: 'layer'},
         }),
       );
       store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());

@@ -1,12 +1,24 @@
 import {test, expect} from '../fixtures/statistics.fixture';
 import type {Page} from '@playwright/test';
-import {clickMapPoint, getMapPoint, mapScreenshot, setMapScale, waitForMap, type MapPoint} from '../utils/map.utils';
+import {
+  clickMapPoint,
+  getMapPoint,
+  mapScreenshot,
+  setMapScale,
+  waitForMap,
+  shiftPointByMeters,
+  drag,
+  forceMapRerender,
+  type MapPoint,
+} from '../utils/map.utils';
 import {
   resultHost,
   expectFeatureResponse,
   expectStatisticsResult,
   expectStatisticsCircle,
   expectStatisticsPolygon,
+  expectStatisticsPolygonArea,
+  expectStatisticsPolygonExtent,
 } from '../utils/query-results.utils';
 
 function mapView(page: Page) {
@@ -223,6 +235,7 @@ test.describe('Statistics', () => {
     const unmarkedMap = await mapScreenshot(page);
     await header.hover();
     await expect(radio).toBeChecked();
+
     await expect.poll(async () => (await mapScreenshot(page)).equals(unmarkedMap)).toBe(false);
     await page.mouse.move(0, 0);
     await expect(radio).not.toBeChecked();
@@ -260,6 +273,7 @@ test.describe('Statistics', () => {
     await setMapScale(page, 1000);
     await page.mouse.move(0, 0);
     await expect(radio).not.toBeChecked();
+    await forceMapRerender(page);
     await expect.poll(async () => (await mapScreenshot(page)).equals(pinnedMap)).toBe(false);
     await waitForMap(page);
     expect(statisticsSession.statisticsQueries).toHaveLength(queryCount);
@@ -341,6 +355,132 @@ test.describe('Statistics', () => {
     await expect(host.getByTestId('statistics-radius-error')).toHaveCount(0);
     await expect(radius).not.toHaveAttribute('aria-invalid', 'true');
     expectStatisticsCircle(statisticsSession.statisticsQueries.at(-1)!, point.coordinates, 750);
+  });
+
+  test('edits a polygon', async ({page, statisticsSession}) => {
+    await page.getByTestId('map-select-statistic').click();
+    // Dismiss the toolbar tooltip before it can cover the polygon control.
+    await page.mouse.move(0, 0);
+    const polygonTool = page.getByTestId('statistics-select-polygon');
+    await polygonTool.click();
+    await expect(polygonTool).toHaveClass(/statistics-tools__button--active/);
+    await waitForMap(page);
+    const vertices: MapPoint[] = [];
+    const offsets = [
+      {x: -90, y: -70},
+      {x: 90, y: -70},
+      {x: 0, y: 100},
+    ];
+    for (const offset of offsets) {
+      vertices.push(await getMapPoint(page, offset));
+    }
+    for (const vertex of vertices) {
+      await clickMapPoint(page, vertex);
+    }
+    // Close the polygon by clicking its start vertex, as the tool's instructions describe.
+    await clickMapPoint(page, vertices[0]);
+    await expectStatisticsResult(page, statisticsSession);
+    expectStatisticsPolygon(
+      statisticsSession.statisticsQueries.at(-1)!,
+      vertices.map((vertex) => vertex.coordinates),
+    );
+    expectStatisticsPolygonArea(statisticsSession.statisticsQueries.at(-1)!, 240990.9, 1);
+    expectStatisticsPolygonExtent(statisticsSession.statisticsQueries.at(-1)!, 714.37, 674.68, 1);
+    const notInEditModeScreenshot = await mapScreenshot(page);
+
+    // Bounding box edit mode
+    await clickMapPoint(page, vertices[0], 'right');
+    await forceMapRerender(page);
+    const boundingBoxScreenshot = await mapScreenshot(page);
+    expect(boundingBoxScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+
+    // Point edit mode
+    await clickMapPoint(page, vertices[0], 'right');
+    await forceMapRerender(page);
+    const pointEditScreenshot = await mapScreenshot(page);
+    expect(pointEditScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+
+    const newVertices: MapPoint[] = [];
+    for (const offset of offsets) {
+      newVertices.push(await getMapPoint(page, offset));
+    }
+    const newPoint = await getMapPoint(page, {x: -150, y: -150});
+    await drag(page, newVertices[2], newPoint);
+    await forceMapRerender(page);
+    const clickAwayPoint = await getMapPoint(page);
+    await clickMapPoint(page, clickAwayPoint);
+
+    await forceMapRerender(page);
+
+    // We're testing the polygon extent because different browsers:
+    // Firefox and WebKit calculate the resulting polygon coordinates a tad ddifferently, leading to a URL
+    // mismatch in the HAR file. Hence, we test for width and height instead.
+    expectStatisticsPolygonArea(statisticsSession.statisticsQueries.at(-1)!, 77967.64, 1);
+    expectStatisticsPolygonExtent(statisticsSession.statisticsQueries.at(-1)!, 892.97, 218.28, 1);
+  });
+
+  test('edits a circle to a polygon', async ({page, statisticsSession}) => {
+    await page.getByTestId('map-select-statistic').click();
+    let point = await getMapPoint(page);
+    await clickMapPoint(page, point);
+    await expectStatisticsResult(page, statisticsSession);
+    await waitForMap(page);
+
+    // We're testing the polygon extent because different browsers:
+    // Firefox and WebKit calculate the resulting polygon coordinates a tad ddifferently, leading to a URL
+    // mismatch in the HAR file. Hence, we test for width and height instead.
+    expectStatisticsPolygonArea(statisticsSession.statisticsQueries.at(-1)!, 855714.28, 1);
+    expectStatisticsPolygonExtent(statisticsSession.statisticsQueries.at(-1)!, 1000, 1000, 1);
+
+    const notInEditModeScreenshot = await mapScreenshot(page);
+    point = await getMapPoint(page);
+    await clickMapPoint(page, point, 'right');
+    await waitForMap(page);
+    const host = resultHost(page);
+    const mode = host.getByTestId('statistics-mode');
+
+    // Should switch from circle to polygon.
+    await expect(mode).toContainText('Polygon');
+    await forceMapRerender(page);
+    const boundingBoxScreenshot = await mapScreenshot(page);
+    expect(boundingBoxScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+
+    // Second right click changes to polygon edit
+    point = await getMapPoint(page);
+    await clickMapPoint(page, point, 'right');
+    await forceMapRerender(page);
+    const pointEditScreenshot = await mapScreenshot(page);
+    expect(pointEditScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+    expect(pointEditScreenshot.equals(boundingBoxScreenshot)).toBe(false);
+
+    // Second right click changes back to the bounding box edit
+    await clickMapPoint(page, point, 'right');
+    await forceMapRerender(page);
+    const secondBoundingBoxScreenshot = await mapScreenshot(page);
+
+    expect(secondBoundingBoxScreenshot.equals(notInEditModeScreenshot)).toBe(false);
+    expect(secondBoundingBoxScreenshot.equals(boundingBoxScreenshot)).toBe(true);
+
+    const originalRadius = 500;
+    const dragChange = 100;
+
+    const dragPointStart = shiftPointByMeters(page, point, originalRadius, 0);
+    const dragPointEnd = shiftPointByMeters(page, dragPointStart, dragChange, 0);
+
+    await drag(page, dragPointStart, dragPointEnd);
+    await forceMapRerender(page);
+
+    const thirdBoundingBoxScreenshot = await mapScreenshot(page);
+    expect(thirdBoundingBoxScreenshot.equals(boundingBoxScreenshot)).toBe(false);
+
+    // Click-away to exit edit mode.
+    await clickMapPoint(page, shiftPointByMeters(page, point, -1500, 0));
+
+    // We're testing the polygon extent because different browsers:
+    // Firefox and WebKit calculate the resulting polygon coordinates a tad ddifferently, leading to a URL
+    // mismatch in the HAR file. Hence, we test for width and height instead.
+    expectStatisticsPolygonArea(statisticsSession.statisticsQueries.at(-1)!, 855714.28, 1);
+    expectStatisticsPolygonExtent(statisticsSession.statisticsQueries.at(-1)!, 1091.28, 1000, 1);
   });
 
   test.describe('Mobile', () => {

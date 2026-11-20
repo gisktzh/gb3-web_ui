@@ -1,17 +1,28 @@
 import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {tap} from 'rxjs';
+import {switchMap, tap} from 'rxjs';
 import {ToolActions} from '../actions/tool.actions';
 import {ToolService} from '../../../map/interfaces/tool.service';
 import {MapService} from '../../../map/interfaces/map.service';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {StatisticsActions} from '../actions/statistics.actions';
 
 @Injectable()
 export class ToolEffects {
   private readonly actions$ = inject(Actions);
   private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private readonly toolService: ToolService = this.mapService.getToolService();
 
-  private readonly toolService: ToolService;
+  public switchTool$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ToolActions.switchTool),
+      tap(() => {
+        // In case we're editing already.
+        this.mapService.cancelEditMode();
+      }),
+      switchMap(({tool}) => [ToolActions.activateTool({tool})]),
+    );
+  });
 
   public initializeTool$ = createEffect(
     () => {
@@ -66,8 +77,4 @@ export class ToolEffects {
     },
     {dispatch: false},
   );
-
-  constructor() {
-    this.toolService = this.mapService.getToolService();
-  }
 }

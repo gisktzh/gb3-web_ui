@@ -35,6 +35,11 @@ import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {Map as TopicMap} from '../../../shared/interfaces/topic.interface';
 import Extent from '@arcgis/core/geometry/Extent';
+import {ClickEvent} from '@arcgis/core/views/input/types';
+import {HitTestSelectionUtils} from './utils/hit-test-selection.utils';
+import {ResourceHandle} from '@arcgis/core/core/Handles';
+import {EsriMouseButtonType} from './types/esri-mouse-button-type.type';
+import {ReactiveOnCallback} from '@arcgis/core/core/reactiveUtils';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -87,6 +92,8 @@ describe('EsriMapService', () => {
   let mapViewMock: MapView;
 
   beforeEach(() => {
+    vi.spyOn(HitTestSelectionUtils, 'selectFeatureFromHitTestResult').mockReturnValue(new Graphic());
+
     TestBed.configureTestingModule({
       imports: [AuthModule],
       providers: [
@@ -115,13 +122,15 @@ describe('EsriMapService', () => {
       zoom: 0,
       scale: 0,
       center: new EsriPoint({x: -1, y: -1, spatialReference: new SpatialReference({wkid: 2056})}),
-    } as MapView;
+      hitTest: vi.fn(),
+    } as unknown as MapView;
     mapViewService.mapView.set(mapViewMock);
     store = TestBed.inject(MockStore);
     toolServiceSpy = EsriToolService.prototype;
     initialMapExtentService = TestBed.inject(InitialMapExtentService);
     vi.spyOn(toolServiceSpy, 'initializeMeasurement').mockImplementation(vi.fn());
     vi.spyOn(toolServiceSpy, 'addExistingDrawingsToLayer').mockImplementation(vi.fn());
+    vi.spyOn(toolServiceSpy, 'cancelTool').mockImplementation(vi.fn());
   });
 
   it('should be created', () => {
@@ -760,11 +769,82 @@ describe('EsriMapService', () => {
     });
   });
 
+  describe('cancelEditMode', () => {
+    let reactiveUtilsOnCallback: ReactiveOnCallback<ClickEvent>;
+
+    async function enterEditMode() {
+      await reactiveUtilsOnCallback({
+        button: EsriMouseButtonType.RightClick,
+        type: 'click',
+      } as ClickEvent);
+    }
+
+    beforeEach(async () => {
+      vi.useFakeTimers();
+
+      vi.spyOn(reactiveUtils, 'on').mockImplementation((_: () => void, eventType: string, cb: ReactiveOnCallback<ClickEvent>) => {
+        if (eventType === 'click') {
+          reactiveUtilsOnCallback = cb;
+        }
+        return {} as ResourceHandle;
+      });
+
+      store.overrideSelector(selectActiveTool, undefined);
+      store.refreshState();
+
+      vi.spyOn(toolServiceSpy, 'editDrawing').mockImplementation(vi.fn());
+      vi.spyOn(HitTestSelectionUtils, 'selectFeatureFromHitTestResult').mockReturnValue(new Graphic());
+      vi.spyOn(mapViewMock, 'hitTest').mockResolvedValue({results: []});
+
+      service = TestBed.inject(EsriMapService);
+
+      // Forcefully re-attach the click listener to a newly created map.
+      // We're collecting that with the spy further up.
+      service.mapContainerElement.set(document.createElement('div'));
+      await vi.runAllTimersAsync();
+
+      // Setting the map container makes the service create a new MapView itself, so we need to overwrite that again with the mock.
+      mapViewService.mapView.set(mapViewMock);
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+      vi.restoreAllMocks();
+    });
+
+    it('should cancel the edit mode and tool if it was active', async () => {
+      await enterEditMode();
+
+      expect(toolServiceSpy.editDrawing).toHaveBeenCalledOnce();
+
+      service.cancelEditMode();
+
+      expect(toolServiceSpy.editDrawing).toHaveBeenCalledOnce();
+
+      expect(toolServiceSpy.cancelTool).toHaveBeenCalledOnce();
+    });
+
+    it('should not cancel edit mode and tool if edit mode was not active', () => {
+      service.cancelEditMode();
+
+      expect(toolServiceSpy.cancelTool).not.toHaveBeenCalled();
+    });
+
+    it('should not attempt to double-cancel the tool', async () => {
+      await enterEditMode();
+
+      service.cancelEditMode();
+      service.cancelEditMode();
+
+      expect(toolServiceSpy.cancelTool).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('feature info layer visibility', () => {
     let mapItem: Gb2WmsActiveMapItem;
     let wmsLayer: WMSLayer;
     let sublayer: WMSSublayer;
-    const source = {mapItemId: 'topic', layerName: 'layer0_topic'};
+    const source = {sourceType: 'feature_info' as const, mapItemId: 'topic', layerName: 'layer0_topic'};
 
     beforeEach(() => {
       mapItem = createGb2WmsMapItemMock(source.mapItemId, 1);
@@ -813,10 +893,12 @@ describe('EsriMapService', () => {
       mapMock.add(singleWmsLayer);
       store.overrideSelector(selectAllItems, [singleItem]);
       store.refreshState();
-      expect(service.getFeatureInfoScaleRange({mapItemId: singleItem.id, layerName: source.layerName})).toEqual({
-        minScale: 10000,
-        maxScale: 50000,
-      });
+      expect(service.getFeatureInfoScaleRange({sourceType: 'feature_info', mapItemId: singleItem.id, layerName: source.layerName})).toEqual(
+        {
+          minScale: 10000,
+          maxScale: 50000,
+        },
+      );
     });
 
     it('returns no range for missing, loading or contradictory sources', () => {
@@ -849,7 +931,7 @@ describe('EsriMapService', () => {
       expect(visible).toHaveBeenLastCalledWith(true);
       mapViewMock.scale = 50001;
       evaluate();
-      expect(visible).toHaveBeenLastCalledWith(false);
+      expect(visible).toHaveBeenLastCalledWith(true);
       mapViewMock.scale = 20000;
       evaluate();
       expect(visible).toHaveBeenLastCalledWith(true);
@@ -981,6 +1063,61 @@ describe('EsriMapService', () => {
     it('does not navigate when the permitted range is empty', () => {
       service.zoomToExtent(polygon, undefined, undefined, {minScale: 50000, maxScale: 10000});
       expect(goTo).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('ÖREB extract feature highlighting', () => {
+    const source = {
+      sourceType: 'oereb_extract' as const,
+      mapItemId: null,
+      layerName: null,
+    };
+
+    beforeEach(() => {
+      service = TestBed.inject(EsriMapService);
+    });
+
+    it('does not define a feature info scale range', () => {
+      expect(service.getFeatureInfoScaleRange(source)).toBeUndefined();
+    });
+
+    it('always reports the ÖREB extract as visible', () => {
+      // No active map items or corresponding WMS layer are required.
+      store.overrideSelector(selectAllItems, []);
+      store.refreshState();
+
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+
+      expect(visible).toHaveBeenCalledWith(true);
+
+      subscription.unsubscribe();
+    });
+
+    it('remains visible regardless of map scale or map layer visibility', () => {
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+
+      expect(visible).toHaveBeenLastCalledWith(true);
+
+      mapViewMock.scale = 1;
+      mapViewMock.scale = 1000000;
+
+      expect(visible).toHaveBeenLastCalledWith(true);
+      expect(visible).toHaveBeenCalledTimes(1);
+
+      subscription.unsubscribe();
+    });
+
+    it('does not require an initialized map view to report visibility', () => {
+      mapViewService.mapView.set(undefined);
+
+      const visible = vi.fn();
+      const subscription = service.observeFeatureInfoLayerVisibility(source).subscribe(visible);
+
+      expect(visible).toHaveBeenCalledWith(true);
+
+      subscription.unsubscribe();
     });
   });
 });

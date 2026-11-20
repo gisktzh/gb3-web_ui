@@ -5,6 +5,13 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {selectScrollbarWidth} from 'src/app/state/app/reducers/app-layout.reducer';
 import {OerebExtractResponse} from 'src/app/shared/interfaces/oereb-extract.interface';
 import {OerebExtractComponent} from './oereb-extract.component';
+import {MapServiceStub} from '../../../../testing/map-testing/map.service.stub';
+import {MAP_SERVICE} from 'src/app/app.tokens';
+import {MockStore} from '@ngrx/store/testing';
+import {Store} from '@ngrx/store';
+import {selectPinnedFeatureId} from 'src/app/state/map/reducers/feature-info.reducer';
+import {FeatureInfoActions} from 'src/app/state/map/actions/feature-info.actions';
+import {MapService} from 'src/app/map/interfaces/map.service';
 
 describe('OerebExtractComponent', () => {
   let fixture: ComponentFixture<OerebExtractComponent>;
@@ -42,6 +49,11 @@ describe('OerebExtractComponent', () => {
     completeness: '',
     area: 0,
     statusOfficialSurvey: '',
+    parcel: {
+      type: 'Point',
+      coordinates: [1, 2],
+      srs: 2056,
+    },
   });
 
   class MockResizeObserver implements ResizeObserver {
@@ -55,7 +67,11 @@ describe('OerebExtractComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [OerebExtractComponent],
-      providers: [provideRouter([]), provideMockStore({selectors: [{selector: selectScrollbarWidth, value: 17}]})],
+      providers: [
+        provideRouter([]),
+        provideMockStore({selectors: [{selector: selectScrollbarWidth, value: 17}]}),
+        {provide: MAP_SERVICE, useClass: MapServiceStub},
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OerebExtractComponent, {bindings: [inputBinding('data', data)]});
@@ -122,5 +138,118 @@ describe('OerebExtractComponent', () => {
     });
     expect(compiled.textContent).toContain('Nicht betroffene Themen');
     expect(compiled.textContent).toContain('Nicht verfügbare Themen');
+  });
+
+  it('pins the parcel and zooms to it when the feature is clicked', () => {
+    const store = TestBed.inject(MockStore);
+    const dispatchSpy = vi.spyOn(TestBed.inject(Store), 'dispatch');
+    const mapService = TestBed.inject<MapService>(MAP_SERVICE);
+    const zoomSpy = vi.spyOn(mapService, 'zoomToExtent');
+
+    store.overrideSelector(selectPinnedFeatureId, undefined);
+    store.refreshState();
+
+    component.toggleHighlightForFeature();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      FeatureInfoActions.highlightFeature({
+        feature: data().parcel,
+        source: {
+          sourceType: 'oereb_extract',
+          mapItemId: null,
+          layerName: null,
+        },
+        pinnedFeatureId: 'oereb_extract_feature',
+      }),
+    );
+    expect(zoomSpy).toHaveBeenCalledWith(data().parcel);
+  });
+
+  it('unpins the parcel when the pinned feature is clicked again', () => {
+    const store = TestBed.inject(MockStore);
+    const dispatchSpy = vi.spyOn(TestBed.inject(Store), 'dispatch');
+
+    store.overrideSelector(selectPinnedFeatureId, 'oereb_extract_feature');
+    store.refreshState();
+
+    component.toggleHighlightForFeature();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(FeatureInfoActions.clearHighlight());
+  });
+
+  it('previews the parcel geometry when hovering over the feature', () => {
+    const store = TestBed.inject(MockStore);
+    const dispatchSpy = vi.spyOn(TestBed.inject(Store), 'dispatch');
+
+    store.overrideSelector(selectPinnedFeatureId, undefined);
+    store.refreshState();
+
+    component.onFeatureHoverStart();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      FeatureInfoActions.highlightFeature({
+        feature: data().parcel,
+        source: {
+          sourceType: 'oereb_extract',
+          mapItemId: null,
+          layerName: null,
+        },
+        pinnedFeatureId: undefined,
+      }),
+    );
+  });
+
+  it('clears the preview when hovering ends and no feature is pinned', () => {
+    const store = TestBed.inject(MockStore);
+    const dispatchSpy = vi.spyOn(TestBed.inject(Store), 'dispatch');
+
+    store.overrideSelector(selectPinnedFeatureId, undefined);
+    store.refreshState();
+
+    component.onFeatureHoverStart();
+    dispatchSpy.mockClear();
+
+    component.onFeatureHoverEnd();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(FeatureInfoActions.clearHighlight());
+  });
+
+  it('reports the parcel as highlighted when it is pinned', () => {
+    const store = TestBed.inject(MockStore);
+
+    store.overrideSelector(selectPinnedFeatureId, 'oereb_extract_feature');
+    store.refreshState();
+
+    expect(component.isHighlighted()).toBe(true);
+  });
+
+  it('reports the parcel as highlighted while it is hovered', () => {
+    const store = TestBed.inject(MockStore);
+
+    store.overrideSelector(selectPinnedFeatureId, undefined);
+    store.refreshState();
+
+    component.onFeatureHoverStart();
+
+    expect(component.isHighlighted()).toBe(true);
+  });
+
+  it('delegates resize start and end to the marking controller', () => {
+    const startResizeSpy = vi.spyOn(component.marking, 'startResize');
+    const endResizeSpy = vi.spyOn(component.marking, 'endResize');
+
+    component.onResizeHandlerResizeStart();
+    expect(startResizeSpy).toHaveBeenCalledOnce();
+
+    component.onResizeHandlerResizeEnd();
+    expect(endResizeSpy).toHaveBeenCalledOnce();
+  });
+
+  it('destroys the marking controller when the component is destroyed', () => {
+    const destroySpy = vi.spyOn(component.marking, 'destroy');
+
+    fixture.destroy();
+
+    expect(destroySpy).toHaveBeenCalledOnce();
   });
 });

@@ -17,7 +17,7 @@ describe('FeatureInfoContentComponent marking', () => {
   let mapService: MapServiceStub;
   let store: MockStore;
   const geometry: GeometryWithSrs = {type: 'Point', srs: 2056, coordinates: [1, 2]};
-  const source = {mapItemId: 'topic_layer', layerName: 'layer'};
+  const source = {sourceType: 'feature_info' as const, mapItemId: 'topic_layer', layerName: 'layer'};
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -388,7 +388,7 @@ describe('FeatureInfoContentComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalledWith(
       FeatureInfoActions.highlightFeature({
         feature: geometry,
-        source: {mapItemId: 'test-topic', layerName: 'test-layer'},
+        source: {sourceType: 'feature_info', mapItemId: 'test-topic', layerName: 'test-layer'},
         pinnedFeatureId: undefined,
       }),
     );
@@ -406,7 +406,7 @@ describe('FeatureInfoContentComponent', () => {
     expect(storeDispatchSpy).not.toHaveBeenCalledWith(
       FeatureInfoActions.highlightFeature({
         feature: geometry,
-        source: {mapItemId: 'test-topic', layerName: 'test-layer'},
+        source: {sourceType: 'feature_info', mapItemId: 'test-topic', layerName: 'test-layer'},
         pinnedFeatureId: undefined,
       }),
     );
@@ -488,7 +488,7 @@ describe('FeatureInfoContentComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalledWith(
       FeatureInfoActions.highlightFeature({
         feature: geometry,
-        source: {mapItemId: 'test-topic', layerName: 'test-layer'},
+        source: {sourceType: 'feature_info', mapItemId: 'test-topic', layerName: 'test-layer'},
         pinnedFeatureId: TableColumnIdentifierDirective.createUniqueColumnIdentifier('test-topic', 'test-layer', 42),
       }),
     );
@@ -587,7 +587,7 @@ describe('FeatureInfoContentComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalledWith(
       FeatureInfoActions.highlightFeature({
         feature: geometry,
-        source: {mapItemId: 'test-topic', layerName: 'test-layer'},
+        source: {sourceType: 'feature_info', mapItemId: 'test-topic', layerName: 'test-layer'},
         pinnedFeatureId: TableColumnIdentifierDirective.createUniqueColumnIdentifier('test-topic', 'test-layer', 42),
       }),
     );

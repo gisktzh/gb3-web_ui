@@ -1,1 +1,9 @@
-<div #mainMap class="map-container"></div>
+<div
+  #mainMap
+  class="map-container"
+  [style]="paddingCssVars()"
+  [class.map-container--is-hovered]="isHovered()"
+  dropZone
+  (fileUploaded)="handleFileUpload($event)"
+  (hoverStateChange)="isHovered.set($event)"
+></div>

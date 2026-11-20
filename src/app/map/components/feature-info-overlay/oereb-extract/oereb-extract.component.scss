@@ -1,11 +1,17 @@
 @use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+$border-size: 2px;
+$right-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-active-blue;
+$left-border: inset $border-size 0 0 0 ktzh-variables.$zh-active-blue;
+$bottom-border: inset 0 calc(-1 * $border-size) 0 0 ktzh-variables.$zh-active-blue;
 
 .oereb-extract,
 .oereb-extract__table {
   width: 100%;
 }
 
-.oereb-extract-table__container {
+.oereb-extract__table__container {
   display: flex;
   flex-direction: column;
   overflow: visible;
@@ -13,7 +19,47 @@
   position: relative;
 }
 
-.oereb-extract-table__title {
+.oereb-extract__table__feature-header {
+  cursor: pointer;
+}
+
+.oereb-extract__table__feature-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 20px;
+  position: relative;
+
+  .mat-mdc-radio-button {
+    pointer-events: none;
+
+    .mdc-form-field {
+      font-size: 12px;
+    }
+
+    .mdc-radio {
+      padding: 0;
+
+      .mdc-radio__native-control,
+      .mat-mdc-radio-touch-target {
+        width: auto;
+      }
+    }
+  }
+}
+
+.oereb-extract__table__feature-cell--highlighted {
+  box-shadow: $left-border, $right-border;
+}
+.info-table__table tbody .info-table__row:last-of-type .oereb-extract__table__feature-cell--highlighted {
+  box-shadow: $bottom-border, $left-border, $right-border;
+}
+
+.oereb-extract__table__feature-header.oereb-extract__table__feature-cell--highlighted {
+  background-color: ktzh-variables.$zh-active-blue !important;
+}
+
+.oereb-extract__table__title {
   padding: 0 8px;
   margin-top: 12px;
 }

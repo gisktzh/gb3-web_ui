@@ -64,9 +64,6 @@ describe('validateUploadedFileList', () => {
 
     const listGeojson = new MutableFileList([new MutableFile('hello.geojson', 1)]);
     expect(() => validateUploadedFileList(listGeojson)).not.toThrow(new InvalidFileTypeValidationError());
-
-    const listKml = new MutableFileList([new MutableFile('hello.kml', 1)]);
-    expect(() => validateUploadedFileList(listKml)).not.toThrow(new InvalidFileTypeValidationError());
   });
 
   it('should throw an appropriate exception if the file size exceeds a given maximum', () => {

@@ -9,11 +9,11 @@ variables:
   WORK_DIR: gb3-web_ui
 
 .build:
-  image: docker:29.9.1
+  image: docker:29.9.3
   stage: build
   tags: [docker]
   services:
-    - name: docker:29.9.1-dind
+    - name: docker:29.9.3-dind
       command:
         - /bin/sh
         - -c
@@ -40,11 +40,10 @@ build:uat:
   variables:
     TARGET_ENV: uat
 
-# TODO: Comment in once config is set up
-# build:production:
-#   extends: .build
-#   variables:
-#     TARGET_ENV: production
+build:production:
+  extends: .build
+  variables:
+    TARGET_ENV: production
 
 .deploy:
   image: ubuntu:26.04
@@ -77,10 +76,9 @@ deploy:uat:
   needs:
     - build:uat
 
-# TODO: Comment in once config is set up
-# deploy:production:
-#   extends: .deploy
-#   variables:
-#     TARGET_ENV: production
-#   needs:
-#     - build:production
+deploy:production:
+  extends: .deploy
+  variables:
+    TARGET_ENV: production
+  needs:
+    - build:production

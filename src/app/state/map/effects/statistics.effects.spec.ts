@@ -33,6 +33,8 @@ import {selectIsMapServiceInitialized, selectReady} from '../reducers/map-config
 import {selectIsStatisticsAvailable} from '../selectors/statistics-availability.selector';
 import {QueryModeActions} from '../actions/query-mode.actions';
 import {selectLoadingState} from '../reducers/statistics.reducer';
+import {StatisticsMode} from 'src/app/shared/types/statistics-mode.type';
+import {ToolType} from 'src/app/shared/types/tool.type';
 
 describe('StatisticsEffects', () => {
   let actions$: Observable<Action>;
@@ -346,7 +348,7 @@ describe('StatisticsEffects', () => {
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
-      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.activateTool({tool: 'select-statistics-circle'})]);
+      expect(actualActions).toEqual([ToolActions.switchTool({tool: 'select-statistics-circle'})]);
     });
 
     it('clears the area and hands over the polygon tool for the polygon mode', () => {
@@ -356,7 +358,7 @@ describe('StatisticsEffects', () => {
       const actualActions: Action[] = [];
       effects.restartSelectionOnModeChange$.subscribe((action) => actualActions.push(action));
 
-      expect(actualActions).toEqual([StatisticsActions.clearContent(), ToolActions.activateTool({tool: 'select-statistics-polygon'})]);
+      expect(actualActions).toEqual([ToolActions.switchTool({tool: 'select-statistics-polygon'})]);
     });
 
     /** Re-activating the running tool would restart it, and the mode sync would answer with another mode change. */
@@ -478,6 +480,20 @@ describe('StatisticsEffects', () => {
         expect(statisticsService.loadStatistics).not.toHaveBeenCalled();
         expect(actualAction).toEqual(StatisticsActions.clearContent());
       });
+    });
+  });
+
+  describe('activateToolOnSoftModeUpdate$', () => {
+    it.each([
+      {mode: 'umkreis', tool: 'select-statistics-circle'},
+      {mode: 'polygon', tool: 'select-statistics-polygon'},
+    ] as {mode: StatisticsMode; tool: ToolType}[])('should dispatch `ToolActions.activateTool` with %s tool', ({mode, tool}) => {
+      actions$ = of(StatisticsActions.softUpdateMode({mode}));
+
+      const actualActions: Action[] = [];
+      effects.activateToolOnSoftModeUpdate$.subscribe((action) => actualActions.push(action));
+
+      expect(actualActions).toEqual([ToolActions.activateTool({tool})]);
     });
   });
 });

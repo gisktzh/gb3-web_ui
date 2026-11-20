@@ -38,6 +38,9 @@ export const statisticsFeature = createFeature({
     on(StatisticsActions.setMode, (state, {mode}): StatisticsState => {
       return {...state, mode};
     }),
+    on(StatisticsActions.softUpdateMode, (state, {mode}): StatisticsState => {
+      return {...state, mode};
+    }),
     on(StatisticsActions.setRadius, (state, {radiusInMeters}): StatisticsState => {
       return {...state, radiusInMeters};
     }),
