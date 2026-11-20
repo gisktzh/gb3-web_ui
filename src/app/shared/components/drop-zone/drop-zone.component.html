@@ -7,7 +7,7 @@
 >
   <input type="file" [accept]="acceptedFileTypes" #fileUploadField (change)="inputValueChange()" />
   <p>Zum Hochladen Datei ziehen und hier ablegen</p>
-  <p>Mögliche Dateitypen: KML, JSON (max. 10MB)</p>
+  <p>Mögliche Dateitypen: JSON (max. 10MB)</p>
   <button mat-flat-button class="drop-zone__button" color="accent" [disabled]="isHovered()" (click)="fileUploadField.click()">
     Datei auswählen
     <mat-icon svgIcon="ktzh_upload" iconPositionEnd />
