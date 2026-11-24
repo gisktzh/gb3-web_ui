@@ -176,4 +176,20 @@ export const externalAppsData: ExternalApp[] = [
     description:
       'GBGuessr ist ein Kartenratespiel, das auf den öffentlich zugänglichen Karten des kantonalen GIS-Browsers basiert. Es erleichtert den Zugang zu räumlichen Daten und macht die Vielfalt der publizierten Karten auf spielerische und interaktive Weise erlebbar.',
   },
+  {
+    appUrl: 'https://maps.zh.ch/züribunt',
+    department: 'ARE',
+    image: {
+      url: '/assets/images/apps/zueribunt_thumbnail.webp',
+      altText: '',
+    },
+    title: 'Züribunt',
+    email: 'gis@bd.zh.ch',
+    keywords: ['Züribunt', 'Geoforum', 'Postkarte', 'Postcard', 'Bodennutzung', 'Nachbarschaften', 'Quartiere', 'Zürich', 'Statistik'],
+    topic: 'Freizeit',
+    categories: ['Fachapplikationen'],
+    visibility: 'both',
+    description:
+      'Im Züribunt App können Sie sich eine Postkarte erstellen, die die Verteilung der Bodennutzung in Ihrer Nachbarschaft zeigt.',
+  },
 ];
