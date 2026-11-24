@@ -39,7 +39,7 @@ export const usefulInformationLinks: AbstractLinksGroup[] = [
         title: 'Transformations- und Rechendienste Swisstopo',
       },
       {
-        href: 'https://www.zh.ch/de/planen-bauen/geoinformation/geodaten/geodatenbezug/vorlagen-fuer-administrativer-grenzen-und-karten.html',
+        href: 'https://www.zh.ch/de/politik-staat/gemeinden/gemeindeportraet.html#-722716261',
         title: 'Gemeinde-Kartentool',
       },
     ],
