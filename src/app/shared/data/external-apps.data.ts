@@ -6,7 +6,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'ARE',
     image: {
       url: '/assets/images/apps/leitungskataster_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Leitungskataster App, eine Visualisierung von Versorgungs- und Entsorgungsleitungen',
     },
     title: 'Leitungskataster',
     email: 'leitungskataster@bd.zh.ch',
@@ -22,7 +22,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'AWEL',
     image: {
       url: '/assets/images/apps/pegel_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Pegel App, eine Visualisierung von Wasserstandsmessungen',
     },
     title: 'Abflüsse und Wasserstände der Oberflächengewässer',
     email: 'datenlogistik@bd.zh.ch',
@@ -38,7 +38,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'ARE',
     image: {
       url: '/assets/images/apps/potree_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Potree LiDAR Viewer App, eine Visualisierung von LiDAR-Daten',
     },
     title: 'Potree LiDAR Viewer',
     email: 'ueli.mauch@bd.zh.ch',
@@ -54,7 +54,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'ARE',
     image: {
       url: '/assets/images/apps/potree_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Potree LiDAR Viewer App, eine Visualisierung von LiDAR-Daten',
     },
     title: 'Potree LiDAR Viewer',
     email: 'ueli.mauch@bd.zh.ch',
@@ -70,7 +70,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'TBA',
     image: {
       url: '/assets/images/apps/infra3d_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der 3D Strassenraum App, eine Visualisierung des strassenrelevanten Raumes',
     },
     title: '3D Strassenraum für Kantonsstrassen',
     email: 'stevan.skeledzic@bd.zh.ch',
@@ -85,7 +85,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'TBA',
     image: {
       url: '/assets/images/apps/verkehr_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Verkehr Online App, eine Visualisierung von Verkehrsdaten',
     },
     title: 'Verkehr Online',
     email: 'tba.vo@bd.zh.ch',
@@ -101,7 +101,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'AWEL',
     image: {
       url: '/assets/images/apps/wassertemperatur_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Wassertemperaturen App, eine Visualisierung von Wassertemperatur-Daten',
     },
     title: 'Wassertemperaturen der Oberflächengewässer',
     email: 'hydrometrie@bd.zh.ch',
@@ -117,7 +117,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'ALN',
     image: {
       url: '/assets/images/apps/bodenfeuchte_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Bodenfeuchte-Messnetz App, eine Visualisierung von Bodenfeuchte-Daten',
     },
     title: 'Bodenfeuchte-Messnetz',
     email: 'reto.mani@bd.zh.ch',
@@ -133,7 +133,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'STAT',
     image: {
       url: '/assets/images/apps/lokalklima_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Lokalklima-Messnetz App, eine Klimadatenvisualisierung',
     },
     title: 'Lokalklima-Messnetz',
     email: 'gian-marco.alt@bd.zh.ch',
@@ -149,7 +149,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'AWEL',
     image: {
       url: '/assets/images/apps/fliessgewaesser360zh_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Fliessgewässer 360° App, ein 360° Bild der Glatt in Dübendorf',
     },
     title: 'Bilder kantonale Fliessgewässer 360°',
     email: 'dominik.koehler@bd.zh.ch',
@@ -165,7 +165,7 @@ export const externalAppsData: ExternalApp[] = [
     department: 'ARE',
     image: {
       url: '/assets/images/apps/gbguessr_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der GBGuessr App, ein Kartenratespiel',
     },
     title: 'GBGuessr: Kartenraten',
     email: 'gis@bd.zh.ch',
@@ -177,18 +177,34 @@ export const externalAppsData: ExternalApp[] = [
       'GBGuessr ist ein Kartenratespiel, das auf den öffentlich zugänglichen Karten des kantonalen GIS-Browsers basiert. Es erleichtert den Zugang zu räumlichen Daten und macht die Vielfalt der publizierten Karten auf spielerische und interaktive Weise erlebbar.',
   },
   {
-    appUrl: 'https://maps.zh.ch/züribunt',
+    appUrl: 'https://web.maps.zh.ch/züribunt',
     department: 'ARE',
     image: {
       url: '/assets/images/apps/zueribunt_thumbnail.webp',
-      altText: '',
+      altText: 'Thumbnail der Züribunt App, eine Postkarten App',
     },
     title: 'Züribunt',
     email: 'gis@bd.zh.ch',
     keywords: ['Züribunt', 'Geoforum', 'Postkarte', 'Postcard', 'Bodennutzung', 'Nachbarschaften', 'Quartiere', 'Zürich', 'Statistik'],
     topic: 'Freizeit',
     categories: ['Fachapplikationen'],
-    visibility: 'both',
+    visibility: 'intranet',
+    description:
+      'Im Züribunt App können Sie sich eine Postkarte erstellen, die die Verteilung der Bodennutzung in Ihrer Nachbarschaft zeigt.',
+  },
+  {
+    appUrl: 'https://maps.zh.ch/züribunt',
+    department: 'ARE',
+    image: {
+      url: '/assets/images/apps/zueribunt_thumbnail.webp',
+      altText: 'Thumbnail der Züribunt App, eine Postkarten App',
+    },
+    title: 'Züribunt',
+    email: 'gis@bd.zh.ch',
+    keywords: ['Züribunt', 'Geoforum', 'Postkarte', 'Postcard', 'Bodennutzung', 'Nachbarschaften', 'Quartiere', 'Zürich', 'Statistik'],
+    topic: 'Freizeit',
+    categories: ['Fachapplikationen'],
+    visibility: 'internet',
     description:
       'Im Züribunt App können Sie sich eine Postkarte erstellen, die die Verteilung der Bodennutzung in Ihrer Nachbarschaft zeigt.',
   },
