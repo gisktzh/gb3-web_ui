@@ -480,7 +480,7 @@ Within the runtime configurations there are API configurations used to configure
 
 #### BEM - structured CSS
 
-We are using BEM to structure our (S)CSS: https://getbem.com/introduction/
+We are using BEM to structure our (S)CSS: https://getbem.com/introduction
 
 Basically there are three important elements to keep track of:
 
